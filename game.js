@@ -320,14 +320,14 @@ const GAMES=[
   {no:82,key:"mobMusou",title:"モブくん無双",sub:"7秒で巨大武器を描き、10秒オートで大量スライムを無双する",legacy:90},
   {no:83,key:"iaidoMaster",title:"モブくんは居合切りの達人",sub:"夜の草原でCPUと居合勝負。勝負！の瞬間を見抜く",legacy:91},
   {no:84,key:"killLeaderMob",title:"モブくんの長い夜",sub:"夜の砂漠を進みながらゾンビ30体を倒し、最後に巨大ゾンビを撃破する横スクロールFPSアクション",legacy:92},
-  {no:85,key:"mobSpeedRacer",title:"モブくんは爆速レーサー",sub:"タッグ専用。1番手がタイヤ、2番手が機体を描き、1kmレースで勝負",legacy:93},
+  {no:85,key:"mobSpeedRacer",title:"モブくんは爆速レーサー",sub:"タッグ専用。2人で車を描き、横スクロール2kmレースで勝負",legacy:93},
   {no:86,key:"summonMaster",title:"モブくんは召喚マスター",sub:"タッグ専用。4人が描いた魔物で2対2のオート召喚バトル",legacy:94},
   {no:87,key:"mobPinball",title:"モブくんピンボール",sub:"上から落としたボールをカメラで追い、10〜100点のスロットを狙う",legacy:95},
   {no:88,key:"hurdleRun",title:"モブくんのハードル走",sub:"自動走行＋ジャンプで間隔を広げた8個のハードルを越える200mタイムアタック",legacy:96},
   {no:89,key:"longJumpMob",title:"モブくんの走り幅跳び",sub:"高速ダッシュゲージを中央で止め、砂場ギリギリで踏み切って最大300m",legacy:97},
   {no:90,key:"pkKicker",title:"モブくんPKキッカー",sub:"動く照準とPOWERの2回だけ止めて5本のPKを蹴る",legacy:98},
   {no:91,key:"threePoint",title:"モブくん3ポイント",sub:"中央のモブくんを引っ張って離し、5球でリングを狙う",legacy:99},
-  {no:92,key:"bowlingMob",title:"モブくんボウリング",sub:"モブくんが1投。上スワイプでポケットを狙って10ピンを倒す",legacy:100},
+  {no:92,key:"bowlingMob",title:"モブくんボウリング",sub:"モブくんが1投。上スワイプで20ピンを狙う。1本5点",legacy:100},
   {no:93,key:"waterSkip",title:"モブくん水切り",sub:"速度・角度・水面の状態で毎回変化する水切り回数を競う",legacy:101},
   {no:94,key:"tamaireMob",title:"モブくん玉入れ",sub:"動くカゴへ10球をテンポよく連投。1個10点",legacy:102},
   {no:95,key:"mineCartMob",title:"モブくんトロッコ",sub:"長い鉱山コースを高速走行。穴・スロープ・トランポリン・マグマを2段ジャンプで突破",legacy:105},
@@ -429,6 +429,25 @@ const MODES={
   matchedVsCpu:{name:"プレイヤー VS CPU",short:"同人数チーム戦 / 1対1〜10対10",participants:["p1","c2"],team:true,points:[3,0],teams:{A:["p1"],B:["c2"]},teamNames:{A:"PLAYER TEAM",B:"CPU TEAM"}},
   configured:{name:"対戦",short:"",participants:["p1","c2"],team:false,points:[3,0],performance:false,teams:{},teamNames:{}},
   tournament:{name:"モブくんゲーム王決定戦",short:"8/16人ノックアウト + 20人ブロック王",participants:["p1","c2"],team:false,points:[],performance:true,teams:{},teamNames:{}},
+  mobCup:{
+    name:"モブカップ",
+    short:"8チーム×4人 / 全20ゲーム / 個人ランキングなし",
+    participants:["p1","p2","p3","p4","c2","c3","c4","c5","c6","c7","c8","c9","c10","c11","c12","c13","c14","c15","c16","c17","c18","c19","c20","c21","c22","c23","c24","c25","c26","c27","c28","c29"],
+    team:true,
+    points:[],
+    performance:true,
+    teams:{
+      A:["p1","p2","p3","p4"],
+      B:["c2","c3","c4","c5"],
+      C:["c6","c7","c8","c9"],
+      D:["c10","c11","c12","c13"],
+      E:["c14","c15","c16","c17"],
+      F:["c18","c19","c20","c21"],
+      G:["c22","c23","c24","c25"],
+      H:["c26","c27","c28","c29"]
+    },
+    teamNames:{A:"TEAM A",B:"TEAM B",C:"TEAM C",D:"TEAM D",E:"TEAM E",F:"TEAM F",G:"TEAM G",H:"TEAM H"}
+  },
   free:{name:"1人フリープレイ",short:"好きなゲームだけ遊ぶ",participants:["p1"],team:false,points:[0]}
 };
 
@@ -463,7 +482,8 @@ function freshState(){
     roundPoints:[],
     cpuTier:{},
     setup:null,
-    tournament:null
+    tournament:null,
+    mobCup:null
   };
 }
 function pById(id){return PLAYERS.find(p=>p.id===id)}
@@ -538,6 +558,7 @@ homeBtn.addEventListener("click",()=>{
 resetBtn.addEventListener("click",()=>{
   cancelActiveAnimation();
   invalidateGameRun();
+  if(state.mobCup?.active){setupMobCup();return;}
   if(state.freePlay && state.freeGameIndex!==null){startFreeGame(state.freeGameIndex);return;}
 
   if(state.modeKey){
@@ -568,7 +589,7 @@ function renderHome(){
       <div>
         <span class="kicker">SMARTPHONE PARTY GAME</span>
         <h1>110 MINI<br>GAMES</h1>
-        <p>通常対戦は「チーム戦」「個人戦」。モブくんゲーム王は8/16人ノックアウトと20人ブロック戦を遊べます。</p>
+        <p>通常対戦、モブくんゲーム王に加えて、8チーム×4人・全20ゲームの「モブカップ」を遊べます。</p>
       </div>
       <div class="hero-mark">MOB</div>
     </section>
@@ -577,7 +598,7 @@ function renderHome(){
       <button id="openModeSelect" class="home-main-action-v119" type="button">
         <span>MODE SELECT</span>
         <b>モードセレクト</b>
-        <small>チーム戦 / 個人戦 / ゲーム王決定戦</small>
+        <small>チーム戦 / 個人戦 / ゲーム王 / モブカップ</small>
       </button>
 
       <button id="openFreePlay" class="home-sub-action-v119" type="button">
@@ -1662,6 +1683,323 @@ function renderBlockKingChampion(winnerId,runnerId){
   document.getElementById("blockKingReplay196").addEventListener("click",()=>renderTournamentSetup({format:"block20",size:20,humanCount:t.humanCount}));document.getElementById("blockKingModeBack196").addEventListener("click",renderBattleTypeSelect);gameTop();
 }
 
+
+// =========================================================
+// V11.01 — MOB CUP / 8 TEAMS x 4 / 20 GAMES
+// No individual ranking is rendered in this mode.
+// =========================================================
+const MOB_CUP_KEYS=['A','B','C','D','E','F','G','H'];
+const MOB_CUP_FULL_TEAMS={
+  A:['p1','p2','p3','p4'],
+  B:['c2','c3','c4','c5'],
+  C:['c6','c7','c8','c9'],
+  D:['c10','c11','c12','c13'],
+  E:['c14','c15','c16','c17'],
+  F:['c18','c19','c20','c21'],
+  G:['c22','c23','c24','c25'],
+  H:['c26','c27','c28','c29']
+};
+const MOB_CUP_ROUNDS=[
+  {round:1,key:'bowlingMob',event:'ポイント倍！',desc:'このゲームは全チームの獲得ポイントが×2！'},
+  {round:2,key:'billiardsMob',type:'coopBilliards',event:'みんなで協力！',desc:'4人で白球1つを順番に打ち、色球4つを落とせ！'},
+  {round:3,key:'monsterBoxMob',type:'representative',event:'代表戦！',desc:'チームから1名が挑戦。代表スコア×4がチームポイント！'},
+  {round:4,key:'mobIssen',event:'上位4チームはポイント倍！',desc:'モブくん一閃のチーム獲得ポイント上位4チームだけ、このゲームのポイント×2！'},
+  {round:5,type:'tag',event:'タッグマッチ！',desc:'A VS B / C VS D / E VS F / G VS H。3つのタッグゲーム合計がチームへ入る。'},
+  {round:6,key:'brake',event:'REGULAR GAME',desc:'モブくんブレーキチキンレース'},
+  {round:7,key:'ski',event:'REGULAR GAME',desc:'モブくんスキージャンプ'},
+  {round:8,key:'puzzle',event:'REGULAR GAME',desc:'モブくん12'},
+  {round:9,key:'dontHitMob',event:'REGULAR GAME',desc:'モブくんを叩かないで'},
+  {round:10,type:'bonus',event:'スペシャルボーナス！',desc:'ランダム3ゲームから1つ選択。その後サイコロ倍率！'},
+  {round:11,key:'cardShop',event:'REGULAR GAME',desc:'モブくんカードショップ'},
+  {round:12,key:'toyOnOff',event:'REGULAR GAME',desc:'モブくんおもちゃON or OFF'},
+  {round:13,key:'mobCombo',event:'REGULAR GAME',desc:'モブくん20連コンボ'},
+  {round:14,key:'bikeJump',type:'representative',event:'代表戦！',desc:'チームから1名が挑戦。代表スコア×4がチームポイント！'},
+  {round:15,type:'tagDouble',event:'タッグマッチ！倍々チャレンジ！',desc:'3ゲーム合計をさらに×2してチームへ加算！'},
+  {round:16,type:'split16',event:'順位別スペシャル！',desc:'上位4チームは4人分の合計×2。下位4チームは4人分の合計×0.5。'},
+  {round:17,key:'tokotokoCatcher',event:'ポイント倍！',desc:'トコトコモブくんキャッチャー / 全チーム×2！'},
+  {round:18,key:'reaction',event:'ポイント倍！',desc:'モブくんの反射神経 / 全チーム×2！'},
+  {round:19,key:'catcher',event:'ポイント倍！',desc:'モブくんキャッチャー / 全チーム×2！'},
+  {round:20,key:'plushCatcher',type:'finalPlush',event:'最終決戦！',desc:'ぬいぐるみ1つGETするたび100ポイント！'}
+];
+
+function mobCupGameIndex(key){return GAMES.findIndex(g=>g.key===key)}
+function mobCupFullParticipants(){return MOB_CUP_KEYS.flatMap(k=>MOB_CUP_FULL_TEAMS[k])}
+function mobCupResetModeFull(){
+  const m=MODES.mobCup;
+  m.participants=mobCupFullParticipants();
+  m.teams=Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,[...MOB_CUP_FULL_TEAMS[k]]]));
+  m.teamNames=Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,`TEAM ${k}`]));
+  m.team=true;m.performance=true;m.points=[];
+}
+function mobCupSetActiveTeams(teamMap){
+  const m=MODES.mobCup;
+  m.teams=Object.fromEntries(Object.entries(teamMap).map(([k,v])=>[k,[...v]]));
+  m.teamNames=Object.fromEntries(Object.keys(teamMap).map(k=>[k,`TEAM ${k}`]));
+  m.participants=Object.values(teamMap).flat();
+  m.team=true;m.performance=true;m.points=[];
+}
+function mobCupStandings(){
+  const cup=state.mobCup;
+  const arr=MOB_CUP_KEYS.map(key=>({key,points:cup.teamTotals[key]||0})).sort((a,b)=>b.points-a.points||a.key.localeCompare(b.key));
+  let last=null,lastRank=0;
+  arr.forEach((x,i)=>{x.rank=i>0&&x.points===last?lastRank:i+1;last=x.points;lastRank=x.rank});
+  return arr;
+}
+function mobCupRankScores(scores){
+  const arr=MOB_CUP_KEYS.map(key=>({key,points:Math.round(scores[key]||0)})).sort((a,b)=>b.points-a.points||a.key.localeCompare(b.key));
+  let last=null,lastRank=0;
+  arr.forEach((x,i)=>{x.rank=i>0&&x.points===last?lastRank:i+1;last=x.points;lastRank=x.rank});
+  return arr;
+}
+function mobCupTeamScoreForGame(gameIndex,key,members=MOB_CUP_FULL_TEAMS[key]){
+  const rec=state.records[GAMES[gameIndex].key]||{};
+  return Math.round(members.reduce((sum,id)=>sum+performancePoints(gameIndex,Number(rec[id])||0),0));
+}
+function mobCupClearGameRecords(gameIndex,ids=mobCupFullParticipants()){
+  const rec=state.records[GAMES[gameIndex]?.key];
+  if(!rec)return;
+  ids.forEach(id=>delete rec[id]);
+}
+function mobCupTeamCard(key,extra=''){
+  const ids=MOB_CUP_FULL_TEAMS[key];
+  return `<div class="mobcup-team-card-v201 team-${key.toLowerCase()}"><b>TEAM ${key}</b><div>${ids.map(id=>imgTag(pById(id),'mobcup-mini-avatar-v201')).join('')}</div>${extra?`<span>${extra}</span>`:''}</div>`;
+}
+function mobCupResultRows(arr){
+  return `<div class="mobcup-team-result-v201">${arr.map(x=>`<div class="team-${x.key.toLowerCase()}"><strong>${x.rank}<small>位</small></strong><b>TEAM ${x.key}</b><span>${x.points}<small>pt</small></span></div>`).join('')}</div>`;
+}
+function setupMobCup(){
+  cancelActiveAnimation();invalidateGameRun();
+  state=freshState();state.modeKey='mobCup';state.playStyle='mobCup';state.setup={type:'mobCup'};
+  mobCupResetModeFull();
+  state.mobCup={
+    active:true,round:1,phase:'opening',teamTotals:Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,0])),roundScores:[],
+    top4:[],representatives:{},tag:null,bonusCandidates:[],bonusSelected:null,split:null,plushCounts:{},history:[]
+  };
+  state.roundIndex=0;
+  renderMobCupOpening();
+}
+function renderMobCupOpening(){
+  clearGameFit();const cup=state.mobCup;
+  screen.innerHTML=`
+    <div class="mobcup-opening-v201">
+      <div class="mobcup-cupmark-v201"><i></i><b>MOB</b><span>CUP</span></div>
+      <small>8 TEAMS × 4 PLAYERS / 20 GAMES</small>
+      <h2>モブカップ</h2>
+      <strong>TEAM A から TEAM H<br>20ゲーム総合決戦！</strong>
+      <div class="mobcup-opening-flare-v201"></div>
+    </div>
+    <section class="panel">
+      <div class="panel-head"><h3>ENTRY TEAMS</h3><span class="tag">32 PLAYERS</span></div>
+      <div class="mobcup-team-grid-v201">${MOB_CUP_KEYS.map(k=>mobCupTeamCard(k,k==='A'?'P1 / P2 / P3 / P4':'CPU TEAM')).join('')}</div>
+    </section>
+    <section class="panel flat mobcup-rule-v201"><h3>MOB CUP RULE</h3><p>個人ランキングは使用しません。各ゲーム終了後は<strong>そのゲームのチーム順位</strong>と<strong>総合チーム順位</strong>だけを表示します。</p><p>倍・半分・代表戦・タッグ・スペシャルボーナスは、すべてそのゲームで獲得した<strong>チームポイント</strong>へ適用します。</p></section>
+    <div id="mobCupStartBurst202" class="mobcup-start-burst-v202"><span>MOB CUP</span><b>START!!</b></div><button id="mobCupOpeningStart201" class="primary mobcup-start-v201" type="button">MOB CUP START！</button>`;
+  document.getElementById('mobCupOpeningStart201').addEventListener('click',async()=>{const btn=document.getElementById('mobCupOpeningStart201');btn.disabled=true;document.querySelector('.mobcup-opening-v201')?.classList.add('launch-v202');document.getElementById('mobCupStartBurst202')?.classList.add('show-v202');beep(720,90,.025);await wait(320);beep(920,120,.03);await wait(880);cup.phase='round';mobCupPrepareRound()});gameTop();
+}
+function mobCupPrepareRound(){
+  const cup=state.mobCup;if(!cup?.active)return;
+  if(cup.round>20){renderMobCupFinal();return}
+  state.roundIndex=cup.round-1;
+  const def=MOB_CUP_ROUNDS[cup.round-1];
+  if(cup.round===16){cup.top4=mobCupStandings().slice(0,4).map(x=>x.key)}
+  if(def.type==='representative'){renderMobCupRepresentativeSelect(def);return}
+  if(def.type==='tag'||def.type==='tagDouble'){startMobCupTagRound(def);return}
+  if(def.type==='bonus'){renderMobCupBonusChoice(def);return}
+  if(def.type==='coopBilliards'){renderMobCupEvent(def,()=>startMobCupCoopBilliards());return}
+  if(def.type==='split16'){renderMobCupEvent(def,()=>startMobCupSplit16());return}
+  renderMobCupEvent(def,()=>startMobCupStandard(def));
+}
+function renderMobCupEvent(def,onStart){
+  clearGameFit();
+  const g=def.key?GAMES[mobCupGameIndex(def.key)]:null;
+  const isEvent=def.event!=='REGULAR GAME';
+  const qualifier=def.round===16?`<div class="mobcup-qualified-v201">${MOB_CUP_KEYS.map(k=>`<span class="${state.mobCup.top4.includes(k)?'top':''}">TEAM ${k}</span>`).join('')}</div>`:'';
+  screen.innerHTML=`
+    <div class="game-head"><div><span class="kicker">MOB CUP / GAME ${def.round}</span><h2>${def.event}</h2><p class="lead">${def.desc}</p></div><div class="game-badge">${def.round}/20</div></div>
+    <div class="mobcup-event-v201 ${isEvent?'special':'regular'}"><span>${isEvent?'SPECIAL EVENT':'NEXT GAME'}</span><strong>${def.event}</strong>${g?`<b>${g.title}</b>`:''}<p>${def.desc}</p></div>
+    ${qualifier}
+    <section class="panel flat"><div class="panel-head"><h3>OVERALL BEFORE GAME</h3><span class="tag">TEAM ONLY</span></div>${mobCupResultRows(mobCupStandings())}</section>
+    <button id="mobCupEventStart201" class="primary" type="button">${g?`${g.title} START`:'イベント開始'}</button>`;
+  document.getElementById('mobCupEventStart201').addEventListener('click',onStart);gameTop();
+}
+function startMobCupStandard(def,selectedKey=null){
+  const cup=state.mobCup;const key=selectedKey||def.key;const idx=mobCupGameIndex(key);
+  mobCupResetModeFull();mobCupClearGameRecords(idx);cup.phase=def.type==='bonus'?'bonusGame':'standard';cup.currentGame=idx;cup.currentDef=def;
+  showGameIntro(idx);
+}
+function mobCupBaseTeamScores(gameIndex){
+  return Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,mobCupTeamScoreForGame(gameIndex,k)]));
+}
+function finishMobCupGame(gameIndex){
+  const cup=state.mobCup;if(!cup?.active)return;
+  if(cup.phase==='representative'){finishMobCupRepresentative(gameIndex);return}
+  if(cup.phase==='tagLive'){finishMobCupTagLive(gameIndex);return}
+  if(cup.phase==='split16'){finishMobCupSplit16Slot(gameIndex);return}
+  let scores=mobCupBaseTeamScores(gameIndex);
+  const r=cup.round;
+  if(r===20){
+    scores={};
+    MOB_CUP_KEYS.forEach(k=>{
+      scores[k]=MOB_CUP_FULL_TEAMS[k].reduce((sum,id)=>{
+        let c=cup.plushCounts[id];
+        if(c===undefined){const v=Number(state.records.plushCatcher[id])||0;c=v>=96?3:v>=72?2:v>=42?1:0}
+        return sum+c*100;
+      },0);
+    });
+  }
+  if([1,17,18,19].includes(r))MOB_CUP_KEYS.forEach(k=>scores[k]*=2);
+  if(r===4){
+    const gameTop4=mobCupRankScores(scores).slice(0,4).map(x=>x.key);
+    cup.round4Top4=[...gameTop4];
+    MOB_CUP_KEYS.forEach(k=>{if(gameTop4.includes(k))scores[k]*=2});
+  }
+  if(r===10){renderMobCupDiceBonus(scores);return}
+  mobCupCommitRound(scores,r===20?'ぬいぐるみ1個=100pt':r===4?`このゲームの獲得ポイント上位4チーム（${cup.round4Top4.map(k=>`TEAM ${k}`).join(' / ')}）だけ×2`:'');
+}
+function mobCupCommitRound(scores,note='',extraHtml=''){
+  const cup=state.mobCup;const r=cup.round;
+  gameSessionActive=false;activeGameIndex=-1;cancelCountdown();cancelActiveAnimation();clearGameFit();mobCupResetModeFull();
+  scores=Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,Math.max(0,Math.round(scores[k]||0))]));
+  MOB_CUP_KEYS.forEach(k=>cup.teamTotals[k]=(cup.teamTotals[k]||0)+scores[k]);
+  cup.roundScores[r-1]=scores;cup.history.push({round:r,scores:{...scores},note});
+  renderMobCupRoundResult(scores,note,extraHtml);
+}
+function renderMobCupRoundResult(scores,note='',extraHtml=''){
+  clearGameFit();const cup=state.mobCup;const r=cup.round;const gameRank=mobCupRankScores(scores),overall=mobCupStandings();
+  screen.innerHTML=`
+    <div class="game-head"><div><span class="kicker">MOB CUP / GAME ${r} COMPLETE</span><h2>TEAM RESULT</h2><p class="lead">${note||'このゲームのチームポイントが確定しました。'}</p></div><div class="game-badge">${r}/20</div></div>
+    ${extraHtml||''}
+    <section class="panel"><div class="panel-head"><h3>このゲームのチーム順位</h3><span class="tag">GAME RESULT</span></div>${mobCupResultRows(gameRank)}</section>
+    <section class="panel"><div class="panel-head"><h3>総合 RESULT</h3><span class="tag">OVERALL</span></div>${mobCupResultRows(overall)}</section>
+    <button id="mobCupResultNext201" class="primary" type="button">${r<20?`GAME ${r+1} へ`:'最終結果へ'}</button>`;
+  document.getElementById('mobCupResultNext201').addEventListener('click',()=>{cup.round++;cup.phase='round';if(cup.round<=20)mobCupPrepareRound();else renderMobCupFinal()});gameTop();
+}
+function renderMobCupRepresentativeSelect(def){
+  clearGameFit();const cup=state.mobCup;let selected=null;const idx=mobCupGameIndex(def.key);
+  screen.innerHTML=`<div class="game-head"><div><span class="kicker">MOB CUP / GAME ${def.round}</span><h2>代表戦！</h2><p class="lead">TEAM Aから挑戦する1名を選択。スコア×4がチームポイント。</p></div><div class="game-badge">×4</div></div>
+    <div class="mobcup-rep-game-v201"><span>REPRESENTATIVE GAME</span><b>${GAMES[idx].title}</b></div>
+    <section class="panel"><h3>挑戦するプレイヤーをタップしてください！</h3><div id="mobCupRepGrid201" class="mobcup-pick-grid-v201">${MOB_CUP_FULL_TEAMS.A.map((id,i)=>`<button data-rep="${id}" type="button">${imgTag(pById(id),'mobcup-pick-avatar-v201')}<b>P${i+1}</b></button>`).join('')}</div></section>
+    <button id="mobCupRepOk201" class="primary" disabled type="button">1名選択してください</button>`;
+  const ok=document.getElementById('mobCupRepOk201');
+  screen.querySelectorAll('[data-rep]').forEach(btn=>btn.addEventListener('click',()=>{selected=btn.dataset.rep;screen.querySelectorAll('[data-rep]').forEach(b=>b.classList.toggle('selected',b===btn));ok.disabled=false;ok.textContent=`${pById(selected).name}で挑戦！`}));
+  ok.addEventListener('click',()=>{
+    const reps={A:selected};
+    MOB_CUP_KEYS.slice(1).forEach(k=>{const ids=MOB_CUP_FULL_TEAMS[k];reps[k]=ids[randi(0,ids.length-1)]});
+    cup.representatives=reps;cup.phase='representative';cup.currentGame=idx;cup.currentDef=def;
+    mobCupSetActiveTeams(Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,[reps[k]]])));mobCupClearGameRecords(idx,Object.values(reps));showGameIntro(idx);
+  });gameTop();
+}
+function finishMobCupRepresentative(gameIndex){
+  const cup=state.mobCup;const scores={};
+  MOB_CUP_KEYS.forEach(k=>{const id=cup.representatives[k];const v=state.records[GAMES[gameIndex].key]?.[id];scores[k]=performancePoints(gameIndex,Number(v)||0)*4});
+  mobCupResetModeFull();mobCupCommitRound(scores,'代表1名の100点換算スコア×4（4人分）');
+}
+function startMobCupTagRound(def){
+  const cup=state.mobCup;cup.tag={gamePos:0,keys:['linkedCartBlast','summonMaster','mobSpeedRacer'],totals:Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,0])),details:[],multiplier:def.type==='tagDouble'?2:1};
+  renderMobCupTagPick();
+}
+function renderMobCupTagPick(){
+  clearGameFit();const cup=state.mobCup;const tag=cup.tag;const key=tag.keys[tag.gamePos],idx=mobCupGameIndex(key);let selected=[];
+  screen.innerHTML=`<div class="game-head"><div><span class="kicker">MOB CUP / GAME ${cup.round} / TAG ${tag.gamePos+1}/3</span><h2>${cup.round===15?'タッグマッチ！倍々チャレンジ！':'タッグマッチ！'}</h2><p class="lead">A VS B / C VS D / E VS F / G VS H</p></div><div class="game-badge">${tag.gamePos+1}/3</div></div>
+    <div class="mobcup-rep-game-v201"><span>TAG GAME ${tag.gamePos+1}</span><b>${GAMES[idx].title}</b></div>
+    <section class="panel"><h3>挑戦するプレイヤーを2名タップしてください！</h3><div id="mobCupTagPick201" class="mobcup-pick-grid-v201">${MOB_CUP_FULL_TEAMS.A.map((id,i)=>`<button data-tagpick="${id}" type="button">${imgTag(pById(id),'mobcup-pick-avatar-v201')}<b>P${i+1}</b></button>`).join('')}</div></section>
+    <div id="mobCupTagConfirm201" class="mobcup-confirm-v201" hidden><b id="mobCupTagConfirmText201"></b><div><button id="mobCupTagNo201" type="button">いいえ</button><button id="mobCupTagYes201" type="button">はい</button></div></div>`;
+  const box=document.getElementById('mobCupTagConfirm201'),text=document.getElementById('mobCupTagConfirmText201');
+  function redraw(){screen.querySelectorAll('[data-tagpick]').forEach(b=>b.classList.toggle('selected',selected.includes(b.dataset.tagpick)));if(selected.length===2){text.textContent=`P${MOB_CUP_FULL_TEAMS.A.indexOf(selected[0])+1} と P${MOB_CUP_FULL_TEAMS.A.indexOf(selected[1])+1} でOKですか？`;box.hidden=false}else box.hidden=true}
+  screen.querySelectorAll('[data-tagpick]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.tagpick;if(selected.includes(id))selected=selected.filter(x=>x!==id);else if(selected.length<2)selected.push(id);redraw()}));
+  document.getElementById('mobCupTagNo201').addEventListener('click',()=>{selected=[];redraw()});
+  document.getElementById('mobCupTagYes201').addEventListener('click',()=>startMobCupTagLive(idx,selected));gameTop();
+}
+function mobCupCpuTagTeamScore(gameIndex,key){
+  const ids=shuffle(MOB_CUP_FULL_TEAMS[key]).slice(0,2);mobCupClearGameRecords(gameIndex,ids);ids.forEach(id=>simulateOneCpu(gameIndex,pById(id)));
+  const rec=state.records[GAMES[gameIndex].key]||{};return Math.round(ids.reduce((s,id)=>s+performancePoints(gameIndex,Number(rec[id])||0),0)/2);
+}
+function startMobCupTagLive(gameIndex,selectedA){
+  const cup=state.mobCup;const selectedB=shuffle(MOB_CUP_FULL_TEAMS.B).slice(0,2);cup.tag.selectedA=[...selectedA];cup.tag.selectedB=[...selectedB];cup.phase='tagLive';cup.currentGame=gameIndex;
+  mobCupSetActiveTeams({A:selectedA,B:selectedB});mobCupClearGameRecords(gameIndex,[...selectedA,...selectedB]);showGameIntro(gameIndex);
+}
+function finishMobCupTagLive(gameIndex){
+  const cup=state.mobCup,tag=cup.tag,rec=state.records[GAMES[gameIndex].key]||{};
+  const avg=ids=>Math.round(ids.reduce((s,id)=>s+performancePoints(gameIndex,Number(rec[id])||0),0)/ids.length);
+  const gameScores={A:avg(tag.selectedA),B:avg(tag.selectedB)};
+  [['C','D'],['E','F'],['G','H']].forEach(([a,b])=>{gameScores[a]=mobCupCpuTagTeamScore(gameIndex,a);gameScores[b]=mobCupCpuTagTeamScore(gameIndex,b)});
+  MOB_CUP_KEYS.forEach(k=>tag.totals[k]+=gameScores[k]||0);tag.details.push({key:GAMES[gameIndex].key,scores:gameScores});tag.gamePos++;mobCupResetModeFull();
+  if(tag.gamePos<3){cup.phase='tagPick';renderMobCupTagPick();return}
+  const scores=Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,tag.totals[k]*tag.multiplier]));
+  const aTotal=tag.totals.A;
+  const extra=`<section class="panel mobcup-tag-summary-v201"><h3>3ゲームの合計</h3>${tag.details.map((d,i)=>`<div><span>GAME ${i+1}</span><b>${GAMES[mobCupGameIndex(d.key)].title}</b><strong>TEAM A ${d.scores.A}pt</strong></div>`).join('')}<p>プレイヤーチームの合計は <b>${aTotal}ポイント！</b>${tag.multiplier===2?` → 倍々チャレンジで <strong>${aTotal*2}ポイント！</strong>`:''}</p></section>`;
+  mobCupCommitRound(scores,tag.multiplier===2?'3ゲーム合計×2':'3ゲーム合計',extra);
+}
+function renderMobCupBonusChoice(def){
+  clearGameFit();const cup=state.mobCup;
+  const blocked=new Set(['mobSpeedRacer','summonMaster','linkedCartBlast','billiardsBattleRoyale','soloCartBlast','deathGameChallenge','plushCatcher','billiardsMob']);
+  const fixed=new Set(MOB_CUP_ROUNDS.map(x=>x.key).filter(Boolean));
+  const pool=GAMES.map((g,i)=>({g,i})).filter(x=>!blocked.has(x.g.key)&&!fixed.has(x.g.key)).map(x=>x.i);
+  cup.bonusCandidates=shuffle(pool).slice(0,3);
+  screen.innerHTML=`<div class="game-head"><div><span class="kicker">MOB CUP / GAME 10</span><h2>スペシャルボーナス！</h2><p class="lead">3ゲームから相談して1つ選択。その後サイコロ倍率。</p></div><div class="game-badge">DICE ×?</div></div>
+    <section class="panel"><h3>プレイするゲームを選択</h3><div class="mobcup-bonus-choice-v201">${cup.bonusCandidates.map(i=>`<button data-bonus-game="${i}" type="button"><span>CHOICE</span><b>${GAMES[i].title}</b><small>${GAMES[i].sub}</small></button>`).join('')}</div></section>`;
+  screen.querySelectorAll('[data-bonus-game]').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.bonusGame);cup.bonusSelected=i;startMobCupStandard(def,GAMES[i].key)}));gameTop();
+}
+function renderMobCupDiceBonus(baseScores){
+  clearGameFit();const cup=state.mobCup;
+  screen.innerHTML=`<div class="game-head"><div><span class="kicker">SPECIAL BONUS</span><h2>サイコロ倍率！</h2><p class="lead">出た目の数だけ、このゲームの全チーム獲得ポイントを掛け算します。</p></div><div class="game-badge">×?</div></div>
+    <div class="mobcup-dice-v201"><div id="mobCupDie201">?</div><button id="mobCupRoll201" class="primary" type="button">サイコロを振る！</button></div>`;
+  document.getElementById('mobCupRoll201').addEventListener('click',()=>{
+    const btn=document.getElementById('mobCupRoll201'),die=document.getElementById('mobCupDie201');btn.disabled=true;let ticks=0;
+    const timer=setInterval(()=>{die.textContent=randi(1,6);die.classList.remove('roll');void die.offsetWidth;die.classList.add('roll');beep(360+ticks*30,22,.008);if(++ticks>=12){clearInterval(timer);const mult=randi(1,6);die.textContent=mult;die.classList.add('final');beep(980,120,.035);setTimeout(()=>{const scores=Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,baseScores[k]*mult]));mobCupCommitRound(scores,`サイコロ ${mult}！ このゲームのチームポイント×${mult}`)},850)}},75);
+  });gameTop();
+}
+function startMobCupSplit16(){
+  const cup=state.mobCup;cup.split={slot:0,base:Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,0])),top:new Set(cup.top4),topGames:['ropeSwingMob','mobPinball','curlingMob','brawlerMob'],bottomGames:['mob50m','painter','planetEnergy','bikeJump']};mobCupStartSplit16Slot();
+}
+function mobCupStartSplit16Slot(){
+  const cup=state.mobCup,s=cup.split;
+  if(s.slot>=4){const scores={};MOB_CUP_KEYS.forEach(k=>scores[k]=Math.round(s.base[k]*(s.top.has(k)?2:.5)));mobCupResetModeFull();mobCupCommitRound(scores,'上位4チーム×2 / 下位4チーム×0.5');return}
+  const aTop=s.top.has('A'),key=(aTop?s.topGames:s.bottomGames)[s.slot],idx=mobCupGameIndex(key),pid=MOB_CUP_FULL_TEAMS.A[s.slot];cup.phase='split16';cup.currentGame=idx;
+  mobCupSetActiveTeams({A:[pid]});mobCupClearGameRecords(idx,[pid]);
+  clearGameFit();screen.innerHTML=`<div class="game-head"><div><span class="kicker">MOB CUP / GAME 16 / P${s.slot+1}</span><h2>${aTop?'上位4チーム ×2':'下位4チーム ×0.5'}</h2><p class="lead">P${s.slot+1}：${GAMES[idx].title}</p></div><div class="game-badge">${s.slot+1}/4</div></div><div class="mobcup-rep-game-v201"><span>PLAYER ${s.slot+1} GAME</span><b>${GAMES[idx].title}</b></div><button id="mobCupSplitStart201" class="primary" type="button">P${s.slot+1} START</button>`;
+  document.getElementById('mobCupSplitStart201').addEventListener('click',()=>showGameIntro(idx));gameTop();
+}
+function finishMobCupSplit16Slot(gameIndex){
+  const cup=state.mobCup,s=cup.split,slot=s.slot,pid=MOB_CUP_FULL_TEAMS.A[slot],rec=state.records[GAMES[gameIndex].key]||{};s.base.A+=performancePoints(gameIndex,Number(rec[pid])||0);
+  MOB_CUP_KEYS.slice(1).forEach(k=>{const key=(s.top.has(k)?s.topGames:s.bottomGames)[slot],idx=mobCupGameIndex(key),id=MOB_CUP_FULL_TEAMS[k][slot];mobCupClearGameRecords(idx,[id]);simulateOneCpu(idx,pById(id));s.base[k]+=performancePoints(idx,Number(state.records[GAMES[idx].key]?.[id])||0)});
+  s.slot++;mobCupStartSplit16Slot();
+}
+function mobCupBilliardsScore(shots){return Math.max(0,140-Math.max(4,shots)*10)}
+async function startMobCupCoopBilliards(){
+  gameFit();const cup=state.mobCup;cup.phase='coopBilliards';
+  screen.innerHTML=`<div class="mobcup-pool-shell-v201 gameplay-fit"><div class="game-head"><div><span class="kicker">MOB CUP / GAME 2</span><h2>みんなで協力！モブくんビリヤード</h2><p class="lead">P1→P2→P3→P4の順番で白球1つを打つ</p></div><div class="game-badge">4 BALLS</div></div><div class="mobcup-pool-hud-v201"><div><span>TURN</span><b id="mcPoolTurn201">P1</b></div><div><span>SHOT</span><b id="mcPoolShot201">0</b></div><div><span>LEFT</span><b id="mcPoolLeft201">4</b></div></div><div id="mcPoolStage201" class="mobcup-pool-stage-v201"><div class="mobcup-pool-felt-v201"></div>${['tl','tr','bl','br'].map(x=>`<i class="mobcup-pool-pocket-v201 ${x}"></i>`).join('')}<div id="mcPoolAim201" class="mobcup-pool-aim-v201"></div><div id="mcPoolCue201" class="mobcup-pool-ball-v201 cue"></div><div id="mcPoolColors201"></div><div id="mcPoolCall201" class="mobcup-pool-call-v201">P1 READY</div></div><div class="mobcup-pool-score-rule-v201">4回=100 / 5回=90 / 6回=80 / 7回=70 …</div></div>`;
+  const stage=document.getElementById('mcPoolStage201'),cue=document.getElementById('mcPoolCue201'),layer=document.getElementById('mcPoolColors201'),aim=document.getElementById('mcPoolAim201'),turnEl=document.getElementById('mcPoolTurn201'),shotEl=document.getElementById('mcPoolShot201'),leftEl=document.getElementById('mcPoolLeft201'),call=document.getElementById('mcPoolCall201');
+  void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight,R=13,pockets=[[18,18],[W-18,18],[18,H-18],[W-18,H-18]];
+  const balls=[{cue:true,x:W*.50,y:H*.78,vx:0,vy:0,el:cue,pocket:false}];
+  [[-.55,0],[.55,0],[0,-.62],[0,.62]].forEach((q,i)=>{const el=document.createElement('div');el.className=`mobcup-pool-ball-v201 c${i}`;layer.appendChild(el);balls.push({cue:false,x:W*.50+q[0]*54,y:H*.32+q[1]*44,vx:0,vy:0,el,pocket:false})});
+  let active=false,moving=false,drag=null,shots=0,turn=0,raf=null,last=performance.now();
+  function place(){balls.forEach(b=>{if(!b.pocket)b.el.style.transform=`translate3d(${b.x-R}px,${b.y-R}px,0)`})}
+  function remaining(){return balls.slice(1).filter(b=>!b.pocket).length}
+  function setTurn(){turnEl.textContent=`P${turn+1}`;call.textContent=`P${turn+1} SHOT`;leftEl.textContent=remaining()}
+  function respawnCue(){const b=balls[0];b.pocket=false;b.el.style.display='';b.x=W*.5;b.y=H*.78;b.vx=b.vy=0}
+  function finish(){active=false;if(raf)cancelAnimationFrame(raf);const teamAScore=remaining()===0?mobCupBilliardsScore(shots):0;const scores={A:teamAScore};MOB_CUP_KEYS.slice(1).forEach(k=>{const s=clamp(Math.round(rand(4.2,11.8)+(Math.random()<.12?-1.5:0)),4,13);scores[k]=mobCupBilliardsScore(s)});clearGameFit();mobCupResetModeFull();mobCupCommitRound(scores,`TEAM A ${shots}ショット / ${teamAScore}pt`,`<section class="panel mobcup-coop-summary-v201"><h3>TEAM A CO-OP RESULT</h3><strong>${remaining()===0?`${shots}回でALL CLEAR！`:'TIME OUT'}</strong><b>${teamAScore} POINT</b></section>`)}
+  function local(e){const r=stage.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+  stage.addEventListener('pointerdown',e=>{if(!active||moving)return;const p=local(e),c=balls[0];if(Math.hypot(p.x-c.x,p.y-c.y)>48)return;e.preventDefault();drag={id:e.pointerId,x:p.x,y:p.y};stage.setPointerCapture?.(e.pointerId)},{passive:false});
+  stage.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;e.preventDefault();const p=local(e),c=balls[0],dx=c.x-p.x,dy=c.y-p.y,len=Math.min(115,Math.hypot(dx,dy));aim.style.display='block';aim.style.left=`${c.x}px`;aim.style.top=`${c.y}px`;aim.style.width=`${len}px`;aim.style.transform=`rotate(${Math.atan2(dy,dx)}rad)`},{passive:false});
+  stage.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId||moving)return;e.preventDefault();const p=local(e),c=balls[0],dx=c.x-p.x,dy=c.y-p.y,len=Math.hypot(dx,dy);drag=null;aim.style.display='none';if(len<16)return;const s=clamp(len*5.0,130,620);c.vx=dx/len*s;c.vy=dy/len*s;shots++;shotEl.textContent=shots;moving=true;call.textContent=`P${turn+1} HIT!`;beep(520,45,.018)},{passive:false});
+  place();setTurn();
+  if(!(await countdown('CO-OP BILLIARDS',beginGameRun(mobCupGameIndex('billiardsMob')),{transparent:true})))return;
+  active=true;last=performance.now();
+  function frame(now){if(!active)return;const dt=Math.min(.028,(now-last)/1000);last=now;if(moving){balls.filter(b=>!b.pocket).forEach(b=>{b.x+=b.vx*dt;b.y+=b.vy*dt;b.vx*=Math.pow(.982,dt*60);b.vy*=Math.pow(.982,dt*60);if(b.x<R+7){b.x=R+7;b.vx=Math.abs(b.vx)}if(b.x>W-R-7){b.x=W-R-7;b.vx=-Math.abs(b.vx)}if(b.y<R+7){b.y=R+7;b.vy=Math.abs(b.vy)}if(b.y>H-R-7){b.y=H-R-7;b.vy=-Math.abs(b.vy)}});
+      for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(a.pocket||b.pocket)continue;let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d>0&&d<R*2){const nx=dx/d,ny=dy/d,over=R*2-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const rel=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rel<0){const imp=-rel*.94;a.vx-=imp*nx;a.vy-=imp*ny;b.vx+=imp*nx;b.vy+=imp*ny}}}
+      balls.forEach(b=>{if(b.pocket)return;const pk=pockets.find(q=>Math.hypot(b.x-q[0],b.y-q[1])<20);if(pk){b.pocket=true;b.el.style.display='none';b.vx=b.vy=0;if(b.cue){setTimeout(respawnCue,180)}else{beep(850,50,.018);leftEl.textContent=remaining()}}});place();
+      if(balls.every(b=>b.pocket||Math.hypot(b.vx,b.vy)<9)){balls.forEach(b=>{b.vx=b.vy=0});if(balls[0].pocket)respawnCue();moving=false;if(remaining()===0){finish();return}if(shots>=14){finish();return}turn=(turn+1)%4;setTurn()}
+    }raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
+function renderMobCupFinal(){
+  clearGameFit();const cup=state.mobCup;const final=mobCupStandings(),champ=final[0],ties=final.filter(x=>x.points===champ.points);const champText=ties.length>1?`DRAW / ${ties.map(x=>`TEAM ${x.key}`).join(' & ')}`:`TEAM ${champ.key}`;
+  screen.innerHTML=`<div class="mobcup-final-v201"><div class="mobcup-final-rays-v201"></div><div class="mobcup-final-confetti-v202">${Array.from({length:44},(_,i)=>`<i style="--x:${(i*37)%100}%;--d:${(i%11)*.08}s;--r:${(i*61)%360}deg"></i>`).join('')}</div><span>20 GAMES COMPLETE</span><h2>MOB CUP FINAL</h2><div class="mobcup-final-trophy-v201"><i></i><b>MOB</b></div><small>CHAMPION</small><strong>${champText}</strong><em>${champ.points} POINT</em></div>
+    <section class="panel"><div class="panel-head"><h3>総合 RESULT</h3><span class="tag">FINAL / 1 → 8</span></div>${mobCupResultRows(final)}</section>
+    <button id="mobCupReplay201" class="primary" type="button">モブカップをもう一度</button><div style="height:8px"></div><button id="mobCupHome201" class="secondary" type="button">モードセレクトへ</button>`;
+  document.getElementById('mobCupReplay201').addEventListener('click',setupMobCup);document.getElementById('mobCupHome201').addEventListener('click',renderBattleTypeSelect);gameTop();
+}
+
 function renderBattleTypeSelect(){
   clearGameFit();
   cancelActiveAnimation();
@@ -1670,8 +2008,8 @@ function renderBattleTypeSelect(){
 
   screen.innerHTML=`
     <div class="game-head">
-      <div><span class="kicker">MODE SELECT</span><h2>対戦形式を選択</h2><p class="lead">通常対戦2種 + モブくんゲーム王2形式。</p></div>
-      <div class="game-badge">3 MODES</div>
+      <div><span class="kicker">MODE SELECT</span><h2>対戦形式を選択</h2><p class="lead">通常対戦2種 + ゲーム王 + 20ゲームのモブカップ。</p></div>
+      <div class="game-badge">4 MODES</div>
     </div>
 
     <div class="battle-type-grid-v119">
@@ -1685,6 +2023,11 @@ function renderBattleTypeSelect(){
         <span>GAME KING TOURNAMENT</span>
         <b>モブくんゲーム王決定戦</b>
         <small>8/16人ノックアウト または 20人ブロック戦・決勝3ゲーム</small>
+      </button>
+      <button id="battleMobCup" class="battle-type-card-v119 mob-cup-v201" type="button">
+        <span>MOB CUP / 20 GAMES</span>
+        <b>モブカップ</b>
+        <small>4人×8チーム。イベントを乗り越えてチーム総合優勝を狙う</small>
       </button>
     </div>
 
@@ -1707,6 +2050,8 @@ function renderBattleTypeSelect(){
   document.getElementById('battleTournament').addEventListener('click',()=>{
     renderTournamentSetup({format:"knockout",size:8,humanCount:1});
   });
+
+  document.getElementById('battleMobCup').addEventListener('click',setupMobCup);
 
   document.getElementById('battleTypeBack').addEventListener('click',renderHome);
   document.getElementById('battleGuide').addEventListener('click',renderGameGuide);
@@ -2443,7 +2788,7 @@ function renderModeLobby(){
 
 function scoreRuleForGame(index){
   const legacyIndex=legacyGameIndex(index);
-  if(GAMES[index]?.key==='mobSpeedRacer')return "1kmレースのゴールタイム / 速いチームほど高得点";
+  if(GAMES[index]?.key==='mobSpeedRacer')return "横スクロール2kmレースのゴールタイム / 速いチームほど高得点";
   return [
     "0.150秒以下=100点 / 0.300秒=50点 / 0.500秒以上=0点",
     "正解数×10点 / 10枚正解=100点",
@@ -2538,14 +2883,14 @@ function scoreRuleForGame(index){
     "10秒オート無双 / 150体KO=100点 / 巨大スライム・ロボも出現",
     "1人目敗北0〜30 / 2人目敗北31〜60 / 3人目敗北61〜75 / 3人撃破80〜100",
     "ゾンビ30体＋巨大ゾンビ撃破までのクリアタイム / 速いほど高得点",
-    "タッグ2対2専用 / 1km先のゴールへ先着したチームが勝利",
+    "タッグ2対2専用 / 横スクロール2km / カメラは先頭チーム追従",
     "描いた魔物2対2 / 勝利チーム100点・敗北チーム0点",
     "10 / 20 / 30 / 40 / 50 / 60 / 70 / 80 / 90 / 100 の入ったスロットがそのまま得点",
     "200m完走タイム / 8個のハードル / 10.00秒以下=100点 / 18.00秒以上=0点",
     "ダッシュゲージ中央 + 砂場直前の完璧な踏切で約300m=100点",
     "PK5本 / 1本最大20点 / 動く照準 + POWERの2回だけSTOP",
     "3ポイント5球 / 入れば種類を問わず1本20点 / 左右移動ガードロボットが妨害 / 5本=100点",
-    "1投で倒したピン×10点 / STRIKE=100点",
+    "20ピン / 1本5点 / 20本すべて倒せば100点",
     "水切り1回=10点 / 速度・角度・水面状態で回数が毎回変化 / 10回以上=100点",
     "10球を連投 / 1個IN=10点 / 10個=100点",
     "",
@@ -2581,7 +2926,7 @@ function showGameIntro(index){
   let rules="";
 
   if(g.key==='mobSpeedRacer'){
-    rules=`<li>タッグ2対2専用。1番手がタイヤ、2番手が車体を描きます。</li><li>描いた車で同時スタートし、1km先のゴールを先に抜けたチームが勝利。</li>`;
+    rules=`<li>タッグ2対2専用。1番手がタイヤ、2番手が車体を描きます。</li><li>描いた車で同時スタートし、横スクロール2km先のゴールを先に抜けたチームが勝利。</li>`;
   }else if(legacyIndex===0){
     rules=`<li>READY? → 3・2・1 → ランダム待機。</li><li>モブくんが大きく出た瞬間にタップ。</li><li>0.001秒単位で計測。</li>`;
   }else if(legacyIndex===1){
@@ -2761,7 +3106,7 @@ function showGameIntro(index){
   }else if(legacyIndex===92){
     rules=`<li>夜の砂漠で固定戦車からガトリング・波動・爆撃を使います。</li><li>ゾンビ30体と巨大ゾンビ撃破までのタイムを競います。</li>`;
   }else if(legacyIndex===93){
-    rules=`<li>1番手がタイヤ、2番手が機体を描きます。タイヤは何筆でも装飾できます。</li><li>2台同時スタート。1km先のゴールへ先着したチームが勝利です。</li>`;
+    rules=`<li>1番手がタイヤ、2番手が機体を描きます。タイヤは何筆でも装飾できます。</li><li>2台同時スタート。カメラは先頭チームを追い、2km先のゴールへ先着したチームが勝利です。</li>`;
   }else if(legacyIndex===94){
     rules=`<li>4人が1体ずつ魔物を描き、TEAM A 2体 VS TEAM B 2体で戦います。</li><li>ソロでは1P役と4P役を自分で描き、残り2体はCPUが描きます。</li>`;
   }else if(legacyIndex===95){
@@ -2775,7 +3120,7 @@ function showGameIntro(index){
   }else if(legacyIndex===99){
     rules=`<li>中央のモブくんを下へ引っ張り、離すとシュート。5球とも中央から開始します。</li><li>入れば全部20点。リング前を左右移動するガードロボットに当たるとブロックされます。</li>`;
   }else if(legacyIndex===100){
-    rules=`<li>モブくんの前から上へ1回スワイプ。モブくんが投球してボールがレーンを進みます。</li><li>10本すべて倒せばSTRIKEで100点です。</li>`;
+    rules=`<li>モブくんの前から上へ1回スワイプ。20本のピンへ投球します。</li><li>1本5点。20本すべて倒せばSTRIKEで100点です。</li>`;
   }else if(legacyIndex===101){
     rules=`<li>石を右へ少し上向きにフリック。速度・角度・毎回変わる水面状態で回数が変化します。</li><li>同じ6回に固定されません。10回以上で100点です。</li>`;
   }else if(legacyIndex===102){
@@ -16704,7 +17049,7 @@ async function startPlushCatcher(p,humanIndex,runId){
     chutePile.appendChild(img);
   }
 
-  function resetAttempt(){
+  function resetAttempt(preCountdown=false){
     attempt++;
 
     widthPct=10;
@@ -16727,7 +17072,7 @@ async function startPlushCatcher(p,humanIndex,runId){
     guide.textContent='① アーム幅を決める';
     guide.className='shared-guide-v190';
 
-    attemptStartedAt=performance.now();
+    attemptStartedAt=preCountdown?0:performance.now();
 
     setControls();
     renderCrane();
@@ -16890,6 +17235,9 @@ async function startPlushCatcher(p,humanIndex,runId){
       }
 
       state.records.plushCatcher[p.id]=score;
+      if(state.mobCup?.active&&state.mobCup.round===20){
+        state.mobCup.plushCounts[p.id]=catches;
+      }
 
       guide.textContent=`${catches}/3 GET　${score} POINT`;
       guide.className='shared-guide-v190 finish-v190';
@@ -16960,11 +17308,13 @@ async function startPlushCatcher(p,humanIndex,runId){
   renderPrize();
   updateHud();
   setControls();
+  // Absolute rule: the real first-attempt prize/crane placement exists before countdown.
+  resetAttempt(true);
 
   if(!(await countdown('GIANT CATCHER',runId,{transparent:true})))return;
 
   active=true;
-  resetAttempt();
+  attemptStartedAt=performance.now();
   last=performance.now();
 
   function frame(now){
@@ -26355,6 +26705,12 @@ function recordScreen(gameIndex,p,humanIndex,main,sub=""){
   cancelActiveAnimation();
   clearGameFit();
   gameTop();
+  if(state.mobCup?.active){
+    const more=humanIndex+1<humans().length;
+    if(more){humanReady(gameIndex,humanIndex+1);return;}
+    if(cpus().length){simulateCpuThenResult(gameIndex);return;}
+    finishGame(gameIndex);return;
+  }
   if(state.freePlay){
     screen.innerHTML=`<div class="ready-wrap"><div class="ready-card">${imgTag(p,"ready-avatar")}<div class="record-label">${GAMES[gameIndex].title} / SOLO RECORD</div><div class="big-record">${main}</div>${sub?`<p class="lead">${sub}</p>`:""}<button id="soloReplay" class="primary">同じゲームをもう一度</button><div style="height:8px"></div><button id="soloHome" class="secondary">メインメニューへ</button></div></div>`;
     document.getElementById("soloReplay").addEventListener("click",()=>startFreeGame(gameIndex));
@@ -26384,6 +26740,13 @@ async function simulateCpuThenResult(gameIndex){
   clearGameFit();
   gameTop();
   const list=cpus();
+  if(state.mobCup?.active){
+    screen.innerHTML=`<div class="mobcup-cpu-process-v201"><span>MOB CUP</span><h2>OTHER TEAMS PLAYING...</h2><div class="mobcup-cpu-dots-v201"><i></i><i></i><i></i></div><p>個人結果は表示しません。チームポイントを集計しています。</p></div>`;
+    for(const p of list){simulateOneCpu(gameIndex,p)}
+    await wait(360);
+    finishGame(gameIndex);
+    return;
+  }
   screen.innerHTML=`<div class="cpu-sim"><div class="cpu-sim-box"><span class="kicker">CPU QUICK PROCESS</span><h2>CPU RESULT</h2><p class="lead">CPUは人間らしいばらつきに再調整。SUPER CPUはかなり低確率です。</p><div id="cpuRows">${list.map(p=>`<div class="cpu-row" data-cpu="${p.id}">${imgTag(p)}<div><b>${esc(p.name)}</b><span>CPU</span></div><div class="cpu-dot">•••</div></div>`).join("")}</div></div></div>`;
 
   for(const p of list){
@@ -26729,7 +27092,7 @@ function simulateOneCpu(gameIndex,p){
       ? randi(28000,39000)
       : randi(39000,69000);
   }else if(legacyIndex===93){
-    state.records.mobSpeedRacer[p.id]=ultra?randi(7800,9400):randi(9000,12800);
+    state.records.mobSpeedRacer[p.id]=ultra?randi(13800,16500):randi(15800,24600);
   }else if(legacyIndex===94){
     state.records.summonMaster[p.id]=Math.random()<.5?100:0;
   }else if(legacyIndex===95){
@@ -26745,7 +27108,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===99){
     state.records.threePoint[p.id]=ultra?[80,100][randi(0,1)]:[0,20,40,60,80,100][randi(0,5)];
   }else if(legacyIndex===100){
-    state.records.bowlingMob[p.id]=ultra?[90,100][randi(0,1)]:randi(40,90);
+    state.records.bowlingMob[p.id]=ultra?[90,95,100][randi(0,2)]:randi(7,18)*5;
   }else if(legacyIndex===101){
     state.records.waterSkip[p.id]=ultra?randi(80,100):randi(20,90);
   }else if(legacyIndex===102){
@@ -26957,9 +27320,9 @@ function performancePoints(gameIndex,v){
     return clamp(Math.round((75000-v)/45000*100),0,100);
   }
   if(legacyIndex===93){
-    if(v<=8000)return 100;
-    if(v>=15000)return 1;
-    return clamp(Math.round(100-(v-8000)/7000*99),1,100);
+    if(v<=14000)return 100;
+    if(v>=28000)return 1;
+    return clamp(Math.round(100-(v-14000)/14000*99),1,100);
   }
   if(legacyIndex===95)return clamp(Math.round(v),0,100);
   if(legacyIndex===96){
@@ -27108,7 +27471,7 @@ function formatRecord(gameIndex,v){
   if(legacyIndex===97)return `${Number(v).toFixed(1)}m`;
   if(legacyIndex===98)return `${Math.round(v)}pt`;
   if(legacyIndex===99)return `${Math.round(v)}pt`;
-  if(legacyIndex===100)return `${Math.round(v/10)}本 / ${Math.round(v)}pt`;
+  if(legacyIndex===100)return `${Math.round(v/5)}本 / ${Math.round(v)}pt`;
   if(legacyIndex===101)return `${Math.round(v/10)}回`;
   if(legacyIndex===102)return `${Math.round(v/10)}/10`;
   if(legacyIndex===105)return `${(v/1000).toFixed(2)}秒`;
@@ -27140,6 +27503,10 @@ function teamTotals(){
   return out;
 }
 function finishGame(gameIndex){
+  if(state.mobCup?.active){
+    finishMobCupGame(gameIndex);
+    return;
+  }
   if(state.tournament?.active){
     finishTournamentGame(gameIndex);
     return;
@@ -28902,7 +29269,12 @@ async function startBowlingMob(p,humanIndex,runId){
   gameFit();
   const gameIndex=GAMES.findIndex(g=>g.key==='bowlingMob');
   const pinPos=[
-    [0,0],[-18,-27],[18,-27],[-36,-54],[0,-54],[36,-54],[-54,-81],[-18,-81],[18,-81],[54,-81]
+    [0,0],
+    [-15,-22],[15,-22],
+    [-30,-44],[0,-44],[30,-44],
+    [-45,-66],[-15,-66],[15,-66],[45,-66],
+    [-60,-88],[-30,-88],[0,-88],[30,-88],[60,-88],
+    [-60,-110],[-30,-110],[0,-110],[30,-110],[60,-110]
   ];
 
   screen.innerHTML=`
@@ -28920,7 +29292,7 @@ async function startBowlingMob(p,humanIndex,runId){
         <div class="bowl-lane-v170"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <div class="bowl-pocket-v170 left-v170"></div><div class="bowl-pocket-v170 right-v170"></div>
         <div class="bowl-pins-v170">
-          ${pinPos.map((q,i)=>`<span data-pin="${i}" style="left:calc(50% + ${q[0]}px);top:${105+q[1]}px"></span>`).join('')}
+          ${pinPos.map((q,i)=>`<span data-pin="${i}" style="left:calc(50% + ${q[0]}px);top:${135+q[1]}px"></span>`).join('')}
         </div>
         <div id="bowlMob170" class="bowl-mob-v170"><img src="icon/01.png" draggable="false" alt=""></div>
         <div id="bowlBall170" class="bowl-ball-v170"></div>
@@ -28971,7 +29343,7 @@ async function startBowlingMob(p,humanIndex,runId){
 
     let knocked=0;
     if(!gutter){
-      knocked=(hitQ>.91&&speedQ>.72)?10:clamp(Math.floor(2.5+hitQ*5.9+speedQ*1.7),1,9);
+      knocked=(hitQ>.93&&speedQ>.76)?20:clamp(Math.floor(3+hitQ*11.2+speedQ*4.7),1,19);
     }
 
     const duration=clamp(980-pull*2.2,520,850);
@@ -28997,17 +29369,17 @@ async function startBowlingMob(p,humanIndex,runId){
       const sorted=pinPos.map((q,i)=>({i,d:Math.abs((w*.5+q[0])-endX)+Math.abs(q[1])*.10})).sort((a,b)=>a.d-b.d);
       sorted.slice(0,knocked).forEach((x,j)=>setTimeout(()=>pins[x.i].classList.add(`fall-${j%3}-v170`),j*55));
 
-      const score=knocked*10;
-      pinsEl.textContent=`${knocked} / 10`;
+      const score=knocked*5;
+      pinsEl.textContent=`${knocked} / 20`;
       scoreEl.textContent=score;
-      call.textContent=knocked===10?'STRIKE!!':gutter?'GUTTER':`${knocked} PINS`;
-      call.className=`bowl-call-v170 ${knocked===10?'strike-v170':''}`;
+      call.textContent=knocked===20?'STRIKE!!':gutter?'GUTTER':`${knocked} PINS`;
+      call.className=`bowl-call-v170 ${knocked===20?'strike-v170':''}`;
       state.records.bowlingMob[p.id]=score;
-      beep(knocked===10?1120:700,150,.035);
+      beep(knocked===20?1120:700,150,.035);
 
       setTimeout(()=>{
         if(isGameRunValid(runId)){
-          recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,knocked===10?'STRIKE!':`${knocked} / 10 PINS`);
+          recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,knocked===20?'STRIKE!':`${knocked} / 20 PINS`);
         }
       },900);
     },launchDelay+duration);
@@ -31533,6 +31905,8 @@ async function startMobSpeedRacer(p,humanIndex,runId){
 
   const gameIndex=tagRacerIndex();
   const DRAW_MS=5000;
+  const RACE_M=2000;
+  const RACE_WORLD_W=2700;
   const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
   let finished=false;
@@ -31566,7 +31940,7 @@ async function startMobSpeedRacer(p,humanIndex,runId){
     teamData.length!==2||
     teamData.some(t=>t.ids.length!==2)
   ){
-    state.records.mobSpeedRacer[p.id]=15000;
+    state.records.mobSpeedRacer[p.id]=28000;
 
     recordScreen(
       gameIndex,
@@ -31599,7 +31973,7 @@ async function startMobSpeedRacer(p,humanIndex,runId){
         <div>
           <span class="kicker">TAG DRAW RACE</span>
           <h2>モブくんは爆速レーサー</h2>
-          <p class="lead">2人で作った車で1km勝負</p>
+          <p class="lead">2人で作った車で横スクロール2km勝負</p>
         </div>
         <div class="game-badge">2 VS 2</div>
       </div>
@@ -31633,20 +32007,19 @@ async function startMobSpeedRacer(p,humanIndex,runId){
         <div id="racerShowCars154" class="racer-show-cars-v154"></div>
       </div>
 
-      <div id="racerRace154" class="racer-race-v154" hidden>
-        <div class="racer-race-sky-v154"></div>
-        <div class="racer-race-road-v154"></div>
-
-        <div class="racer-race-meter-v154">
-          <b>0m</b><i></i><b>500m</b><i></i><b>GOAL 1km</b>
+      <div id="racerRace154" class="racer-race-v154 racer-race-v201" hidden>
+        <div id="racerWorld201" class="racer-race-world-v201" style="width:${RACE_WORLD_W}px">
+          <div class="racer-race-sky-v154"></div>
+          <div class="racer-race-road-v154"></div>
+          <div class="racer-road-markers-v201">${Array.from({length:20},(_,i)=>`<i style="left:${140+i*(RACE_WORLD_W-280)/19}px"><b>${Math.round(i/19*RACE_M)}m</b></i>`).join('')}</div>
+          <div class="racer-finish-line-v201" style="left:${RACE_WORLD_W-145}px"><b>GOAL<br>2km</b></div>
+          <div id="racerLaneA154" class="racer-lane-v154 lane-a"></div>
+          <div id="racerLaneB154" class="racer-lane-v154 lane-b"></div>
         </div>
-
-        <div id="racerLaneA154" class="racer-lane-v154 lane-a"></div>
-        <div id="racerLaneB154" class="racer-lane-v154 lane-b"></div>
-
-        <div id="racerRaceMsg154" class="racer-race-msg-v154">
-          READY
+        <div class="racer-race-meter-v154 racer-fixed-meter-v201">
+          <b>0m</b><i></i><b>1km</b><i></i><b>GOAL 2km</b>
         </div>
+        <div id="racerRaceMsg154" class="racer-race-msg-v154">READY</div>
       </div>
     </div>`;
 
@@ -31667,6 +32040,7 @@ async function startMobSpeedRacer(p,humanIndex,runId){
   const showCars=document.getElementById('racerShowCars154');
 
   const race=document.getElementById('racerRace154');
+  const raceWorld=document.getElementById('racerWorld201');
   const laneEls=[
     document.getElementById('racerLaneA154'),
     document.getElementById('racerLaneB154')
@@ -32318,34 +32692,46 @@ async function startMobSpeedRacer(p,humanIndex,runId){
     team.normal=
       clamp(
         Math.round(
-          200+
-          q*72+
-          rand(0,32)
+          240+
+          q*82+
+          rand(0,34)
         ),
-        200,
-        300
+        235,
+        355
       );
 
     team.boost=
       clamp(
         Math.round(
-          400+
-          q*72+
-          rand(0,32)
+          470+
+          q*96+
+          rand(0,40)
         ),
-        400,
-        500
+        465,
+        610
       );
 
     team.stretch=
       clamp(
-        1.2+
-        q*.20+
-        rand(0,.10),
-        1.20,
-        1.50
+        1.24+
+        q*.23+
+        rand(0,.11),
+        1.24,
+        1.58
       );
   }
+
+  // ABSOLUTE START-POSITION RULE:
+  // the first racer/player is already in the true opening position behind the countdown.
+  const firstRaceMember=teams[0].members[0];
+  turnPanel.hidden=false;
+  drawPanel.hidden=true;
+  showcase.hidden=true;
+  race.hidden=true;
+  turnTeam.textContent=`${teams[0].name} 1番手`;
+  turnText.textContent='タイヤを描こう！';
+  turnAvatar.innerHTML=imgTag(firstRaceMember,'racer-turn-img-v154');
+  void turnPanel.offsetHeight;
 
   if(
     !(await countdown(
@@ -32470,15 +32856,15 @@ async function startMobSpeedRacer(p,humanIndex,runId){
         }
 
         const boostPhase=
-          t.distance>=360&&
-          t.distance<620;
+          t.distance>=650&&
+          t.distance<1050;
 
         let kmh=
           boostPhase
             ? t.boost
             : t.normal;
 
-        if(t.distance>=650){
+        if(t.distance>=1250){
           kmh*=t.stretch;
         }
 
@@ -32489,7 +32875,7 @@ async function startMobSpeedRacer(p,humanIndex,runId){
 
       // 500m付近までは差が大きくても接戦。
       if(
-        Math.min(...raw)<500
+        Math.min(...raw)<950
       ){
         const avg=
           (raw[0]+raw[1])/2;
@@ -32515,11 +32901,11 @@ async function startMobSpeedRacer(p,humanIndex,runId){
         if(t.finishMs===null){
           t.distance=
             Math.min(
-              1000,
+              RACE_M,
               raw[i]
             );
 
-          if(t.distance>=1000){
+          if(t.distance>=RACE_M){
             t.finishMs=
               now-raceStart;
           }
@@ -32537,26 +32923,22 @@ async function startMobSpeedRacer(p,humanIndex,runId){
               '.racer-dist-v154'
             );
 
-        const x=
-          5+
-          clamp(
-            t.distance/1000,
-            0,
-            1
-          )*
-          82;
-
-        car.style.left=`${x}%`;
+        const x=140+clamp(t.distance/RACE_M,0,1)*(RACE_WORLD_W-285);
+        car.style.left=`${x}px`;
 
         car.classList.toggle(
           'boosting-v154',
-          t.distance>=360&&
-          t.distance<620
+          t.distance>=650&&
+          t.distance<1050
         );
 
-        dist.textContent=
-          `${Math.round(t.distance)}m`;
+        dist.textContent=`${Math.round(t.distance)}m`;
       });
+
+      const leader=Math.max(...teams.map(t=>t.distance));
+      const leaderX=140+clamp(leader/RACE_M,0,1)*(RACE_WORLD_W-285);
+      const cameraX=clamp(leaderX-race.clientWidth*.56,0,RACE_WORLD_W-race.clientWidth);
+      raceWorld.style.transform=`translate3d(${-cameraX}px,0,0)`;
 
       if(
         teams.every(
@@ -36416,7 +36798,7 @@ async function startRocketPunch(p,humanIndex,runId){
     const finalM=
       clamp(
         Math.round(distance),
-        0,1000
+        0,3000
       );
 
     state.records.rocketPunch[p.id]=finalM;
