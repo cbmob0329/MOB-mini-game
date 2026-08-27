@@ -29288,3 +29288,49 @@ canvas{
 .cart-race-body-v181>.cart-race-wheel-v178{display:none!important}
 
 @media(max-height:720px){.scene-result-card-v204{padding:7px 9px}.scene-result-card-v204>strong{font-size:26px}.scene-result-card-v204 button{min-height:42px}.cheer-arrival-v204 strong,.fw-arrival-v204 strong{font-size:26px}.poi-call-v204{bottom:80px}}
+
+/* =========================================================
+   V11.05 focused balance / result presentation fixes
+   ========================================================= */
+/* Rocket punch: charge range is 0-120, so 98-100 is 81.667%-83.333%. */
+.rocketp-charge-track-v194 .normal-zone-v194{width:60.834%}
+.rocketp-charge-track-v194 .max-zone-v194{left:81.667%;width:1.666%}
+.rocketp-charge-track-v194 .max-line-v194.start-v194{left:81.667%}
+
+/* Cheer leader: the player's actual cropped drawing is held by MOB. */
+.cheer-megaphone-art-v205{position:absolute!important;z-index:8;right:-25px;top:24px;width:62px!important;height:54px!important;display:grid!important;place-items:center;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;transform:rotate(-8deg);transform-origin:20% 65%;opacity:0;pointer-events:none}
+.cheer-megaphone-art-v205.show-v205{opacity:1}
+.cheer-megaphone-art-v205 img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;filter:none!important}
+.cheer-mob-v204.ready-v205{animation:cheerReady205 .45s ease 2}
+.cheer-mob-v204.speaking-v205{animation:cheerSpeakMob205 .34s ease-in-out infinite alternate}
+.cheer-voice-v205{position:absolute;z-index:24;left:133px;bottom:121px;width:16px;height:16px;border:4px solid #ffe45c;border-left-color:transparent;border-bottom-color:transparent;border-radius:50%;opacity:0;pointer-events:none}
+.cheer-voice-v205.show-v205{animation:cheerVoice205 .62s ease-out 4}
+@keyframes cheerReady205{50%{translate:0 -5px}}
+@keyframes cheerSpeakMob205{to{translate:0 -4px;rotate:-2deg}}
+@keyframes cheerVoice205{0%{opacity:1;scale:.45}100%{opacity:0;scale:4.2}}
+
+/* Firework: drawn stand remains visible; one-second shake precedes launch. */
+.fw-stand-art-v205{position:absolute;z-index:31;left:50%;width:156px;height:124px;translate:-50% 0;object-fit:contain;opacity:0;pointer-events:none;filter:none}
+.fw-stand-art-v205.show-v205{opacity:1}
+.fw-stand-art-v205.shake-v205,.fw-rocket-v204.shake-v205{animation:fwStandShake205 .08s linear infinite}
+@keyframes fwStandShake205{0%,100%{margin-left:0;rotate:0deg}25%{margin-left:-4px;rotate:-1.5deg}75%{margin-left:4px;rotate:1.5deg}}
+.fw-particles-v205{position:absolute;inset:0;pointer-events:none}
+.fw-particles-v205 i{position:absolute!important;left:50%!important;top:50%!important;width:8px!important;height:8px!important;border:2px solid #111;border-radius:50%!important;background:#ffe15b!important;box-shadow:none!important;transform-origin:center!important;rotate:0deg!important;opacity:0;animation:fwSpark205 var(--dur,2s) ease-out var(--delay,0s) forwards}
+.fw-particles-v205 i:nth-child(3n+1){background:#ef6767!important}.fw-particles-v205 i:nth-child(3n+2){background:#67c8e8!important}.fw-particles-v205 i:nth-child(3n){background:#ffe15b!important}
+.fw-burst-v205.bursting-v205 strong{animation:fwMobWord205 3.2s ease-out forwards}
+@keyframes fwSpark205{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}12%{opacity:1}68%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.55)}}
+@keyframes fwMobWord205{0%,65%{opacity:1;scale:1}100%{opacity:.28;scale:.96}}
+
+/* POI: multiple papers can coexist and flow right -> left. */
+.poi-paper-layer-v205{position:absolute;z-index:34;inset:0;pointer-events:none}
+.poi-paper-layer-v205 .poi-paper-v204{pointer-events:auto}
+
+/* Find MOB: target is never simply sitting on top; it is partly occluded and decoys exist. */
+.find-mob-v203.hard-v205{width:42px;height:48px}
+.find-mob-v203.hard-v205 img{width:42px;height:48px;object-fit:contain}
+.find-cover-v205{position:absolute;height:55px;border:4px solid var(--ink);border-radius:6px;background:#9b7148;box-shadow:inset -7px -8px 0 rgba(0,0,0,.15);pointer-events:none;transform:rotate(-3deg)}
+.find-cover-v205 b{position:absolute;left:50%;top:50%;translate:-50% -50%;font-size:7px;color:#f3ddac}
+.find-cover-v205.found-v205{opacity:.35;transition:.25s}
+.find-decoy-mob-v205{position:absolute;width:40px;height:46px;pointer-events:none;opacity:.72;filter:grayscale(.75) sepia(.18) brightness(.82)}
+.find-decoy-mob-v205 img{width:40px;height:46px;object-fit:contain}
+.find-decoy-mob-v205::after{content:"";position:absolute;inset:5px -3px -3px 7px;border:3px dashed rgba(20,20,20,.35);border-radius:45%;transform:rotate(12deg)}

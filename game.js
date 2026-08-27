@@ -314,7 +314,7 @@ const GAMES=[
   {no:76,key:"atafutaSurvival",title:"モブくんあたふたサバイバル",sub:"崩れる浮遊岩で9人の偽モブくんと最後の1人を目指す",legacy:84},
   {no:77,key:"waveMaster",title:"モブくん波動を極める",sub:"魂ゲージと円型ゲージを極めて偽モブくんと波動を撃ち合う",legacy:85},
   {no:78,key:"battleRoyaleMob",title:"モブくんFPSアリーナに挑戦",sub:"3対3のアリーナでスキルを使い敵チームを全滅させる",legacy:86},
-  {no:79,key:"littleMobShot",title:"Little MOB SHOT",sub:"レコードに乗って10秒間スライムを撃ちまくる縦シューティング",legacy:87},
+  {no:79,key:"littleMobShot",title:"Little MOB SHOT",sub:"レコードに乗って10秒間スライムを撃ちまくる縦シューティング。170 KOで100点",legacy:87},
   {no:80,key:"monsterBoxMob",title:"モブくんモンスターボックスに挑む",sub:"ロイター板を踏んで15段から20段の跳び箱を越える",legacy:88},
   {no:81,key:"alienBattleMob",title:"モブくんエイリアンと戦う",sub:"小型ロボ2機で地上の巨大エイリアンHP100を撃破する",legacy:89},
   {no:82,key:"mobMusou",title:"モブくん無双",sub:"7秒で巨大武器を描き、10秒オートで大量スライムを無双する",legacy:90},
@@ -343,7 +343,7 @@ const GAMES=[
   {no:105,key:"djMaster",title:"モブくんDJの達人",sub:"10秒で流れる20個の音符に合わせ、巨大ターンテーブルをスクラッチ",legacy:117},
   {no:106,key:"rocketPunch",title:"モブくんロケットパンチ",sub:"拳へパワーを溜めて巨大ロケットパンチ。狭いMAXゾーンから3000mを狙う",legacy:118},
   {no:107,key:"flagRaise",title:"モブくん旗上げ",sub:"赤・両方・白の3ボタン。もう一度押せば旗を下げる",legacy:119},
-  {no:108,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"さらに高速の▲▼高度操作。13秒、18個のトゲボール＋上下の柱ゲートを避ける",legacy:121},
+  {no:108,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"▲▼で高度操作。15秒、15個のトゲボール＋上下の柱ゲート3組を避ける",legacy:121},
   {no:109,key:"fruitCatchMob",title:"モブくんフルーツキャッチ",sub:"15秒。フルーツを集めながら岩・爆弾・腐った実を避ける",legacy:123},
   {no:110,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124},
   {no:111,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"モブくん人形5体を残したまま、テーブルクロスを真下へ一気に引く",legacy:125},
@@ -355,9 +355,9 @@ const GAMES=[
   {no:117,key:"cheerLeaderMob",title:"モブくんは応援団長",sub:"7秒でメガホンを描き、頑張れ～！！の文字サイズで最大100点",legacy:131},
   {no:118,key:"zeroOrHundredMob",title:"モブくん0 or 100",sub:"線多めの3択あみだくじ。0が2つ、100が1つ",legacy:133},
   {no:119,key:"fireworkStandMob",title:"モブくん打ち上げ台を作る",sub:"7秒で花火の打ち上げ台を描き、MOB花火が飛んだ距離を競う",legacy:134},
-  {no:120,key:"poiGameMob",title:"モブくんのポイゲーム",sub:"10秒。赤・青・黄色の紙ゴミを方向スワイプで分別。黒ゴミはトラップ",legacy:135},
+  {no:120,key:"poiGameMob",title:"モブくんのポイゲーム",sub:"10秒で30個。色付き26個を方向スワイプで分別し、黒トラップ4個を避ける",legacy:135},
   {no:121,key:"cleaningMob",title:"モブくんのお掃除",sub:"見下ろし型。長押し移動＋吸引で30個すべてを掃除するタイムアタック",legacy:136},
-  {no:122,key:"findMob",title:"モブくんを探せ！",sub:"オブジェが散乱する街中からランダム配置のモブくん1体を見つける",legacy:137}
+  {no:122,key:"findMob",title:"モブくんを探せ！",sub:"密集した街で25〜50%隠れた本物1体を、似たダミーの中から探す",legacy:137}
 ];
 
 function legacyGameIndex(gameIndex){
@@ -606,7 +606,7 @@ function renderHome(){
     <section class="hero hero-v119">
       <div>
         <span class="kicker">SMARTPHONE PARTY GAME</span>
-        <h1>115 MINI<br>GAMES</h1>
+        <h1>${GAMES.length} MINI<br>GAMES</h1>
         <p>通常対戦、モブくんゲーム王に加えて、8チーム×4人・全20ゲームの「モブカップ」を遊べます。</p>
       </div>
       <div class="hero-mark">MOB</div>
@@ -631,7 +631,7 @@ function renderHome(){
     </section>
 
     <section class="panel flat">
-      <div class="panel-head"><h3>115 MINI GAMES</h3><span class="tag">GAME 1 → 115</span></div>
+      <div class="panel-head"><h3>${GAMES.length} MINI GAMES</h3><span class="tag">GAME 1 → ${GAMES.length}</span></div>
       <div class="compact-game-grid home-compact-games-v119">
         ${GAMES.map(g=>`<div><b>${g.no}</b><span>${g.title}</span></div>`).join("")}
       </div>
@@ -690,7 +690,7 @@ function renderGameGuide(){
   screen.innerHTML=`
     <div class="game-head">
       <div><span class="kicker">GAME GUIDE</span><h2>各ゲームの説明</h2><p class="lead">内容と100点換算の目安を一覧で確認できます。</p></div>
-      <div class="game-badge">110</div>
+      <div class="game-badge">${GAMES.length}</div>
     </div>
 
     <button id="guideBack" class="secondary wizard-back-v119" type="button">← メインへ戻る</button>
@@ -2610,7 +2610,7 @@ function renderPlayStyleSelect(){
       <button id="normalStyle" class="style-select-card normal" type="button">
         <span>NORMAL</span>
         <b>順番に全種目</b>
-        <small>GAME 1 → 115 を順番にプレイ</small>
+        <small>GAME 1 → ${GAMES.length} を順番にプレイ</small>
       </button>
       <button id="customStyle" class="style-select-card custom" type="button">
         <span>CUSTOM</span>
@@ -2620,7 +2620,7 @@ function renderPlayStyleSelect(){
     </div>
 
     <section class="panel flat">
-      <h3>115 MINI GAMES</h3>
+      <h3>${GAMES.length} MINI GAMES</h3>
       <div class="compact-game-grid">
         ${GAMES.map(g=>`<div><b>${g.no}</b><span>${g.title}</span></div>`).join("")}
       </div>
@@ -2809,7 +2809,7 @@ function scoreRuleForGame(index){
   if(GAMES[index]?.key==='mobSpeedRacer')return "横スクロール2kmレースのゴールタイム / 速いチームほど高得点";
   if(legacyIndex===125)return "人形5体の最終移動量・動いた体数・落下数を判定 / 完全静止=100点 / 落下は39点以下";
   if(legacyIndex===126)return "1回目敗退=0 / 2回目=40 / 3回目=60 / 4回目=80 / 最後の1体=100点";
-  if(legacyIndex===127)return "10障害物を突破してGOALしたタイム / 速いほど高得点 / 接触すると一時減速";
+  if(legacyIndex===127)return "10障害物を突破してGOALしたタイム / 9.45秒以下=100点 / 18.50秒以上=0点";
   if(legacyIndex===128)return "最初に落下=0 / 他の1体が落ちるごとに+20 / 最後の1体=100点";
   if(legacyIndex===129)return "助走距離30点 + 回転数35点 + 着地35点 / 合計100点";
   if(legacyIndex===130)return "10秒で泳いだ距離 / 100m以上で100点";
@@ -2817,7 +2817,7 @@ function scoreRuleForGame(index){
   if(legacyIndex===133)return "3秒以内に選択 / あみだくじの到着点は0点 または100点 / 時間切れ=0点";
   if(legacyIndex===134)return "MOB花火の打ち上げ距離 / 1000mで100点";
   if(legacyIndex===135)return "10秒で正しく分別した紙ゴミ数 / 20個で100点";
-  if(legacyIndex===136)return "全30個を吸い切るタイム / 3.50秒以下=100点 / 12.00秒以上=0点";
+  if(legacyIndex===136)return "全30個を吸い切るタイム / 2.50秒以下=100点 / 7.50秒以上=0点";
   if(legacyIndex===137)return "モブくん発見タイム / 1.5秒以内100点、12秒以上0点";
   return [
     "0.150秒以下=100点 / 0.300秒=50点 / 0.500秒以上=0点",
@@ -2907,7 +2907,7 @@ function scoreRuleForGame(index){
     "10人中の生存順位で0〜100点 / 最初に落下=0点 / 最後の1人=100点",
     "魂ゲージ55% + Z型ゲージ1回のなぞり45%で波動威力0〜100点",
     "3対3を全滅させるまでの時間 / 速いほど高評価",
-    "10秒間のスライムKO数 / 200体KO=100点",
+    "10秒間のスライムKO数 / 170体KO=100点",
     "15段→20段を順番に突破 / 20段クリア=100点",
     "巨大エイリアンHP100を倒すまでの時間 / 速いほど高評価",
     "10秒オート無双 / 150体KO=100点 / 巨大スライム・ロボも出現",
@@ -2916,13 +2916,13 @@ function scoreRuleForGame(index){
     "タッグ2対2専用 / 横スクロール2km / カメラは先頭チーム追従",
     "描いた魔物2対2 / 勝利チーム100点・敗北チーム0点",
     "10 / 20 / 30 / 40 / 50 / 60 / 70 / 80 / 90 / 100 の入ったスロットがそのまま得点",
-    "300m完走タイム / 10個のハードル / 10.50秒以下=100点 / 19.00秒以上=0点",
+    "300m完走タイム / 10個のハードル / 10.00秒以下=100点 / 17.50秒以上=0点",
     "ダッシュゲージ中央 + 砂場直前の完璧な踏切で約300m=100点",
     "PK5本 / 1本最大20点 / 動く照準 + POWERの2回だけSTOP",
     "3ポイント5球 / 入れば種類を問わず1本20点 / 左右移動ガードロボットが妨害 / 5本=100点",
     "20ピン / 1本5点 / 20本すべて倒せば100点",
     "水切り1回=10点 / 速度・角度・水面状態で回数が毎回変化 / 10回以上=100点",
-    "10球を連投 / 1個IN=10点 / 10個=100点",
+    "12球を連投 / 1個IN=10点 / 10個以上=100点",
     "",
     "",
     "長距離トロッコ完走タイム / 17.00秒以下=100点 / 27.00秒以上=0点 / 落下はタイム加算",
@@ -3124,7 +3124,7 @@ function showGameIntro(index){
   }else if(legacyIndex===86){
     rules=`<li>3対3。中央ラインを越えず、敵3人を全滅させます。</li><li>移動・ジャンプ・射撃・リロード・グレネード・回復を使います。</li>`;
   }else if(legacyIndex===87){
-    rules=`<li>10秒間の縦シューティング。弾は自動発射です。</li><li>左右移動・ボム・3秒レーザーでスライムを倒します。</li>`;
+    rules=`<li>10秒間の縦シューティング。弾は自動発射です。</li><li>左右移動・ボム・3秒レーザーでスライムを倒し、170 KOで100点です。</li>`;
   }else if(legacyIndex===88){
     rules=`<li>自動で走り、JUMPでロイター板を踏みます。</li><li>15段から20段までの跳び箱を順番に越えます。</li>`;
   }else if(legacyIndex===89){
@@ -3154,7 +3154,7 @@ function showGameIntro(index){
   }else if(legacyIndex===101){
     rules=`<li>石を右へ少し上向きにフリック。速度・角度・毎回変わる水面状態で回数が変化します。</li><li>同じ6回に固定されません。10回以上で100点です。</li>`;
   }else if(legacyIndex===102){
-    rules=`<li>画面下の投球エリアを上へフリック。10球を待ち時間なしで連投できます。</li><li>1個INで10点。最後の球が判定されるまでゲームは続きます。</li>`;
+    rules=`<li>画面下の投球エリアを上へフリック。12球を待ち時間なしで連投できます。</li><li>1個INで10点。12球中10個入れば100点、最後の球が判定されるまで続きます。</li>`;
     }else if(legacyIndex===105){
     rules=`<li>高速トロッコをタップでJUMP、空中でもう一度タップでDOUBLE JUMP。長い鉱山を走り切ります。</li><li>穴・スロープ・トランポリン・マグマに加え、ランダム配置の上下する岩壁を突破します。</li>`;
   }else if(legacyIndex===107){
@@ -3178,11 +3178,11 @@ function showGameIntro(index){
   }else if(legacyIndex===117){
     rules=`<li>上のラインを右から左へ流れる音符に合わせて、下の巨大ターンテーブルを左右へ擦ります。</li><li>10秒で20音符。タイミングでGOOD / NICE! / PERFECT!!が決まり、最大100点です。</li>`;
   }else if(legacyIndex===118){
-    rules=`<li>PUNCH長押しで拳へパワーを集中。96〜100がMAX、100を越えるとOVERHEATです。</li><li>OVERHEATは超過量に応じて威力・速度・滞空が落ち、早く落下します。飛行中のBOOSTは1回だけです。</li>`;
+    rules=`<li>PUNCH長押しで拳へパワーを集中。98〜100がMAX、100を越えるとOVERHEATです。</li><li>OVERHEATは超過量に応じて威力・速度・滞空が落ち、早く落下します。BOOSTは廃止し、最初の溜めだけで勝負します。</li>`;
   }else if(legacyIndex===119){
     rules=`<li>赤・両方・白の3ボタンだけ。上げている旗のボタンをもう一度押すと下がります。</li><li>10秒間、現在の旗状態に合った指示へ素早く対応。間違えても続行します。</li>`;
   }else if(legacyIndex===121){
-    rules=`<li>▲ / ▼でじゅうたんを高速上下操作。13秒でトゲボール18個を避けます。</li><li>上端・下端に張り付くだけでは抜けられないよう、途中に上下の柱ゲート4組があります。</li>`;
+    rules=`<li>▲ / ▼でじゅうたんを上下操作。速度を少し落とし、15秒でトゲボール15個を避けます。</li><li>上端・下端に張り付くだけでは抜けられないよう、途中に上下の柱ゲート3組があります。</li>`;
 }else if(legacyIndex===123){
     rules=`<li>モブくんが持つカゴを左右ドラッグして15秒。通常+3、ゴールド+5です。</li><li>岩-5、爆弾-10、腐った実-4。爆弾は大きく弾かれ、腐った実はしばらくカゴが重くなります。</li>`;
   }else if(legacyIndex===124){
@@ -3204,13 +3204,13 @@ function showGameIntro(index){
   }else if(legacyIndex===133){
     rules=`<li>3本の入口から3秒以内に1つ選びます。横線は毎回多めにランダム生成されます。</li><li>GOALは0・0・100。時間切れは0点、到着した数字がそのまま得点です。</li>`;
   }else if(legacyIndex===134){
-    rules=`<li>7秒間で花火の打ち上げ台を自由に描きます。時間終了後、その台から花火を発射します。</li><li>花火は最後に「MOB」の文字花火へ変化。描いた台の出来で飛距離が変わり、最大1000mです。</li>`;
+    rules=`<li>7秒間で花火の打ち上げ台を自由に描きます。時間終了後、その台から花火を発射します。</li><li>描いた台をそのまま地上へ置き、1秒震えてから発射。「MOB」の文字花火と粒子が広がって順に消えます。最大1000mです。</li>`;
   }else if(legacyIndex===135){
-    rules=`<li>右から流れる赤・青・黄色のくしゃくしゃ紙を、対応する色の方向へスワイプして分別します。</li><li>距離判定はなく方向だけ。黒い紙はトラップなので触らず流し、10秒の正解数を競います。</li>`;
+    rules=`<li>右から流れる赤・青・黄色のくしゃくしゃ紙を、対応する色の方向へスワイプして分別します。</li><li>10秒で30個が流れます（色付き26個＋黒4個）。距離判定はなく方向だけ。20個正解で100点です。</li>`;
   }else if(legacyIndex===136){
-    rules=`<li>見下ろし型。長押ししたまま移動すると掃除機で周囲のゴミを吸います。</li><li>30個すべてを吸い終えるまでのタイムを競います。3.50秒以下が100点ラインです。</li>`;
+    rules=`<li>見下ろし型。長押ししたまま移動すると掃除機で周囲のゴミを吸います。</li><li>30個すべてを吸い終えるまでのタイムを競います。2.50秒以下が100点ラインです。</li>`;
   }else if(legacyIndex===137){
-    rules=`<li>看板・車・箱・植木・コーンなど大量のオブジェが散乱する街中に、モブくんが1体だけ隠れます。</li><li>位置は毎回ランダム。モブくんをタップするまでの時間を競います。</li>`;
+    rules=`<li>看板・車・箱・植木・コーンなど大量のオブジェが散乱する街中に、モブくんが1体だけ隠れます。</li><li>本物は毎回25〜50%をオブジェで隠し、似たシルエットのダミー7体も混ぜます。タップするまでの時間を競います。</li>`;
   }else{
     rules=`<li>${esc(g.sub)}</li>`;
   }
@@ -26960,36 +26960,28 @@ async function startSphereMob(p,humanIndex,runId){
     <div class="sphere-shell-v202 gameplay-fit">
       <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>球体モブくん</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
       <div class="sphere-hud-v202"><div><span>ALIVE</span><b id="sphereAlive202">5</b></div><div><span>RING OUT</span><b id="sphereOut202">0</b></div><div><span>SCORE</span><b id="sphereScore202">0</b></div></div>
-      <div id="sphereSea202" class="sphere-sea-v202"><div id="sphereField202" class="sphere-field-v202"><div class="sphere-center-v202">MOB</div><div id="sphereLayer202"></div><div id="sphereTarget202" class="sphere-target-v202"></div></div><div id="sphereCall202" class="sphere-call-v202">タップした場所へ突進！</div></div>
-      <div class="sphere-note-v202">正面から勢いをつけて当てるとしっかり弾く。通常接触は暴れすぎない</div>
+      <div id="sphereSea202" class="sphere-sea-v202"><div id="sphereField202" class="sphere-field-v202"><div class="sphere-center-v202">MOB</div><div id="sphereLayer202"></div><div id="sphereTarget202" class="sphere-target-v202"></div></div><div id="sphereCall202" class="sphere-call-v202">タップした場所へ加速！</div></div>
+      <div class="sphere-note-v202">初期版の重さ・摩擦へ戻し、衝突だけ少し強め。瞬間移動しない</div>
     </div>`;
   const field=document.getElementById('sphereField202'),layer=document.getElementById('sphereLayer202'),targetEl=document.getElementById('sphereTarget202'),aliveEl=document.getElementById('sphereAlive202'),outEl=document.getElementById('sphereOut202'),scoreEl=document.getElementById('sphereScore202'),call=document.getElementById('sphereCall202');
   void field.offsetHeight;const W=field.clientWidth,H=field.clientHeight,cx=W/2,cy=H/2,R=Math.min(W,H)*.43,BR=25;
   const starts=[[-45,0],[48,0],[0,-55],[-35,48],[38,48]];
-  const balls=starts.map((s,i)=>({i,x:cx+s[0],y:cy+s[1],vx:0,vy:0,tx:cx+s[0],ty:cy+s[1],alive:true,nextThink:0,el:null}));const human=0;
+  const balls=starts.map((a,i)=>({i,x:cx+a[0],y:cy+a[1],vx:0,vy:0,tx:cx+a[0],ty:cy+a[1],alive:true,nextThink:0,el:null}));const human=0;
   balls.forEach(b=>{const el=document.createElement('div');el.className=`sphere-ball-v202 ${b.i===human?'you-v202':'cpu-v202'}`;el.innerHTML=`<img src="icon/01.png" draggable="false" alt=""><b>${b.i===human?'YOU':b.i+1}</b>`;layer.appendChild(el);b.el=el});
   let active=false,finished=false,raf=null,last=performance.now(),start=0,eliminated=0;
   function render(){balls.forEach(b=>{b.el.style.transform=`translate3d(${b.x-BR}px,${b.y-BR}px,0)`})}
   render();targetEl.style.left=`${balls[human].x}px`;targetEl.style.top=`${balls[human].y}px`;
-  // ABSOLUTE RULE: all five balls are placed before countdown.
-  void field.offsetHeight;
-  if(!(await countdown('SPHERE MOB',runId,{transparent:true})))return;
-  active=true;start=last=performance.now();
-  field.addEventListener('pointerdown',e=>{if(!active||!balls[human].alive)return;e.preventDefault();const r=field.getBoundingClientRect();const b=balls[human];b.tx=clamp(e.clientX-r.left,0,W);b.ty=clamp(e.clientY-r.top,0,H);targetEl.style.left=`${b.tx}px`;targetEl.style.top=`${b.ty}px`;targetEl.classList.remove('ping-v202');void targetEl.offsetWidth;targetEl.classList.add('ping-v202')},{passive:false});
-  function eliminate(b){if(!b.alive)return;b.alive=false;b.el.classList.add('out-v202');eliminated++;const alive=balls.filter(x=>x.alive);aliveEl.textContent=alive.length;outEl.textContent=eliminated;
-    if(b.i===human){const alreadyOut=eliminated-1;const score=clamp(alreadyOut*20,0,60);finish(score,`RING OUT / ${5-alive.length}番目に脱落`);return}
-    if(balls[human].alive){const score=alive.length===1?100:clamp(eliminated*20,0,60);scoreEl.textContent=score;call.textContent=`RING OUT! +20`}
-    if(alive.length===1&&alive[0].i===human)finish(100,'LAST ONE!! 最後まで残った！')
-  }
+  void field.offsetHeight;if(!(await countdown('SPHERE MOB',runId,{transparent:true})))return;active=true;start=last=performance.now();
+  field.addEventListener('pointerdown',e=>{if(!active||!balls[human].alive)return;e.preventDefault();const r=field.getBoundingClientRect(),b=balls[human];b.tx=clamp(e.clientX-r.left,0,W);b.ty=clamp(e.clientY-r.top,0,H);targetEl.style.left=`${b.tx}px`;targetEl.style.top=`${b.ty}px`;targetEl.classList.remove('ping-v202');void targetEl.offsetWidth;targetEl.classList.add('ping-v202')},{passive:false});
+  function eliminate(b){if(!b.alive)return;b.alive=false;b.el.classList.add('out-v202');eliminated++;const alive=balls.filter(x=>x.alive);aliveEl.textContent=alive.length;outEl.textContent=eliminated;if(b.i===human){finish(clamp((eliminated-1)*20,0,60),`RING OUT / ${5-alive.length}番目に脱落`);return}if(balls[human].alive){const sc=alive.length===1?100:clamp(eliminated*20,0,60);scoreEl.textContent=sc;call.textContent='RING OUT! +20'}if(alive.length===1&&alive[0].i===human)finish(100,'LAST ONE!! 最後まで残った！')}
   function finish(score,text){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.sphereMob[p.id]=score;scoreEl.textContent=score;call.textContent=text;call.classList.add('result-v202');beep(score===100?1180:score>=60?880:score>=20?610:220,180,.045);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,text)},900)}
-  function thinkCpu(b,now){if(now<b.nextThink)return;b.nextThink=now+rand(420,900);const targets=balls.filter(x=>x.alive&&x.i!==b.i);const t=targets[randi(0,targets.length-1)];if(!t)return;const aggression=now-start>12000?1.10:1;b.tx=clamp(t.x+rand(-30,30),15,W-15);b.ty=clamp(t.y+rand(-30,30),15,H-15);if(Math.random()<.18){b.tx=cx+rand(-R*.75,R*.75);b.ty=cy+rand(-R*.75,R*.75)}}
+  function thinkCpu(b,now){if(now<b.nextThink)return;b.nextThink=now+rand(420,900);const targets=balls.filter(x=>x.alive&&x.i!==b.i),t=targets[randi(0,targets.length-1)];if(!t)return;b.tx=clamp(t.x+rand(-30,30),15,W-15);b.ty=clamp(t.y+rand(-30,30),15,H-15);if(Math.random()<.18){b.tx=cx+rand(-R*.75,R*.75);b.ty=cy+rand(-R*.75,R*.75)}}
   function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.028,(now-last)/1000);last=now;
-    balls.forEach(b=>{if(!b.alive)return;if(b.i!==human)thinkCpu(b,now);const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy)||1;const acc=(b.i===human?405:382)*(now-start>12000?1.12:1);if(d>7){b.vx+=dx/d*acc*dt;b.vy+=dy/d*acc*dt}const max=b.i===human?252:240;const sp=Math.hypot(b.vx,b.vy);if(sp>max){b.vx=b.vx/sp*max;b.vy=b.vy/sp*max}b.vx*=Math.pow(.982,dt*60);b.vy*=Math.pow(.982,dt*60);b.x+=b.vx*dt;b.y+=b.vy*dt});
-    for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(!a.alive||!b.alive)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.1;if(d<BR*2){const nx=dx/d,ny=dy/d,over=BR*2-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const rvx=b.vx-a.vx,rvy=b.vy-a.vy,closing=-(rvx*nx+rvy*ny);const impact=38+clamp(Math.max(0,closing)*.62,0,128);a.vx-=nx*impact*.66;a.vy-=ny*impact*.66;b.vx+=nx*impact*.66;b.vy+=ny*impact*.66;a.el.classList.add('bump-v202');b.el.classList.add('bump-v202');setTimeout(()=>{a.el?.classList.remove('bump-v202');b.el?.classList.remove('bump-v202')},120);beep(240+Math.min(380,impact),28,.009)}}
-    balls.forEach(b=>{if(!b.alive)return;const d=Math.hypot(b.x-cx,b.y-cy);if(d>R+BR*.35)eliminate(b)});
-    if(!finished&&now-start>15000){balls.forEach(b=>{if(!b.alive)return;const dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy)||1;b.vx+=dx/d*24*dt;b.vy+=dy/d*24*dt});call.textContent='FINAL RUSH!'}
-    render();if(!finished&&now-start>26000){const living=balls.filter(b=>b.alive).sort((a,b)=>Math.hypot(b.x-cx,b.y-cy)-Math.hypot(a.x-cx,a.y-cy));if(living.length>1)eliminate(living[0]);}
-    if(!finished)raf=requestAnimationFrame(frame)
+    balls.forEach(b=>{if(!b.alive)return;if(b.i!==human)thinkCpu(b,now);const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy)||1;const acc=(b.i===human?355:330)*(now-start>14000?1.16:1);if(d>7){b.vx+=dx/d*acc*dt;b.vy+=dy/d*acc*dt}const max=b.i===human?225:210,sp=Math.hypot(b.vx,b.vy);if(sp>max){b.vx=b.vx/sp*max;b.vy=b.vy/sp*max}b.vx*=Math.pow(.982,dt*60);b.vy*=Math.pow(.982,dt*60);b.x+=b.vx*dt;b.y+=b.vy*dt});
+    for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(!a.alive||!b.alive)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.1;if(d<BR*2){const nx=dx/d,ny=dy/d,over=BR*2-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const rvx=b.vx-a.vx,rvy=b.vy-a.vy,closing=-(rvx*nx+rvy*ny);/* 初期版より約8%だけ強い */const impact=44+clamp(Math.max(0,closing)*1.26,0,242);a.vx-=nx*impact*.54;a.vy-=ny*impact*.54;b.vx+=nx*impact*.54;b.vy+=ny*impact*.54;a.el.classList.add('bump-v202');b.el.classList.add('bump-v202');setTimeout(()=>{a.el?.classList.remove('bump-v202');b.el?.classList.remove('bump-v202')},120);beep(240+Math.min(380,impact),28,.009)}}
+    balls.forEach(b=>{if(!b.alive)return;if(Math.hypot(b.x-cx,b.y-cy)>R+BR*.35)eliminate(b)});
+    if(!finished&&now-start>15000){balls.forEach(b=>{if(!b.alive)return;const dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy)||1;b.vx+=dx/d*38*dt;b.vy+=dy/d*38*dt});call.textContent='FINAL RUSH!'}
+    render();if(!finished&&now-start>26000){const living=balls.filter(b=>b.alive).sort((a,b)=>Math.hypot(b.x-cx,b.y-cy)-Math.hypot(a.x-cx,a.y-cy));if(living.length>1)eliminate(living[0])}if(!finished)raf=requestAnimationFrame(frame)
   }
   raf=requestAnimationFrame(frame);
 }
@@ -27043,36 +27035,18 @@ async function startSwimmingMob(p,humanIndex,runId){
 }
 
 async function startCheerLeaderMob(p,humanIndex,runId){
-  gameFit();
-  const gameIndex=GAMES.findIndex(g=>g.key==='cheerLeaderMob');
-  const WORLD_W=2550;
-  screen.innerHTML=`<div class="cheer-shell-v204 gameplay-fit">
-    <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんは応援団長</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
-    <div class="v203-hud"><div><span>DRAW</span><b>MEGAPHONE</b></div><div><span>TIME</span><b id="cheerTime204">7.0</b></div><div><span>DISTANCE</span><b id="cheerDist204">0m</b></div></div>
-    <div id="cheerView204" class="cheer-view-v204">
-      <div id="cheerWorld204" class="cheer-world-v204" style="width:${WORLD_W}px">
-        <div class="cheer-road-v204"></div>
-        ${Array.from({length:12},(_,i)=>`<i class="cheer-marker-v204" style="left:${170+i*190}px"><b>${i*200}m</b></i>`).join('')}
-        <div id="cheerMob204" class="cheer-mob-v204"><img src="icon/01.png" draggable="false" alt=""><span>📣</span></div>
-        <div id="cheerWord204" class="cheer-word-v204">頑張れ～！！</div>
-      </div>
-      <canvas id="cheerCanvas204" class="cheer-canvas-v204"></canvas>
-      <div id="cheerTip204" class="drawgame-tip-v203">7秒でメガホンを描け！</div>
-      <div id="cheerArrival204" class="cheer-arrival-v204"></div>
-    </div>
-  </div>`;
-  const view=document.getElementById('cheerView204'),world=document.getElementById('cheerWorld204'),canvas=document.getElementById('cheerCanvas204'),timeEl=document.getElementById('cheerTime204'),distEl=document.getElementById('cheerDist204'),mob=document.getElementById('cheerMob204'),word=document.getElementById('cheerWord204'),tip=document.getElementById('cheerTip204'),arrival=document.getElementById('cheerArrival204');
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='cheerLeaderMob'),WORLD_W=2550;
+  screen.innerHTML=`<div class="cheer-shell-v204 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんは応援団長</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>DRAW</span><b>MEGAPHONE</b></div><div><span>TIME</span><b id="cheerTime204">7.0</b></div><div><span>DISTANCE</span><b id="cheerDist204">0m</b></div></div><div id="cheerView204" class="cheer-view-v204"><div id="cheerWorld204" class="cheer-world-v204" style="width:${WORLD_W}px"><div class="cheer-road-v204"></div>${Array.from({length:12},(_,i)=>`<i class="cheer-marker-v204" style="left:${170+i*190}px"><b>${i*200}m</b></i>`).join('')}<div id="cheerMob204" class="cheer-mob-v204"><img src="icon/01.png" draggable="false" alt=""><span id="cheerMegaphone205" class="cheer-megaphone-art-v205"></span></div><div id="cheerVoice205" class="cheer-voice-v205"></div><div id="cheerWord204" class="cheer-word-v204">頑張れ～！！</div></div><canvas id="cheerCanvas204" class="cheer-canvas-v204"></canvas><div id="cheerTip204" class="drawgame-tip-v203">7秒でメガホンを描け！</div><div id="cheerArrival204" class="cheer-arrival-v204"></div></div></div>`;
+  const view=document.getElementById('cheerView204'),world=document.getElementById('cheerWorld204'),canvas=document.getElementById('cheerCanvas204'),timeEl=document.getElementById('cheerTime204'),distEl=document.getElementById('cheerDist204'),mob=document.getElementById('cheerMob204'),megaphone=document.getElementById('cheerMegaphone205'),voice=document.getElementById('cheerVoice205'),word=document.getElementById('cheerWord204'),tip=document.getElementById('cheerTip204'),arrival=document.getElementById('cheerArrival204');
   void view.offsetHeight;canvas.width=view.clientWidth;canvas.height=view.clientHeight;const ctx=canvas.getContext('2d');ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=7;ctx.strokeStyle='#11131a';let drawing=false,points=[],finished=false,start=0,raf=null;
   const pos=e=>{const r=canvas.getBoundingClientRect();return [clamp(e.clientX-r.left,0,canvas.width),clamp(e.clientY-r.top,0,canvas.height)]};
-  canvas.addEventListener('pointerdown',e=>{if(finished)return;e.preventDefault();drawing=true;const q=pos(e);points.push(q);ctx.beginPath();ctx.moveTo(...q);try{canvas.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});
-  canvas.addEventListener('pointermove',e=>{if(!drawing||finished)return;e.preventDefault();const q=pos(e);points.push(q);ctx.lineTo(...q);ctx.stroke()},{passive:false});
-  canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);
-  mob.style.transform='translate3d(68px,0,0)';word.style.transform='translate3d(145px,0,0)';world.style.transform='translate3d(0,0,0)';
-  void view.offsetHeight;if(!(await countdown('DRAW MEGAPHONE',runId,{transparent:true})))return;start=performance.now();
+  canvas.addEventListener('pointerdown',e=>{if(finished)return;e.preventDefault();drawing=true;const q=pos(e);points.push(q);ctx.beginPath();ctx.moveTo(...q);try{canvas.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});canvas.addEventListener('pointermove',e=>{if(!drawing||finished)return;e.preventDefault();const q=pos(e);points.push(q);ctx.lineTo(...q);ctx.stroke()},{passive:false});canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);
+  function cropDrawing(){if(points.length<2)return canvas.toDataURL();const xs=points.map(q=>q[0]),ys=points.map(q=>q[1]);let x0=Math.max(0,Math.min(...xs)-12),y0=Math.max(0,Math.min(...ys)-12),x1=Math.min(canvas.width,Math.max(...xs)+12),y1=Math.min(canvas.height,Math.max(...ys)+12);const c=document.createElement('canvas');c.width=Math.max(24,Math.ceil(x1-x0));c.height=Math.max(24,Math.ceil(y1-y0));c.getContext('2d').drawImage(canvas,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);return c.toDataURL()}
   function evaluate(){if(points.length<8)return 5;const xs=points.map(a=>a[0]),ys=points.map(a=>a[1]),w=Math.max(...xs)-Math.min(...xs),h=Math.max(...ys)-Math.min(...ys);let length=0;for(let i=1;i<points.length;i++)length+=Math.hypot(points[i][0]-points[i-1][0],points[i][1]-points[i-1][1]);const wr=clamp(w/(canvas.width*.72),0,1),hr=clamp(h/(canvas.height*.48),0,1),complex=clamp(length/(canvas.width*3.2),0,1),ratio=clamp(1-Math.abs((w/(h||1))-1.75)/1.75,0,1);return clamp(Math.round(12+wr*28+hr*18+complex*24+ratio*18),0,100)}
-  function launch(){if(finished)return;finished=true;drawing=false;if(raf)cancelAnimationFrame(raf);const score=evaluate(),fontPx=Math.round(24+score*.54),distance=Math.round(350+score*18.5),targetX=clamp(175+distance*.92,300,WORLD_W-210);state.records.cheerLeaderMob[p.id]=score;canvas.classList.add('hide-v204');tip.textContent='声が飛んでいく！';word.style.fontSize=`${fontPx}px`;word.classList.add('fly-v204');mob.classList.add('go-v204');beep(score>=90?1160:score>=70?860:520,190,.045);const launchAt=performance.now(),duration=2300;
-    function fly(now){if(!isGameRunValid(runId))return;const q=clamp((now-launchAt)/duration,0,1),ease=1-Math.pow(1-q,3),wx=145+(targetX-145)*ease,shown=Math.round(distance*ease);word.style.transform=`translate3d(${wx}px,${Math.sin(q*Math.PI)*-38}px,0) scale(${1+q*.08})`;const cam=clamp(wx-view.clientWidth*.48,0,WORLD_W-view.clientWidth);world.style.transform=`translate3d(${-cam}px,0,0)`;distEl.textContent=`${shown}m`;if(q<1){raf=requestAnimationFrame(fly);return}distEl.textContent=`${distance}m`;tip.textContent='';arrival.innerHTML=`<strong>${distance}m！</strong><span>「頑張れ～！！」 ${fontPx}px</span>`;arrival.classList.add('show-v204');beep(1260,240,.05);sceneResultGate(gameIndex,p,humanIndex,`${distance}<small>m!</small>`,`応援文字 ${fontPx}px / ${score}/100点`)}
-    raf=requestAnimationFrame(fly);
+  mob.style.transform='translate3d(68px,0,0)';word.style.transform='translate3d(150px,0,0)';world.style.transform='translate3d(0,0,0)';word.style.opacity='0';void view.offsetHeight;if(!(await countdown('DRAW MEGAPHONE',runId,{transparent:true})))return;start=performance.now();
+  async function launch(){if(finished)return;finished=true;drawing=false;if(raf)cancelAnimationFrame(raf);const score=evaluate(),fontPx=Math.round(24+score*.54),distance=Math.round(350+score*18.5),targetX=clamp(175+distance*.92,320,WORLD_W-210),art=cropDrawing();state.records.cheerLeaderMob[p.id]=score;canvas.classList.add('hide-v204');megaphone.innerHTML=`<img src="${art}" draggable="false" alt="">`;megaphone.classList.add('show-v205');mob.classList.add('ready-v205');tip.textContent='描いたメガホンをモブくんが構えた！';beep(640,90,.025);await wait(900);if(!isGameRunValid(runId))return;tip.textContent='モブくん「頑張れ～！！」';mob.classList.add('speaking-v205');voice.classList.add('show-v205');word.style.fontSize=`${fontPx}px`;word.style.opacity='1';word.classList.add('fly-v204');beep(score>=90?1160:score>=70?860:520,210,.045);const launchAt=performance.now(),duration=3900;
+    function fly(now){if(!isGameRunValid(runId))return;const q=clamp((now-launchAt)/duration,0,1),ease=1-Math.pow(1-q,2.4),wx=150+(targetX-150)*ease,shown=Math.round(distance*ease);word.style.transform=`translate3d(${wx}px,${Math.sin(q*Math.PI)*-46}px,0) scale(${1+q*.10})`;const cam=clamp(wx-view.clientWidth*.48,0,WORLD_W-view.clientWidth);world.style.transform=`translate3d(${-cam}px,0,0)`;distEl.textContent=`${shown}m`;if(q<1){raf=requestAnimationFrame(fly);return}distEl.textContent=`${distance}m`;tip.textContent='';arrival.innerHTML=`<strong>${distance}m！</strong><span>「頑張れ～！！」 ${fontPx}px</span>`;arrival.classList.add('show-v204');beep(1260,260,.05);setTimeout(()=>{if(isGameRunValid(runId))sceneResultGate(gameIndex,p,humanIndex,`${distance}<small>m!</small>`,`応援文字 ${fontPx}px / ${score}/100点`)},1200)}
+    raf=requestAnimationFrame(fly)
   }
   function frame(now){if(!isGameRunValid(runId)||finished)return;const remain=Math.max(0,7-(now-start)/1000);timeEl.textContent=remain.toFixed(1);if(remain<=0){launch();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
 }
@@ -27090,13 +27064,16 @@ async function startZeroOrHundredMob(p,humanIndex,runId){
 
 async function startFireworkStandMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='fireworkStandMob'),WORLD_H=2250;
-  screen.innerHTML=`<div class="firework-shell-v204 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん打ち上げ台を作る</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>DRAW</span><b>STAND</b></div><div><span>TIME</span><b id="fwTime204">7.0</b></div><div><span>HEIGHT</span><b id="fwDist204">0m</b></div></div><div id="fwView204" class="fw-view-v204"><div id="fwWorld204" class="fw-world-v204" style="height:${WORLD_H}px">${Array.from({length:10},(_,i)=>`<i class="fw-height-v204" style="top:${WORLD_H-180-i*190}px"><b>${i*100}m</b></i>`).join('')}<div class="fw-ground-v204"></div><div id="fwRocket204" class="fw-rocket-v204">▲</div><div id="fwBurst204" class="fw-burst-v204"><strong>MOB</strong>${Array.from({length:16},(_,i)=>`<i style="--r:${i*22.5}deg"></i>`).join('')}</div></div><div id="fwDraw204" class="fw-draw-v204"><canvas id="fwCanvas204"></canvas><b>7秒で打ち上げ台を描け！</b></div><div id="fwArrival204" class="fw-arrival-v204"></div></div></div>`;
-  const view=document.getElementById('fwView204'),world=document.getElementById('fwWorld204'),draw=document.getElementById('fwDraw204'),canvas=document.getElementById('fwCanvas204'),rocket=document.getElementById('fwRocket204'),burst=document.getElementById('fwBurst204'),timeEl=document.getElementById('fwTime204'),distEl=document.getElementById('fwDist204'),arrival=document.getElementById('fwArrival204');void view.offsetHeight;canvas.width=view.clientWidth;canvas.height=view.clientHeight;const ctx=canvas.getContext('2d');ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=7;ctx.strokeStyle='#11131a';let points=[],drawing=false,finished=false,start=0,raf=null;const pos=e=>{const r=canvas.getBoundingClientRect();return [clamp(e.clientX-r.left,0,canvas.width),clamp(e.clientY-r.top,0,canvas.height)]};
+  screen.innerHTML=`<div class="firework-shell-v204 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん打ち上げ台を作る</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>DRAW</span><b>STAND</b></div><div><span>TIME</span><b id="fwTime204">7.0</b></div><div><span>HEIGHT</span><b id="fwDist204">0m</b></div></div><div id="fwView204" class="fw-view-v204"><div id="fwWorld204" class="fw-world-v204" style="height:${WORLD_H}px">${Array.from({length:10},(_,i)=>`<i class="fw-height-v204" style="top:${WORLD_H-180-i*190}px"><b>${i*100}m</b></i>`).join('')}<div class="fw-ground-v204"></div><img id="fwStandArt205" class="fw-stand-art-v205" alt=""><div id="fwRocket204" class="fw-rocket-v204">▲</div><div id="fwBurst204" class="fw-burst-v204 fw-burst-v205"><strong>MOB</strong><div id="fwParticles205" class="fw-particles-v205"></div></div></div><div id="fwDraw204" class="fw-draw-v204"><canvas id="fwCanvas204"></canvas><b id="fwDrawText205">7秒で打ち上げ台を描け！</b></div><div id="fwArrival204" class="fw-arrival-v204"></div></div></div>`;
+  const view=document.getElementById('fwView204'),world=document.getElementById('fwWorld204'),draw=document.getElementById('fwDraw204'),drawText=document.getElementById('fwDrawText205'),canvas=document.getElementById('fwCanvas204'),stand=document.getElementById('fwStandArt205'),rocket=document.getElementById('fwRocket204'),burst=document.getElementById('fwBurst204'),particles=document.getElementById('fwParticles205'),timeEl=document.getElementById('fwTime204'),distEl=document.getElementById('fwDist204'),arrival=document.getElementById('fwArrival204');
+  void view.offsetHeight;canvas.width=view.clientWidth;canvas.height=view.clientHeight;const ctx=canvas.getContext('2d');ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=7;ctx.strokeStyle='#11131a';let points=[],drawing=false,finished=false,start=0,raf=null;const pos=e=>{const r=canvas.getBoundingClientRect();return [clamp(e.clientX-r.left,0,canvas.width),clamp(e.clientY-r.top,0,canvas.height)]};
   canvas.addEventListener('pointerdown',e=>{if(finished)return;e.preventDefault();drawing=true;const q=pos(e);points.push(q);ctx.beginPath();ctx.moveTo(...q);try{canvas.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});canvas.addEventListener('pointermove',e=>{if(!drawing||finished)return;e.preventDefault();const q=pos(e);points.push(q);ctx.lineTo(...q);ctx.stroke()},{passive:false});canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);
-  world.style.transform=`translate3d(0,${-(WORLD_H-view.clientHeight)}px,0)`;rocket.style.transform=`translate3d(-50%,${WORLD_H-145}px,0)`;void view.offsetHeight;if(!(await countdown('DRAW LAUNCHER',runId,{transparent:true})))return;start=performance.now();
-  function quality(){if(points.length<8)return 0;const xs=points.map(a=>a[0]),ys=points.map(a=>a[1]),w=Math.max(...xs)-Math.min(...xs),h=Math.max(...ys)-Math.min(...ys);let len=0;for(let i=1;i<points.length;i++)len+=Math.hypot(points[i][0]-points[i-1][0],points[i][1]-points[i-1][1]);const width=clamp(w/(canvas.width*.72),0,1),height=clamp(h/(canvas.height*.58),0,1),complex=clamp(len/(canvas.width*3),0,1),base=clamp((Math.max(...ys)/canvas.height),0,1);return clamp(Math.round((width*.30+height*.25+complex*.30+base*.15)*100),0,100)}
-  function launch(){if(finished)return;finished=true;drawing=false;if(raf)cancelAnimationFrame(raf);const qScore=quality(),distance=clamp(Math.round(180+qScore*8.2),0,1000),startY=WORLD_H-145,targetY=clamp(startY-distance*1.72,180,startY-300);state.records.fireworkStandMob[p.id]=distance;draw.classList.add('hide-v204');rocket.classList.add('show-v204');beep(580,100,.03);const t0=performance.now(),duration=2500;
-    function fly(now){if(!isGameRunValid(runId))return;const q=clamp((now-t0)/duration,0,1),ease=1-Math.pow(1-q,3),ry=startY+(targetY-startY)*ease,shown=Math.round(distance*ease);rocket.style.transform=`translate3d(-50%,${ry}px,0)`;distEl.textContent=`${shown}m`;const cam=clamp(ry-view.clientHeight*.54,0,WORLD_H-view.clientHeight);world.style.transform=`translate3d(0,${-cam}px,0)`;if(q<1){raf=requestAnimationFrame(fly);return}rocket.classList.add('gone-v204');burst.style.top=`${targetY}px`;burst.style.fontSize=`${28+qScore*.42}px`;burst.classList.add('show-v204');distEl.textContent=`${distance}m`;arrival.innerHTML=`<strong>${distance}m！</strong><span>MOB FIREWORK</span>`;arrival.classList.add('show-v204');beep(1250,260,.055);sceneResultGate(gameIndex,p,humanIndex,`${distance}<small>m!</small>`,`MOB文字花火 / 打ち上げ台評価 ${qScore}点`)}
+  function cropDrawing(){if(points.length<2)return canvas.toDataURL();const xs=points.map(q=>q[0]),ys=points.map(q=>q[1]);let x0=Math.max(0,Math.min(...xs)-12),y0=Math.max(0,Math.min(...ys)-12),x1=Math.min(canvas.width,Math.max(...xs)+12),y1=Math.min(canvas.height,Math.max(...ys)+12);const c=document.createElement('canvas');c.width=Math.max(24,Math.ceil(x1-x0));c.height=Math.max(24,Math.ceil(y1-y0));c.getContext('2d').drawImage(canvas,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);return c.toDataURL()}
+  function quality(){if(points.length<12)return 4;const xs=points.map(a=>a[0]),ys=points.map(a=>a[1]),minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys),w=maxX-minX,h=maxY-minY;let len=0;for(let i=1;i<points.length;i++)len+=Math.hypot(points[i][0]-points[i-1][0],points[i][1]-points[i-1][1]);const close=(v,t)=>clamp(1-Math.abs(v-t)/(t||1),0,1),widthFit=close(w,canvas.width*.48),heightFit=close(h,canvas.height*.54),ratioFit=close(w/(h||1),.82),bottom=points.filter(q=>q[1]>minY+h*.72),bottomSpread=bottom.length?clamp((Math.max(...bottom.map(q=>q[0]))-Math.min(...bottom.map(q=>q[0])))/(w*.70||1),0,1):0,center=points.filter(q=>q[1]<minY+h*.62&&Math.abs(q[0]-(minX+maxX)/2)<w*.22).length/Math.max(1,points.length),centerFit=clamp(center/.22,0,1),targetLen=(w+h)*3.0,lineFit=close(len,targetLen),detail=clamp(points.length/70,0,1);return clamp(Math.round((widthFit*.18+heightFit*.18+ratioFit*.16+bottomSpread*.20+centerFit*.12+lineFit*.11+detail*.05)*100),0,100)}
+  function makeParticles(){particles.innerHTML='';for(let i=0;i<52;i++){const a=i/52*Math.PI*2+rand(-.05,.05),r=rand(80,195),sp=document.createElement('i');sp.style.setProperty('--dx',`${Math.cos(a)*r}px`);sp.style.setProperty('--dy',`${Math.sin(a)*r}px`);sp.style.setProperty('--delay',`${rand(0,.55).toFixed(2)}s`);sp.style.setProperty('--dur',`${rand(1.55,2.65).toFixed(2)}s`);particles.appendChild(sp)}}
+  world.style.transform=`translate3d(0,${-(WORLD_H-view.clientHeight)}px,0)`;rocket.style.transform=`translate3d(-50%,${WORLD_H-145}px,0)`;stand.style.top=`${WORLD_H-278}px`;void view.offsetHeight;if(!(await countdown('DRAW LAUNCHER',runId,{transparent:true})))return;start=performance.now();
+  async function launch(){if(finished)return;finished=true;drawing=false;if(raf)cancelAnimationFrame(raf);const qScore=quality(),distance=clamp(Math.round(80+920*Math.pow(qScore/100,1.65)),0,1000),startY=WORLD_H-145,targetY=clamp(startY-distance*1.72,180,startY-250);state.records.fireworkStandMob[p.id]=distance;stand.src=cropDrawing();stand.classList.add('show-v205','shake-v205');draw.classList.add('hide-v204');rocket.classList.add('show-v204','shake-v205');drawText.textContent='';distEl.textContent='0m';beep(280,90,.025);await wait(1000);if(!isGameRunValid(runId))return;stand.classList.remove('shake-v205');rocket.classList.remove('shake-v205');beep(680,130,.04);const t0=performance.now(),duration=3000;
+    function fly(now){if(!isGameRunValid(runId))return;const q=clamp((now-t0)/duration,0,1),ease=1-Math.pow(1-q,2.5),ry=startY+(targetY-startY)*ease,shown=Math.round(distance*ease);rocket.style.transform=`translate3d(-50%,${ry}px,0)`;distEl.textContent=`${shown}m`;const cam=clamp(ry-view.clientHeight*.54,0,WORLD_H-view.clientHeight);world.style.transform=`translate3d(0,${-cam}px,0)`;if(q<1){raf=requestAnimationFrame(fly);return}rocket.classList.add('gone-v204');burst.style.top=`${targetY}px`;burst.style.fontSize=`${28+qScore*.42}px`;makeParticles();burst.classList.add('show-v204','bursting-v205');distEl.textContent=`${distance}m`;beep(1250,260,.055);setTimeout(()=>{if(!isGameRunValid(runId))return;arrival.innerHTML=`<strong>${distance}m！</strong><span>MOB FIREWORK / 台評価 ${qScore}点</span>`;arrival.classList.add('show-v204');sceneResultGate(gameIndex,p,humanIndex,`${distance}<small>m!</small>`,`MOB文字花火 / 打ち上げ台評価 ${qScore}点`)},1050)}
     raf=requestAnimationFrame(fly)
   }
   function frame(now){if(!isGameRunValid(runId)||finished)return;const rem=Math.max(0,7-(now-start)/1000);timeEl.textContent=rem.toFixed(1);if(rem<=0){launch();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
@@ -27104,38 +27081,37 @@ async function startFireworkStandMob(p,humanIndex,runId){
 
 async function startPoiGameMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='poiGameMob');
-  screen.innerHTML=`<div class="poi-shell-v204 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのポイゲーム</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="poiTime204">10.0</b></div><div><span>IN</span><b id="poiScore204">0</b></div><div><span>MISS</span><b id="poiMiss204">0</b></div></div><div id="poiStage204" class="poi-stage-v204"><div class="poi-bins-v204"><div class="poi-bin-v204 red" data-bin="red"><b>RED</b></div><div class="poi-bin-v204 blue" data-bin="blue"><b>BLUE</b></div><div class="poi-bin-v204 yellow" data-bin="yellow"><b>YELLOW</b></div></div><div id="poiPaper204" class="poi-paper-v204"></div><div class="poi-mob-v204"><img src="icon/01.png" draggable="false" alt=""><span>SWIPE!</span></div><div id="poiCall204" class="poi-call-v204">右から来る紙を色のゴミ箱へ！ 黒は触らない！</div></div></div>`;
-  const stage=document.getElementById('poiStage204'),paper=document.getElementById('poiPaper204'),timeEl=document.getElementById('poiTime204'),scoreEl=document.getElementById('poiScore204'),missEl=document.getElementById('poiMiss204'),call=document.getElementById('poiCall204'),binEls=[...screen.querySelectorAll('[data-bin]')];void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let current=null,x=W+45,y=H*.48,score=0,miss=0,start=0,last=performance.now(),raf=null,finished=false,sx=0,sy=0,drag=false,flying=false;const colors=['red','blue','yellow','black'];
-  function binInfo(){const sr=stage.getBoundingClientRect();return binEls.map(el=>{const r=el.getBoundingClientRect();return {color:el.dataset.bin,x:r.left-sr.left+r.width/2,y:r.top-sr.top+r.height*.55,el}})}
-  function spawn(){if(finished)return;const color=colors[randi(0,colors.length-1)];current=color;x=W+36;y=rand(H*.38,H*.64);paper.className=`poi-paper-v204 ${color}`;paper.style.opacity='1';paper.style.transform=`translate3d(${x}px,${y}px,0) rotate(${randi(-20,20)}deg)`;flying=false;drag=false}
-  function flyTo(target,ok,label){if(!current||flying)return;flying=true;drag=false;const x0=x,y0=y,t0=performance.now(),dur=360;const color=current;call.textContent=label;target.el.classList.add('catch-v204');
-    function step(now){if(!isGameRunValid(runId)||finished)return;const q=clamp((now-t0)/dur,0,1),ease=1-Math.pow(1-q,2);x=x0+(target.x-x0)*ease;y=y0+(target.y-y0)*ease-Math.sin(Math.PI*q)*72;paper.style.transform=`translate3d(${x}px,${y}px,0) rotate(${q*400}deg) scale(${1-q*.25})`;if(q<1){requestAnimationFrame(step);return}target.el.classList.remove('catch-v204');if(color==='black'){miss++;missEl.textContent=miss;beep(170,55,.018)}else if(ok){score++;scoreEl.textContent=score;beep(800,35,.012)}else{miss++;missEl.textContent=miss;beep(170,55,.018)}current=null;paper.style.opacity='0';setTimeout(spawn,90)}requestAnimationFrame(step)
+  screen.innerHTML=`<div class="poi-shell-v204 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのポイゲーム</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="poiTime204">10.0</b></div><div><span>IN</span><b id="poiScore204">0 / 20</b></div><div><span>MISS</span><b id="poiMiss204">0</b></div></div><div id="poiStage204" class="poi-stage-v204"><div class="poi-bins-v204"><div class="poi-bin-v204 red" data-bin="red"><b>RED</b></div><div class="poi-bin-v204 blue" data-bin="blue"><b>BLUE</b></div><div class="poi-bin-v204 yellow" data-bin="yellow"><b>YELLOW</b></div></div><div id="poiPaperLayer205" class="poi-paper-layer-v205"></div><div class="poi-mob-v204"><img src="icon/01.png" draggable="false" alt=""><span>SWIPE!</span></div><div id="poiCall204" class="poi-call-v204">10秒で30個！ 色付き26個＋黒トラップ4個</div></div></div>`;
+  const stage=document.getElementById('poiStage204'),layer=document.getElementById('poiPaperLayer205'),timeEl=document.getElementById('poiTime204'),scoreEl=document.getElementById('poiScore204'),missEl=document.getElementById('poiMiss204'),call=document.getElementById('poiCall204'),binEls=[...screen.querySelectorAll('[data-bin]')];void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let score=0,miss=0,start=0,last=performance.now(),raf=null,finished=false,spawnIndex=0,nextSpawn=0;const queue=shuffle([...Array.from({length:26},(_,i)=>['red','blue','yellow'][i%3]),...Array(4).fill('black')]);const papers=[];
+  function binInfo(){const sr=stage.getBoundingClientRect();return binEls.map(el=>{const r=el.getBoundingClientRect();return {color:el.dataset.bin,x:r.left-sr.left+r.width/2,y:r.top-sr.top+r.height*.57,el}})}
+  function removePaper(o){o.dead=true;o.el.remove();const k=papers.indexOf(o);if(k>=0)papers.splice(k,1)}
+  function spawn(){if(finished||spawnIndex>=queue.length)return;const color=queue[spawnIndex++],el=document.createElement('div'),o={color,el,x:W+38,y:rand(H*.38,H*.62),rot:randi(-25,25),drag:false,flying:false,dead:false,sx:0,sy:0};el.className=`poi-paper-v204 ${color}`;el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot}deg)`;layer.appendChild(el);papers.push(o);
+    el.addEventListener('pointerdown',e=>{if(finished||o.dead||o.flying)return;e.preventDefault();o.drag=true;o.sx=e.clientX;o.sy=e.clientY;try{el.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});
+    el.addEventListener('pointerup',e=>{if(finished||!o.drag||o.dead||o.flying)return;e.preventDefault();o.drag=false;const dx=e.clientX-o.sx,dy=e.clientY-o.sy;if(Math.hypot(dx,dy)<12){call.textContent='方向へスワイプ！';return}const sr=stage.getBoundingClientRect(),px=o.sx-sr.left,py=o.sy-sr.top,infos=binInfo(),dl=Math.hypot(dx,dy)||1;let best=infos[0],bestDot=-Infinity;for(const b of infos){const vx=b.x-px,vy=b.y-py,vl=Math.hypot(vx,vy)||1,dot=(dx/dl)*(vx/vl)+(dy/dl)*(vy/vl);if(dot>bestDot){bestDot=dot;best=b}}flyTo(o,best,o.color!=='black'&&best.color===o.color,o.color==='black'?'BLACK TRAP!':best.color===o.color?'IN!':'WRONG COLOR!')},{passive:false});el.addEventListener('pointercancel',()=>o.drag=false)
   }
-  paper.addEventListener('pointerdown',e=>{if(!current||finished||flying)return;e.preventDefault();drag=true;sx=e.clientX;sy=e.clientY;try{paper.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});
-  paper.addEventListener('pointerup',e=>{if(!drag||!current||finished||flying)return;e.preventDefault();drag=false;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.hypot(dx,dy)<12){call.textContent='方向へスワイプ！';return}const sr=stage.getBoundingClientRect(),px=sx-sr.left,py=sy-sr.top,infos=binInfo();let best=infos[0],bestDot=-Infinity;const dl=Math.hypot(dx,dy)||1;for(const b of infos){const vx=b.x-px,vy=b.y-py,vl=Math.hypot(vx,vy)||1,dot=(dx/dl)*(vx/vl)+(dy/dl)*(vy/vl);if(dot>bestDot){bestDot=dot;best=b}}const ok=current!=='black'&&best.color===current;flyTo(best,ok,current==='black'?'BLACK TRAP!':ok?'IN!':'WRONG COLOR!')},{passive:false});paper.addEventListener('pointercancel',()=>drag=false);
-  spawn();void stage.offsetHeight;if(!(await countdown('POI GAME',runId,{transparent:true})))return;start=last=performance.now();
-  function finish(){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);state.records.poiGameMob[p.id]=score;call.textContent=`FINISH! ${score}個`;beep(score>=18?1120:760,160,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>個</small>`,`正解 ${score} / MISS ${miss}`)},850)}
-  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;const rem=Math.max(0,10-(now-start)/1000);timeEl.textContent=rem.toFixed(1);if(current&&!drag&&!flying){x-=190*dt;paper.style.transform=`translate3d(${x}px,${y}px,0) rotate(${(W-x)*.10}deg)`;if(x<-55){if(current!=='black'){miss++;missEl.textContent=miss}current=null;paper.style.opacity='0';setTimeout(spawn,70)}}if(rem<=0){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
+  function flyTo(o,target,ok,label){if(o.dead||o.flying)return;o.flying=true;o.drag=false;const x0=o.x,y0=o.y,t0=performance.now(),dur=230;call.textContent=label;target.el.classList.add('catch-v204');
+    function step(now){if(!isGameRunValid(runId)||finished||o.dead)return;const q=clamp((now-t0)/dur,0,1),ease=1-Math.pow(1-q,2);o.x=x0+(target.x-x0)*ease;o.y=y0+(target.y-y0)*ease-Math.sin(Math.PI*q)*64;o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot+q*380}deg) scale(${1-q*.22})`;if(q<1){requestAnimationFrame(step);return}target.el.classList.remove('catch-v204');if(o.color==='black'){miss++;beep(170,55,.018)}else if(ok){score++;beep(800,35,.012)}else{miss++;beep(170,55,.018)}scoreEl.textContent=`${score} / 20`;missEl.textContent=miss;removePaper(o)}requestAnimationFrame(step)
+  }
+  void stage.offsetHeight;if(!(await countdown('POI GAME',runId,{transparent:true})))return;start=last=performance.now();nextSpawn=start+120;
+  function finish(){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);state.records.poiGameMob[p.id]=score;call.textContent=`FINISH! ${score}個`;beep(score>=20?1120:760,160,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>個</small>`,`30個出現 / 正解 ${score} / MISS ${miss}`)},850)}
+  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;const rem=Math.max(0,10-(now-start)/1000);timeEl.textContent=rem.toFixed(1);while(spawnIndex<queue.length&&now>=nextSpawn){spawn();nextSpawn+=315}papers.slice().forEach(o=>{if(o.dead||o.drag||o.flying)return;o.x-=555*dt;o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot+(W-o.x)*.10}deg)`;if(o.x<-58){if(o.color!=='black')miss++;missEl.textContent=miss;removePaper(o)}});if(rem<=0){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
 }
 
 async function startCleaningMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='cleaningMob');
-  screen.innerHTML=`<div class="clean-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのお掃除</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="cleanTime203">0.00</b></div><div><span>CLEAN</span><b id="cleanScore203">0 / 30</b></div><div><span>100 PT</span><b>3.50秒</b></div></div><div id="cleanStage203" class="clean-stage-v203"><div class="clean-floor-v203"></div><div id="cleanTrashLayer203"></div><div id="cleanMob203" class="clean-mob-v203"><img src="icon/01.png" draggable="false" alt=""><i class="clean-vacuum-v203"></i><span class="clean-suction-v203"></span></div><div class="clean-tip-v203">長押ししたまま移動。30個を全部吸うまでタイム計測！</div></div></div>`;
-  const stage=document.getElementById('cleanStage203'),layer=document.getElementById('cleanTrashLayer203'),mob=document.getElementById('cleanMob203'),timeEl=document.getElementById('cleanTime203'),scoreEl=document.getElementById('cleanScore203');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let mx=W*.5,my=H*.55,tx=mx,ty=my,holding=false,score=0,finished=false,start=0,last=performance.now(),raf=null;const trash=Array.from({length:30},(_,i)=>{const o={x:rand(26,W-26),y:rand(60,H-34),dead:false,el:document.createElement('i')};o.el.className=`clean-trash-v203 t${i%5}`;o.el.style.left=`${o.x}px`;o.el.style.top=`${o.y}px`;layer.appendChild(o.el);return o});
+  screen.innerHTML=`<div class="clean-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのお掃除</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="cleanTime203">0.00</b></div><div><span>CLEAN</span><b id="cleanScore203">0 / 30</b></div><div><span>100 PT</span><b>2.50秒</b></div></div><div id="cleanStage203" class="clean-stage-v203"><div class="clean-floor-v203"></div><div id="cleanTrashLayer203"></div><div id="cleanMob203" class="clean-mob-v203"><img src="icon/01.png" draggable="false" alt=""><i class="clean-vacuum-v203"></i><span class="clean-suction-v203"></span></div><div class="clean-tip-v203">30個は毎回ステージ全体へ分散。長押し移動で全部吸え！</div></div></div>`;
+  const stage=document.getElementById('cleanStage203'),layer=document.getElementById('cleanTrashLayer203'),mob=document.getElementById('cleanMob203'),timeEl=document.getElementById('cleanTime203'),scoreEl=document.getElementById('cleanScore203');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let mx=W*.5,my=H*.55,tx=mx,ty=my,holding=false,score=0,finished=false,start=0,last=performance.now(),raf=null;const cols=6,rows=5,cellW=(W-30)/cols,usableH=H-105,cellH=usableH/rows;const trash=Array.from({length:30},(_,i)=>{const c=i%cols,r=Math.floor(i/cols),o={x:15+(c+.5)*cellW+rand(-cellW*.22,cellW*.22),y:62+(r+.5)*cellH+rand(-cellH*.22,cellH*.22),dead:false,el:document.createElement('i')};o.el.className=`clean-trash-v203 t${i%5}`;o.el.style.left=`${o.x}px`;o.el.style.top=`${o.y}px`;layer.appendChild(o.el);return o});
   function setTarget(e){const r=stage.getBoundingClientRect();tx=clamp(e.clientX-r.left,28,W-28);ty=clamp(e.clientY-r.top,65,H-32)}stage.addEventListener('pointerdown',e=>{if(finished)return;e.preventDefault();holding=true;setTarget(e);mob.classList.add('vacuuming-v203');try{stage.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});stage.addEventListener('pointermove',e=>{if(!holding||finished)return;e.preventDefault();setTarget(e)},{passive:false});const release=()=>{holding=false;mob.classList.remove('vacuuming-v203')};stage.addEventListener('pointerup',release);stage.addEventListener('pointercancel',release);
   function render(){mob.style.transform=`translate3d(${mx-42}px,${my-40}px,0)`}render();void stage.offsetHeight;if(!(await countdown('CLEAN ALL',runId,{transparent:true})))return;start=last=performance.now();
-  function finish(now,complete=true){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);release();const ms=complete?Math.max(1,Math.round(now-start)):20000;state.records.cleaningMob[p.id]=ms;timeEl.textContent=(ms/1000).toFixed(2);beep(complete&&ms<=3500?1180:complete&&ms<=6000?880:260,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${(ms/1000).toFixed(2)}<small>秒</small>`,complete?`30 / 30 CLEAN / 3.50秒=100点`:`TIME UP / ${score} / 30 CLEAN`)},700)}
-  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;if(holding){const dx=tx-mx,dy=ty-my,d=Math.hypot(dx,dy)||1,step=Math.min(d,365*dt);mx+=dx/d*step;my+=dy/d*step;trash.forEach(t=>{if(t.dead)return;const dd=Math.hypot(t.x-(mx+28),t.y-my);if(dd<108){t.x+=(mx+20-t.x)*Math.min(1,dt*11);t.y+=(my-t.y)*Math.min(1,dt*11);t.el.style.left=`${t.x}px`;t.el.style.top=`${t.y}px`;if(dd<34){t.dead=true;score++;scoreEl.textContent=`${score} / 30`;t.el.classList.add('sucked-v203');beep(620+score*5,18,.005)}}})}render();timeEl.textContent=((now-start)/1000).toFixed(2);if(score>=30){finish(now,true);return}if(now-start>=20000){finish(now,false);return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
+  function finish(now,complete=true){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);release();const ms=complete?Math.max(1,Math.round(now-start)):20000;state.records.cleaningMob[p.id]=ms;timeEl.textContent=(ms/1000).toFixed(2);beep(complete&&ms<=2500?1180:complete&&ms<=4500?880:260,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${(ms/1000).toFixed(2)}<small>秒</small>`,complete?`30 / 30 CLEAN / 2.50秒=100点`:`TIME UP / ${score} / 30 CLEAN`)},700)}
+  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;if(holding){const dx=tx-mx,dy=ty-my,d=Math.hypot(dx,dy)||1,step=Math.min(d,382*dt);mx+=dx/d*step;my+=dy/d*step;trash.forEach(t=>{if(t.dead)return;const dd=Math.hypot(t.x-(mx+27),t.y-my);if(dd<94){t.x+=(mx+20-t.x)*Math.min(1,dt*9.5);t.y+=(my-t.y)*Math.min(1,dt*9.5);t.el.style.left=`${t.x}px`;t.el.style.top=`${t.y}px`;if(dd<29){t.dead=true;score++;scoreEl.textContent=`${score} / 30`;t.el.classList.add('sucked-v203');beep(620+score*5,18,.005)}}})}render();timeEl.textContent=((now-start)/1000).toFixed(2);if(score>=30){finish(now,true);return}if(now-start>=20000){finish(now,false);return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
 }
 
 async function startFindMob(p,humanIndex,runId){
-  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='findMob'),mobZ=randi(10,16);
-  const objs=Array.from({length:72},(_,i)=>{const z=randi(6,24);return `<i class="find-object-v203 t${i%10}" style="--x:${randi(2,95)}%;--y:${randi(11,91)}%;--r:${randi(-24,24)}deg;--z:${z}"><b>${i%8===0?'MOB':''}</b></i>`}).join('');
-  screen.innerHTML=`<div class="find-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんを探せ！</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="findTime203">0.00</b></div><div><span>TARGET</span><b>1 MOB</b></div><div><span>MISS</span><b id="findMiss203">0</b></div></div><div id="findStage203" class="find-stage-v203"><div class="find-road-v203"></div>${objs}<button id="findMob203" class="find-mob-v203" style="z-index:${mobZ}" type="button"><img src="icon/01.png" draggable="false" alt=""></button><div class="find-tip-v203">街のオブジェに少し隠れているモブくんを探せ！</div></div></div>`;
-  const stage=document.getElementById('findStage203'),mob=document.getElementById('findMob203'),timeEl=document.getElementById('findTime203'),missEl=document.getElementById('findMiss203');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;mob.style.left=`${rand(28,W-58)}px`;mob.style.top=`${rand(75,H-62)}px`;let start=0,finished=false,miss=0,penalty=0,raf=null;
-  stage.addEventListener('pointerdown',e=>{if(finished||e.target.closest('#findMob203'))return;miss++;penalty+=350;missEl.textContent=miss;stage.classList.remove('wrong-v203');void stage.offsetWidth;stage.classList.add('wrong-v203');beep(160,35,.01)},{passive:true});
-  void stage.offsetHeight;if(!(await countdown('FIND MOB',runId,{transparent:true})))return;start=performance.now();mob.addEventListener('pointerdown',e=>{if(finished)return;e.preventDefault();finished=true;if(raf)cancelAnimationFrame(raf);const ms=Math.round(performance.now()-start+penalty);state.records.findMob[p.id]=ms;mob.classList.add('found-v203');beep(ms<=2500?1180:760,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${(ms/1000).toFixed(2)}<small>秒</small>`,`MISS ${miss}回${miss?` / +${(penalty/1000).toFixed(2)}秒`:''}`)},650)},{once:true,passive:false});
-  function frame(now){if(!isGameRunValid(runId)||finished)return;timeEl.textContent=((now-start+penalty)/1000).toFixed(2);raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='findMob'),mobZ=randi(11,16);const objs=Array.from({length:82},(_,i)=>{const z=randi(7,24),cluster=i%3,x=cluster===0?randi(5,44):cluster===1?randi(30,73):randi(60,95),y=randi(12,91);return `<i class="find-object-v203 t${i%10}" style="--x:${x}%;--y:${y}%;--r:${randi(-24,24)}deg;--z:${z}"><b>${i%7===0?'MOB':''}</b></i>`}).join('');
+  screen.innerHTML=`<div class="find-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんを探せ！</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="findTime203">0.00</b></div><div><span>TARGET</span><b>1 MOB</b></div><div><span>MISS</span><b id="findMiss203">0</b></div></div><div id="findStage203" class="find-stage-v203"><div class="find-road-v203"></div>${objs}<div id="findDecoyLayer205"></div><button id="findMob203" class="find-mob-v203 hard-v205" style="z-index:${mobZ}" type="button"><img src="icon/01.png" draggable="false" alt=""></button><i id="findCover205" class="find-cover-v205" style="z-index:${mobZ+1}"><b>MOB</b></i><div class="find-tip-v203">毎回25〜50%隠れる。似たシルエットのダミーも混ざる！</div></div></div>`;
+  const stage=document.getElementById('findStage203'),mob=document.getElementById('findMob203'),cover=document.getElementById('findCover205'),decoyLayer=document.getElementById('findDecoyLayer205'),timeEl=document.getElementById('findTime203'),missEl=document.getElementById('findMiss203');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight,mx=rand(36,W-70),my=rand(86,H-72),coverSide=Math.random()<.5?-1:1,coverRatio=rand(.25,.50);mob.style.left=`${mx}px`;mob.style.top=`${my}px`;cover.style.left=`${mx+(coverSide<0?-8:42-coverRatio*42)}px`;cover.style.top=`${my+rand(10,24)}px`;cover.style.width=`${Math.round(42*coverRatio+14)}px`;for(let i=0;i<7;i++){const d=document.createElement('i');d.className='find-decoy-mob-v205';d.style.left=`${rand(22,W-58)}px`;d.style.top=`${rand(78,H-62)}px`;d.style.zIndex=randi(9,18);d.innerHTML='<img src="icon/01.png" draggable="false" alt="">';decoyLayer.appendChild(d)}let start=0,finished=false,miss=0,penalty=0,raf=null;
+  stage.addEventListener('pointerdown',e=>{if(finished||e.target.closest('#findMob203'))return;miss++;penalty+=350;missEl.textContent=miss;stage.classList.remove('wrong-v203');void stage.offsetWidth;stage.classList.add('wrong-v203');beep(160,35,.01)},{passive:true});void stage.offsetHeight;if(!(await countdown('FIND MOB',runId,{transparent:true})))return;start=performance.now();mob.addEventListener('pointerdown',e=>{if(finished)return;e.preventDefault();finished=true;if(raf)cancelAnimationFrame(raf);const ms=Math.round(performance.now()-start+penalty);state.records.findMob[p.id]=ms;mob.classList.add('found-v203');cover.classList.add('found-v205');beep(ms<=2500?1180:760,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${(ms/1000).toFixed(2)}<small>秒</small>`,`MISS ${miss}回${miss?` / +${(penalty/1000).toFixed(2)}秒`:''}`)},650)},{once:true,passive:false});function frame(now){if(!isGameRunValid(runId)||finished)return;timeEl.textContent=((now-start+penalty)/1000).toFixed(2);raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
 }
 
 
@@ -27571,8 +27547,8 @@ function simulateOneCpu(gameIndex,p){
       : randi(12000,28000);
   }else if(legacyIndex===87){
     state.records.littleMobShot[p.id]=ultra
-      ? randi(155,198)
-      : randi(72,158);
+      ? randi(145,182)
+      : randi(65,150);
   }else if(legacyIndex===88){
     state.records.monsterBoxMob[p.id]=ultra?randi(86,100):randi(34,86);
   }else if(legacyIndex===89){
@@ -27598,7 +27574,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===95){
     state.records.mobPinball[p.id]=[10,20,30,40,50,60,70,80,90,100][randi(0,9)];
   }else if(legacyIndex===96){
-    state.records.hurdleRun[p.id]=ultra?randi(9800,11200):randi(11200,17800);
+    state.records.hurdleRun[p.id]=ultra?randi(9850,11350):randi(10900,16800);
   }else if(legacyIndex===97){
     state.records.longJumpMob[p.id]=ultra
       ? Math.round(rand(2650,2990))/10
@@ -27612,7 +27588,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===101){
     state.records.waterSkip[p.id]=ultra?randi(80,100):randi(20,90);
   }else if(legacyIndex===102){
-    state.records.tamaireMob[p.id]=ultra?randi(80,100):randi(30,80);
+    state.records.tamaireMob[p.id]=ultra?randi(8,12):randi(3,10);
   }else if(legacyIndex===105){
     state.records.mineCartMob[p.id]=ultra?randi(16800,19200):randi(18800,26500);
   }else if(legacyIndex===107){
@@ -27642,8 +27618,8 @@ function simulateOneCpu(gameIndex,p){
       : randi(28,92);
   }else if(legacyIndex===118){
     state.records.rocketPunch[p.id]=ultra
-      ? randi(2450,3000)
-      : randi(1050,2680);
+      ? randi(2250,2950)
+      : randi(900,2480);
   }else if(legacyIndex===119){
     state.records.flagRaise[p.id]=ultra
       ? randi(88,100)
@@ -27665,7 +27641,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===126){
     state.records.bombPassMob[p.id]=ultra?[80,100,100][randi(0,2)]:[0,40,40,60,60,80,100][randi(0,6)];
   }else if(legacyIndex===127){
-    state.records.obstacleRaceMob[p.id]=ultra?randi(10800,13200):randi(12500,19800);
+    state.records.obstacleRaceMob[p.id]=ultra?randi(9400,11200):randi(10800,17400);
   }else if(legacyIndex===128){
     state.records.sphereMob[p.id]=ultra?[60,100,100][randi(0,2)]:[0,20,40,60,60,100][randi(0,5)];
   }else if(legacyIndex===129){
@@ -27677,11 +27653,11 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===133){
     state.records.zeroOrHundredMob[p.id]=Math.random()<.34?100:0;
   }else if(legacyIndex===134){
-    state.records.fireworkStandMob[p.id]=ultra?randi(880,1000):randi(320,930);
+    state.records.fireworkStandMob[p.id]=ultra?randi(760,965):randi(260,850);
   }else if(legacyIndex===135){
-    state.records.poiGameMob[p.id]=ultra?randi(18,22):randi(8,19);
+    state.records.poiGameMob[p.id]=ultra?randi(18,24):randi(9,20);
   }else if(legacyIndex===136){
-    state.records.cleaningMob[p.id]=ultra?randi(3150,3950):randi(4100,9800);
+    state.records.cleaningMob[p.id]=ultra?randi(2450,3550):randi(3100,7200);
   }else if(legacyIndex===137){
     state.records.findMob[p.id]=ultra?randi(900,1900):randi(1800,9200);
   }else{
@@ -27829,7 +27805,7 @@ function performancePoints(gameIndex,v){
     if(v>=40000)return 0;
     return clamp(Math.round((40000-v)/31500*100),0,100);
   }
-  if(legacyIndex===87)return clamp(Math.round(v/200*100),0,100);
+  if(legacyIndex===87)return clamp(Math.round(v/170*100),0,100);
   if(legacyIndex===88)return clamp(Math.round(v),0,100);
   if(legacyIndex===89){
     if(v<=12000)return 100;
@@ -27849,11 +27825,12 @@ function performancePoints(gameIndex,v){
     return clamp(Math.round(100-(v-14000)/14000*99),1,100);
   }
   if(legacyIndex===95)return clamp(Math.round(v),0,100);
-  if(legacyIndex===96){if(v<=10500)return 100;if(v>=19000)return 0;return clamp(Math.round((19000-v)/8500*100),0,100);}
+  if(legacyIndex===96){if(v<=10000)return 100;if(v>=17500)return 0;return clamp(Math.round((17500-v)/7500*100),0,100);}
   if(legacyIndex===97){
     return clamp(Math.round(v/300*100),0,100);
   }
-  if(legacyIndex>=98&&legacyIndex<=102){
+  if(legacyIndex===102)return clamp(Math.round(v/10*100),0,100);
+  if(legacyIndex>=98&&legacyIndex<=101){
     return clamp(Math.round(v),0,100);
   }
   if(legacyIndex===105){
@@ -27871,9 +27848,9 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===119)return clamp(Math.round(v),0,100);
   if(legacyIndex>=121&&legacyIndex<=126)return clamp(Math.round(v),0,100);
   if(legacyIndex===127){
-    if(v<=11500)return 100;
-    if(v>=21000)return 0;
-    return clamp(Math.round((21000-v)/9500*100),0,100);
+    if(v<=9450)return 100;
+    if(v>=18500)return 0;
+    return clamp(Math.round((18500-v)/9050*100),0,100);
   }
   if(legacyIndex===128||legacyIndex===129)return clamp(Math.round(v),0,100);
   if(legacyIndex===130)return clamp(Math.round(v),0,100);
@@ -27881,7 +27858,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===133)return clamp(Math.round(v),0,100);
   if(legacyIndex===134)return clamp(Math.round(v/1000*100),0,100);
   if(legacyIndex===135)return clamp(Math.round(v/20*100),0,100);
-  if(legacyIndex===136){if(v<=3500)return 100;if(v>=12000)return 0;return clamp(Math.round((12000-v)/8500*100),0,100);}
+  if(legacyIndex===136){if(v<=2500)return 100;if(v>=7500)return 0;return clamp(Math.round((7500-v)/5000*100),0,100);}
   if(legacyIndex===137){if(v<=1500)return 100;if(v>=12000)return 0;return clamp(Math.round((12000-v)/10500*100),0,100);}
   return clamp(Math.round(v),0,100);
 }
@@ -28006,7 +27983,7 @@ function formatRecord(gameIndex,v){
   if(legacyIndex===99)return `${Math.round(v)}pt`;
   if(legacyIndex===100)return `${Math.round(v/5)}本 / ${Math.round(v)}pt`;
   if(legacyIndex===101)return `${Math.round(v/10)}回`;
-  if(legacyIndex===102)return `${Math.round(v/10)}/10`;
+  if(legacyIndex===102)return `${Math.round(v)}/12`;
   if(legacyIndex===105)return `${(v/1000).toFixed(2)}秒`;
   if(legacyIndex===107)return `${Math.round(v)}pt`;
   if(legacyIndex===108)return `${Math.round(v)}m`;
@@ -28641,7 +28618,7 @@ async function startHurdleRun(p,humanIndex,runId){
   const PX_PER_UNIT=7.4;
   const TRACK_W=COURSE_UNITS*PX_PER_UNIT+300;
 
-  const hurdleDisplayMeters=[27,56,85,114,143,172,201,230,259,288];
+  const hurdleDisplayMeters=[25,58,91,123,156,188,220,251,279,294];
   const hurdleUnits=hurdleDisplayMeters.map(m=>m/DISPLAY_M*COURSE_UNITS);
   const hurdles=hurdleUnits.map((m,i)=>({m,i,hit:false,passed:false}));
 
@@ -28659,7 +28636,7 @@ async function startHurdleRun(p,humanIndex,runId){
       <div class="hurdle-hud-v160">
         <div><span>TIME</span><b id="hurdleTime160">0.00</b></div>
         <div><span>DISTANCE</span><b id="hurdleDistance160">0m</b></div>
-        <div><span>SPEED</span><b id="hurdleSpeed160">24.0</b></div>
+        <div><span>SPEED</span><b id="hurdleSpeed160">31.2</b></div>
       </div>
 
       <div id="hurdleStage160" class="hurdle-stage-v160">
@@ -28712,8 +28689,8 @@ async function startHurdleRun(p,humanIndex,runId){
   let last=0;
   let start=0;
   let distance=0;
-  let targetSpeed=28.0;
-  let speed=28.0;
+  let targetSpeed=31.2;
+  let speed=31.2;
   let jumpY=0;
   let jumpV=0;
   let onGround=true;
@@ -28735,7 +28712,7 @@ async function startHurdleRun(p,humanIndex,runId){
   function jump(){
     if(!active||finished||!onGround)return;
     onGround=false;
-    jumpV=490;
+    jumpV=440;
     player.classList.remove('jump-v160');
     void player.offsetWidth;
     player.classList.add('jump-v160');
@@ -28769,7 +28746,7 @@ async function startHurdleRun(p,humanIndex,runId){
     const seconds=(ms/1000).toFixed(2);
     const clean=hurdles.filter(h=>!h.hit).length;
 
-    beep(ms<=10500?1120:820,190,.045);
+    beep(ms<=10000?1120:820,190,.045);
 
     setTimeout(()=>{
       if(!isGameRunValid(runId))return;
@@ -28819,7 +28796,7 @@ async function startHurdleRun(p,humanIndex,runId){
 
     if(!onGround){
       jumpY+=jumpV*dt;
-      jumpV-=900*dt;
+      jumpV-=1120*dt;
       if(jumpY<=0){
         jumpY=0;
         jumpV=0;
@@ -28828,7 +28805,7 @@ async function startHurdleRun(p,humanIndex,runId){
     }
 
     for(const h of hurdles){
-      if(!h.hit&&!h.passed&&Math.abs(distance-h.m)<1.25&&jumpY<40){
+      if(!h.hit&&!h.passed&&Math.abs(distance-h.m)<1.05&&jumpY<34){
         h.hit=true;
         stumbleUntil=now+560;
 
@@ -28843,7 +28820,7 @@ async function startHurdleRun(p,humanIndex,runId){
       if(!h.passed&&distance>h.m+1.35){
         h.passed=true;
         passedCount++;
-        targetSpeed=Math.min(42.0,28+passedCount*1.15);
+        targetSpeed=Math.min(41.2,31.2+passedCount*1.0);
 
         const gate=world.querySelector(`[data-hurdle="${h.i}"]`);
         gate?.classList.add('passed-v160');
@@ -30086,11 +30063,11 @@ async function startTamaireMob(p,humanIndex,runId){
   screen.innerHTML=`
     <div class="tama-shell-v170 gameplay-fit">
       <div class="game-head">
-        <div><span class="kicker">${esc(p.name)}</span><h2>モブくん玉入れ</h2><p class="lead">10 BALLS / CONTINUOUS THROW</p></div>
+        <div><span class="kicker">${esc(p.name)}</span><h2>モブくん玉入れ</h2><p class="lead">12 BALLS / CONTINUOUS THROW</p></div>
         <div class="game-badge">${playBadge(humanIndex)}</div>
       </div>
       <div class="tama-hud-v170">
-        <div><span>THROWN</span><b id="tamaThrown170">0 / 10</b></div>
+        <div><span>THROWN</span><b id="tamaThrown170">0 / 12</b></div>
         <div><span>IN</span><b id="tamaIn170">0</b></div>
         <div><span>SCORE</span><b id="tamaScore170">0</b></div>
       </div>
@@ -30101,7 +30078,7 @@ async function startTamaireMob(p,humanIndex,runId){
         <div id="tamaReady170" class="tama-ready-v170"></div>
         <div id="tamaLayer170" class="tama-layer-v170"></div>
         <div id="tamaCall170" class="tama-call-v170">連投OK!</div>
-        <div class="tama-zone-v170">SWIPE UP / 10 BALLS</div>
+        <div class="tama-zone-v170">SWIPE UP / 12 BALLS</div>
       </div>
     </div>`;
 
@@ -30119,16 +30096,16 @@ async function startTamaireMob(p,humanIndex,runId){
   function local(e){const r=stage.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
 
   function finishIfReady(){
-    if(finished||launched<10||resolved<10)return;
+    if(finished||launched<12||resolved<12)return;
     finished=true;active=false;
     if(raf)cancelAnimationFrame(raf);
-    const score=ins*10;
-    state.records.tamaireMob[p.id]=score;
-    call.textContent=ins===10?'10 / 10!!':'TAMAIRE FINISH!';
+    const score=Math.min(100,ins*10);
+    state.records.tamaireMob[p.id]=ins;
+    call.textContent=ins>=10?'10 IN CLEAR!!':'TAMAIRE FINISH!';
     call.className='tama-call-v170 result-v170';
     setTimeout(()=>{
       if(isGameRunValid(runId)){
-        recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`${ins} / 10 IN`);
+        recordScreen(gameIndex,p,humanIndex,`${ins}<small> / 12 IN</small>`,`10個IN=100点`);
       }
     },650);
   }
@@ -30139,7 +30116,7 @@ async function startTamaireMob(p,humanIndex,runId){
     f.el.remove();
     resolved++;
     if(success){
-      ins++;inEl.textContent=ins;scoreEl.textContent=ins*10;
+      ins++;inEl.textContent=ins;scoreEl.textContent=Math.min(100,ins*10);
       call.textContent='IN!';
       call.className='tama-call-v170 in-v170';
       beep(900,70,.022);
@@ -30148,7 +30125,7 @@ async function startTamaireMob(p,humanIndex,runId){
   }
 
   stage.addEventListener('pointerdown',e=>{
-    if(!active||finished||launched>=10||!canThrow)return;
+    if(!active||finished||launched>=12||!canThrow)return;
     const pt=local(e);
     if(pt.y<stage.clientHeight*.60)return;
     e.preventDefault();
@@ -30179,8 +30156,8 @@ async function startTamaireMob(p,humanIndex,runId){
     });
 
     launched++;
-    thrownEl.textContent=`${launched} / 10`;
-    call.textContent=launched<10?'NEXT!':'LAST BALL!';
+    thrownEl.textContent=`${launched} / 12`;
+    call.textContent=launched<12?'NEXT!':'LAST BALL!';
     call.className='tama-call-v170';
     beep(560,40,.011);
 
@@ -36887,7 +36864,7 @@ async function startRocketPunch(p,humanIndex,runId){
       <div class="rocketp-hud-v194">
         <div><span>DISTANCE</span><b id="rocketDist194">0m</b></div>
         <div><span>POWER</span><b id="rocketPower194">0</b></div>
-        <div><span>BOOST</span><b id="rocketBoostState194">WAIT</b></div>
+        <div><span>MAX ZONE</span><b>98–100</b></div>
       </div>
 
       <div id="rocketViewport194" class="rocketp-viewport-v194">
@@ -36960,9 +36937,6 @@ async function startRocketPunch(p,humanIndex,runId){
             <span>HOLD</span><b>PUNCH!</b>
           </button>
 
-          <button id="rocketBoostBtn194" class="rocketp-boost-v194" type="button" disabled>
-            BOOST!
-          </button>
         </div>
       </div>
 
@@ -36980,7 +36954,6 @@ async function startRocketPunch(p,humanIndex,runId){
 
   const distEl=document.getElementById('rocketDist194');
   const powerEl=document.getElementById('rocketPower194');
-  const boostState=document.getElementById('rocketBoostState194');
 
   const track=document.getElementById('rocketChargeTrack194');
   const fill=document.getElementById('rocketChargeFill194');
@@ -36988,7 +36961,6 @@ async function startRocketPunch(p,humanIndex,runId){
   const chargeText=document.getElementById('rocketChargeText194');
 
   const punchBtn=document.getElementById('rocketPunchBtn194');
-  const boostBtn=document.getElementById('rocketBoostBtn194');
   const call=document.getElementById('rocketCall194');
 
   let active=false;
@@ -37009,10 +36981,6 @@ async function startRocketPunch(p,humanIndex,runId){
   let last=performance.now();
   let raf=null;
 
-  let boostUsed=false;
-  let boostShown=false;
-  let boostDeadline=0;
-  const boostAt=rand(980,1750);
 
   let lastChargeSpark=0;
   let lastTrail=0;
@@ -37029,7 +36997,7 @@ async function startRocketPunch(p,humanIndex,runId){
 
     if(charge>100){
       viewport.classList.add('charge-over-v194');
-    }else if(charge>=96){
+    }else if(charge>=98){
       viewport.classList.add('charge-max-v194');
     }else if(charge>=55){
       viewport.classList.add('charge-hot-v194');
@@ -37043,7 +37011,7 @@ async function startRocketPunch(p,humanIndex,runId){
     lastChargeSpark=now;
 
     const count=
-      charge>=96?3:
+      charge>=98?3:
       charge>=55?2:1;
 
     for(let i=0;i<count;i++){
@@ -37112,7 +37080,7 @@ async function startRocketPunch(p,humanIndex,runId){
     chargeText.textContent=
       charge>100
         ? 'DEAD ZONE / OVERHEAT'
-        : charge>=90
+        : charge>=98
           ? 'MAX PUNCH!!'
           : charge<25
             ? 'DEAD ZONE'
@@ -37184,8 +37152,8 @@ async function startRocketPunch(p,humanIndex,runId){
           ? charge
           : clamp(100-overheat*4.2,12,100);
 
-    speed=300+effectivePower*4.05;
-    energy=(72+effectivePower*1.48)*clamp(1-overheat*.022,.50,1);
+    speed=248+effectivePower*3.62;
+    energy=(50+effectivePower*1.05+(charge>=98&&charge<=100?(charge-97)*26:0))*clamp(1-overheat*.030,.42,1);
     flightStart=performance.now();
 
     call.textContent=
@@ -37200,60 +37168,6 @@ async function startRocketPunch(p,humanIndex,runId){
 
     beep(210+effectivePower*7,155,.05);
   }
-
-  function showBoost(now){
-    if(boostShown||boostUsed||distance<boostAt)return;
-
-    boostShown=true;
-    boostDeadline=now+1250;
-
-    boostBtn.disabled=false;
-    boostBtn.classList.add('show-v194');
-
-    boostState.textContent='NOW!';
-    call.textContent='BOOST!!';
-
-    beep(1050,80,.03);
-  }
-
-  boostBtn.addEventListener('pointerdown',e=>{
-    if(
-      !launched||
-      finished||
-      boostUsed||
-      boostBtn.disabled
-    )return;
-
-    e.preventDefault();
-
-    boostUsed=true;
-    boostBtn.disabled=true;
-
-    boostBtn.classList.remove('show-v194');
-    boostBtn.classList.add('used-v194');
-
-    boostState.textContent='USED';
-
-    speed+=78;
-    energy+=32;
-
-    fist.classList.remove('boost-v194');
-    void fist.offsetWidth;
-    fist.classList.add('boost-v194');
-
-    viewport.classList.remove('boost-hit-v194');
-    void viewport.offsetWidth;
-    viewport.classList.add('boost-hit-v194');
-
-    call.textContent='BOOST SUCCESS!';
-
-    beep(1320,110,.045);
-
-    setTimeout(
-      ()=>viewport.classList.remove('boost-hit-v194'),
-      320
-    );
-  },{passive:false});
 
   punchBtn.addEventListener('pointerdown',e=>{
     if(
@@ -37327,8 +37241,8 @@ async function startRocketPunch(p,humanIndex,runId){
 
       speed*=
         clamp(
-          1-o.t/255,
-          .66,.92
+          1-o.t/225,
+          .62,.90
         );
 
       call.textContent=
@@ -37365,7 +37279,6 @@ async function startRocketPunch(p,humanIndex,runId){
     active=false;
 
     punchBtn.disabled=true;
-    boostBtn.disabled=true;
 
     if(raf)cancelAnimationFrame(raf);
 
@@ -37439,26 +37352,14 @@ async function startRocketPunch(p,humanIndex,runId){
     }
 
     if(launched){
-      showBoost(now);
-
-      if(
-        boostShown&&
-        !boostUsed&&
-        now>=boostDeadline
-      ){
-        boostBtn.disabled=true;
-        boostBtn.classList.remove('show-v194');
-        boostState.textContent='MISS';
-      }
-
       const prev=distance;
 
       speed=
         Math.max(
           0,
-          speed-(5.0+overheat*1.35)*dt
+          speed-(6.8+overheat*1.55)*dt
         );
-      energy=Math.max(0,energy-(4.5+overheat*.72)*dt);
+      energy=Math.max(0,energy-(5.6+overheat*.90)*dt);
 
       distance+=speed*dt;
 
@@ -37780,19 +37681,19 @@ async function startFlagRaise(p,humanIndex,runId){
 // V10.97 GAME 108 — モブくん空飛ぶじゅうたん
 // =========================================================
 async function startFlyingCarpet(p,humanIndex,runId){
-  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='flyingCarpet'),GAME_MS=13000,OBSTACLE_COUNT=18;
-  screen.innerHTML=`<div class="carpet-shell-v197 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん空飛ぶじゅうたん</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="carpet-hud-v197"><div><span>TIME</span><b id="carpetTime199">13.00</b></div><div><span>DODGE</span><b id="carpetDodge199">0 / 18</b></div><div><span>SCORE</span><b id="carpetScore199">0</b></div></div><div id="carpetStage199" class="carpet-stage-v197 carpet-stage-v199"><div class="carpet-sky-v197"></div><div class="carpet-cloud-v197 c1"></div><div class="carpet-cloud-v197 c2"></div><div class="carpet-cloud-v197 c3"></div><div id="carpetWind199" class="carpet-wind-v197"></div><div id="carpetObjects199" class="carpet-objects-v197"></div><div id="carpetActor199" class="carpet-actor-v197 carpet-actor-v199"><img src="icon/01.png" draggable="false" alt=""><div class="carpet-rug-v197"><i></i><i></i></div></div><div id="carpetJudge199" class="carpet-judge-v197"></div></div><div class="carpet-controls-v197 carpet-controls-v199"><button id="carpetUp199" type="button" disabled>▲<small>UP</small></button><button id="carpetDown199" type="button" disabled>▼<small>DOWN</small></button></div></div>`;
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='flyingCarpet'),GAME_MS=15000,OBSTACLE_COUNT=15;
+  screen.innerHTML=`<div class="carpet-shell-v197 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん空飛ぶじゅうたん</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="carpet-hud-v197"><div><span>TIME</span><b id="carpetTime199">15.00</b></div><div><span>DODGE</span><b id="carpetDodge199">0 / 15</b></div><div><span>SCORE</span><b id="carpetScore199">0</b></div></div><div id="carpetStage199" class="carpet-stage-v197 carpet-stage-v199"><div class="carpet-sky-v197"></div><div class="carpet-cloud-v197 c1"></div><div class="carpet-cloud-v197 c2"></div><div class="carpet-cloud-v197 c3"></div><div id="carpetWind199" class="carpet-wind-v197"></div><div id="carpetObjects199" class="carpet-objects-v197"></div><div id="carpetActor199" class="carpet-actor-v197 carpet-actor-v199"><img src="icon/01.png" draggable="false" alt=""><div class="carpet-rug-v197"><i></i><i></i></div></div><div id="carpetJudge199" class="carpet-judge-v197"></div></div><div class="carpet-controls-v197 carpet-controls-v199"><button id="carpetUp199" type="button" disabled>▲<small>UP</small></button><button id="carpetDown199" type="button" disabled>▼<small>DOWN</small></button></div></div>`;
   const stage=document.getElementById('carpetStage199'),layer=document.getElementById('carpetObjects199'),actor=document.getElementById('carpetActor199'),upBtn=document.getElementById('carpetUp199'),downBtn=document.getElementById('carpetDown199'),timeEl=document.getElementById('carpetTime199'),dodgeEl=document.getElementById('carpetDodge199'),scoreEl=document.getElementById('carpetScore199'),judge=document.getElementById('carpetJudge199'),windEl=document.getElementById('carpetWind199');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight,ACTOR_X=84,actorH=66;let y=H*.50,vy=0,up=false,down=false,active=false,finished=false,raf=null,last=performance.now(),start=0,endAt=0,score=0,dodged=0,hits=0,invulnUntil=0;const startX=W+95,spacing=Math.max(205,W*.55),obstacles=[];
   for(let i=0;i<OBSTACLE_COUNT;i++){const radius=27+(i%3)*3,base=H*(.26+((i*31)%46)/100),amp=H*(.13+((i*17)%12)/100),freq=1.35+(i%5)*.13,phase=(i*.91)%6.283,x=startX+i*spacing,o={i,x,base,amp,freq,phase,radius,done:false,hit:false,el:null};const el=document.createElement('div');el.className=`carpet-spikeball-v199 size-${i%3}`;el.innerHTML=`<b>MOB</b>${Array.from({length:10},(_,k)=>`<i style="--r:${k*36}deg"></i>`).join('')}`;layer.appendChild(el);o.el=el;obstacles.push(o)}
-  const pillars=[3,7,11,15].map((idx,i)=>{const x=startX+(idx+.55)*spacing,gapY=H*(.40+((i*19)%20)/100),gapH=116+(i%2)*12,el=document.createElement('div');el.className='carpet-pillar-gate-v204';el.innerHTML='<i class="top-v204"></i><i class="bottom-v204"></i>';layer.appendChild(el);return{x,gapY,gapH,el,hit:false,done:false}});const ballY=(o,t)=>clamp(o.base+Math.sin(t*o.freq+o.phase)*o.amp,38,H-42);
+  const pillars=[3,8,12].map((idx,i)=>{const x=startX+(idx+.55)*spacing,gapY=H*(.40+((i*19)%20)/100),gapH=116+(i%2)*12,el=document.createElement('div');el.className='carpet-pillar-gate-v204';el.innerHTML='<i class="top-v204"></i><i class="bottom-v204"></i>';layer.appendChild(el);return{x,gapY,gapH,el,hit:false,done:false}});const ballY=(o,t)=>clamp(o.base+Math.sin(t*o.freq+o.phase)*o.amp,38,H-42);
   obstacles.forEach(o=>{const by=ballY(o,0);o.el.style.transform=`translate3d(${o.x-o.radius}px,${by-o.radius}px,0)`});pillars.forEach(g=>{g.el.style.setProperty('--gap-top',`${g.gapY-g.gapH/2}px`);g.el.style.setProperty('--gap-bottom',`${H-(g.gapY+g.gapH/2)}px`);g.el.style.transform=`translate3d(${g.x}px,0,0)`});
-  const windWindows=[{a:2.9,b:3.8,force:-115,label:'WIND ▲'},{a:6.4,b:7.3,force:122,label:'WIND ▼'},{a:10.1,b:11.0,force:-130,label:'WIND ▲'}];const hold=(btn,set)=>{btn.addEventListener('pointerdown',e=>{if(!active)return;e.preventDefault();set(true);try{btn.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});const off=e=>{e.preventDefault();set(false)};btn.addEventListener('pointerup',off,{passive:false});btn.addEventListener('pointercancel',off,{passive:false})};hold(upBtn,v=>up=v);hold(downBtn,v=>down=v);
+  const windWindows=[{a:3.5,b:4.4,force:-105,label:'WIND ▲'},{a:8.0,b:8.9,force:112,label:'WIND ▼'},{a:12.0,b:12.8,force:-118,label:'WIND ▲'}];const hold=(btn,set)=>{btn.addEventListener('pointerdown',e=>{if(!active)return;e.preventDefault();set(true);try{btn.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});const off=e=>{e.preventDefault();set(false)};btn.addEventListener('pointerup',off,{passive:false});btn.addEventListener('pointercancel',off,{passive:false})};hold(upBtn,v=>up=v);hold(downBtn,v=>down=v);
   function renderActor(){actor.style.transform=`translate3d(${ACTOR_X-54}px,${y-actorH/2}px,0) rotate(${clamp(vy*.018,-7,7)}deg)`}function pop(text,good=true){judge.textContent=text;judge.className=`carpet-judge-v197 ${good?'good':'bad'}`;setTimeout(()=>{if(judge.textContent===text){judge.textContent='';judge.className='carpet-judge-v197'}},390)}
-  async function finish(){if(finished)return;finished=true;active=false;upBtn.disabled=true;downBtn.disabled=true;if(raf)cancelAnimationFrame(raf);if(hits===0)score+=10;score=clamp(Math.round(score),0,100);state.records.flyingCarpet[p.id]=score;scoreEl.textContent=score;timeEl.textContent='0.00';pop(hits===0?'NO DAMAGE +10!':`${dodged}/${OBSTACLE_COUNT} DODGE`,true);beep(score>=90?1080:score>=60?760:480,150,.035);await wait(650);if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`${dodged}/${OBSTACLE_COUNT} DODGE / 柱4組 / HIT ${hits}`)}
+  async function finish(){if(finished)return;finished=true;active=false;upBtn.disabled=true;downBtn.disabled=true;if(raf)cancelAnimationFrame(raf);if(hits===0)score+=10;score=clamp(Math.round(score),0,100);state.records.flyingCarpet[p.id]=score;scoreEl.textContent=score;timeEl.textContent='0.00';pop(hits===0?'NO DAMAGE +10!':`${dodged}/${OBSTACLE_COUNT} DODGE`,true);beep(score>=90?1080:score>=60?760:480,150,.035);await wait(650);if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`${dodged}/${OBSTACLE_COUNT} DODGE / 柱3組 / HIT ${hits}`)}
   renderActor();actor.classList.add('countdown-ready-v198');void stage.offsetHeight;if(!(await countdown('FLYING CARPET',runId,{transparent:true})))return;active=true;upBtn.disabled=false;downBtn.disabled=false;last=performance.now();start=last;endAt=start+GAME_MS;const scrollSpeed=(startX+(OBSTACLE_COUNT-1)*spacing+100-ACTOR_X)/(GAME_MS/1000);
   function hitHazard(now,label){if(now<invulnUntil)return false;hits++;score-=7;invulnUntil=now+560;actor.classList.remove('hit');void actor.offsetWidth;actor.classList.add('hit');pop(`${label} -7`,false);beep(170,100,.027);score=clamp(score,0,100);scoreEl.textContent=score;return true}
-  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;const elapsed=(now-start)/1000;let wind=0,label='';windWindows.forEach(w=>{if(elapsed>=w.a&&elapsed<=w.b){wind+=w.force;label=w.label}});windEl.textContent=label;windEl.classList.toggle('show',!!label);const input=(down?1:0)-(up?1:0);vy+=input*1180*dt+wind*dt;vy*=Math.pow(.972,dt*60);vy=clamp(vy,-510,510);y+=vy*dt;y=clamp(y,39,H-47);if(y<=40||y>=H-48)vy*=-.10;renderActor();
-    obstacles.forEach(o=>{const sx=o.x-scrollSpeed*elapsed,by=ballY(o,elapsed);o.el.style.transform=`translate3d(${sx-o.radius}px,${by-o.radius}px,0) rotate(${elapsed*115+o.i*23}deg)`;if(!o.hit){const dx=Math.abs(sx-(ACTOR_X+28)),dy=Math.abs(by-y);if(dx<=o.radius+31&&dy<=o.radius+20&&hitHazard(now,'SPIKE HIT')){o.hit=true;vy+=(y<by?-1:1)*135;o.el.classList.add('hit-v199')}}if(!o.done&&sx<ACTOR_X-60){o.done=true;dodged++;score+=5;dodgeEl.textContent=`${dodged} / ${OBSTACLE_COUNT}`;if(!o.hit){pop('DODGE +5');beep(760,38,.012)}score=clamp(score,0,100);scoreEl.textContent=score}});
+  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;const elapsed=(now-start)/1000;let wind=0,label='';windWindows.forEach(w=>{if(elapsed>=w.a&&elapsed<=w.b){wind+=w.force;label=w.label}});windEl.textContent=label;windEl.classList.toggle('show',!!label);const input=(down?1:0)-(up?1:0);vy+=input*1060*dt+wind*dt;vy*=Math.pow(.972,dt*60);vy=clamp(vy,-460,460);y+=vy*dt;y=clamp(y,39,H-47);if(y<=40||y>=H-48)vy*=-.10;renderActor();
+    obstacles.forEach(o=>{const sx=o.x-scrollSpeed*elapsed,by=ballY(o,elapsed);o.el.style.transform=`translate3d(${sx-o.radius}px,${by-o.radius}px,0) rotate(${elapsed*115+o.i*23}deg)`;if(!o.hit){const dx=Math.abs(sx-(ACTOR_X+28)),dy=Math.abs(by-y);if(dx<=o.radius+31&&dy<=o.radius+20&&hitHazard(now,'SPIKE HIT')){o.hit=true;vy+=(y<by?-1:1)*135;o.el.classList.add('hit-v199')}}if(!o.done&&sx<ACTOR_X-60){o.done=true;dodged++;score+=6;dodgeEl.textContent=`${dodged} / ${OBSTACLE_COUNT}`;if(!o.hit){pop('DODGE +6');beep(760,38,.012)}score=clamp(score,0,100);scoreEl.textContent=score}});
     pillars.forEach(g=>{const sx=g.x-scrollSpeed*elapsed;g.el.style.transform=`translate3d(${sx}px,0,0)`;if(!g.hit&&Math.abs(sx-(ACTOR_X+25))<54&&(y<g.gapY-g.gapH/2+25||y>g.gapY+g.gapH/2-25)){if(hitHazard(now,'PILLAR HIT'))g.hit=true}if(!g.done&&sx<ACTOR_X-65){g.done=true;if(!g.hit){pop('GATE CLEAR!');beep(850,34,.01)}}});
     const left=Math.max(0,endAt-now);timeEl.textContent=(left/1000).toFixed(2);if(left<=0||dodged>=OBSTACLE_COUNT){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
 }
