@@ -27110,7 +27110,18 @@ async function startPoiGameMob(p,humanIndex,runId){
   function binInfo(){const sr=stage.getBoundingClientRect();return binEls.map(el=>{const r=el.getBoundingClientRect();return {color:el.dataset.bin,x:r.left-sr.left+r.width/2,y:r.top-sr.top+r.height*.58,el}})}
   function removePaper(o){o.dead=true;o.el.remove();const k=papers.indexOf(o);if(k>=0)papers.splice(k,1)}
   function spawn(){if(finished||spawnIndex>=queue.length)return;const color=queue[spawnIndex++],el=document.createElement('div'),o={color,el,x:W+34,y:rand(H*.54,H*.70),rot:randi(-25,25),flying:false,dead:false};el.className=`poi-paper-v204 ${color}`;el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot}deg)`;layer.appendChild(el);papers.push(o)}
-  function currentPaper(){const available=papers.filter(o=>!o.dead&&!o.flying&&o.x<W+15&&o.x>36);if(!available.length)return null;const handX=W*.5,handY=H*.76;return available.sort((a,b)=>Math.hypot(a.x-handX,a.y-handY)-Math.hypot(b.x-handX,b.y-handY))[0]}
+  function currentPaper(){
+    // V11.08: スワイプ対象は必ず「列の先頭＝最も左まで進んだ未処理ゴミ」。
+    // 指の位置・モブくんとの距離・ゴミの高さでは選ばない。
+    const available=papers.filter(o=>!o.dead&&!o.flying&&o.x<W+15&&o.x>-48);
+    if(!available.length)return null;
+    let front=available[0];
+    for(let i=1;i<available.length;i++){
+      const o=available[i];
+      if(o.x<front.x||(Math.abs(o.x-front.x)<0.01&&papers.indexOf(o)<papers.indexOf(front)))front=o;
+    }
+    return front;
+  }
   function popPoi(target){const pop=target.el.querySelector('.poi-pop-v207');if(!pop)return;pop.classList.remove('show-v207');void pop.offsetWidth;pop.classList.add('show-v207')}
   function flyTo(o,target,ok,label){if(o.dead||o.flying)return;o.flying=true;const x0=o.x,y0=o.y,t0=performance.now(),dur=340;call.textContent=label;target.el.classList.add('catch-v204');
     function step(now){if(!isGameRunValid(runId)||finished||o.dead)return;const q=clamp((now-t0)/dur,0,1),ease=1-Math.pow(1-q,2);o.x=x0+(target.x-x0)*ease;o.y=y0+(target.y-y0)*ease-Math.sin(Math.PI*q)*78;o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot+q*330}deg) scale(${1-q*.18})`;if(q<1){requestAnimationFrame(step);return}target.el.classList.remove('catch-v204');if(o.color==='black'){miss++;beep(170,55,.018);call.textContent='黒はトラップ！'}else if(ok){score++;popPoi(target);beep(820,45,.014);call.textContent='ポイ！'}else{miss++;beep(170,55,.018);call.textContent='色が違う！'}scoreEl.textContent=`${score} / 20`;missEl.textContent=miss;removePaper(o)}requestAnimationFrame(step)
