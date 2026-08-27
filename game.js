@@ -26988,7 +26988,7 @@ async function startSphereMob(p,humanIndex,runId){
   const field=document.getElementById('sphereField202'),layer=document.getElementById('sphereLayer202'),targetEl=document.getElementById('sphereTarget202'),aliveEl=document.getElementById('sphereAlive202'),outEl=document.getElementById('sphereOut202'),scoreEl=document.getElementById('sphereScore202'),call=document.getElementById('sphereCall202');
   void field.offsetHeight;const W=field.clientWidth,H=field.clientHeight,cx=W/2,cy=H/2,R=Math.min(W,H)*.43,BR=25;
   const starts=[[-45,0],[48,0],[0,-55],[-35,48],[38,48]];
-  const balls=starts.map((s,i)=>({i,x:cx+s[0],y:cy+s[1],vx:0,vy:0,tx:cx+s[0],ty:cy+s[1],alive:true,nextThink:0,el:null}));const human=0;
+  const balls=starts.map((s,i)=>({i,x:cx+s[0],y:cy+s[1],vx:0,vy:0,tx:cx+s[0],ty:cy+s[1],alive:true,nextThink:0,bumpUntil:0,el:null}));const human=0;
   balls.forEach(b=>{const el=document.createElement('div');el.className=`sphere-ball-v202 ${b.i===human?'you-v202':'cpu-v202'}`;el.innerHTML=`<img src="icon/01.png" draggable="false" alt=""><b>${b.i===human?'YOU':b.i+1}</b>`;layer.appendChild(el);b.el=el});
   let active=false,finished=false,raf=null,last=performance.now(),start=0,eliminated=0;
   function render(){balls.forEach(b=>{b.el.style.transform=`translate3d(${b.x-BR}px,${b.y-BR}px,0)`})}
@@ -27006,8 +27006,21 @@ async function startSphereMob(p,humanIndex,runId){
   function finish(score,text){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.sphereMob[p.id]=score;scoreEl.textContent=score;call.textContent=text;call.classList.add('result-v202');beep(score===100?1180:score>=60?880:score>=20?610:220,180,.045);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,text)},900)}
   function thinkCpu(b,now){if(now<b.nextThink)return;b.nextThink=now+rand(420,900);const targets=balls.filter(x=>x.alive&&x.i!==b.i);const t=targets[randi(0,targets.length-1)];if(!t)return;const aggression=now-start>12000?1.20:1;b.tx=clamp(t.x+rand(-30,30),15,W-15);b.ty=clamp(t.y+rand(-30,30),15,H-15);if(Math.random()<.18){b.tx=cx+rand(-R*.75,R*.75);b.ty=cy+rand(-R*.75,R*.75)}}
   function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.028,(now-last)/1000);last=now;
-    balls.forEach(b=>{if(!b.alive)return;if(b.i!==human)thinkCpu(b,now);const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy)||1;const acc=(b.i===human?355:330)*(now-start>14000?1.16:1);if(d>7){b.vx+=dx/d*acc*dt;b.vy+=dy/d*acc*dt}const max=b.i===human?225:210;const sp=Math.hypot(b.vx,b.vy);if(sp>max){b.vx=b.vx/sp*max;b.vy=b.vy/sp*max}b.vx*=Math.pow(.982,dt*60);b.vy*=Math.pow(.982,dt*60);b.x+=b.vx*dt;b.y+=b.vy*dt});
-    for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(!a.alive||!b.alive)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.1;if(d<BR*2){const nx=dx/d,ny=dy/d,over=BR*2-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const rvx=b.vx-a.vx,rvy=b.vy-a.vy,closing=-(rvx*nx+rvy*ny);const impact=42+clamp(Math.max(0,closing)*1.22,0,235);const bounceGain=.545;a.vx-=nx*impact*bounceGain;a.vy-=ny*impact*bounceGain;b.vx+=nx*impact*bounceGain;b.vy+=ny*impact*bounceGain;for(const q of [a,b]){const limit=q.i===human?225:210;const speed=Math.hypot(q.vx,q.vy);if(speed>limit){q.vx=q.vx/speed*limit;q.vy=q.vy/speed*limit}}a.el.classList.add('bump-v202');b.el.classList.add('bump-v202');setTimeout(()=>{a.el?.classList.remove('bump-v202');b.el?.classList.remove('bump-v202')},120);beep(240+Math.min(380,impact),28,.009)}}
+    balls.forEach(b=>{if(!b.alive)return;if(b.i!==human)thinkCpu(b,now);const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy)||1;const acc=(b.i===human?355:330)*(now-start>14000?1.16:1);if(d>7&&now>=b.bumpUntil){b.vx+=dx/d*acc*dt;b.vy+=dy/d*acc*dt}const max=b.i===human?225:210;const sp=Math.hypot(b.vx,b.vy);if(sp>max){b.vx=b.vx/sp*max;b.vy=b.vy/sp*max}b.vx*=Math.pow(.982,dt*60);b.vy*=Math.pow(.982,dt*60);b.x+=b.vx*dt;b.y+=b.vy*dt});
+    for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(!a.alive||!b.alive)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.1;if(d<BR*2){const nx=dx/d,ny=dy/d,over=BR*2-d;
+      // V11.13: overlap is resolved a few pixels at a time so collision never looks like a teleport.
+      const correction=Math.min(over,3.2);a.x-=nx*correction*.5;a.y-=ny*correction*.5;b.x+=nx*correction*.5;b.y+=ny*correction*.5;
+      const rvx=b.vx-a.vx,rvy=b.vy-a.vy,normalRel=rvx*nx+rvy*ny;
+      if(normalRel<0){
+        // Equal-mass collision with restitution below 1.0: visible rebound without adding energy.
+        const restitution=.84,impulse=-(1+restitution)*normalRel*.5;
+        a.vx-=nx*impulse;a.vy-=ny*impulse;b.vx+=nx*impulse;b.vy+=ny*impulse;
+        // Briefly suspend steering so the rebound is actually visible before target acceleration resumes.
+        a.bumpUntil=Math.max(a.bumpUntil,now+145);b.bumpUntil=Math.max(b.bumpUntil,now+145);
+        for(const q of [a,b]){const limit=q.i===human?225:210;const speed=Math.hypot(q.vx,q.vy);if(speed>limit){q.vx=q.vx/speed*limit;q.vy=q.vy/speed*limit}}
+        a.el.classList.add('bump-v202');b.el.classList.add('bump-v202');setTimeout(()=>{a.el?.classList.remove('bump-v202');b.el?.classList.remove('bump-v202')},120);beep(270+Math.min(260,Math.abs(normalRel)),28,.009)
+      }
+    }}
     balls.forEach(b=>{if(!b.alive)return;const d=Math.hypot(b.x-cx,b.y-cy);if(d>R+BR*.35)eliminate(b)});
     if(!finished&&now-start>15000){balls.forEach(b=>{if(!b.alive)return;const dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy)||1;b.vx+=dx/d*38*dt;b.vy+=dy/d*38*dt});call.textContent='FINAL RUSH!'}
     render();if(!finished&&now-start>26000){const living=balls.filter(b=>b.alive).sort((a,b)=>Math.hypot(b.x-cx,b.y-cy)-Math.hypot(a.x-cx,a.y-cy));if(living.length>1)eliminate(living[0]);}
