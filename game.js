@@ -355,7 +355,7 @@ const GAMES=[
   {no:117,key:"cheerLeaderMob",title:"モブくんは応援団長",sub:"7秒でメガホンを描き、頑張れ～！！の文字サイズで最大100点",legacy:131},
   {no:118,key:"zeroOrHundredMob",title:"モブくん0 or 100",sub:"線多めの3択あみだくじ。0が2つ、100が1つ",legacy:133},
   {no:119,key:"fireworkStandMob",title:"モブくん打ち上げ台を作る",sub:"7秒で花火の打ち上げ台を描き、MOB花火が飛んだ距離を競う",legacy:134},
-  {no:120,key:"poiGameMob",title:"モブくんのポイゲーム",sub:"手前へ流れてくる赤・青・黄のゴミを、画面スワイプだけで同じ色のゴミ箱へ分別。黒いゴミはトラップ",legacy:135},
+  {no:120,key:"poiGameMob",title:"モブくんのポイゲーム",sub:"手前へ流れてくる赤・青・黄のゴミをスワイプで分別。先頭の黒いトラップはタップで消す",legacy:135},
   {no:121,key:"cleaningMob",title:"モブくんのお掃除",sub:"見下ろし型。長押し移動＋吸引で30個すべてを掃除するタイムアタック",legacy:136},
   {no:122,key:"findMob",title:"モブくんを探せ！",sub:"10秒以内に本物1体を探し、指で丸く囲う。時間切れ後は答えを表示",legacy:137}
 ];
@@ -3206,7 +3206,7 @@ function showGameIntro(index){
   }else if(legacyIndex===134){
     rules=`<li>7秒間で花火の打ち上げ台を自由に描きます。時間終了後、その台から花火を発射します。</li><li>描いた台をそのまま地上へ置き、1秒震えてから発射。「MOB」の文字花火と粒子が広がって順に消えます。最大1000mです。</li>`;
   }else if(legacyIndex===135){
-    rules=`<li>右から手前へ流れてくる赤・青・黄色のくしゃくしゃ紙を、ゴミ自体には触らず画面を上左・上・上右へスワイプして分別します。</li><li>黒いゴミはトラップなのでスワイプせず流します。正解するとゴミ箱の上へ「ポイ！」。20個正解で100点です。</li>`;
+    rules=`<li>右から手前へ流れてくる赤・青・黄色のくしゃくしゃ紙を、画面を上左・上・上右へスワイプして分別します。スワイプでは必ず列の先頭のゴミが動きます。</li><li>先頭が黒いゴミなら、その黒いゴミをタップして消します。黒は点数にもMISSにも入りません。正解するとゴミ箱の上へ「ポイ！」。20個正解で100点です。</li>`;
   }else if(legacyIndex===136){
     rules=`<li>見下ろし型。長押ししたまま移動すると掃除機で周囲のゴミを吸います。</li><li>30個すべてを吸い終えるまでのタイムを競います。2.50秒以下が100点ラインです。</li>`;
   }else if(legacyIndex===137){
@@ -27105,7 +27105,7 @@ async function startFireworkStandMob(p,humanIndex,runId){
 
 async function startPoiGameMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='poiGameMob');
-  screen.innerHTML=`<div class="poi-shell-v204 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのポイゲーム</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="poiTime204">10.0</b></div><div><span>IN</span><b id="poiScore204">0 / 20</b></div><div><span>MISS</span><b id="poiMiss204">0</b></div></div><div id="poiStage204" class="poi-stage-v204"><div class="poi-bins-v204"><div class="poi-bin-v204 red" data-bin="red"><i class="poi-bin-lid-v207"></i><i class="poi-bin-slot-v207"></i><b>RED</b><span class="poi-pop-v207">ポイ！</span></div><div class="poi-bin-v204 blue" data-bin="blue"><i class="poi-bin-lid-v207"></i><i class="poi-bin-slot-v207"></i><b>BLUE</b><span class="poi-pop-v207">ポイ！</span></div><div class="poi-bin-v204 yellow" data-bin="yellow"><i class="poi-bin-lid-v207"></i><i class="poi-bin-slot-v207"></i><b>YELLOW</b><span class="poi-pop-v207">ポイ！</span></div></div><div id="poiPaperLayer205" class="poi-paper-layer-v205"></div><div class="poi-swipe-zone-v207"><i>↖</i><b>↑</b><i>↗</i></div><div class="poi-mob-v204"><img src="icon/01.png" draggable="false" alt=""><span>SWIPE!</span></div><div id="poiCall204" class="poi-call-v204">ゴミに触らず方向へスワイプ！</div></div></div>`;
+  screen.innerHTML=`<div class="poi-shell-v204 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのポイゲーム</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="poiTime204">10.0</b></div><div><span>IN</span><b id="poiScore204">0 / 20</b></div><div><span>MISS</span><b id="poiMiss204">0</b></div></div><div id="poiStage204" class="poi-stage-v204"><div class="poi-bins-v204"><div class="poi-bin-v204 red" data-bin="red"><i class="poi-bin-lid-v207"></i><i class="poi-bin-slot-v207"></i><b>RED</b><span class="poi-pop-v207">ポイ！</span></div><div class="poi-bin-v204 blue" data-bin="blue"><i class="poi-bin-lid-v207"></i><i class="poi-bin-slot-v207"></i><b>BLUE</b><span class="poi-pop-v207">ポイ！</span></div><div class="poi-bin-v204 yellow" data-bin="yellow"><i class="poi-bin-lid-v207"></i><i class="poi-bin-slot-v207"></i><b>YELLOW</b><span class="poi-pop-v207">ポイ！</span></div></div><div id="poiPaperLayer205" class="poi-paper-layer-v205"></div><div class="poi-swipe-zone-v207"><i>↖</i><b>↑</b><i>↗</i></div><div class="poi-mob-v204"><img src="icon/01.png" draggable="false" alt=""><span>SWIPE!</span></div><div id="poiCall204" class="poi-call-v204">色ゴミはスワイプ！ 黒トラップはタップ！</div></div></div>`;
   const stage=document.getElementById('poiStage204'),layer=document.getElementById('poiPaperLayer205'),timeEl=document.getElementById('poiTime204'),scoreEl=document.getElementById('poiScore204'),missEl=document.getElementById('poiMiss204'),call=document.getElementById('poiCall204'),binEls=[...screen.querySelectorAll('[data-bin]')];void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let score=0,miss=0,start=0,last=performance.now(),raf=null,finished=false,spawnIndex=0,nextSpawn=0,swipe=null;const queue=shuffle([...Array.from({length:22},(_,i)=>['red','blue','yellow'][i%3]),...Array(3).fill('black')]);const papers=[];
   function binInfo(){const sr=stage.getBoundingClientRect();return binEls.map(el=>{const r=el.getBoundingClientRect();return {color:el.dataset.bin,x:r.left-sr.left+r.width/2,y:r.top-sr.top+r.height*.58,el}})}
   function removePaper(o){o.dead=true;o.el.remove();const k=papers.indexOf(o);if(k>=0)papers.splice(k,1)}
@@ -27126,8 +27126,26 @@ async function startPoiGameMob(p,humanIndex,runId){
   function flyTo(o,target,ok,label){if(o.dead||o.flying)return;o.flying=true;const x0=o.x,y0=o.y,t0=performance.now(),dur=340;call.textContent=label;target.el.classList.add('catch-v204');
     function step(now){if(!isGameRunValid(runId)||finished||o.dead)return;const q=clamp((now-t0)/dur,0,1),ease=1-Math.pow(1-q,2);o.x=x0+(target.x-x0)*ease;o.y=y0+(target.y-y0)*ease-Math.sin(Math.PI*q)*78;o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot+q*330}deg) scale(${1-q*.18})`;if(q<1){requestAnimationFrame(step);return}target.el.classList.remove('catch-v204');if(o.color==='black'){miss++;beep(170,55,.018);call.textContent='黒はトラップ！'}else if(ok){score++;popPoi(target);beep(820,45,.014);call.textContent='ポイ！'}else{miss++;beep(170,55,.018);call.textContent='色が違う！'}scoreEl.textContent=`${score} / 20`;missEl.textContent=miss;removePaper(o)}requestAnimationFrame(step)
   }
+  function tapFrontTrap(clientX,clientY){
+    const o=currentPaper();
+    if(!o||o.color!=='black')return false;
+    const sr=stage.getBoundingClientRect();
+    const px=clientX-sr.left,py=clientY-sr.top;
+    // 黒トラップ自体をタップした時だけ除去。回転中でも押しやすいよう少し広め。
+    const cx=o.x+28,cy=o.y+25.5;
+    if(Math.hypot(px-cx,py-cy)>43)return false;
+    o.dead=true;
+    const k=papers.indexOf(o);if(k>=0)papers.splice(k,1);
+    o.el.style.transition='transform .13s ease,opacity .13s ease';
+    o.el.style.opacity='0';
+    o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot+35}deg) scale(.25)`;
+    call.textContent='トラップ解除！';
+    beep(430,45,.014);
+    setTimeout(()=>o.el.remove(),140);
+    return true;
+  }
   stage.addEventListener('pointerdown',e=>{if(finished||!start)return;e.preventDefault();swipe={id:e.pointerId,x:e.clientX,y:e.clientY};try{stage.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});
-  stage.addEventListener('pointerup',e=>{if(finished||!swipe||swipe.id!==e.pointerId)return;e.preventDefault();const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;swipe=null;if(Math.hypot(dx,dy)<24){call.textContent='上方向へスワイプ！';return}const o=currentPaper();if(!o){call.textContent='ゴミが手前に来るまで待って！';return}const sr=stage.getBoundingClientRect(),sx=e.clientX-dx-sr.left,sy=e.clientY-dy-sr.top,infos=binInfo(),dl=Math.hypot(dx,dy)||1;let best=null,bestDot=-Infinity;for(const b of infos){const vx=b.x-sx,vy=b.y-sy,vl=Math.hypot(vx,vy)||1,dot=(dx/dl)*(vx/vl)+(dy/dl)*(vy/vl);if(dot>bestDot){bestDot=dot;best=b}}if(!best||dy>-4){call.textContent='ゴミ箱へ向けて上にスワイプ！';return}flyTo(o,best,o.color!=='black'&&best.color===o.color,o.color==='black'?'黒は投げない！':best.color===o.color?'ポイ！':'色が違う！')},{passive:false});stage.addEventListener('pointercancel',()=>swipe=null);
+  stage.addEventListener('pointerup',e=>{if(finished||!swipe||swipe.id!==e.pointerId)return;e.preventDefault();const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;swipe=null;if(Math.hypot(dx,dy)<24){if(tapFrontTrap(e.clientX,e.clientY))return;const front=currentPaper();call.textContent=front?.color==='black'?'先頭の黒トラップをタップ！':'上方向へスワイプ！';return}const o=currentPaper();if(!o){call.textContent='ゴミが手前に来るまで待って！';return}if(o.color==='black'){call.textContent='先頭の黒トラップをタップ！';return}const sr=stage.getBoundingClientRect(),sx=e.clientX-dx-sr.left,sy=e.clientY-dy-sr.top,infos=binInfo(),dl=Math.hypot(dx,dy)||1;let best=null,bestDot=-Infinity;for(const b of infos){const vx=b.x-sx,vy=b.y-sy,vl=Math.hypot(vx,vy)||1,dot=(dx/dl)*(vx/vl)+(dy/dl)*(vy/vl);if(dot>bestDot){bestDot=dot;best=b}}if(!best||dy>-4){call.textContent='ゴミ箱へ向けて上にスワイプ！';return}flyTo(o,best,best.color===o.color,best.color===o.color?'ポイ！':'色が違う！')},{passive:false});stage.addEventListener('pointercancel',()=>swipe=null);
   void stage.offsetHeight;if(!(await countdown('POI GAME',runId,{transparent:true})))return;start=last=performance.now();nextSpawn=start+80;
   function finish(){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);state.records.poiGameMob[p.id]=score;call.textContent=`FINISH! ${score}個`;beep(score>=20?1120:760,160,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>個</small>`,`正解 ${score} / MISS ${miss}`)},850)}
   function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;const rem=Math.max(0,10-(now-start)/1000);timeEl.textContent=rem.toFixed(1);while(spawnIndex<queue.length&&now>=nextSpawn){spawn();nextSpawn+=365}papers.slice().forEach(o=>{if(o.dead||o.flying)return;o.x-=178*dt;o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0) rotate(${o.rot+(W-o.x)*.07}deg)`;if(o.x<-58){if(o.color!=='black')miss++;missEl.textContent=miss;removePaper(o)}});if(rem<=0){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
