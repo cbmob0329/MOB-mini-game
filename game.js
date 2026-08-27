@@ -26982,28 +26982,92 @@ async function startSphereMob(p,humanIndex,runId){
     <div class="sphere-shell-v202 gameplay-fit">
       <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>球体モブくん</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
       <div class="sphere-hud-v202"><div><span>ALIVE</span><b id="sphereAlive202">5</b></div><div><span>RING OUT</span><b id="sphereOut202">0</b></div><div><span>SCORE</span><b id="sphereScore202">0</b></div></div>
-      <div id="sphereSea202" class="sphere-sea-v202"><div id="sphereField202" class="sphere-field-v202"><div class="sphere-center-v202">MOB</div><div id="sphereLayer202"></div><div id="sphereTarget202" class="sphere-target-v202"></div></div><div id="sphereCall202" class="sphere-call-v202">タップした方向へ突進！</div></div>
-      <div class="sphere-note-v202">弾かれた後は自動で戻らず、そのまま惰性で滑る</div>
+      <div id="sphereSea202" class="sphere-sea-v202"><div id="sphereField202" class="sphere-field-v202"><div class="sphere-center-v202">MOB</div><div id="sphereLayer202"></div><div id="sphereTarget202" class="sphere-target-v202"></div></div><div id="sphereCall202" class="sphere-call-v202">タップした方向へ転がれ！</div></div>
+      <div class="sphere-note-v202">押し合いバトル。ぶつかると少し弾かれ、あとは摩擦で自然に減速</div>
     </div>`;
   const field=document.getElementById('sphereField202'),layer=document.getElementById('sphereLayer202'),targetEl=document.getElementById('sphereTarget202'),aliveEl=document.getElementById('sphereAlive202'),outEl=document.getElementById('sphereOut202'),scoreEl=document.getElementById('sphereScore202'),call=document.getElementById('sphereCall202');
-  void field.offsetHeight;const W=field.clientWidth,H=field.clientHeight,cx=W/2,cy=H/2,R=Math.min(W,H)*.43,BR=25;
+  void field.offsetHeight;
+  const W=field.clientWidth,H=field.clientHeight,cx=W/2,cy=H/2,R=Math.min(W,H)*.43,BR=25;
   const starts=[[-45,0],[48,0],[0,-55],[-35,48],[38,48]];
-  const balls=starts.map((a,i)=>({i,x:cx+a[0],y:cy+a[1],vx:0,vy:0,tx:cx+a[0],ty:cy+a[1],thrustUntil:0,alive:true,nextThink:0,el:null}));const human=0;
+  const balls=starts.map((a,i)=>({i,x:cx+a[0],y:cy+a[1],vx:0,vy:0,alive:true,nextThink:0,el:null}));
+  const human=0;
   balls.forEach(b=>{const el=document.createElement('div');el.className=`sphere-ball-v202 ${b.i===human?'you-v202':'cpu-v202'}`;el.innerHTML=`<img src="icon/01.png" draggable="false" alt=""><b>${b.i===human?'YOU':b.i+1}</b>`;layer.appendChild(el);b.el=el});
   let active=false,finished=false,raf=null,last=performance.now(),start=0,eliminated=0;
   function render(){balls.forEach(b=>{b.el.style.transform=`translate3d(${b.x-BR}px,${b.y-BR}px,0)`})}
+  function capSpeed(b,max){const sp=Math.hypot(b.vx,b.vy);if(sp>max){b.vx=b.vx/sp*max;b.vy=b.vy/sp*max}}
+  function pushToward(b,tx,ty,power,max){const dx=tx-b.x,dy=ty-b.y,d=Math.hypot(dx,dy)||1;b.vx+=dx/d*power;b.vy+=dy/d*power;capSpeed(b,max)}
   render();targetEl.style.left=`${balls[human].x}px`;targetEl.style.top=`${balls[human].y}px`;
-  void field.offsetHeight;if(!(await countdown('SPHERE MOB',runId,{transparent:true})))return;active=true;start=last=performance.now();
-  field.addEventListener('pointerdown',e=>{if(!active||!balls[human].alive)return;e.preventDefault();const r=field.getBoundingClientRect(),b=balls[human];b.tx=clamp(e.clientX-r.left,0,W);b.ty=clamp(e.clientY-r.top,0,H);b.thrustUntil=performance.now()+260;targetEl.style.left=`${b.tx}px`;targetEl.style.top=`${b.ty}px`;targetEl.classList.remove('ping-v202');void targetEl.offsetWidth;targetEl.classList.add('ping-v202')},{passive:false});
-  function eliminate(b){if(!b.alive)return;b.alive=false;b.el.classList.add('out-v202');eliminated++;const alive=balls.filter(x=>x.alive);aliveEl.textContent=alive.length;outEl.textContent=eliminated;if(b.i===human){finish(clamp((eliminated-1)*20,0,60),`RING OUT / ${5-alive.length}番目に脱落`);return}if(balls[human].alive){const sc=alive.length===1?100:clamp(eliminated*20,0,60);scoreEl.textContent=sc;call.textContent='RING OUT! +20'}if(alive.length===1&&alive[0].i===human)finish(100,'LAST ONE!! 最後まで残った！')}
+  void field.offsetHeight;
+  if(!(await countdown('SPHERE MOB',runId,{transparent:true})))return;
+  active=true;start=last=performance.now();
+  field.addEventListener('pointerdown',e=>{
+    if(!active||!balls[human].alive)return;
+    e.preventDefault();
+    const r=field.getBoundingClientRect(),tx=clamp(e.clientX-r.left,0,W),ty=clamp(e.clientY-r.top,0,H),b=balls[human];
+    pushToward(b,tx,ty,52,172);
+    targetEl.style.left=`${tx}px`;targetEl.style.top=`${ty}px`;targetEl.classList.remove('ping-v202');void targetEl.offsetWidth;targetEl.classList.add('ping-v202');
+  },{passive:false});
+  function eliminate(b){
+    if(!b.alive)return;
+    b.alive=false;b.el.classList.add('out-v202');eliminated++;
+    const alive=balls.filter(x=>x.alive);aliveEl.textContent=alive.length;outEl.textContent=eliminated;
+    if(b.i===human){finish(clamp((eliminated-1)*20,0,60),`RING OUT / ${5-alive.length}番目に脱落`);return}
+    if(balls[human].alive){const sc=alive.length===1?100:clamp(eliminated*20,0,60);scoreEl.textContent=sc;call.textContent='RING OUT! +20'}
+    if(alive.length===1&&alive[0].i===human)finish(100,'LAST ONE!! 最後まで残った！')
+  }
   function finish(score,text){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.sphereMob[p.id]=score;scoreEl.textContent=score;call.textContent=text;call.classList.add('result-v202');beep(score===100?1180:score>=60?880:score>=20?610:220,180,.045);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,text)},900)}
-  function thinkCpu(b,now){if(now<b.nextThink)return;b.nextThink=now+rand(520,980);const targets=balls.filter(x=>x.alive&&x.i!==b.i),t=targets[randi(0,targets.length-1)];if(!t)return;b.tx=clamp(t.x+rand(-30,30),15,W-15);b.ty=clamp(t.y+rand(-30,30),15,H-15);if(Math.random()<.18){b.tx=cx+rand(-R*.75,R*.75);b.ty=cy+rand(-R*.75,R*.75)}b.thrustUntil=now+rand(210,300)}
-  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.028,(now-last)/1000);last=now;
-    balls.forEach(b=>{if(!b.alive)return;if(b.i!==human)thinkCpu(b,now);const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy)||1;const acc=(b.i===human?355:330)*(now-start>14000?1.16:1);if(now<b.thrustUntil&&d>7){b.vx+=dx/d*acc*dt;b.vy+=dy/d*acc*dt}const max=b.i===human?225:210,sp=Math.hypot(b.vx,b.vy);if(sp>max){b.vx=b.vx/sp*max;b.vy=b.vy/sp*max}b.vx*=Math.pow(.982,dt*60);b.vy*=Math.pow(.982,dt*60);b.x+=b.vx*dt;b.y+=b.vy*dt});
-    for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(!a.alive||!b.alive)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.1;if(d<BR*2){const nx=dx/d,ny=dy/d,over=BR*2-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const rvx=b.vx-a.vx,rvy=b.vy-a.vy,closing=-(rvx*nx+rvy*ny);/* V11.02 baseline collision response */const impact=42+clamp(Math.max(0,closing)*1.22,0,235);a.vx-=nx*impact*.52;a.vy-=ny*impact*.52;b.vx+=nx*impact*.52;b.vy+=ny*impact*.52;a.thrustUntil=0;b.thrustUntil=0;a.el.classList.add('bump-v202');b.el.classList.add('bump-v202');setTimeout(()=>{a.el?.classList.remove('bump-v202');b.el?.classList.remove('bump-v202')},120);beep(240+Math.min(380,impact),28,.009)}}
-    balls.forEach(b=>{if(!b.alive)return;if(Math.hypot(b.x-cx,b.y-cy)>R+BR*.35)eliminate(b)});
-    if(!finished&&now-start>15000){balls.forEach(b=>{if(!b.alive)return;const dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy)||1;b.vx+=dx/d*38*dt;b.vy+=dy/d*38*dt});call.textContent='FINAL RUSH!'}
-    render();if(!finished&&now-start>26000){const living=balls.filter(b=>b.alive).sort((a,b)=>Math.hypot(b.x-cx,b.y-cy)-Math.hypot(a.x-cx,a.y-cy));if(living.length>1)eliminate(living[0])}if(!finished)raf=requestAnimationFrame(frame)
+  function thinkCpu(b,now){
+    if(now<b.nextThink)return;
+    const late=now-start>15000;
+    b.nextThink=now+rand(late?360:560,late?650:940);
+    const targets=balls.filter(x=>x.alive&&x.i!==b.i),t=targets[randi(0,targets.length-1)];
+    if(!t)return;
+    let tx=t.x+rand(-34,34),ty=t.y+rand(-34,34);
+    if(Math.random()<.20){tx=cx+rand(-R*.68,R*.68);ty=cy+rand(-R*.68,R*.68)}
+    pushToward(b,clamp(tx,15,W-15),clamp(ty,15,H-15),late?48:43,158);
+  }
+  function resolveCollision(a,b){
+    const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.0001,minD=BR*2;
+    if(d>=minD)return;
+    const nx=dx/d,ny=dy/d,penetration=minD-d;
+    // Small capped separation only: never teleport the balls apart.
+    const correction=Math.min(2.2,penetration*.32);
+    a.x-=nx*correction;a.y-=ny*correction;b.x+=nx*correction;b.y+=ny*correction;
+    const rvx=b.vx-a.vx,rvy=b.vy-a.vy,velAlongNormal=rvx*nx+rvy*ny;
+    if(velAlongNormal<0){
+      // Equal-mass collision with moderate restitution. No artificial base kick is added.
+      const restitution=.64;
+      const impulse=-(1+restitution)*velAlongNormal/2;
+      a.vx-=impulse*nx;a.vy-=impulse*ny;b.vx+=impulse*nx;b.vy+=impulse*ny;
+      capSpeed(a,178);capSpeed(b,178);
+      const strength=Math.min(1,Math.abs(velAlongNormal)/150);
+      if(strength>.12){a.el.classList.add('bump-v202');b.el.classList.add('bump-v202');setTimeout(()=>{a.el?.classList.remove('bump-v202');b.el?.classList.remove('bump-v202')},90);beep(245+strength*230,24,.007)}
+    }
+  }
+  function stepPhysics(step,now){
+    balls.forEach(b=>{
+      if(!b.alive)return;
+      if(b.i!==human)thinkCpu(b,now);
+      // Rolling resistance / friction. No homing force exists here.
+      const friction=Math.pow(.986,step*60);
+      b.vx*=friction;b.vy*=friction;
+      if(Math.hypot(b.vx,b.vy)<2.2){b.vx=0;b.vy=0}
+      b.x+=b.vx*step;b.y+=b.vy*step;
+    });
+    for(let pass=0;pass<2;pass++)for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){
+      const a=balls[i],b=balls[j];if(a.alive&&b.alive)resolveCollision(a,b);
+    }
+  }
+  function frame(now){
+    if(!isGameRunValid(runId)||finished)return;
+    const dt=Math.min(.030,(now-last)/1000);last=now;
+    // Two substeps prevent deep overlap, which previously looked like teleporting.
+    const sub=dt/2;stepPhysics(sub,now);stepPhysics(sub,now);
+    balls.forEach(b=>{if(b.alive&&Math.hypot(b.x-cx,b.y-cy)>R+BR*.35)eliminate(b)});
+    if(!finished&&now-start>15000)call.textContent='FINAL RUSH!';
+    render();
+    if(!finished&&now-start>26000){const living=balls.filter(b=>b.alive).sort((a,b)=>Math.hypot(b.x-cx,b.y-cy)-Math.hypot(a.x-cx,a.y-cy));if(living.length>1)eliminate(living[0])}
+    if(!finished)raf=requestAnimationFrame(frame)
   }
   raf=requestAnimationFrame(frame);
 }
