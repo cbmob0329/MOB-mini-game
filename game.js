@@ -345,7 +345,12 @@ const GAMES=[
   {no:107,key:"flagRaise",title:"モブくん旗上げ",sub:"赤・両方・白の3ボタン。もう一度押せば旗を下げる",legacy:119},
   {no:108,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"超高速の▲▼高度操作。15秒、上下に動く18個のトゲボールを避ける",legacy:121},
   {no:109,key:"fruitCatchMob",title:"モブくんフルーツキャッチ",sub:"15秒。フルーツを集めながら岩・爆弾・腐った実を避ける",legacy:123},
-  {no:110,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124}
+  {no:110,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124},
+  {no:111,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"モブくん人形5体を残したまま、テーブルクロスを真下へ一気に引く",legacy:125},
+  {no:112,key:"bombPassMob",title:"モブくんの爆弾ゲーム",sub:"横一列の5体で爆弾を隣へ渡し、最後の1体まで生き残れ",legacy:126},
+  {no:113,key:"obstacleRaceMob",title:"モブくんの障害物競走",sub:"自動走行＋JUMP/PUNCH。10個の障害物を突破する横スクロールタイムアタック",legacy:127},
+  {no:114,key:"sphereMob",title:"球体モブくん",sub:"見下ろし円形ステージで5体が激突。海へ落とされず最後まで残れ",legacy:128},
+  {no:115,key:"frontFlipMob",title:"モブくんの前宙",sub:"助走距離を決め、自動ジャンプ後の長押し回転を止めて綺麗に着地",legacy:129}
 ];
 
 function legacyGameIndex(gameIndex){
@@ -393,6 +398,11 @@ function isDeathGameChallengeEligible(){
 function isGameEligibleForCurrentMode(gameIndex){
   const g=GAMES[gameIndex];
   if(!g)return false;
+  if(new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob']).has(g.key)){
+    if(state&&state.freePlay)return true;
+    const m=mode();
+    return !!m&&!m.team;
+  }
   if(g.key==='mobSpeedRacer'||g.key==='summonMaster')return isTagDuoGameEligible();
   if(g.key==='billiardsBattleRoyale')return isBilliardsBattleRoyaleEligible();
   if(g.key==='linkedCartBlast')return isLinkedCartBlastEligible();
@@ -403,6 +413,7 @@ function isGameEligibleForCurrentMode(gameIndex){
 function gameEligibilityReason(gameIndex){
   const g=GAMES[gameIndex];
   if(!g)return 'このモードでは遊べません';
+  if(new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob']).has(g.key))return '個人戦専用 / 1人フリープレイ対応';
   if(g.key==='mobSpeedRacer'||g.key==='summonMaster'||g.key==='linkedCartBlast')return '2対2タッグ専用 / 1人フリーでは全役を自分で操作';
   if(g.key==='billiardsBattleRoyale')return '4人専用 / 個人4人 または 2対2タッグ';
   if(g.key==='soloCartBlast')return '4人の個人戦専用';
@@ -476,7 +487,7 @@ function freshState(){
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
         changeMob:{},baggageMob:{},treasureMob:{},rouletteMob:{},excavationMob:{},
         oldMaidDuel:{},robotMarch:{},monsterMaster:{},scoutMan:{},
-        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{}
+        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{}
     },
     total:{},
     roundPoints:[],
@@ -588,7 +599,7 @@ function renderHome(){
     <section class="hero hero-v119">
       <div>
         <span class="kicker">SMARTPHONE PARTY GAME</span>
-        <h1>110 MINI<br>GAMES</h1>
+        <h1>115 MINI<br>GAMES</h1>
         <p>通常対戦、モブくんゲーム王に加えて、8チーム×4人・全20ゲームの「モブカップ」を遊べます。</p>
       </div>
       <div class="hero-mark">MOB</div>
@@ -613,7 +624,7 @@ function renderHome(){
     </section>
 
     <section class="panel flat">
-      <div class="panel-head"><h3>110 MINI GAMES</h3><span class="tag">GAME 1 → 110</span></div>
+      <div class="panel-head"><h3>115 MINI GAMES</h3><span class="tag">GAME 1 → 115</span></div>
       <div class="compact-game-grid home-compact-games-v119">
         ${GAMES.map(g=>`<div><b>${g.no}</b><span>${g.title}</span></div>`).join("")}
       </div>
@@ -1932,7 +1943,7 @@ function finishMobCupTagLive(gameIndex){
 }
 function renderMobCupBonusChoice(def){
   clearGameFit();const cup=state.mobCup;
-  const blocked=new Set(['mobSpeedRacer','summonMaster','linkedCartBlast','billiardsBattleRoyale','soloCartBlast','deathGameChallenge','plushCatcher','billiardsMob']);
+  const blocked=new Set(['mobSpeedRacer','summonMaster','linkedCartBlast','billiardsBattleRoyale','soloCartBlast','deathGameChallenge','plushCatcher','billiardsMob','tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob']);
   const fixed=new Set(MOB_CUP_ROUNDS.map(x=>x.key).filter(Boolean));
   const pool=GAMES.map((g,i)=>({g,i})).filter(x=>!blocked.has(x.g.key)&&!fixed.has(x.g.key)).map(x=>x.i);
   cup.bonusCandidates=shuffle(pool).slice(0,3);
@@ -2592,7 +2603,7 @@ function renderPlayStyleSelect(){
       <button id="normalStyle" class="style-select-card normal" type="button">
         <span>NORMAL</span>
         <b>順番に全種目</b>
-        <small>GAME 1 → 110 を順番にプレイ</small>
+        <small>GAME 1 → 115 を順番にプレイ</small>
       </button>
       <button id="customStyle" class="style-select-card custom" type="button">
         <span>CUSTOM</span>
@@ -2602,7 +2613,7 @@ function renderPlayStyleSelect(){
     </div>
 
     <section class="panel flat">
-      <h3>110 MINI GAMES</h3>
+      <h3>115 MINI GAMES</h3>
       <div class="compact-game-grid">
         ${GAMES.map(g=>`<div><b>${g.no}</b><span>${g.title}</span></div>`).join("")}
       </div>
@@ -2789,6 +2800,11 @@ function renderModeLobby(){
 function scoreRuleForGame(index){
   const legacyIndex=legacyGameIndex(index);
   if(GAMES[index]?.key==='mobSpeedRacer')return "横スクロール2kmレースのゴールタイム / 速いチームほど高得点";
+  if(legacyIndex===125)return "人形5体の最終移動量・動いた体数・落下数を判定 / 完全静止=100点 / 落下は39点以下";
+  if(legacyIndex===126)return "1回目敗退=0 / 2回目=40 / 3回目=60 / 4回目=80 / 最後の1体=100点";
+  if(legacyIndex===127)return "10障害物を突破してGOALしたタイム / 速いほど高得点 / 接触すると一時減速";
+  if(legacyIndex===128)return "最初に落下=0 / 他の1体が落ちるごとに+20 / 最後の1体=100点";
+  if(legacyIndex===129)return "助走距離30点 + 回転数35点 + 着地35点 / 合計100点";
   return [
     "0.150秒以下=100点 / 0.300秒=50点 / 0.500秒以上=0点",
     "正解数×10点 / 10枚正解=100点",
@@ -3157,6 +3173,16 @@ function showGameIntro(index){
     rules=`<li>モブくんが持つカゴを左右ドラッグして15秒。通常+3、ゴールド+5です。</li><li>岩-5、爆弾-10、腐った実-4。爆弾は大きく弾かれ、腐った実はしばらくカゴが重くなります。</li>`;
   }else if(legacyIndex===124){
     rules=`<li>◀ / ▶で千両箱を持ったモブくんを動かします。小判を取るほど箱が重くなります。</li><li>5枚連続GETごとにFEVERが発動し約2.4秒ポイント×2。巨大小判でもFEVERになるため、35枚全部を取らなくても100点を狙えます。</li>`;
+  }else if(legacyIndex===125){
+    rules=`<li>テーブルクロスを指で真下へ一気にスワイプ。上にはモブくん人形が5体乗っています。</li><li>最終位置を実測し、動いた体数・平均ズレ・落下数から採点。まったく動かなければ100点、落下した場合は39点以下です。</li>`;
+  }else if(legacyIndex===126){
+    rules=`<li>横一列のモブくんへ爆弾を隣同士で渡します。爆発タイミングは毎回ランダムです。</li><li>5人→4人→3人→2人。1回目敗退0点、2回目40点、3回目60点、4回目80点、最後まで残れば100点です。</li>`;
+  }else if(legacyIndex===127){
+    rules=`<li>モブくんは自動で走ります。操作はJUMPとPUNCHだけ。ゴールまで10個の障害物があります。</li><li>ゴミ箱・段ボールはPUNCHで破壊、岩・自転車はJUMP。接触すると一瞬遅くなり、ゴールタイムを競います。</li>`;
+  }else if(legacyIndex===128){
+    rules=`<li>見下ろし円形芝生で球体モブくん5体が激突。画面をタップすると自分の球体がその地点へ加速します。</li><li>海へ最初に落ちると0点。誰かが落ちるたび20点分有利になり、最後の1体なら100点です。</li>`;
+  }else if(legacyIndex===129){
+    rules=`<li>最初のゲージを白線付近でタップして助走距離を決定。続く「タップ！」で自動走行・自動ジャンプします。</li><li>空中で「長押し！」。押している間だけ前宙し、着地前に離します。距離・回転数・着地の綺麗さを合計100点で採点します。</li>`;
   }else{
     rules=`<li>${esc(g.sub)}</li>`;
   }
@@ -3173,7 +3199,7 @@ function showGameIntro(index){
       : mode().performance
         ? `<section class="panel flat score-intro"><h3>SCORE</h3><div class="score-big-rule">${scoreRuleForGame(index)}</div></section>`
         : `<section class="panel flat"><h3>POINT</h3><div class="point-strip">${mode().points.map((p,i)=>`<span class="point-pill">${i+1}位 ${p}pt</span>`).join("")}</div></section>`}
-    <button id="introStart" class="primary">${state.freePlay?"READY? へ":"プレイヤー1 READY? へ"}</button>
+    <button id="introStart" class="primary">${state.freePlay?"READY? へ":state.mobCup?.active?"TEAM A / P1へスマホを渡す":"プレイヤー1 READY? へ"}</button>
   `;
   gameTop();
   document.getElementById("introStart").addEventListener("click",()=>humanReady(index,0));
@@ -3195,7 +3221,8 @@ function humanReady(gameIndex,humanIndex){
     <div class="ready-big">READY?</div>
     <div class="ready-name">${esc(p.name)}</div>
     <div class="ready-sub">${state.freePlay?"1 PLAYER FREE PLAY":(mode().team?teamName(p.id):`PLAYER ${p.no}`)}</div>
-    <button id="readyBtn" class="primary">準備OK</button>
+    ${state.mobCup?.active?`<p class="mobcup-ready-phone-v202">${p.id.startsWith('p')?`P${p.no}`:esc(p.name)} がスマホを持っていることを確認してください</p>`:''}
+    <button id="readyBtn" class="primary">${state.mobCup?.active?'準備OK / 3・2・1へ':'準備OK'}</button>
   </div></div>`;
   gameTop();
 
@@ -3316,6 +3343,11 @@ function humanReady(gameIndex,humanIndex){
     else if(legacyIndex===121)startFlyingCarpet(p,humanIndex,runId);
     else if(legacyIndex===123)startFruitCatchMob(p,humanIndex,runId);
     else if(legacyIndex===124)startSenryobakoMob(p,humanIndex,runId);
+    else if(legacyIndex===125)startTableclothPull(p,humanIndex,runId);
+    else if(legacyIndex===126)startBombPassMob(p,humanIndex,runId);
+    else if(legacyIndex===127)startObstacleRaceMob(p,humanIndex,runId);
+    else if(legacyIndex===128)startSphereMob(p,humanIndex,runId);
+    else if(legacyIndex===129)startFrontFlipMob(p,humanIndex,runId);
     else{
       gameSessionActive=false;
       activeGameIndex=-1;
@@ -26692,6 +26724,317 @@ async function startElectricMaze(p,humanIndex,runId){
 }
 
 
+
+
+// =========================================================
+// V11.02 — GAME 111-115 / individual-only new games
+// =========================================================
+
+async function startTableclothPull(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='tableclothPull');
+  screen.innerHTML=`
+    <div class="cloth-shell-v202 gameplay-fit">
+      <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのテーブルクロス引き</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+      <div class="cloth-hud-v202"><div><span>DOLLS</span><b id="clothDolls202">5 / 5</b></div><div><span>MOVED</span><b id="clothMoved202">0</b></div><div><span>SCORE</span><b id="clothScore202">---</b></div></div>
+      <div id="clothStage202" class="cloth-stage-v202">
+        <div class="cloth-room-v202"></div>
+        <div class="cloth-table-v202"><i></i></div>
+        <div id="clothFabric202" class="cloth-fabric-v202"><b>MOB</b><i></i><i></i><i></i></div>
+        <div id="clothDollLayer202" class="cloth-doll-layer-v202"></div>
+        <div id="clothCall202" class="cloth-call-v202">真下へ一気に引け！</div>
+      </div>
+      <div class="cloth-guide-v202"><b>↓ SWIPE ↓</b><span>クロスをつかんで真下へ一気に引く</span></div>
+    </div>`;
+
+  const stage=document.getElementById('clothStage202');
+  const fabric=document.getElementById('clothFabric202');
+  const layer=document.getElementById('clothDollLayer202');
+  const call=document.getElementById('clothCall202');
+  const dollsEl=document.getElementById('clothDolls202');
+  const movedEl=document.getElementById('clothMoved202');
+  const scoreEl=document.getElementById('clothScore202');
+  void stage.offsetHeight;
+  const W=stage.clientWidth,H=stage.clientHeight;
+  const tableY=Math.round(H*.47);
+  const spots=[[-82,-6],[-42,-18],[0,-8],[43,-18],[82,-6]];
+  const dolls=spots.map((s,i)=>({
+    i,x:W/2+s[0],y:tableY+s[1],startX:W/2+s[0],startY:tableY+s[1],rot:0,fallen:false,el:null
+  }));
+  dolls.forEach(d=>{
+    const el=document.createElement('div');el.className='cloth-doll-v202';
+    el.innerHTML=`<img src="icon/01.png" draggable="false" alt=""><small>${d.i+1}</small>`;
+    layer.appendChild(el);d.el=el;
+  });
+  let active=false,drag=false,pid=null,startX=0,startY=0,lastY=0,startAt=0,finished=false;
+  function renderDoll(d){d.el.style.transform=`translate3d(${d.x-26}px,${d.y-54}px,0) rotate(${d.rot}deg)`}
+  dolls.forEach(renderDoll);
+  fabric.style.transform='translate3d(-50%,0,0)';
+  // ABSOLUTE RULE: table, cloth and all five dolls are already at true start coordinates before countdown.
+  void stage.offsetHeight;
+  if(!(await countdown('TABLE CLOTH',runId,{transparent:true})))return;
+  active=true;
+
+  function resetCloth(){fabric.style.transition='transform .25s ease';fabric.style.transform='translate3d(-50%,0,0)';setTimeout(()=>{if(fabric)fabric.style.transition=''},260)}
+  fabric.addEventListener('pointerdown',e=>{
+    if(!active||finished)return;e.preventDefault();drag=true;pid=e.pointerId;startX=e.clientX;startY=e.clientY;lastY=startY;startAt=performance.now();
+    try{fabric.setPointerCapture(pid)}catch(_){}
+    fabric.classList.add('grab-v202');
+  },{passive:false});
+  fabric.addEventListener('pointermove',e=>{
+    if(!drag||e.pointerId!==pid)return;e.preventDefault();
+    const dy=clamp(e.clientY-startY,0,H*.55);const dx=e.clientX-startX;lastY=e.clientY;
+    fabric.style.transform=`translate3d(calc(-50% + ${dx*.20}px),${dy}px,0)`;
+  },{passive:false});
+  const endDrag=e=>{
+    if(!drag||e.pointerId!==pid||finished)return;e.preventDefault();drag=false;fabric.classList.remove('grab-v202');
+    const now=performance.now(),dy=Math.max(0,e.clientY-startY),dx=e.clientX-startX,dur=Math.max(.08,(now-startAt)/1000),speed=dy/dur;
+    if(dy<125){call.textContent='もっと下まで引く！';call.classList.add('bad-v202');resetCloth();setTimeout(()=>{call.textContent='真下へ一気に引け！';call.classList.remove('bad-v202')},600);return}
+    finished=true;active=false;
+    fabric.style.transition='transform .18s cubic-bezier(.2,.8,.2,1)';
+    fabric.style.transform=`translate3d(calc(-50% + ${dx*.28}px),${H*.62}px,0)`;
+    const slow=clamp((900-speed)/700,0,1),crooked=clamp(Math.abs(dx)/115,0,1),short=clamp((210-dy)/110,0,1);
+    const force=clamp(slow*.72+crooked*.46+short*.28,0,1.35);
+    let moved=0,fallen=0,totalDist=0;
+    dolls.forEach((d,i)=>{
+      const jitter=(.78+((i*37)%31)/100);
+      const dist=Math.max(0,(force*78-5))*jitter;
+      const side=(dx===0?(i%2?1:-1):Math.sign(dx))*dist*(.38+((i*11)%17)/100);
+      const down=dist*(.28+((i*7)%12)/100);
+      d.x+=side;d.y+=down;d.rot=(side*.35)+(i-2)*1.2;
+      const likelyFall=dist>68||(dist>48&&((i*19)%10)<4)||(Math.abs(d.x-W/2)>W*.31);
+      if(likelyFall){d.fallen=true;fallen++;d.y=H+80+i*8;d.x+=side*.75;d.rot+=side>0?80:-80;d.el.classList.add('fall-v202')}
+      const finalDist=Math.hypot(d.x-d.startX,Math.min(H,d.y)-d.startY);totalDist+=Math.min(110,finalDist);
+      if(finalDist>6)moved++;
+      d.el.style.transition=`transform ${d.fallen?.56:.34}s cubic-bezier(.2,.8,.2,1)`;renderDoll(d);
+    });
+    const avg=totalDist/5;
+    let score;
+    if(fallen>0){score=clamp(Math.round(39-fallen*7-avg*.18),0,39)}
+    else if(moved===0&&avg<=3){score=100}
+    else if(avg<=14){score=clamp(Math.round(99-(avg-3)/11*19-moved*.5),80,99)}
+    else if(avg<=34){score=clamp(Math.round(79-(avg-14)/20*19-moved*.7),60,79)}
+    else{score=clamp(Math.round(59-(avg-34)/55*19-moved),40,59)}
+    state.records.tableclothPull[p.id]=score;
+    movedEl.textContent=moved;dollsEl.textContent=`${5-fallen} / 5`;scoreEl.textContent=score;
+    call.textContent=fallen?`${fallen}体 落下！`:score===100?'PERFECT!! 全員静止！':`${moved}体 動いた！`;
+    call.classList.toggle('bad-v202',fallen>0);call.classList.add('result-v202');
+    stage.classList.add(score===100?'perfect-v202':'finish-v202');
+    beep(score===100?1180:score>=80?920:score>=60?690:330,180,.04);
+    setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`動いた ${moved}体 / 落下 ${fallen}体 / 平均ズレ ${avg.toFixed(1)}px`)},1050);
+  };
+  fabric.addEventListener('pointerup',endDrag,{passive:false});fabric.addEventListener('pointercancel',endDrag,{passive:false});
+}
+
+async function startBombPassMob(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='bombPassMob');
+  screen.innerHTML=`
+    <div class="bombpass-shell-v202 gameplay-fit">
+      <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんの爆弾ゲーム</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+      <div class="bombpass-hud-v202"><div><span>ROUND</span><b id="bombPassRound202">1 / 4</b></div><div><span>ALIVE</span><b id="bombPassAlive202">5</b></div><div><span>SCORE</span><b id="bombPassScore202">0</b></div></div>
+      <div id="bombPassStage202" class="bombpass-stage-v202">
+        <div class="bombpass-floor-v202"></div><div id="bombPassPlayers202"></div><div id="bombPassBoom202" class="bombpass-boom-v202"></div><div id="bombPassCall202" class="bombpass-call-v202">爆弾を隣へ渡せ！</div>
+      </div>
+      <div class="bombpass-note-v202">爆弾を持っている時、隣のモブくんをタップ</div>
+    </div>`;
+  const stage=document.getElementById('bombPassStage202'),layer=document.getElementById('bombPassPlayers202'),roundEl=document.getElementById('bombPassRound202'),aliveEl=document.getElementById('bombPassAlive202'),scoreEl=document.getElementById('bombPassScore202'),call=document.getElementById('bombPassCall202'),boom=document.getElementById('bombPassBoom202');
+  void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;
+  let alive=[0,1,2,3,4],holder=0,round=1,roundSerial=0,finished=false,roundActive=false,cpuTimer=null,explTimer=null;
+  const human=2;
+  const actors=Array.from({length:5},(_,i)=>({i,alive:true,el:null}));
+  actors.forEach(a=>{const el=document.createElement('button');el.type='button';el.className=`bombpass-mob-v202 ${a.i===human?'you-v202':'cpu-v202'}`;el.dataset.bombmob=a.i;el.innerHTML=`<img src="icon/01.png" draggable="false" alt=""><b>${a.i===human?'YOU':`MOB ${a.i+1}`}</b><i class="bombpass-bomb-v202">●</i>`;layer.appendChild(el);a.el=el});
+  function positions(){const n=alive.length;alive.forEach((id,k)=>{const x=W*(.12+(n===1?.5:k/(n-1)*.76));const el=actors[id].el;el.style.left=`${x}px`;el.style.top=`${H*.56}px`;el.classList.add('show-v202')})}
+  function paintHolder(){actors.forEach(a=>a.el.classList.toggle('holding-v202',a.alive&&a.i===holder))}
+  positions();holder=alive[randi(0,alive.length-1)];paintHolder();
+  // ABSOLUTE RULE: five actors and the first bomb holder are placed before 3-2-1.
+  void stage.offsetHeight;
+  if(!(await countdown('BOMB GAME',runId,{transparent:true})))return;
+
+  function adjacentIds(id){const idx=alive.indexOf(id);const out=[];if(idx>0)out.push(alive[idx-1]);if(idx<alive.length-1)out.push(alive[idx+1]);return out}
+  function passTo(id){if(!roundActive||finished||!alive.includes(id)||!adjacentIds(holder).includes(id))return;holder=id;paintHolder();beep(520,32,.012);scheduleCpu()}
+  function scheduleCpu(){clearTimeout(cpuTimer);if(!roundActive||finished||holder===human)return;const serial=roundSerial;cpuTimer=setTimeout(()=>{if(serial!==roundSerial||!roundActive||holder===human)return;const n=adjacentIds(holder);passTo(n[randi(0,n.length-1)])},randi(260,720))}
+  layer.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-bombmob]');if(!b||!roundActive||holder!==human)return;e.preventDefault();passTo(Number(b.dataset.bombmob))},{passive:false});
+  function resultScore(){return [0,40,60,80][round-1]??0}
+  function finish(score,text){if(finished)return;finished=true;roundActive=false;clearTimeout(cpuTimer);clearTimeout(explTimer);state.records.bombPassMob[p.id]=score;scoreEl.textContent=score;call.textContent=text;call.classList.add('result-v202');beep(score===100?1160:score>=80?900:score>=40?650:260,170,.045);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,text)},850)}
+  function explode(){if(finished||!roundActive)return;roundActive=false;clearTimeout(cpuTimer);const victim=holder;const el=actors[victim].el;boom.style.left=el.style.left;boom.style.top=el.style.top;boom.classList.remove('go-v202');void boom.offsetWidth;boom.classList.add('go-v202');el.classList.add('out-v202');beep(110,190,.05);
+    if(victim===human){finish(resultScore(),`ROUND ${round} で爆発！`);return}
+    actors[victim].alive=false;alive=alive.filter(x=>x!==victim);aliveEl.textContent=alive.length;
+    if(alive.length===1&&alive[0]===human){finish(100,'LAST ONE!! 最後まで生き残った！');return}
+    round++;roundEl.textContent=`${round} / 4`;scoreEl.textContent=[0,0,40,60,80][round-1]||0;setTimeout(()=>{if(finished)return;positions();startRound()},720)
+  }
+  function startRound(first=false){
+    roundSerial++;roundActive=false;
+    if(!first)holder=alive[randi(0,alive.length-1)];
+    paintHolder();
+    const begin=()=>{if(finished)return;call.textContent='PASS!';call.classList.remove('round-v202');roundActive=true;const serial=roundSerial;const fuse=rand(3000,6000);explTimer=setTimeout(()=>{if(serial===roundSerial)explode()},fuse);scheduleCpu()};
+    if(first){begin();return}
+    call.textContent=`ROUND ${round}`;call.classList.add('round-v202');beep(470,70,.015);setTimeout(begin,720);
+  }
+  startRound(true);
+}
+
+async function startObstacleRaceMob(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='obstacleRaceMob');
+  const VIEW_W=360,WORLD_W=2920,GROUND=355;
+  const types=shuffle(['trash','rock','cardboard','bike','trash','rock','cardboard','bike','trash','cardboard']);
+  const obstacles=types.map((type,i)=>({type,x:430+i*235+(i%2)*18,broken:false,hit:false,el:null}));
+  screen.innerHTML=`
+    <div class="obsrace-shell-v202 gameplay-fit">
+      <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんの障害物競走</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+      <div class="obsrace-hud-v202"><div><span>TIME</span><b id="obsTime202">0.00</b></div><div><span>OBSTACLE</span><b id="obsCount202">0 / 10</b></div><div><span>HIT</span><b id="obsHit202">0</b></div></div>
+      <div id="obsStage202" class="obsrace-stage-v202"><div id="obsWorld202" class="obsrace-world-v202" style="width:${WORLD_W}px"><div class="obsrace-ground-v202"></div><div id="obsGoal202" class="obsrace-goal-v202" style="left:${WORLD_W-170}px"><b>GOAL</b></div><div id="obsLayer202"></div><div id="obsRunner202" class="obsrace-runner-v202"><img src="icon/01.png" draggable="false" alt=""><i></i></div></div><div id="obsCall202" class="obsrace-call-v202"></div></div>
+      <div class="obsrace-controls-v202"><button id="obsJump202" type="button" disabled>JUMP</button><button id="obsPunch202" type="button" disabled>PUNCH</button></div>
+    </div>`;
+  const stage=document.getElementById('obsStage202'),world=document.getElementById('obsWorld202'),layer=document.getElementById('obsLayer202'),runner=document.getElementById('obsRunner202'),jumpBtn=document.getElementById('obsJump202'),punchBtn=document.getElementById('obsPunch202'),timeEl=document.getElementById('obsTime202'),countEl=document.getElementById('obsCount202'),hitEl=document.getElementById('obsHit202'),call=document.getElementById('obsCall202');
+  const labels={trash:'ゴミ箱',rock:'岩',cardboard:'段ボール',bike:'自転車'};
+  obstacles.forEach(o=>{const el=document.createElement('div');el.className=`obsrace-obstacle-v202 ${o.type}`;el.style.left=`${o.x}px`;el.style.top=`${GROUND}px`;el.innerHTML=o.type==='bike'?'<i></i><i></i><b></b>':o.type==='rock'?'<b></b>':`<b>${o.type==='trash'?'MOB':'BOX'}</b>`;layer.appendChild(el);o.el=el});
+  let active=false,finished=false,raf=null,last=performance.now(),start=0,x=88,y=0,vy=0,speed=205,slowUntil=0,punchUntil=0,jumping=false,hits=0,passed=0;
+  function camera(){const cam=clamp(x-105,0,WORLD_W-VIEW_W);world.style.transform=`translate3d(${-cam}px,0,0)`;runner.style.transform=`translate3d(${x-34}px,${GROUND-68-y}px,0)`}
+  camera();
+  // ABSOLUTE RULE: runner, all 10 obstacles and GOAL exist at true coordinates before countdown.
+  void stage.offsetHeight;
+  if(!(await countdown('OBSTACLE RACE',runId,{transparent:true})))return;
+  active=true;start=last=performance.now();jumpBtn.disabled=false;punchBtn.disabled=false;
+  function jump(){if(!active||jumping)return;jumping=true;vy=405;runner.classList.add('jump-v202');beep(590,36,.011)}
+  function punch(){if(!active)return;punchUntil=performance.now()+260;runner.classList.remove('punch-v202');void runner.offsetWidth;runner.classList.add('punch-v202');beep(430,30,.01)}
+  jumpBtn.addEventListener('pointerdown',e=>{e.preventDefault();jump()},{passive:false});punchBtn.addEventListener('pointerdown',e=>{e.preventDefault();punch()},{passive:false});
+  function breakObstacle(o){if(o.broken)return;o.broken=true;o.el.classList.add('break-v202');call.textContent=`${labels[o.type]} BREAK!!`;call.classList.add('good-v202');beep(760,65,.025);setTimeout(()=>{if(call.textContent.includes('BREAK'))call.textContent=''},350)}
+  function hitObstacle(o){if(o.hit||o.broken)return;o.hit=true;hits++;hitEl.textContent=hits;slowUntil=performance.now()+720;runner.classList.remove('hit-v202');void runner.offsetWidth;runner.classList.add('hit-v202');o.el.classList.add('hit-v202');call.textContent='HIT! SLOW DOWN';call.classList.remove('good-v202');beep(150,95,.03)}
+  function finish(now){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);jumpBtn.disabled=true;punchBtn.disabled=true;const ms=Math.round(now-start);state.records.obstacleRaceMob[p.id]=ms;timeEl.textContent=(ms/1000).toFixed(2);call.textContent='GOAL!!';call.classList.add('goal-v202');runner.classList.add('goal-v202');beep(1040,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${(ms/1000).toFixed(2)}<small>秒</small>`,`障害物10個 / HIT ${hits}回`)},800)}
+  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;const curSpeed=now<slowUntil?92:205;x+=curSpeed*dt;
+    if(jumping){vy-=850*dt;y+=vy*dt;if(y<=0){y=0;vy=0;jumping=false;runner.classList.remove('jump-v202')}}
+    obstacles.forEach(o=>{
+      if(o.broken||o.hit&&x>o.x+50)return;
+      const dx=o.x-x;
+      if((o.type==='trash'||o.type==='cardboard')&&now<punchUntil&&dx>-8&&dx<78)breakObstacle(o);
+      if(!o.broken&&Math.abs(dx)<31){const clear=(o.type==='rock'||o.type==='bike')&&y>52;if(!clear)hitObstacle(o)}
+      if(!o._passed&&x>o.x+38){o._passed=true;passed++;countEl.textContent=`${passed} / 10`}
+    });
+    timeEl.textContent=((now-start)/1000).toFixed(2);camera();
+    if(x>=WORLD_W-158){finish(now);return}raf=requestAnimationFrame(frame)
+  }
+  raf=requestAnimationFrame(frame);
+}
+
+async function startSphereMob(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='sphereMob');
+  screen.innerHTML=`
+    <div class="sphere-shell-v202 gameplay-fit">
+      <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>球体モブくん</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+      <div class="sphere-hud-v202"><div><span>ALIVE</span><b id="sphereAlive202">5</b></div><div><span>RING OUT</span><b id="sphereOut202">0</b></div><div><span>SCORE</span><b id="sphereScore202">0</b></div></div>
+      <div id="sphereSea202" class="sphere-sea-v202"><div id="sphereField202" class="sphere-field-v202"><div class="sphere-center-v202">MOB</div><div id="sphereLayer202"></div><div id="sphereTarget202" class="sphere-target-v202"></div></div><div id="sphereCall202" class="sphere-call-v202">タップした場所へ突進！</div></div>
+      <div class="sphere-note-v202">遠くから加速してぶつかるほど相手を強く弾く</div>
+    </div>`;
+  const field=document.getElementById('sphereField202'),layer=document.getElementById('sphereLayer202'),targetEl=document.getElementById('sphereTarget202'),aliveEl=document.getElementById('sphereAlive202'),outEl=document.getElementById('sphereOut202'),scoreEl=document.getElementById('sphereScore202'),call=document.getElementById('sphereCall202');
+  void field.offsetHeight;const W=field.clientWidth,H=field.clientHeight,cx=W/2,cy=H/2,R=Math.min(W,H)*.43,BR=25;
+  const starts=[[-45,0],[48,0],[0,-55],[-35,48],[38,48]];
+  const balls=starts.map((s,i)=>({i,x:cx+s[0],y:cy+s[1],vx:0,vy:0,tx:cx+s[0],ty:cy+s[1],alive:true,nextThink:0,el:null}));const human=0;
+  balls.forEach(b=>{const el=document.createElement('div');el.className=`sphere-ball-v202 ${b.i===human?'you-v202':'cpu-v202'}`;el.innerHTML=`<img src="icon/01.png" draggable="false" alt=""><b>${b.i===human?'YOU':b.i+1}</b>`;layer.appendChild(el);b.el=el});
+  let active=false,finished=false,raf=null,last=performance.now(),start=0,eliminated=0;
+  function render(){balls.forEach(b=>{b.el.style.transform=`translate3d(${b.x-BR}px,${b.y-BR}px,0)`})}
+  render();targetEl.style.left=`${balls[human].x}px`;targetEl.style.top=`${balls[human].y}px`;
+  // ABSOLUTE RULE: all five balls are placed before countdown.
+  void field.offsetHeight;
+  if(!(await countdown('SPHERE MOB',runId,{transparent:true})))return;
+  active=true;start=last=performance.now();
+  field.addEventListener('pointerdown',e=>{if(!active||!balls[human].alive)return;e.preventDefault();const r=field.getBoundingClientRect();const b=balls[human];b.tx=clamp(e.clientX-r.left,0,W);b.ty=clamp(e.clientY-r.top,0,H);targetEl.style.left=`${b.tx}px`;targetEl.style.top=`${b.ty}px`;targetEl.classList.remove('ping-v202');void targetEl.offsetWidth;targetEl.classList.add('ping-v202')},{passive:false});
+  function eliminate(b){if(!b.alive)return;b.alive=false;b.el.classList.add('out-v202');eliminated++;const alive=balls.filter(x=>x.alive);aliveEl.textContent=alive.length;outEl.textContent=eliminated;
+    if(b.i===human){const alreadyOut=eliminated-1;const score=clamp(alreadyOut*20,0,60);finish(score,`RING OUT / ${5-alive.length}番目に脱落`);return}
+    if(balls[human].alive){const score=alive.length===1?100:clamp(eliminated*20,0,60);scoreEl.textContent=score;call.textContent=`RING OUT! +20`}
+    if(alive.length===1&&alive[0].i===human)finish(100,'LAST ONE!! 最後まで残った！')
+  }
+  function finish(score,text){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.sphereMob[p.id]=score;scoreEl.textContent=score;call.textContent=text;call.classList.add('result-v202');beep(score===100?1180:score>=60?880:score>=20?610:220,180,.045);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,text)},900)}
+  function thinkCpu(b,now){if(now<b.nextThink)return;b.nextThink=now+rand(420,900);const targets=balls.filter(x=>x.alive&&x.i!==b.i);const t=targets[randi(0,targets.length-1)];if(!t)return;const aggression=now-start>12000?1.20:1;b.tx=clamp(t.x+rand(-30,30),15,W-15);b.ty=clamp(t.y+rand(-30,30),15,H-15);if(Math.random()<.18){b.tx=cx+rand(-R*.75,R*.75);b.ty=cy+rand(-R*.75,R*.75)}}
+  function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.028,(now-last)/1000);last=now;
+    balls.forEach(b=>{if(!b.alive)return;if(b.i!==human)thinkCpu(b,now);const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy)||1;const acc=(b.i===human?355:330)*(now-start>14000?1.16:1);if(d>7){b.vx+=dx/d*acc*dt;b.vy+=dy/d*acc*dt}const max=b.i===human?225:210;const sp=Math.hypot(b.vx,b.vy);if(sp>max){b.vx=b.vx/sp*max;b.vy=b.vy/sp*max}b.vx*=Math.pow(.982,dt*60);b.vy*=Math.pow(.982,dt*60);b.x+=b.vx*dt;b.y+=b.vy*dt});
+    for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(!a.alive||!b.alive)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.1;if(d<BR*2){const nx=dx/d,ny=dy/d,over=BR*2-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const rvx=b.vx-a.vx,rvy=b.vy-a.vy,closing=-(rvx*nx+rvy*ny);const impact=42+clamp(Math.max(0,closing)*1.22,0,235);a.vx-=nx*impact*.52;a.vy-=ny*impact*.52;b.vx+=nx*impact*.52;b.vy+=ny*impact*.52;a.el.classList.add('bump-v202');b.el.classList.add('bump-v202');setTimeout(()=>{a.el?.classList.remove('bump-v202');b.el?.classList.remove('bump-v202')},120);beep(240+Math.min(380,impact),28,.009)}}
+    balls.forEach(b=>{if(!b.alive)return;const d=Math.hypot(b.x-cx,b.y-cy);if(d>R+BR*.35)eliminate(b)});
+    if(!finished&&now-start>15000){balls.forEach(b=>{if(!b.alive)return;const dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy)||1;b.vx+=dx/d*38*dt;b.vy+=dy/d*38*dt});call.textContent='FINAL RUSH!'}
+    render();if(!finished&&now-start>26000){const living=balls.filter(b=>b.alive).sort((a,b)=>Math.hypot(b.x-cx,b.y-cy)-Math.hypot(a.x-cx,a.y-cy));if(living.length>1)eliminate(living[0]);}
+    if(!finished)raf=requestAnimationFrame(frame)
+  }
+  raf=requestAnimationFrame(frame);
+}
+
+async function startFrontFlipMob(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='frontFlipMob');
+  screen.innerHTML=`
+    <div class="flip-shell-v202 gameplay-fit">
+      <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんの前宙</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+      <div class="flip-hud-v202"><div><span>DISTANCE</span><b id="flipDist202">---</b></div><div><span>FLIP</span><b id="flipCount202">0.0</b></div><div><span>SCORE</span><b id="flipScore202">---</b></div></div>
+      <div class="flip-power-v202"><span>助走距離</span><div id="flipGauge202"><i id="flipMarker202"></i><b></b></div></div>
+      <div id="flipStage202" class="flip-stage-v202"><div id="flipWorld202" class="flip-world-v202"><div class="flip-runway-v202"></div><div class="flip-takeoff-v202">JUMP</div><div class="flip-mat-v202"></div><div id="flipMob202" class="flip-mob-v202"><img src="icon/01.png" draggable="false" alt=""></div></div><div id="flipCall202" class="flip-call-v202">距離を決めろ！ タップ！</div></div>
+      <button id="flipAction202" class="primary flip-action-v202" type="button" disabled>タップ！</button>
+    </div>`;
+  const gauge=document.getElementById('flipGauge202'),marker=document.getElementById('flipMarker202'),stage=document.getElementById('flipStage202'),mob=document.getElementById('flipMob202'),call=document.getElementById('flipCall202'),action=document.getElementById('flipAction202'),distEl=document.getElementById('flipDist202'),countEl=document.getElementById('flipCount202'),scoreEl=document.getElementById('flipScore202');
+  void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let phase='gauge',gaugeQ=.08,gaugeDir=1,raf=null,last=performance.now(),runStart=0,hold=false,angle=0,flips=0,distQ=.5,finished=false;
+  mob.style.transform=`translate3d(24px,${H-105}px,0) rotate(0deg)`;marker.style.left=`${gaugeQ*100}%`;
+  // ABSOLUTE RULE: Mob-kun is already on the runway before countdown.
+  void stage.offsetHeight;
+  if(!(await countdown('FRONT FLIP',runId,{transparent:true})))return;
+  action.disabled=false;
+  function gaugeFrame(now){if(!isGameRunValid(runId)||finished||phase!=='gauge')return;const dt=Math.min(.03,(now-last)/1000);last=now;gaugeQ+=gaugeDir*dt*.72;if(gaugeQ>=1){gaugeQ=1;gaugeDir=-1}else if(gaugeQ<=0){gaugeQ=0;gaugeDir=1}marker.style.left=`${gaugeQ*100}%`;raf=requestAnimationFrame(gaugeFrame)}
+  raf=requestAnimationFrame(gaugeFrame);
+  action.addEventListener('pointerdown',e=>{e.preventDefault();if(finished)return;
+    if(phase==='gauge'){phase='armed';if(raf)cancelAnimationFrame(raf);distQ=clamp(1-Math.abs(gaugeQ-.91)/.91,0,1);marker.classList.add('locked-v202');call.textContent='タップ！';action.textContent='タップ！';beep(690,70,.02);return}
+    if(phase==='armed'){phase='run';action.disabled=true;call.textContent='RUN!!';runStart=performance.now();last=runStart;raf=requestAnimationFrame(runFrame);return}
+    if(phase==='air'){hold=true;action.classList.add('hold-v202');call.textContent='回転中！ 離して着地！';beep(520,26,.009)}
+  },{passive:false});
+  const release=e=>{if(phase==='air'&&hold){e.preventDefault();hold=false;action.classList.remove('hold-v202');call.textContent='着地を合わせろ！'}};
+  action.addEventListener('pointerup',release,{passive:false});action.addEventListener('pointercancel',release,{passive:false});
+  function runFrame(now){if(!isGameRunValid(runId)||finished||phase!=='run')return;const t=(now-runStart)/1000;const runDuration=.92-.18*distQ;const q=clamp(t/runDuration,0,1);const x=24+q*(W*.34);mob.style.transform=`translate3d(${x}px,${H-105}px,0) rotate(0deg)`;if(q>=1){phase='air';action.disabled=false;action.textContent='長押し！';call.textContent='長押し！';last=now;raf=requestAnimationFrame(airFrame);return}raf=requestAnimationFrame(runFrame)}
+  function airFrame(now){if(!isGameRunValid(runId)||finished||phase!=='air')return;const dt=Math.min(.03,(now-last)/1000);last=now;const elapsed=(now-runStart)/1000-(.92-.18*distQ);const flightT=1.48+.22*distQ;const q=clamp(elapsed/flightT,0,1);const x=W*.36+q*(W*(.43+.12*distQ));const arc=Math.sin(Math.PI*q)*(H*.36);const y=H-105-arc;if(hold)angle+=720*dt;flips=angle/360;mob.style.transform=`translate3d(${x}px,${y}px,0) rotate(${angle}deg)`;distEl.textContent=`${(4.2+distQ*4.8).toFixed(1)}m`;countEl.textContent=flips.toFixed(1);if(q>=1){land();return}raf=requestAnimationFrame(airFrame)}
+  function land(){phase='done';action.disabled=true;finished=true;const distM=4.2+distQ*4.8;const mod=((angle%360)+360)%360;const angleErr=Math.min(mod,360-mod);const distanceScore=Math.round(clamp((distM-4.2)/4.8,0,1)*30);const rotationScore=Math.round(clamp(flips/2.5,0,1)*35);let landingScore=Math.round(clamp(1-angleErr/95,0,1)*35);if(hold)landingScore=Math.max(0,landingScore-18);let score=clamp(distanceScore+rotationScore+landingScore,0,100);const grade=angleErr<=8&&!hold?'PERFECT LANDING!':angleErr<=28?'NICE LANDING!':angleErr<=65?'ROUGH LANDING':'FALL!';if(grade==='PERFECT LANDING!'&&flips>=1)score=clamp(score+3,0,100);state.records.frontFlipMob[p.id]=score;scoreEl.textContent=score;call.textContent=grade;call.classList.add(grade==='FALL!'?'bad-v202':'result-v202');mob.classList.add(grade==='FALL!'?'fall-v202':'land-v202');beep(score>=90?1120:score>=70?860:score>=50?620:280,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`距離 ${distM.toFixed(1)}m / 前宙 ${flips.toFixed(1)}回 / 着地角度誤差 ${angleErr.toFixed(0)}°`)},900)}
+}
+
+function renderMobCupPlayerHandoff(gameIndex,p,humanIndex,main,sub=""){
+  clearGameFit();
+  const cup=state.mobCup;
+  const list=humans();
+  const next=list[humanIndex+1]||null;
+  const isLast=!next;
+  const g=GAMES[gameIndex];
+  const raw=Number(state.records[g.key]?.[p.id]);
+  const score=Number.isFinite(raw)?performancePoints(gameIndex,raw):0;
+  const playerLabel=p.id.startsWith('p')?`P${p.no}`:esc(p.name);
+  const nextLabel=next?(next.id.startsWith('p')?`P${next.no}`:esc(next.name)):'';
+
+  screen.innerHTML=`
+    <div class="mobcup-handoff-v202">
+      <div class="game-head">
+        <div><span class="kicker">MOB CUP / GAME ${cup.round}</span><h2>${g.title}</h2><p class="lead">${playerLabel} のプレイが終了しました。</p></div>
+        <div class="game-badge">${humanIndex+1}/${list.length}</div>
+      </div>
+      <div class="mobcup-player-score-v202">
+        ${imgTag(p,'mobcup-handoff-avatar-v202')}
+        <span>${playerLabel} SCORE</span>
+        <div class="mobcup-handoff-record-v202">${main}</div>
+        <strong>${score}<small>/100 pt</small></strong>
+        ${sub?`<p>${sub}</p>`:''}
+      </div>
+      <div class="mobcup-pass-phone-v202">
+        ${next
+          ? `<b>スマホを ${nextLabel} に渡してください</b><span>${nextLabel} が受け取ってから下のボタンを押します。</span>`
+          : `<b>PLAYER TEAM のプレイ終了！</b><span>確認してからCPUチームの集計へ進みます。</span>`}
+      </div>
+      <button id="mobCupHandoffNext202" class="primary" type="button">${next?`${nextLabel} が受け取った / READY?へ`:'CPUチーム集計へ'}</button>
+    </div>`;
+  gameTop();
+
+  const btn=document.getElementById('mobCupHandoffNext202');
+  btn.disabled=true;
+  setTimeout(()=>{if(btn?.isConnected)btn.disabled=false},650);
+  btn.addEventListener('click',()=>{
+    if(next){humanReady(gameIndex,humanIndex+1);return}
+    if(cpus().length){simulateCpuThenResult(gameIndex);return}
+    finishGame(gameIndex);
+  },{once:true});
+}
+
 function recordScreen(gameIndex,p,humanIndex,main,sub=""){
   if(activeGameIndex>=0&&legacyGameIndex(activeGameIndex)===gameIndex)gameIndex=activeGameIndex;
   if(
@@ -26706,10 +27049,8 @@ function recordScreen(gameIndex,p,humanIndex,main,sub=""){
   clearGameFit();
   gameTop();
   if(state.mobCup?.active){
-    const more=humanIndex+1<humans().length;
-    if(more){humanReady(gameIndex,humanIndex+1);return;}
-    if(cpus().length){simulateCpuThenResult(gameIndex);return;}
-    finishGame(gameIndex);return;
+    renderMobCupPlayerHandoff(gameIndex,p,humanIndex,main,sub);
+    return;
   }
   if(state.freePlay){
     screen.innerHTML=`<div class="ready-wrap"><div class="ready-card">${imgTag(p,"ready-avatar")}<div class="record-label">${GAMES[gameIndex].title} / SOLO RECORD</div><div class="big-record">${main}</div>${sub?`<p class="lead">${sub}</p>`:""}<button id="soloReplay" class="primary">同じゲームをもう一度</button><div style="height:8px"></div><button id="soloHome" class="secondary">メインメニューへ</button></div></div>`;
@@ -26785,7 +27126,7 @@ function softenCpuResultV121(gameIndex,p,ultra){
 
   const specificallyTuned=new Set([
     50,51,54,59,62,63,
-    64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,95,96,97,98,99,100,101,102,105,107,108,110,115,118,119,120
+    64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,95,96,97,98,99,100,101,102,105,107,108,110,115,118,119,120,125,126,127,128,129
   ]);
 
   if(
@@ -27160,6 +27501,16 @@ function simulateOneCpu(gameIndex,p){
     state.records.senryobakoMob[p.id]=ultra
       ? randi(82,100)
       : randi(46,95);
+  }else if(legacyIndex===125){
+    state.records.tableclothPull[p.id]=ultra?randi(88,100):randi(42,94);
+  }else if(legacyIndex===126){
+    state.records.bombPassMob[p.id]=ultra?[80,100,100][randi(0,2)]:[0,40,40,60,60,80,100][randi(0,6)];
+  }else if(legacyIndex===127){
+    state.records.obstacleRaceMob[p.id]=ultra?randi(10800,13200):randi(12500,19800);
+  }else if(legacyIndex===128){
+    state.records.sphereMob[p.id]=ultra?[60,100,100][randi(0,2)]:[0,20,40,60,60,100][randi(0,5)];
+  }else if(legacyIndex===129){
+    state.records.frontFlipMob[p.id]=ultra?randi(86,100):randi(38,94);
   }else{
     const fallbackKey=GAMES[gameIndex]?.key;
     if(fallbackKey&&state.records[fallbackKey])state.records[fallbackKey][p.id]=0;
@@ -27349,13 +27700,19 @@ function performancePoints(gameIndex,v){
   }
   if(legacyIndex===118)return clamp(Math.round(v/3000*100),0,100);
   if(legacyIndex===119)return clamp(Math.round(v),0,100);
-  if(legacyIndex>=121&&legacyIndex<=124)return clamp(Math.round(v),0,100);
+  if(legacyIndex>=121&&legacyIndex<=126)return clamp(Math.round(v),0,100);
+  if(legacyIndex===127){
+    if(v<=11500)return 100;
+    if(v>=21000)return 0;
+    return clamp(Math.round((21000-v)/9500*100),0,100);
+  }
+  if(legacyIndex===128||legacyIndex===129)return clamp(Math.round(v),0,100);
   return clamp(Math.round(v),0,100);
 }
 
 function rankRecords(gameIndex){
   const legacyIndex=legacyGameIndex(gameIndex);
-  const key=GAMES[gameIndex].key,records=state.records[key],ascRaw=(legacyIndex===0||legacyIndex===2||legacyIndex===5||legacyIndex===21||legacyIndex===23||legacyIndex===24||legacyIndex===25||legacyIndex===26||legacyIndex===27||legacyIndex===37||legacyIndex===40||legacyIndex===47||legacyIndex===51||legacyIndex===53||legacyIndex===63||legacyIndex===80||legacyIndex===83||legacyIndex===86||legacyIndex===89||legacyIndex===92||legacyIndex===93||legacyIndex===96||legacyIndex===105);
+  const key=GAMES[gameIndex].key,records=state.records[key],ascRaw=(legacyIndex===0||legacyIndex===2||legacyIndex===5||legacyIndex===21||legacyIndex===23||legacyIndex===24||legacyIndex===25||legacyIndex===26||legacyIndex===27||legacyIndex===37||legacyIndex===40||legacyIndex===47||legacyIndex===51||legacyIndex===53||legacyIndex===63||legacyIndex===80||legacyIndex===83||legacyIndex===86||legacyIndex===89||legacyIndex===92||legacyIndex===93||legacyIndex===96||legacyIndex===105||legacyIndex===127);
   const arr=participants().map(p=>({p,value:records[p.id]}));
   if(mode().performance){
     arr.forEach(e=>e.points=performancePoints(gameIndex,e.value));
@@ -27481,7 +27838,9 @@ function formatRecord(gameIndex,v){
   if(legacyIndex>=111&&legacyIndex<=117)return `${Math.round(v)}pt`;
   if(legacyIndex===118)return `${Math.round(v)}m`;
   if(legacyIndex===119)return `${Math.round(v)}pt`;
-  if(legacyIndex>=121&&legacyIndex<=124)return `${Math.round(v)}pt`;
+  if(legacyIndex>=121&&legacyIndex<=126)return `${Math.round(v)}pt`;
+  if(legacyIndex===127)return `${(v/1000).toFixed(2)}秒`;
+  if(legacyIndex===128||legacyIndex===129)return `${Math.round(v)}pt`;
   return `${Math.round(v)}pt`;
 }
 
