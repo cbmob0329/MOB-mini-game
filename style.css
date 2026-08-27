@@ -29343,3 +29343,39 @@ canvas{
 .obsrace-moving-rock-v206>span{position:absolute;left:31px;top:-29px;width:5px;height:30px;background:#34312f;border:2px solid var(--ink);border-bottom:0}
 .obsrace-moving-rock-v206.hit-v206{animation:obsMovingRockHit206 .22s linear}
 @keyframes obsMovingRockHit206{50%{filter:brightness(1.45);scale:1.1}}
+
+
+/* V11.07 focused interaction / presentation fixes */
+.cheer-word-v204{transform-origin:left center;max-width:none}
+
+/* POI: real trash-bin silhouette + swipe-anywhere control. */
+.poi-stage-v204{touch-action:none}
+.poi-bins-v204{top:10px;gap:9px}
+.poi-bin-v204{height:78px;border-radius:10px 10px 16px 16px;padding-top:12px;box-shadow:inset 0 -13px 0 rgba(0,0,0,.14),4px 4px 0 rgba(0,0,0,.16)}
+.poi-bin-v204::before,.poi-bin-v204::after{content:"";position:absolute;bottom:-7px;width:13px;height:13px;border:3px solid var(--ink);border-radius:50%;background:#444}
+.poi-bin-v204::before{left:15px}.poi-bin-v204::after{right:15px}
+.poi-bin-lid-v207{position:absolute;left:-5px;right:-5px;top:-8px;height:15px;border:4px solid var(--ink);border-radius:8px;background:inherit;box-shadow:0 4px 0 rgba(0,0,0,.14)}
+.poi-bin-slot-v207{position:absolute;left:50%;top:16px;translate:-50% 0;width:46%;height:8px;border:3px solid var(--ink);border-radius:999px;background:#25272b}
+.poi-bin-v204 b{margin-top:15px;font-size:10px;color:#111}
+.poi-pop-v207{position:absolute;z-index:80;left:50%;top:-12px;translate:-50% -100%;display:block;opacity:0;pointer-events:none;white-space:nowrap;color:#fff34f;font-size:24px;line-height:1;font-weight:1000;font-family:Impact,"Arial Black",sans-serif;letter-spacing:-1px;-webkit-text-stroke:3px #111;text-shadow:4px 4px 0 #e64f59;rotate:-8deg}
+.poi-pop-v207.show-v207{animation:poiPop207 .58s cubic-bezier(.18,1.55,.32,1)}
+@keyframes poiPop207{0%{opacity:0;scale:.25;translate:-50% -70%}20%,72%{opacity:1;scale:1.15;translate:-50% -115%}100%{opacity:0;scale:.82;translate:-50% -150%}}
+.poi-paper-layer-v205,.poi-paper-layer-v205 .poi-paper-v204{pointer-events:none}
+.poi-swipe-zone-v207{position:absolute;z-index:14;left:50%;bottom:94px;translate:-50% 0;width:180px;height:76px;display:flex;align-items:flex-end;justify-content:space-around;pointer-events:none;opacity:.22}
+.poi-swipe-zone-v207::before{content:"";position:absolute;left:50%;bottom:0;translate:-50% 0;width:104px;height:54px;border:4px dashed #111;border-radius:50% 50% 12px 12px}
+.poi-swipe-zone-v207 i,.poi-swipe-zone-v207 b{font-size:28px;font-weight:1000}
+.poi-paper-v204{width:56px;height:51px}
+.poi-call-v204{bottom:170px;font-size:9px}
+
+/* Find MOB: user circles the answer instead of tapping it. */
+.find-stage-v203{touch-action:none}
+.find-circle-v207{position:absolute;z-index:70;inset:0;width:100%;height:100%;touch-action:none;background:transparent}
+.find-answer-v207{position:absolute;z-index:82;width:96px;height:96px;translate:-50% -50%;border:7px solid #ffdf45;border-radius:50%;box-shadow:0 0 0 4px #111;display:none;place-items:center;pointer-events:none;animation:findAnswerPulse207 .42s ease-in-out infinite alternate}
+.find-answer-v207 b{position:absolute;left:50%;top:-13px;translate:-50% -100%;white-space:nowrap;padding:5px 9px;border:4px solid #111;border-radius:12px;background:#ffdf45;font-size:13px;font-weight:1000;box-shadow:4px 4px 0 #111}
+.find-answer-v207.show-v207{display:grid}
+.find-answer-v207.success-v207{border-color:#75dd76}.find-answer-v207.timeout-v207{border-color:#ffdf45}
+@keyframes findAnswerPulse207{to{scale:1.1}}
+.find-mob-v203{pointer-events:none}
+
+/* Firework: the rocket sits on the top of the player's drawn launcher before lift-off. */
+.fw-stand-art-v205{height:132px;width:164px;object-position:center bottom}
