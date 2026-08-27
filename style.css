@@ -29334,3 +29334,12 @@ canvas{
 .find-decoy-mob-v205{position:absolute;width:40px;height:46px;pointer-events:none;opacity:.72;filter:grayscale(.75) sepia(.18) brightness(.82)}
 .find-decoy-mob-v205 img{width:40px;height:46px;object-fit:contain}
 .find-decoy-mob-v205::after{content:"";position:absolute;inset:5px -3px -3px 7px;border:3px dashed rgba(20,20,20,.35);border-radius:45%;transform:rotate(12deg)}
+
+/* V11.06 focused fixes */
+.find-hidden-until-go-v206{visibility:hidden!important;opacity:0!important}
+.obsrace-moving-rock-v206{position:absolute;z-index:14;left:0;top:0;width:66px;height:66px;border:5px solid var(--ink);border-radius:16px 12px 18px 10px;background:#77736f;box-shadow:inset 11px 10px 0 #99938b,inset -10px -9px 0 #56524f,0 5px 0 rgba(0,0,0,.18);will-change:transform}
+.obsrace-moving-rock-v206>b{position:absolute;left:9px;top:10px;width:19px;height:13px;border-left:4px solid #4f4b48;border-top:4px solid #4f4b48;transform:rotate(-18deg)}
+.obsrace-moving-rock-v206>i{position:absolute;right:8px;bottom:8px;width:20px;height:15px;border-right:4px solid #4f4b48;border-bottom:4px solid #4f4b48;transform:rotate(14deg)}
+.obsrace-moving-rock-v206>span{position:absolute;left:31px;top:-29px;width:5px;height:30px;background:#34312f;border:2px solid var(--ink);border-bottom:0}
+.obsrace-moving-rock-v206.hit-v206{animation:obsMovingRockHit206 .22s linear}
+@keyframes obsMovingRockHit206{50%{filter:brightness(1.45);scale:1.1}}
