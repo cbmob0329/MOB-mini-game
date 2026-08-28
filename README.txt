@@ -4829,3 +4829,5 @@ V11.04: フラフープ削除 / 見せ場追従・リザルト強化 / 全記録
 
 
 V11.14: モブカップスペシャル追加。2〜4人 PLAYER TEAM + CPU49チーム、1次/2次/最終予選、8チーム決勝トーナメント、代表戦、倍ゲーム、決勝3倍ゲーム。
+
+V11.16: Mine Cart moving rock walls removed; 11 randomized holes. Robot March 800m=100 with CPU calibration. MOB CUP SPECIAL team scoring changed from average to sum.

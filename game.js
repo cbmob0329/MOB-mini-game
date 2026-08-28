@@ -330,7 +330,7 @@ const GAMES=[
   {no:92,key:"bowlingMob",title:"モブくんボウリング",sub:"モブくんが1投。上スワイプで20ピンを狙う。1本5点",legacy:100},
   {no:93,key:"waterSkip",title:"モブくん水切り",sub:"速度・角度・水面の状態で毎回変化する水切り回数を競う",legacy:101},
   {no:94,key:"tamaireMob",title:"モブくん玉入れ",sub:"動くカゴへ10球をテンポよく連投。1個10点",legacy:102},
-  {no:95,key:"mineCartMob",title:"モブくんトロッコ",sub:"長い鉱山コースを高速走行。穴・スロープ・トランポリン・マグマ・上下する岩壁を2段ジャンプで突破",legacy:105},
+  {no:95,key:"mineCartMob",title:"モブくんトロッコ",sub:"長い鉱山コースを高速走行。毎回変わる穴・スロープ・トランポリン・マグマを2段ジャンプで突破",legacy:105},
   {no:96,key:"airHockeyMob",title:"モブくんエアホッケー",sub:"12秒間、2つのパックを同時にさばいて上ゴールを狙う",legacy:107},
   {no:97,key:"ropeSwingMob",title:"モブくんロープスイング",sub:"3本のロープをタイミングよく離して渡り、最後に飛んだ距離を競う",legacy:108},
   {no:98,key:"billiardsMob",title:"モブくんビリヤード",sub:"モブくんがキューで白球を強く打ち、6ポケット。最大4ショットで3つの色球を落とす",legacy:110},
@@ -2910,7 +2910,7 @@ function scoreRuleForGame(index){
     "32分割 / 100点床1マス・90点床1マス / ジャンプ着地時の床ポイント",
     "3ヶ所から掘り出した化石ポイントの合計",
     "1回目で勝利=100点 / 2回目=90点 / 10回目=10点",
-    "前進距離1000m=100点 / エネルギー切れまでの距離",
+    "前進距離800m=100点 / エネルギー切れまでの距離",
     "3秒デザイン→3・2・1→10秒捕獲 / 12体GET=100点",
     "甲子園47校中の最終順位 / 1位=100点・47位=0点換算",
     "10人中の生存順位で0〜100点 / 最初に落下=0点 / 最後の1人=100点",
@@ -3165,7 +3165,7 @@ function showGameIntro(index){
   }else if(legacyIndex===102){
     rules=`<li>画面下の投球エリアを上へフリック。12球を待ち時間なしで連投できます。</li><li>1個INで10点。12球中10個入れば100点、最後の球が判定されるまで続きます。</li>`;
     }else if(legacyIndex===105){
-    rules=`<li>高速トロッコをタップでJUMP、空中でもう一度タップでDOUBLE JUMP。長い鉱山を走り切ります。</li><li>穴・スロープ・トランポリン・マグマに加え、ランダム配置の上下する岩壁を突破します。</li>`;
+    rules=`<li>高速トロッコをタップでJUMP、空中でもう一度タップでDOUBLE JUMP。長い鉱山を走り切ります。</li><li>穴は毎回ランダム配置。スロープ・トランポリン・マグマも利用しながら突破します。</li>`;
   }else if(legacyIndex===107){
     rules=`<li>画面下半分でパドルを直接ドラッグ。2つのパックを同時に上側ゴールへ入れると+20点です。</li><li>12秒勝負。自陣ゴールは-10点。2パック同士もぶつかります。</li>`;
   }else if(legacyIndex===108){
@@ -27628,7 +27628,7 @@ function simulateOneCpu(gameIndex,p){
     while(tries<10&&Math.random()>.5)tries++;
     state.records.oldMaidDuel[p.id]=tries;
   }else if(legacyIndex===81){
-    state.records.robotMarch[p.id]=Math.round(ultra?rand(720,980):rand(280,760));
+    state.records.robotMarch[p.id]=Math.round(ultra?rand(620,850):rand(240,660));
   }else if(legacyIndex===82){
     state.records.monsterMaster[p.id]=ultra?randi(9,12):randi(3,10);
   }else if(legacyIndex===83){
@@ -27894,7 +27894,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===71)return clamp(Math.round(v/35*100),0,100);
   if(legacyIndex===79)return clamp(Math.round(v/225*100),0,100);
   if(legacyIndex===80)return clamp(110-Math.round(v)*10,0,100);
-  if(legacyIndex===81)return clamp(Math.round(v/1000*100),0,100);
+  if(legacyIndex===81)return clamp(Math.round(v/800*100),0,100);
   if(legacyIndex===82)return clamp(Math.round(v/12*100),0,100);
   if(legacyIndex===83)return clamp(Math.round((47-v)/46*100),0,100);
   if(legacyIndex===84)return clamp(Math.round(v),0,100);
@@ -30320,17 +30320,6 @@ async function startMineCartMob(p,humanIndex,runId){
   const GOAL_X=5380;
   const BASE_SPEED=310;
 
-  const gaps=[
-    {x:610,w:70,kind:'single'},
-    {x:1080,w:76,kind:'single'},
-    {x:1690,w:66,kind:'double-a'},
-    {x:1845,w:68,kind:'double-b'},
-    {x:2930,w:78,kind:'single'},
-    {x:3830,w:68,kind:'double-a'},
-    {x:3992,w:70,kind:'double-b'},
-    {x:4910,w:82,kind:'single'}
-  ];
-
   const slopes=[
     {x:1260,w:230,h:58,type:'up'},
     {x:3170,w:250,h:62,type:'down'}
@@ -30346,14 +30335,20 @@ async function startMineCartMob(p,humanIndex,runId){
     {x:4505,w:300}
   ];
 
-  const reserved=[...gaps.map(g=>[g.x-150,g.x+g.w+150]),...slopes.map(g=>[g.x-150,g.x+g.w+150]),...trampolines.map(g=>[g.x-140,g.x+g.w+140]),...magma.map(g=>[g.x-150,g.x+g.w+150])];
-  const rockWalls=[];
-  let wallGuard=0;
-  while(rockWalls.length<4&&wallGuard++<500){
-    const x=randi(780,5050);
-    if(reserved.some(([a,b])=>x>=a&&x<=b)||rockWalls.some(w=>Math.abs(w.x-x)<520))continue;
-    rockWalls.push({x,phase:rand(0,Math.PI*2),speed:rand(1.35,1.95),hit:false});
-  }
+  // V11.16: moving rock walls removed. Exactly 11 holes are rebuilt every run.
+  // Each hole gets a random position inside a safe course band, so no run loses
+  // holes because of overlap rejection and no hole overlaps the other gimmicks.
+  const gapBands=[
+    [530,720],[760,950],[990,1130],
+    [1610,1790],[1840,2070],
+    [2760,2990],
+    [3550,3695],[3740,3890],[3940,4085],[4130,4250],
+    [4920,5080]
+  ];
+  const gaps=gapBands.map(([a,b])=>{
+    const w=randi(58,78);
+    return {x:randi(a,Math.max(a,b-w)),w,kind:'single'};
+  }).sort((a,b)=>a.x-b.x);
 
   screen.innerHTML=`
     <div class="cart-shell-v172 gameplay-fit">
@@ -30398,7 +30393,6 @@ async function startMineCartMob(p,humanIndex,runId){
               </div>
             `).join('')}
 
-            ${rockWalls.map((w,i)=>`<div class="cart-rockwall-v204" data-rockwall="${i}" style="left:${w.x}px">${Array.from({length:8},(_,j)=>`<i style="--rx:${(j%2)*24}px;--ry:${Math.floor(j/2)*34}px"></i>`).join('')}</div>`).join('')}
             <b class="cart-goal-v172" style="left:${GOAL_X}px">GOAL</b>
           </div>
 
@@ -30524,14 +30518,6 @@ async function startMineCartMob(p,humanIndex,runId){
     }
   },{passive:false});
 
-  // Moving walls are also placed at their real t=0 position before countdown.
-  rockWalls.forEach((w,i)=>{
-    const drop=(Math.sin(w.phase)+1)*40;
-    const el=world.querySelector(`[data-rockwall="${i}"]`);
-    if(el)el.style.transform=`translate3d(0,${drop}px,0)`;
-  });
-  void stage.offsetHeight;
-
   if(!(await countdown('MINE CART',runId,{transparent:true})))return;
 
   active=true;
@@ -30644,15 +30630,6 @@ async function startMineCartMob(p,humanIndex,runId){
     }
 
 
-    rockWalls.forEach((w,i)=>{
-      if(w.hit)return;
-      const drop=(Math.sin((now-start)/1000*w.speed+w.phase)+1)*40;
-      const el=world.querySelector(`[data-rockwall="${i}"]`);if(el)el.style.transform=`translate3d(0,${drop}px,0)`;
-      const low=drop>48;
-      if(low&&Math.abs(frontX()-w.x)<38&&airY+slopeLift<72&&now>=ignoreHazardUntil){
-        w.hit=true;falls++;fallEl.textContent=falls;penaltyMs+=900;stunUntil=now+520;ignoreHazardUntil=now+700;worldX=Math.max(worldX,w.x+62);actor.classList.remove('fall-v172');void actor.offsetWidth;actor.classList.add('fall-v172');call.textContent='ROCK WALL! +0.9s';gimmickEl.textContent='MOVING ROCK';beep(165,95,.03);setTimeout(()=>actor.classList.remove('fall-v172'),420);
-      }
-    });
     if(worldX>=GOAL_X){
       finish();
       return;
@@ -38603,11 +38580,11 @@ function mobCupSpecialCpuGameScore(team,gameIndex,representative=false){
     let best=0,bestSkill=-1;skills.forEach((s,i)=>{if(s>bestSkill){bestSkill=s;best=i}});
     return mobCupSpecialCpuMemberScore(team,best,gameIndex);
   }
-  return Math.round(skills.reduce((sum,_,i)=>sum+mobCupSpecialCpuMemberScore(team,i,gameIndex),0)/skills.length);
+  return Math.round(skills.reduce((sum,_,i)=>sum+mobCupSpecialCpuMemberScore(team,i,gameIndex),0));
 }
 function mobCupSpecialPlayerScore(gameIndex,ids){
   const vals=ids.map(id=>{const v=Number(state.records[GAMES[gameIndex].key]?.[id]);return Number.isFinite(v)?performancePoints(gameIndex,v):0});
-  return {score:Math.round(vals.reduce((a,b)=>a+b,0)/Math.max(1,vals.length)),vals};
+  return {score:Math.round(vals.reduce((a,b)=>a+b,0)),vals};
 }
 function mobCupSpecialSort(ids,scores,tieBreak={}){
   return ids.map(id=>({id,team:mobCupSpecialTeamById(id),points:scores[id]||0,tie:tieBreak[id]||0})).sort((a,b)=>b.points-a.points||b.tie-a.tie||a.team.name.localeCompare(b.team.name,'ja'));
@@ -38661,12 +38638,12 @@ function mobCupSpecialStartCurrentPhaseGame(){const c=state.mobCupSpecial;const 
 function mobCupSpecialStartGame(gameIndex,ctx){
   const c=state.mobCupSpecial;c.currentGame={...ctx,gameIndex};mobCupSpecialSetParticipants(ctx.playerIds||mobCupSpecialPlayerIds());
   const rec=state.records[GAMES[gameIndex].key];if(rec)(ctx.playerIds||mobCupSpecialPlayerIds()).forEach(id=>delete rec[id]);
-  clearGameFit();const mult=ctx.multiplier||1;screen.innerHTML=`<div class="game-head"><div><span class="kicker">${mobCupSpecialRoundLabel()}</span><h2>${esc(GAMES[gameIndex].title)}</h2><p class="lead">${GAMES[gameIndex].sub}</p></div><div class="game-badge">${mult>1?`×${mult}`:'100 PT'}</div></div><section class="panel flat mcs-game-rule-v214"><h3>${ctx.representative?'代表戦':'TEAM GAME'}</h3><p>${scoreRuleForGame(gameIndex)}</p>${ctx.representative?`<b>代表者1名の100点換算 ×${mult}</b>`:`<b>${c.teamSize}人の100点換算平均${mult>1?` ×${mult}`:''}</b>`}</section><button id="mcsGameReady214" class="primary" type="button">PLAYER TEAM READY?</button>`;
+  clearGameFit();const mult=ctx.multiplier||1,maxBase=ctx.representative?100:c.teamSize*100;screen.innerHTML=`<div class="game-head"><div><span class="kicker">${mobCupSpecialRoundLabel()}</span><h2>${esc(GAMES[gameIndex].title)}</h2><p class="lead">${GAMES[gameIndex].sub}</p></div><div class="game-badge">${mult>1?`×${mult}`:`${maxBase} PT`}</div></div><section class="panel flat mcs-game-rule-v214"><h3>${ctx.representative?'代表戦':'TEAM GAME'}</h3><p>${scoreRuleForGame(gameIndex)}</p>${ctx.representative?`<b>代表者1名の100点換算 ×${mult}</b>`:`<b>${c.teamSize}人の100点換算を合計${mult>1?` ×${mult}`:''} / 最大${c.teamSize*100*mult}pt</b>`}</section><button id="mcsGameReady214" class="primary" type="button">PLAYER TEAM READY?</button>`;
   document.getElementById('mcsGameReady214').addEventListener('click',()=>mobCupSpecialGameStartSplash(gameIndex));gameTop();
 }
 function mobCupSpecialGameStartSplash(gameIndex){
-  const c=state.mobCupSpecial,mult=c.currentGame?.multiplier||1;
-  screen.innerHTML=`<div class="mcs-game-splash-v215"><div class="mcs-splash-speed-v215"></div><span>${mobCupSpecialRoundLabel()}</span><h2>GAME START!</h2><strong>${esc(GAMES[gameIndex].title)}</strong><b>${mult>1?`POINT ×${mult}`:'MAX 100 PT'}</b></div>`;
+  const c=state.mobCupSpecial,mult=c.currentGame?.multiplier||1,maxBase=c.currentGame?.representative?100:c.teamSize*100;
+  screen.innerHTML=`<div class="mcs-game-splash-v215"><div class="mcs-splash-speed-v215"></div><span>${mobCupSpecialRoundLabel()}</span><h2>GAME START!</h2><strong>${esc(GAMES[gameIndex].title)}</strong><b>${mult>1?`POINT ×${mult}`:`MAX ${maxBase} PT`}</b></div>`;
   beep(620,90,.045);setTimeout(()=>beep(920,120,.05),130);
   setTimeout(()=>humanReady(gameIndex,0),900);gameTop();
 }
@@ -38691,7 +38668,7 @@ function mobCupSpecialCommitPhaseGame(gameIndex,playerScore,playerVals){
 }
 function mobCupSpecialRenderPhaseGameResult(gameIndex,rows,playerVals){
   const c=state.mobCupSpecial,gameRank=[...rows].sort((a,b)=>b.score-a.score),overall=mobCupSpecialSort(c.activeTeamIds,c.phaseScores,c.tieBreak),playerRank=overall.findIndex(x=>x.id==='player')+1;
-  screen.innerHTML=`<div class="game-head"><div><span class="kicker">${mobCupSpecialPhaseTitle()} / GAME ${c.phaseRound+1} COMPLETE</span><h2>${esc(GAMES[gameIndex].title)} RESULT</h2><p class="lead">PLAYER TEAM ${playerVals.map((v,i)=>`P${i+1} ${v}点`).join(' / ')}</p></div><div class="game-badge">${playerRank?`${playerRank}位`:'-'}</div></div><section class="panel"><h3>このゲーム</h3><div class="mcs-ranking-v214">${gameRank.slice(0,8).map((r,i)=>`<div class="${r.id==='player'?'player':''}"><em>${i+1}</em><b>${esc(mobCupSpecialTeamById(r.id).name)}</b><strong>${r.score}<small>/100</small></strong></div>`).join('')}</div></section><section class="panel"><h3>総合順位</h3><div class="mcs-ranking-v214">${overall.slice(0,Math.min(16,overall.length)).map((r,i)=>`<div class="${r.id==='player'?'player':''}"><em>${i+1}</em><b>${esc(r.team.name)}</b><strong>${r.points}<small>pt</small></strong></div>`).join('')}${playerRank>16?`<div class="player"><em>${playerRank}</em><b>プレイヤーチーム</b><strong>${c.phaseScores.player}<small>pt</small></strong></div>`:''}</div></section><button id="mcsPhaseNext214" class="primary" type="button">${c.phaseRound+1<c.phaseGames.length?'NEXT GAME':'予選結果へ'}</button>`;
+  screen.innerHTML=`<div class="game-head"><div><span class="kicker">${mobCupSpecialPhaseTitle()} / GAME ${c.phaseRound+1} COMPLETE</span><h2>${esc(GAMES[gameIndex].title)} RESULT</h2><p class="lead">PLAYER TEAM ${playerVals.map((v,i)=>`P${i+1} ${v}点`).join(' / ')}</p></div><div class="game-badge">${playerRank?`${playerRank}位`:'-'}</div></div><section class="panel"><h3>このゲーム</h3><div class="mcs-ranking-v214">${gameRank.slice(0,8).map((r,i)=>`<div class="${r.id==='player'?'player':''}"><em>${i+1}</em><b>${esc(mobCupSpecialTeamById(r.id).name)}</b><strong>${r.score}<small>pt</small></strong></div>`).join('')}</div></section><section class="panel"><h3>総合順位</h3><div class="mcs-ranking-v214">${overall.slice(0,Math.min(16,overall.length)).map((r,i)=>`<div class="${r.id==='player'?'player':''}"><em>${i+1}</em><b>${esc(r.team.name)}</b><strong>${r.points}<small>pt</small></strong></div>`).join('')}${playerRank>16?`<div class="player"><em>${playerRank}</em><b>プレイヤーチーム</b><strong>${c.phaseScores.player}<small>pt</small></strong></div>`:''}</div></section><button id="mcsPhaseNext214" class="primary" type="button">${c.phaseRound+1<c.phaseGames.length?'NEXT GAME':'予選結果へ'}</button>`;
   document.getElementById('mcsPhaseNext214').addEventListener('click',()=>{c.phaseRound++;if(c.phaseRound<c.phaseGames.length)mobCupSpecialStartCurrentPhaseGame();else mobCupSpecialResolvePhase()});gameTop();
 }
 
