@@ -3250,16 +3250,16 @@ function humanReady(gameIndex,humanIndex){
   }
 
   const p=list[humanIndex],g=GAMES[gameIndex];
-  const legacyIndex=legacyGameIndex(gameIndex);
+  const legacyIndex=legacyGameIndex(gameIndex),isMcs=!!state.mobCupSpecial?.active;
 
-  screen.innerHTML=`<div class="ready-wrap"><div class="ready-card">
-    ${imgTag(p,"ready-avatar")}
+  screen.innerHTML=`<div class="ready-wrap ${isMcs?'mcs-ready-wrap-v215':''}"><div class="ready-card ${isMcs?'mcs-ready-card-v215':''}">
+    ${imgTag(p,isMcs?"mcs-ready-avatar-v215":"ready-avatar")}
     <span class="kicker">${currentRoundLabel()}</span>
     <div class="ready-big">READY?</div>
     <div class="ready-name">${esc(p.name)}</div>
-    <div class="ready-sub">${state.freePlay?"1 PLAYER FREE PLAY":(mode().team?teamName(p.id):`PLAYER ${p.no}`)}</div>
-    ${state.mobCup?.active?`<p class="mobcup-ready-phone-v202">${p.id.startsWith('p')?`P${p.no}`:esc(p.name)} がスマホを持っていることを確認してください</p>`:''}
-    <button id="readyBtn" class="primary">${state.mobCup?.active?'準備OK / 3・2・1へ':'準備OK'}</button>
+    <div class="ready-sub">${isMcs?'PLAYER TEAM':state.freePlay?"1 PLAYER FREE PLAY":(mode().team?teamName(p.id):`PLAYER ${p.no}`)}</div>
+    ${state.mobCup?.active||isMcs?`<p class="mobcup-ready-phone-v202">${p.id.startsWith('p')?`P${p.no}`:esc(p.name)} がスマホを持っていることを確認してください</p>`:''}
+    <button id="readyBtn" class="primary">${state.mobCup?.active||isMcs?'準備OK / 3・2・1へ':'準備OK'}</button>
   </div></div>`;
   gameTop();
 
@@ -38576,7 +38576,10 @@ function mobCupSpecialGamePool(single=false){
   const old=[...MODES.mobCupSpecial.participants];
   mobCupSpecialSetParticipants(single?['p1']:mobCupSpecialPlayerIds());
   const bad=new Set(['mobSpeedRacer','summonMaster','linkedCartBlast']);
-  const pool=eligibleGameIndices().filter(i=>!bad.has(GAMES[i].key));
+  // MOB CUP SPECIALでは、通常モードの「個人戦専用」制限に関係なく
+  // GAME 111〜122をチーム内のプレイヤーが順番に遊べる。
+  const forcedSpecial=GAMES.map((g,i)=>g.no>=111&&g.no<=122?i:-1).filter(i=>i>=0);
+  const pool=[...new Set([...eligibleGameIndices(),...forcedSpecial])].filter(i=>!bad.has(GAMES[i].key));
   MODES.mobCupSpecial.participants=old;
   return pool;
 }
@@ -38659,7 +38662,13 @@ function mobCupSpecialStartGame(gameIndex,ctx){
   const c=state.mobCupSpecial;c.currentGame={...ctx,gameIndex};mobCupSpecialSetParticipants(ctx.playerIds||mobCupSpecialPlayerIds());
   const rec=state.records[GAMES[gameIndex].key];if(rec)(ctx.playerIds||mobCupSpecialPlayerIds()).forEach(id=>delete rec[id]);
   clearGameFit();const mult=ctx.multiplier||1;screen.innerHTML=`<div class="game-head"><div><span class="kicker">${mobCupSpecialRoundLabel()}</span><h2>${esc(GAMES[gameIndex].title)}</h2><p class="lead">${GAMES[gameIndex].sub}</p></div><div class="game-badge">${mult>1?`×${mult}`:'100 PT'}</div></div><section class="panel flat mcs-game-rule-v214"><h3>${ctx.representative?'代表戦':'TEAM GAME'}</h3><p>${scoreRuleForGame(gameIndex)}</p>${ctx.representative?`<b>代表者1名の100点換算 ×${mult}</b>`:`<b>${c.teamSize}人の100点換算平均${mult>1?` ×${mult}`:''}</b>`}</section><button id="mcsGameReady214" class="primary" type="button">PLAYER TEAM READY?</button>`;
-  document.getElementById('mcsGameReady214').addEventListener('click',()=>humanReady(gameIndex,0));gameTop();
+  document.getElementById('mcsGameReady214').addEventListener('click',()=>mobCupSpecialGameStartSplash(gameIndex));gameTop();
+}
+function mobCupSpecialGameStartSplash(gameIndex){
+  const c=state.mobCupSpecial,mult=c.currentGame?.multiplier||1;
+  screen.innerHTML=`<div class="mcs-game-splash-v215"><div class="mcs-splash-speed-v215"></div><span>${mobCupSpecialRoundLabel()}</span><h2>GAME START!</h2><strong>${esc(GAMES[gameIndex].title)}</strong><b>${mult>1?`POINT ×${mult}`:'MAX 100 PT'}</b></div>`;
+  beep(620,90,.045);setTimeout(()=>beep(920,120,.05),130);
+  setTimeout(()=>humanReady(gameIndex,0),900);gameTop();
 }
 
 function renderMobCupSpecialPlayerHandoff(gameIndex,p,humanIndex,main,sub=''){
@@ -38709,16 +38718,19 @@ function mobCupSpecialFinishPhase(sorted){
   if(c.phase==='prelim1'){
     c.direct=sorted.slice(0,12).map(x=>x.id);c.secondPool=sorted.slice(12,40).map(x=>x.id);const eliminated=sorted.slice(40).map(x=>x.id),pr=sorted.findIndex(x=>x.id==='player')+1;
     if(eliminated.includes('player')){mobCupSpecialDefeat(`1次予選 ${pr}位`,`下位10チームに入り、ここで敗退。`);return}
-    screen.innerHTML=`<div class="mcs-phase-clear-v214 ${c.direct.includes('player')?'win':'survive'}"><span>1次予選 RESULT</span><h2>${c.direct.includes('player')?'最終予選へ直行！':'2次予選へ！'}</h2><strong>PLAYER TEAM ${pr}位</strong><p>${c.direct.includes('player')?'上位12チーム入り。2次予選を免除します。':'13〜40位。得点をリセットして2次予選へ進みます。'}</p><button id="mcsAfterP1214" class="primary" type="button">次へ</button></div>`;
+    screen.innerHTML=`<div class="mcs-phase-clear-v214 ${c.direct.includes('player')?'win':'survive'}"><div class="mcs-result-burst-v215"></div>${c.direct.includes('player')?`<div class="mcs-confetti-v214">${Array.from({length:24},()=>'<i></i>').join('')}</div>`:''}<span>1次予選 RESULT</span><h2>${c.direct.includes('player')?'最終予選へ直行！':'2次予選へ！'}</h2><strong>PLAYER TEAM ${pr}位</strong><div class="mcs-big-stamp-v215">${c.direct.includes('player')?'QUALIFIED!':'SURVIVED!'}</div><p>${c.direct.includes('player')?'上位12チーム入り。2次予選を免除します。':'13〜40位。得点をリセットして2次予選へ進みます。'}</p><button id="mcsAfterP1214" class="primary" type="button">次へ</button></div>`;
     document.getElementById('mcsAfterP1214').addEventListener('click',()=>{if(c.direct.includes('player'))mobCupSpecialSimSecondQualifier();else mobCupSpecialStartPhase('prelim2',c.secondPool,5)});gameTop();return;
   }
   if(c.phase==='prelim2'){
     c.secondWinners=sorted.slice(0,4).map(x=>x.id);const pr=sorted.findIndex(x=>x.id==='player')+1;if(!c.secondWinners.includes('player')){mobCupSpecialDefeat(`2次予選 ${pr}位`,`上位4チームに届かず敗退。`);return}
-    c.finalQualifiers=[...c.direct,...c.secondWinners];mobCupSpecialFinalQualifierDraw();return;
+    c.finalQualifiers=[...c.direct,...c.secondWinners];
+    screen.innerHTML=`<div class="mcs-phase-clear-v214 win"><div class="mcs-result-burst-v215"></div><div class="mcs-confetti-v214">${Array.from({length:30},()=>'<i></i>').join('')}</div><span>2次予選 RESULT</span><h2>突破！！</h2><strong>PLAYER TEAM ${pr}位</strong><div class="mcs-big-stamp-v215">FINAL QUALIFY</div><p>上位4チーム入り。最終予選16チームへ進出！</p><button id="mcsPre2Clear215" class="primary" type="button">最終予選 組み合わせ抽選へ</button></div>`;
+    document.getElementById('mcsPre2Clear215').addEventListener('click',mobCupSpecialFinalQualifierDraw);beep(1040,180,.05);gameTop();return;
   }
   if(c.phase==='finalQual'){
-    const winners=sorted.slice(0,2).map(x=>x.id);c.currentGroup.winners=winners;c.currentGroup.scores={...c.phaseScores};if(!winners.includes('player')){mobCupSpecialDefeat(`${c.currentGroup.label}ブロック ${sorted.findIndex(x=>x.id==='player')+1}位`,`上位2チームに届かず敗退。`);return}
-    mobCupSpecialFinishOtherGroupsAndBracket();
+    const winners=sorted.slice(0,2).map(x=>x.id),pr=sorted.findIndex(x=>x.id==='player')+1;c.currentGroup.winners=winners;c.currentGroup.scores={...c.phaseScores};if(!winners.includes('player')){mobCupSpecialDefeat(`${c.currentGroup.label}ブロック ${pr}位`,`上位2チームに届かず敗退。`);return}
+    screen.innerHTML=`<div class="mcs-phase-clear-v214 win"><div class="mcs-result-burst-v215"></div><div class="mcs-confetti-v214">${Array.from({length:36},()=>'<i></i>').join('')}</div><span>最終予選 ${c.currentGroup.label} BLOCK</span><h2>決勝T進出！！</h2><strong>${c.currentGroup.label}ブロック ${pr}位</strong><div class="mcs-big-stamp-v215">BEST 8!</div><p>ここからは1対1。負けたら終了の決勝トーナメント！</p><button id="mcsFinalQualClear215" class="primary" type="button">決勝トーナメントへ</button></div>`;
+    document.getElementById('mcsFinalQualClear215').addEventListener('click',mobCupSpecialFinishOtherGroupsAndBracket);beep(1120,190,.055);gameTop();return;
   }
 }
 function mobCupSpecialAutoCut(ids,scores,cut){
@@ -38788,7 +38800,7 @@ function mobCupSpecialRenderMatchGameResult(step,pPts,cPts,playerVals){
 function mobCupSpecialEndPlayerMatch(){
   const c=state.mobCupSpecial,m=c.currentMatch,aScore=m.totalA,bScore=m.totalB;if(aScore===bScore){const gi=mobCupSpecialPickGames(1,false,m.history.map(h=>h.gameIndex))[0];m.plan.push({type:'normal',gameIndex:gi,multiplier:1,label:'同点延長戦'});mobCupSpecialAdvanceMatch();return}
   const winner=aScore>bScore?m.a:m.b,playerWin=winner==='player';
-  screen.innerHTML=`<div class="mcs-match-end-v214 ${playerWin?'win':'lose'}"><div class="mcs-rays-v214"></div><span>${m.label} RESULT</span><h2>${playerWin?'勝利！':'敗北'}</h2><strong>${esc(mobCupSpecialTeamById(winner).name)} WIN!</strong><p>${aScore} - ${bScore}</p><button id="mcsMatchEndNext214" class="primary" type="button">${playerWin?(m.round==='final'?'優勝セレモニーへ':'次のラウンドへ'):'大会結果へ'}</button></div>`;
+  screen.innerHTML=`<div class="mcs-match-end-v214 ${playerWin?'win':'lose'}"><div class="mcs-rays-v214"></div>${playerWin?`<div class="mcs-confetti-v214">${Array.from({length:34},()=>'<i></i>').join('')}</div>`:''}<span>${m.label} RESULT</span><h2>${playerWin?'勝利！！':'敗北'}</h2><div class="mcs-big-stamp-v215 ${playerWin?'win':'lose'}">${playerWin?'WIN!':'LOSE'}</div><strong>${esc(mobCupSpecialTeamById(winner).name)} WIN!</strong><p class="mcs-final-score-v215">${aScore} <i>-</i> ${bScore}</p><button id="mcsMatchEndNext214" class="primary" type="button">${playerWin?(m.round==='final'?'優勝セレモニーへ':'次のラウンドへ'):'大会結果へ'}</button></div>`;
   document.getElementById('mcsMatchEndNext214').addEventListener('click',()=>{if(!playerWin){mobCupSpecialDefeat(`${m.label}敗退`,`${mobCupSpecialTeamById(winner).name}に ${Math.abs(aScore-bScore)}ポイント差で敗北。`);return}mobCupSpecialAdvanceBracket(winner)});gameTop();
 }
 function mobCupSpecialSimCpuMatch(a,b,isFinal=false){const A=mobCupSpecialTeamById(a),B=mobCupSpecialTeamById(b),plan=mobCupSpecialBuildMatchPlan(isFinal);let sa=0,sb=0;for(const step of plan){let gi;if(step.type==='normal')gi=step.gameIndex;else gi=mobCupSpecialPickGames(step.type.includes('10')?10:3,step.type==='repChoice')[0];const rep=step.type==='repChoice';sa+=mobCupSpecialCpuGameScore(A,gi,rep)*(step.multiplier||1);sb+=mobCupSpecialCpuGameScore(B,gi,rep)*(step.multiplier||1)}if(sa===sb)sa+=Math.random()<.5?1:0.01;return sa>sb?a:b}
