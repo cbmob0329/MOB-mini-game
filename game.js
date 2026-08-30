@@ -242,127 +242,127 @@ const GAMES=[
   {no:4,key:"launch",title:"モブくん人形空を飛ぶ",sub:"感覚で狙う最大2000m",legacy:3},
   {no:5,key:"stack",title:"グラグラモブくん",sub:"10秒で色々なモブくんを積む",legacy:4},
   {no:6,key:"breakdance",title:"モブくん1990にチャレンジ",sub:"4択から1990を見抜く",legacy:5},
-  {no:7,key:"crisis",title:"モブくん危機一髪",sub:"3体で足元エネルギーを連続回避",legacy:6},
-  {no:8,key:"factory",title:"モブくん人形大人気",sub:"10秒で箱詰め・封印を量産",legacy:7},
-  {no:9,key:"catcher",title:"モブくんキャッチャー",sub:"33体の小さめフィギュアを3回で何体取れるか。1体3点、全部GETで100点",legacy:8},
-  {no:10,key:"tidy",title:"モブくん整理整頓",sub:"7体を見本の部屋へ近づける",legacy:9},
-  {no:11,key:"ski",title:"モブくんスキージャンプ",sub:"踏切タイミングで最大1km",legacy:10},
-  {no:12,key:"slot",title:"モブくんスロット",sub:"キャラクタースロットでコイン勝負",legacy:11},
-  {no:13,key:"pk",title:"モブくんPK",sub:"10本のシュートを止める",legacy:13},
-  {no:14,key:"cut",title:"モブくんカットゲーム",sub:"指定%を感覚で切り分ける",legacy:15},
-  {no:15,key:"errand",title:"お使いモブくん",sub:"1000円を10秒で使い切る",legacy:17},
-  {no:16,key:"dontHitMob",title:"モブくんを叩かないで",sub:"モグラだけを叩く10秒勝負",legacy:18},
-  {no:17,key:"mobStop",title:"モブくんストップ",sub:"棒のギリギリで止める",legacy:19},
-  {no:18,key:"overlap",title:"重なる瞬間を狙え！",sub:"2つの円を10秒以内に重ねる",legacy:20},
-  {no:19,key:"shutter",title:"モブくんシャッターチャンス",sub:"ジャンプの頂点を撮影",legacy:21},
-  {no:20,key:"cup",title:"コップ限界チャレンジ",sub:"表面張力ギリギリまで注ぐ",legacy:22},
-  {no:21,key:"darts",title:"ダーツ1投勝負",sub:"縦・横ゲージの中央を狙う",legacy:23},
-  {no:22,key:"parachute",title:"モブくんとパラシュート",sub:"開くタイミングで着地点を狙う",legacy:24},
-  {no:23,key:"mobCount",title:"モブくんは何人？",sub:"3秒で人数を見抜く",legacy:25},
-  {no:24,key:"brake",title:"モブくんブレーキチキンレース",sub:"障害物ギリギリで瞬間停止",legacy:26},
-  {no:25,key:"feint",title:"モブくんは騙されやすい",sub:"見た目が同じ本物のGO!を待つ",legacy:27},
-  {no:26,key:"bomb",title:"爆弾チキンレース",sub:"0.000秒直前でSTOP",legacy:28},
-  {no:27,key:"overlapMaster",title:"重なりモブくん",sub:"4つの円を同時に重ねる",legacy:29},
-  {no:28,key:"jumpingMob",title:"ジャンピングモブくん",sub:"ホッピングで台を乗り継ぐ",legacy:30},
-  {no:29,key:"heroMaybe",title:"モブくんは勇者かも",sub:"13秒で勇者を育てる",legacy:31},
-  {no:30,key:"popularGame",title:"アクションモブくん",sub:"モブくんでモグラ踏み",legacy:32},
-  {no:31,key:"planetEnergy",title:"モブくんは破壊神",sub:"3回チャージして高層ビルを貫く",legacy:33},
-  {no:32,key:"painter",title:"モブくんは画家志望",sub:"猫の顔型を1回で綺麗になぞる",legacy:34},
-  {no:33,key:"bikeJump",title:"モブくんバイクで飛ぶ",sub:"約3秒走って巨大ジャンプ台へ",legacy:35},
-  {no:34,key:"mobTrain",title:"モブくん列車出発進行！",sub:"5秒で線路を描いてゴールへ",legacy:37},
-  {no:35,key:"giantMob",title:"巨大モブくん大進撃",sub:"1.000秒を刻みながらビル破壊",legacy:38},
-  {no:36,key:"wizardMob",title:"魔法使いモブくん",sub:"闇の炎を円で囲んで町を守る",legacy:39},
-  {no:37,key:"brawlerMob",title:"モブくんは喧嘩番長",sub:"30人を倒すまでのタイムアタック",legacy:40},
-  {no:38,key:"summonerMob",title:"モブくんは召喚師",sub:"広く描いて超火力の中央オート無双",legacy:41},
-  {no:39,key:"blackjackMob",title:"ブラックジャックの決戦",sub:"動く13枚を追って21を作る",legacy:42},
-  {no:40,key:"mobIssen",title:"モブくん一閃",sub:"3回の一閃 合計300ポイント",legacy:43},
-  {no:41,key:"dancingMob",title:"ダンシングモブくん",sub:"7秒で描いた絵と一緒に踊る",legacy:45},
-  {no:42,key:"guardianMob",title:"モブくんはガーディアン",sub:"7秒で描いた城で巨大エネルギーを防ぐ",legacy:46},
-  {no:43,key:"mob50m",title:"モブくん50m走",sub:"左足・右足を交互に連打",legacy:47},
-  {no:44,key:"sniperMob",title:"モブくんはスナイパー",sub:"超遠距離ターゲットへ4発勝負",legacy:48},
-  {no:45,key:"mobRacePredict",title:"モブくんレースだれが勝つ!?",sub:"5秒のセリフからゴール順を予想",legacy:49},
-  {no:46,key:"mobRocket",title:"モブくんロケット",sub:"7秒でロケットを描いて最大100km",legacy:50},
-  {no:47,key:"bossDuel",title:"モブくん番長決戦",sub:"屋上タイマンを最速で制する",legacy:51},
-  {no:48,key:"plushCatcher",title:"モブくんはぬいぐるみが好き",sub:"巨大ぬいぐるみを3回キャッチ",legacy:52},
-  {no:49,key:"toyOnOff",title:"モブくんおもちゃON or OFF",sub:"OFF5体を全部ONにするタイムアタック",legacy:53},
-  {no:50,key:"dodgeballMob",title:"モブくんドッジボール",sub:"10秒で何体の黒モブくんを倒せるか",legacy:54},
-  {no:51,key:"amidakujiMob",title:"モブくんのあみだくじ",sub:"6本から選んで0〜100点のゴールへ",legacy:55},
-  {no:52,key:"katanaSmith",title:"モブくんは刀鍛冶",sub:"7秒で縦向きの刀身だけを自由に描く",legacy:56},
-  {no:53,key:"homeRunMob",title:"モブくんはパワーヒッター",sub:"角度とパワーを決めて最大3000m",legacy:57},
-  {no:54,key:"mobMisfortune",title:"モブくんの災難",sub:"大量の落石を左右移動で避ける",legacy:58},
-  {no:55,key:"aimMob",title:"狙ってモブくん！",sub:"弓矢で木の細い白線を狙う",legacy:59},
-  {no:56,key:"balanceMob",title:"極限バランスモブくん",sub:"細い棒の上で10秒耐える",legacy:60},
-  {no:57,key:"mobDice",title:"モブくんのサイコロ",sub:"5個のサイコロで大きな合計を狙う",legacy:61},
-  {no:58,key:"mobCombo",title:"モブくん20連コンボ",sub:"10秒でモブ球を動かして20連コンボを狙う",legacy:62},
-  {no:59,key:"electricMaze",title:"こっちだよモブくん！",sub:"簡単になった迷路を突破。ビリビリ2体がゆっくりランダム移動",legacy:63},
-  {no:60,key:"cardShop",title:"モブくんカードショップ",sub:"6枚入りパックを開封して合計ポイントを競う",legacy:64},
-  {no:61,key:"bungeeMob",title:"モブくんバンジー",sub:"逆さで急降下して地面ギリギリSTOP",legacy:67},
-  {no:62,key:"waterSlide",title:"モブくんウォータースライダー",sub:"波の横流れと障害物に耐えて10秒攻略",legacy:68},
-  {no:63,key:"paperPlane",title:"モブくん紙飛行機研究所",sub:"完成済み機体へ翼を描いて実際に飛ばす",legacy:70},
-  {no:64,key:"tankMob",title:"モブくん戦車に乗る",sub:"見下ろし戦車で4方向から迫るスライムを10秒撃退",legacy:71},
-  {no:65,key:"curlingMob",title:"モブくん氷上カーリング",sub:"1スワイプでハウス中央を狙う",legacy:72},
-  {no:66,key:"bubbleMob",title:"モブくん巨大シャボン玉",sub:"画面中央の泡を見た目だけで限界まで膨らませる",legacy:73},
-  {no:67,key:"changeMob",title:"モブくん何が変わった？",sub:"部屋の1ヶ所の変化を見抜く",legacy:74},
-  {no:68,key:"baggageMob",title:"モブくん荷物検査",sub:"複数の箱が流れる検査ラインで「！」を1回勝負",legacy:75},
-  {no:69,key:"treasureMob",title:"モブくん宝箱どれだ!?",sub:"100点の宝箱をシャッフルから追いかける",legacy:77},
-  {no:70,key:"rouletteMob",title:"モブくんルーレットジャンプ",sub:"ジャンプして着地した床のポイントを獲得",legacy:78},
-  {no:71,key:"excavationMob",title:"モブくん地下発掘",sub:"9マスから3ヶ所掘って化石ポイントを獲得",legacy:79},
-  {no:72,key:"oldMaidDuel",title:"モブくんのババ抜き決闘",sub:"3回目からJOKERが1枚減るババ抜き決闘",legacy:80},
-  {no:73,key:"robotMarch",title:"モブくんロボット大発進",sub:"うっすら見える円をなぞり、タップで補給。円の精度で補給量が変わる",legacy:81},
-  {no:74,key:"monsterMaster",title:"モブくんはモンスターマスター",sub:"3秒で円形ボールを描き、3・2・1後に12体のモンスターを捕獲",legacy:82},
-  {no:75,key:"scoutMan",title:"モブくんはスカウトマン！",sub:"MOB・UR・SSR・SR・Rが並ぶ横一列から高レアを素早く選ぶ",legacy:83},
-  {no:76,key:"atafutaSurvival",title:"モブくんあたふたサバイバル",sub:"崩れる浮遊岩で9人の偽モブくんと最後の1人を目指す",legacy:84},
-  {no:77,key:"waveMaster",title:"モブくん波動を極める",sub:"魂ゲージと円型ゲージを極めて偽モブくんと波動を撃ち合う",legacy:85},
-  {no:78,key:"battleRoyaleMob",title:"モブくんFPSアリーナに挑戦",sub:"3対3のアリーナでスキルを使い敵チームを全滅させる",legacy:86},
-  {no:79,key:"littleMobShot",title:"Little MOB SHOT",sub:"レコードに乗って10秒間スライムを撃ちまくる縦シューティング。170 KOで100点",legacy:87},
-  {no:80,key:"monsterBoxMob",title:"モブくんモンスターボックスに挑む",sub:"ロイター板を踏んで15段から20段の跳び箱を越える",legacy:88},
-  {no:81,key:"alienBattleMob",title:"モブくんエイリアンと戦う",sub:"小型ロボ2機で地上の巨大エイリアンHP100を撃破する",legacy:89},
-  {no:82,key:"mobMusou",title:"モブくん無双",sub:"7秒で巨大武器を描き、10秒オートで大量スライムを無双する",legacy:90},
-  {no:83,key:"iaidoMaster",title:"モブくんは居合切りの達人",sub:"夜の草原でCPUと居合勝負。勝負！の瞬間を見抜く",legacy:91},
-  {no:84,key:"killLeaderMob",title:"モブくんの長い夜",sub:"夜の砂漠を進みながらゾンビ30体を倒し、最後に巨大ゾンビを撃破する横スクロールFPSアクション",legacy:92},
-  {no:85,key:"mobSpeedRacer",title:"モブくんは爆速レーサー",sub:"タッグ専用。2人で車を描き、横スクロール2kmレースで勝負",legacy:93},
-  {no:86,key:"summonMaster",title:"モブくんは召喚マスター",sub:"タッグ専用。4人が描いた魔物で2対2のオート召喚バトル",legacy:94},
-  {no:87,key:"mobPinball",title:"モブくんピンボール",sub:"上から落としたボールをカメラで追い、10〜100点のスロットを狙う",legacy:95},
-  {no:88,key:"hurdleRun",title:"モブくんのハードル走",sub:"300mを高速自動走行。10個のハードルをジャンプで越えるタイムアタック",legacy:96},
-  {no:89,key:"longJumpMob",title:"モブくんの走り幅跳び",sub:"高速ダッシュゲージを中央で止め、砂場ギリギリで踏み切って最大300m",legacy:97},
-  {no:90,key:"pkKicker",title:"モブくんPKキッカー",sub:"動く照準とPOWERの2回だけ止めて5本のPKを蹴る",legacy:98},
-  {no:91,key:"threePoint",title:"モブくん3ポイント",sub:"中央のモブくんを引っ張って離し、5球でリングを狙う",legacy:99},
-  {no:92,key:"bowlingMob",title:"モブくんボウリング",sub:"モブくんが1投。上スワイプで20ピンを狙う。1本5点",legacy:100},
-  {no:93,key:"waterSkip",title:"モブくん水切り",sub:"速度・角度・水面の状態で毎回変化する水切り回数を競う",legacy:101},
-  {no:94,key:"tamaireMob",title:"モブくん玉入れ",sub:"10秒間投げ放題。動くカゴへ10個以上入れば100点",legacy:102},
-  {no:95,key:"mineCartMob",title:"モブくんトロッコ",sub:"長い鉱山コースを高速走行。毎回変わる穴・スロープ・トランポリン・マグマを2段ジャンプで突破",legacy:105},
-  {no:96,key:"airHockeyMob",title:"モブくんエアホッケー",sub:"12秒間、2つのパックを同時にさばいて上ゴールを狙う",legacy:107},
-  {no:97,key:"ropeSwingMob",title:"モブくんロープスイング",sub:"3本のロープをタイミングよく離して渡り、最後に飛んだ距離を競う",legacy:108},
-  {no:98,key:"billiardsMob",title:"モブくんビリヤード",sub:"モブくんがキューで白球を強く打ち、6ポケット。最大4ショットで3つの色球を落とす",legacy:110},
-  {no:99,key:"billiardsBattleRoyale",title:"モブくんビリヤードバトルロイヤル",sub:"4人専用。白球1個と色球5個を順番に打ち、落とした球数で競う",legacy:111},
-  {no:100,key:"linkedCartBlast",title:"くっつきモブくんトロッコ大爆走",sub:"2対2タッグ専用。描いたトロッコ2台を連結し、同じ1km横スクロールコースを同時大爆走",legacy:112},
-  {no:101,key:"soloCartBlast",title:"モブくんトロッコ大爆走",sub:"4人個人戦専用。描いたトロッコが1km横スクロールコースを実走し、残った人形数を競う",legacy:113},
-  {no:102,key:"deathGameChallenge",title:"モブくんデスゲームにチャレンジ",sub:"4〜8人個人戦専用。固定ルーレット順で扉を選び、生き残った1人が優勝",legacy:114},
-  {no:103,key:"tokotokoCatcher",title:"トコトコモブくんキャッチャー",sub:"アーム幅→左右位置→降下→STOP。動く7体を3回で狙う",legacy:115},
-  {no:104,key:"amidakujiMasters",title:"モブくんのあみだくじマスターズ",sub:"16本のあみだくじ。決まった16種類のGOAL数字から到着点を競う",legacy:116},
-  {no:105,key:"djMaster",title:"モブくんDJの達人",sub:"10秒で流れる20個の音符に合わせ、巨大ターンテーブルをスクラッチ",legacy:117},
-  {no:106,key:"rocketPunch",title:"モブくんロケットパンチ",sub:"拳へパワーを溜めて巨大ロケットパンチ。狭いMAXゾーンから3000mを狙う",legacy:118},
-  {no:107,key:"flagRaise",title:"モブくん旗上げ",sub:"赤・両方・白の3ボタン。もう一度押せば旗を下げる",legacy:119},
-  {no:108,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"▲▼で高度操作。15秒、トゲ13個＋上下の柱ゲート3組を避ける",legacy:121},
-  {no:109,key:"fruitCatchMob",title:"モブくんフルーツキャッチ",sub:"15秒。フルーツを集めながら岩・爆弾・腐った実を避ける",legacy:123},
-  {no:110,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124},
-  {no:111,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"モブくん人形5体を残したまま、テーブルクロスを真下へ一気に引く",legacy:125},
-  {no:112,key:"bombPassMob",title:"モブくんの爆弾ゲーム",sub:"横一列の5体で爆弾を隣へ渡し、最後の1体まで生き残れ",legacy:126},
-  {no:113,key:"obstacleRaceMob",title:"モブくんの障害物競走",sub:"自動走行＋JUMP/PUNCH。通常障害物と上下に動く岩ブロックを突破する横スクロールタイムアタック",legacy:127},
-  {no:114,key:"sphereMob",title:"球体モブくん",sub:"見下ろし円形ステージで5体が激突。海へ落とされず最後まで残れ",legacy:128},
-  {no:115,key:"frontFlipMob",title:"モブくんの前宙",sub:"横スクロールで大きく飛び、長押し回転を止めて綺麗に着地",legacy:129},
-  {no:116,key:"swimmingMob",title:"モブくんの水泳",sub:"10秒間、LEFT/RIGHTを交互に押してクロール加速。泳いだ距離を競う",legacy:130},
-  {no:117,key:"cheerLeaderMob",title:"モブくんは応援団長",sub:"7秒でメガホンを描き、頑張れ～！！の文字サイズで最大100点",legacy:131},
-  {no:118,key:"zeroOrHundredMob",title:"モブくん0 or 100",sub:"線多めの3択あみだくじ。0が2つ、100が1つ",legacy:133},
-  {no:119,key:"fireworkStandMob",title:"モブくん打ち上げ台を作る",sub:"7秒で花火の打ち上げ台を描き、MOB花火が飛んだ距離を競う",legacy:134},
-  {no:120,key:"poiGameMob",title:"モブくんのポイゲーム",sub:"手前へ流れてくる赤・青・黄のゴミをスワイプで分別。先頭の黒いトラップはタップで消す",legacy:135},
-  {no:121,key:"cleaningMob",title:"モブくんのお掃除",sub:"見下ろし型。長押し移動＋吸引で30個すべてを掃除するタイムアタック",legacy:136},
-  {no:122,key:"findMob",title:"モブくんを探せ！",sub:"10秒以内に本物1体を探し、指で丸く囲う。時間切れ後は答えを表示",legacy:137}
+  {no:7,key:"factory",title:"モブくん人形大人気",sub:"10秒で箱詰め・封印を量産",legacy:7},
+  {no:8,key:"catcher",title:"モブくんキャッチャー",sub:"33体の小さめフィギュアを3回で何体取れるか。1体3点、全部GETで100点",legacy:8},
+  {no:9,key:"tidy",title:"モブくん整理整頓",sub:"7体を見本の部屋へ近づける",legacy:9},
+  {no:10,key:"ski",title:"モブくんスキージャンプ",sub:"踏切タイミングで最大1km",legacy:10},
+  {no:11,key:"slot",title:"モブくんスロット",sub:"キャラクタースロットでコイン勝負",legacy:11},
+  {no:12,key:"pk",title:"モブくんPK",sub:"10本のシュートを止める",legacy:13},
+  {no:13,key:"cut",title:"モブくんカットゲーム",sub:"指定%を感覚で切り分ける",legacy:15},
+  {no:14,key:"errand",title:"お使いモブくん",sub:"1000円を10秒で使い切る",legacy:17},
+  {no:15,key:"dontHitMob",title:"モブくんを叩かないで",sub:"モグラだけを叩く10秒勝負",legacy:18},
+  {no:16,key:"mobStop",title:"モブくんストップ",sub:"棒のギリギリで止める",legacy:19},
+  {no:17,key:"overlap",title:"重なる瞬間を狙え！",sub:"2つの円を10秒以内に重ねる",legacy:20},
+  {no:18,key:"shutter",title:"モブくんシャッターチャンス",sub:"ジャンプの頂点を撮影",legacy:21},
+  {no:19,key:"darts",title:"ダーツ1投勝負",sub:"縦・横ゲージの中央を狙う",legacy:23},
+  {no:20,key:"parachute",title:"モブくんとパラシュート",sub:"開くタイミングで着地点を狙う",legacy:24},
+  {no:21,key:"mobCount",title:"モブくんは何人？",sub:"3秒で人数を見抜く",legacy:25},
+  {no:22,key:"brake",title:"モブくんブレーキチキンレース",sub:"障害物ギリギリで瞬間停止",legacy:26},
+  {no:23,key:"feint",title:"モブくんは騙されやすい",sub:"見た目が同じ本物のGO!を待つ",legacy:27},
+  {no:24,key:"bomb",title:"爆弾チキンレース",sub:"0.000秒直前でSTOP",legacy:28},
+  {no:25,key:"overlapMaster",title:"重なりモブくん",sub:"4つの円を同時に重ねる",legacy:29},
+  {no:26,key:"jumpingMob",title:"ジャンピングモブくん",sub:"ホッピングで台を乗り継ぐ",legacy:30},
+  {no:27,key:"heroMaybe",title:"モブくんは勇者かも",sub:"13秒で勇者を育てる",legacy:31},
+  {no:28,key:"popularGame",title:"アクションモブくん",sub:"モブくんでモグラ踏み",legacy:32},
+  {no:29,key:"planetEnergy",title:"モブくんは破壊神",sub:"3回チャージして高層ビルを貫く",legacy:33},
+  {no:30,key:"painter",title:"モブくんは画家志望",sub:"猫の顔型を1回で綺麗になぞる",legacy:34},
+  {no:31,key:"bikeJump",title:"モブくんバイクで飛ぶ",sub:"約3秒走って巨大ジャンプ台へ",legacy:35},
+  {no:32,key:"mobTrain",title:"モブくん列車出発進行！",sub:"5秒で線路を描いてゴールへ",legacy:37},
+  {no:33,key:"giantMob",title:"巨大モブくん大進撃",sub:"1.000秒を刻みながらビル破壊",legacy:38},
+  {no:34,key:"wizardMob",title:"魔法使いモブくん",sub:"闇の炎を円で囲んで町を守る",legacy:39},
+  {no:35,key:"brawlerMob",title:"モブくんは喧嘩番長",sub:"30人を倒すまでのタイムアタック",legacy:40},
+  {no:36,key:"summonerMob",title:"モブくんは召喚師",sub:"広く描いて超火力の中央オート無双",legacy:41},
+  {no:37,key:"blackjackMob",title:"ブラックジャックの決戦",sub:"動く13枚を追って21を作る",legacy:42},
+  {no:38,key:"mobIssen",title:"モブくん一閃",sub:"3回の一閃 合計300ポイント",legacy:43},
+  {no:39,key:"dancingMob",title:"ダンシングモブくん",sub:"7秒で描いた絵と一緒に踊る",legacy:45},
+  {no:40,key:"guardianMob",title:"モブくんはガーディアン",sub:"7秒で描いた城で巨大エネルギーを防ぐ",legacy:46},
+  {no:41,key:"mob50m",title:"モブくん50m走",sub:"左足・右足を交互に連打",legacy:47},
+  {no:42,key:"sniperMob",title:"モブくんはスナイパー",sub:"超遠距離ターゲットへ4発勝負",legacy:48},
+  {no:43,key:"mobRacePredict",title:"モブくんレースだれが勝つ!?",sub:"5秒のセリフからゴール順を予想",legacy:49},
+  {no:44,key:"mobRocket",title:"モブくんロケット",sub:"7秒でロケットを描いて最大100km",legacy:50},
+  {no:45,key:"bossDuel",title:"モブくん番長決戦",sub:"屋上タイマンを最速で制する",legacy:51},
+  {no:46,key:"plushCatcher",title:"モブくんはぬいぐるみが好き",sub:"巨大ぬいぐるみを3回キャッチ",legacy:52},
+  {no:47,key:"toyOnOff",title:"モブくんおもちゃON or OFF",sub:"OFF5体を全部ONにするタイムアタック",legacy:53},
+  {no:48,key:"dodgeballMob",title:"モブくんドッジボール",sub:"10秒で何体の黒モブくんを倒せるか",legacy:54},
+  {no:49,key:"amidakujiMob",title:"モブくんのあみだくじ",sub:"6本から選んで0〜100点のゴールへ",legacy:55},
+  {no:50,key:"katanaSmith",title:"モブくんは刀鍛冶",sub:"7秒で縦向きの刀身だけを自由に描く",legacy:56},
+  {no:51,key:"homeRunMob",title:"モブくんはパワーヒッター",sub:"角度とパワーを決めて最大3000m",legacy:57},
+  {no:52,key:"mobMisfortune",title:"モブくんの災難",sub:"大量の落石を左右移動で避ける",legacy:58},
+  {no:53,key:"aimMob",title:"狙ってモブくん！",sub:"弓矢で木の細い白線を狙う",legacy:59},
+  {no:54,key:"mobDice",title:"モブくんのサイコロ",sub:"5個のサイコロで大きな合計を狙う",legacy:61},
+  {no:55,key:"mobCombo",title:"モブくん20連コンボ",sub:"10秒でモブ球を動かして20連コンボを狙う",legacy:62},
+  {no:56,key:"electricMaze",title:"こっちだよモブくん！",sub:"簡単になった迷路を突破。ビリビリ2体がゆっくりランダム移動",legacy:63},
+  {no:57,key:"cardShop",title:"モブくんカードショップ",sub:"6枚入りパックを開封して合計ポイントを競う",legacy:64},
+  {no:58,key:"bungeeMob",title:"モブくんバンジー",sub:"逆さで急降下して地面ギリギリSTOP",legacy:67},
+  {no:59,key:"waterSlide",title:"モブくんウォータースライダー",sub:"波の横流れと障害物に耐えて10秒攻略",legacy:68},
+  {no:60,key:"paperPlane",title:"モブくん紙飛行機研究所",sub:"完成済み機体へ翼を描いて実際に飛ばす",legacy:70},
+  {no:61,key:"tankMob",title:"モブくん戦車に乗る",sub:"見下ろし戦車で4方向から迫るスライムを10秒撃退",legacy:71},
+  {no:62,key:"curlingMob",title:"モブくん氷上カーリング",sub:"1スワイプでハウス中央を狙う",legacy:72},
+  {no:63,key:"bubbleMob",title:"モブくん巨大シャボン玉",sub:"画面中央の泡を見た目だけで限界まで膨らませる",legacy:73},
+  {no:64,key:"changeMob",title:"モブくん何が変わった？",sub:"部屋の1ヶ所の変化を見抜く",legacy:74},
+  {no:65,key:"baggageMob",title:"モブくん荷物検査",sub:"複数の箱が流れる検査ラインで「！」を1回勝負",legacy:75},
+  {no:66,key:"treasureMob",title:"モブくん宝箱どれだ!?",sub:"100点の宝箱をシャッフルから追いかける",legacy:77},
+  {no:67,key:"rouletteMob",title:"モブくんルーレットジャンプ",sub:"ジャンプして着地した床のポイントを獲得",legacy:78},
+  {no:68,key:"excavationMob",title:"モブくん地下発掘",sub:"9マスから3ヶ所掘って化石ポイントを獲得",legacy:79},
+  {no:69,key:"oldMaidDuel",title:"モブくんのババ抜き決闘",sub:"3回目からJOKERが1枚減るババ抜き決闘",legacy:80},
+  {no:70,key:"robotMarch",title:"モブくんロボット大発進",sub:"うっすら見える円をなぞり、タップで補給。円の精度で補給量が変わる",legacy:81},
+  {no:71,key:"monsterMaster",title:"モブくんはモンスターマスター",sub:"3秒で円形ボールを描き、3・2・1後に12体のモンスターを捕獲",legacy:82},
+  {no:72,key:"scoutMan",title:"モブくんはスカウトマン！",sub:"MOB・UR・SSR・SR・Rが並ぶ横一列から高レアを素早く選ぶ",legacy:83},
+  {no:73,key:"atafutaSurvival",title:"モブくんあたふたサバイバル",sub:"崩れる浮遊岩で9人の偽モブくんと最後の1人を目指す",legacy:84},
+  {no:74,key:"waveMaster",title:"モブくん波動を極める",sub:"魂ゲージと円型ゲージを極めて偽モブくんと波動を撃ち合う",legacy:85},
+  {no:75,key:"battleRoyaleMob",title:"モブくんFPSアリーナに挑戦",sub:"3対3のアリーナでスキルを使い敵チームを全滅させる",legacy:86},
+  {no:76,key:"littleMobShot",title:"Little MOB SHOT",sub:"レコードに乗って10秒間スライムを撃ちまくる縦シューティング。170 KOで100点",legacy:87},
+  {no:77,key:"monsterBoxMob",title:"モブくんモンスターボックスに挑む",sub:"ロイター板を踏んで15段から20段の跳び箱を越える",legacy:88},
+  {no:78,key:"alienBattleMob",title:"モブくんエイリアンと戦う",sub:"小型ロボ2機で地上の巨大エイリアンHP100を撃破する",legacy:89},
+  {no:79,key:"mobMusou",title:"モブくん無双",sub:"7秒で巨大武器を描き、10秒オートで大量スライムを無双する",legacy:90},
+  {no:80,key:"iaidoMaster",title:"モブくんは居合切りの達人",sub:"夜の草原でCPUと居合勝負。勝負！の瞬間を見抜く",legacy:91},
+  {no:81,key:"killLeaderMob",title:"モブくんの長い夜",sub:"夜の砂漠を進みながらゾンビ30体を倒し、最後に巨大ゾンビを撃破する横スクロールFPSアクション",legacy:92},
+  {no:82,key:"mobSpeedRacer",title:"モブくんは爆速レーサー",sub:"タッグ専用。2人で車を描き、横スクロール2kmレースで勝負",legacy:93},
+  {no:83,key:"summonMaster",title:"モブくんは召喚マスター",sub:"タッグ専用。4人が描いた魔物で2対2のオート召喚バトル",legacy:94},
+  {no:84,key:"mobPinball",title:"モブくんピンボール",sub:"上から落としたボールをカメラで追い、10〜100点のスロットを狙う",legacy:95},
+  {no:85,key:"hurdleRun",title:"モブくんのハードル走",sub:"300mを高速自動走行。10個のハードルをジャンプで越えるタイムアタック",legacy:96},
+  {no:86,key:"longJumpMob",title:"モブくんの走り幅跳び",sub:"高速ダッシュゲージを中央で止め、砂場ギリギリで踏み切って最大300m",legacy:97},
+  {no:87,key:"pkKicker",title:"モブくんPKキッカー",sub:"動く照準とPOWERの2回だけ止めて5本のPKを蹴る",legacy:98},
+  {no:88,key:"threePoint",title:"モブくん3ポイント",sub:"中央のモブくんを引っ張って離し、5球でリングを狙う",legacy:99},
+  {no:89,key:"bowlingMob",title:"モブくんボウリング",sub:"モブくんが1投。上スワイプで20ピンを狙う。1本5点",legacy:100},
+  {no:90,key:"waterSkip",title:"モブくん水切り",sub:"速度・角度・水面の状態で毎回変化する水切り回数を競う",legacy:101},
+  {no:91,key:"tamaireMob",title:"モブくん玉入れ",sub:"10秒間投げ放題。動くカゴへ10個以上入れば100点",legacy:102},
+  {no:92,key:"mineCartMob",title:"モブくんトロッコ",sub:"長い鉱山コースを高速走行。毎回変わる穴・スロープ・トランポリン・マグマを2段ジャンプで突破",legacy:105},
+  {no:93,key:"airHockeyMob",title:"モブくんエアホッケー",sub:"12秒間、2つのパックを同時にさばいて上ゴールを狙う",legacy:107},
+  {no:94,key:"ropeSwingMob",title:"モブくんロープスイング",sub:"3本のロープをタイミングよく離して渡り、最後に飛んだ距離を競う",legacy:108},
+  {no:95,key:"billiardsMob",title:"モブくんビリヤード",sub:"モブくんがキューで白球を強く打ち、6ポケット。最大4ショットで3つの色球を落とす",legacy:110},
+  {no:96,key:"billiardsBattleRoyale",title:"モブくんビリヤードバトルロイヤル",sub:"4人専用。白球1個と色球5個を順番に打ち、落とした球数で競う",legacy:111},
+  {no:97,key:"linkedCartBlast",title:"くっつきモブくんトロッコ大爆走",sub:"2対2タッグ専用。描いたトロッコ2台を連結し、同じ1km横スクロールコースを同時大爆走",legacy:112},
+  {no:98,key:"soloCartBlast",title:"モブくんトロッコ大爆走",sub:"4人個人戦専用。描いたトロッコが1km横スクロールコースを実走し、残った人形数を競う",legacy:113},
+  {no:99,key:"deathGameChallenge",title:"モブくんデスゲームにチャレンジ",sub:"4〜8人個人戦専用。固定ルーレット順で扉を選び、生き残った1人が優勝",legacy:114},
+  {no:100,key:"tokotokoCatcher",title:"トコトコモブくんキャッチャー",sub:"アーム幅→左右位置→降下→STOP。動く7体を3回で狙う",legacy:115},
+  {no:101,key:"amidakujiMasters",title:"モブくんのあみだくじマスターズ",sub:"16本のあみだくじ。決まった16種類のGOAL数字から到着点を競う",legacy:116},
+  {no:102,key:"djMaster",title:"モブくんDJの達人",sub:"10秒で流れる20個の音符に合わせ、巨大ターンテーブルをスクラッチ",legacy:117},
+  {no:103,key:"rocketPunch",title:"モブくんロケットパンチ",sub:"拳へパワーを溜めて巨大ロケットパンチ。狭いMAXゾーンから3000mを狙う",legacy:118},
+  {no:104,key:"flagRaise",title:"モブくん旗上げ",sub:"赤・両方・白の3ボタン。もう一度押せば旗を下げる",legacy:119},
+  {no:105,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"▲▼で高度操作。15秒、トゲ13個＋上下の柱ゲート3組を避ける",legacy:121},
+  {no:106,key:"fruitCatchMob",title:"モブくんフルーツキャッチ",sub:"15秒。フルーツを集めながら岩・爆弾・腐った実を避ける",legacy:123},
+  {no:107,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124},
+  {no:108,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"モブくん人形5体を残したまま、テーブルクロスを真下へ一気に引く",legacy:125},
+  {no:109,key:"bombPassMob",title:"モブくんの爆弾ゲーム",sub:"横一列の5体で爆弾を隣へ渡し、最後の1体まで生き残れ",legacy:126},
+  {no:110,key:"obstacleRaceMob",title:"モブくんの障害物競走",sub:"自動走行＋JUMP/PUNCH。通常障害物と上下に動く岩ブロックを突破する横スクロールタイムアタック",legacy:127},
+  {no:111,key:"sphereMob",title:"球体モブくん",sub:"見下ろし円形ステージで5体が激突。海へ落とされず最後まで残れ",legacy:128},
+  {no:112,key:"frontFlipMob",title:"モブくんの前宙",sub:"横スクロールで大きく飛び、長押し回転を止めて綺麗に着地",legacy:129},
+  {no:113,key:"swimmingMob",title:"モブくんの水泳",sub:"10秒間、LEFT/RIGHTを交互に押してクロール加速。泳いだ距離を競う",legacy:130},
+  {no:114,key:"cheerLeaderMob",title:"モブくんは応援団長",sub:"7秒でメガホンを描き、頑張れ～！！の文字サイズで最大100点",legacy:131},
+  {no:115,key:"zeroOrHundredMob",title:"モブくん0 or 100",sub:"線多めの3択あみだくじ。0が2つ、100が1つ",legacy:133},
+  {no:116,key:"fireworkStandMob",title:"モブくん打ち上げ台を作る",sub:"7秒で花火の打ち上げ台を描き、MOB花火が飛んだ距離を競う",legacy:134},
+  {no:117,key:"poiGameMob",title:"モブくんのポイゲーム",sub:"手前へ流れてくる赤・青・黄のゴミをスワイプで分別。先頭の黒いトラップはタップで消す",legacy:135},
+  {no:118,key:"cleaningMob",title:"モブくんのお掃除",sub:"見下ろし型。長押し移動＋吸引で30個すべてを掃除するタイムアタック",legacy:136},
+  {no:119,key:"findMob",title:"モブくんを探せ！",sub:"10秒以内に本物1体を探し、指で丸く囲う。時間切れ後は答えを表示",legacy:137},
+  {no:120,key:"ohajikiMob",title:"モブくんのおはじき",sub:"10秒間、円形おはじきをスワイプで飛ばして相手10個をテーブルから落とす",legacy:138},
+  {no:121,key:"dontBreakBlocksMob",title:"モブくんのブロック崩さないで",sub:"3×10のブロックが下から崩壊。モブくんを左右操作して最後まで生き残る",legacy:139}
 ];
 
 // V11.18 — 廃止ゲーム / 大会のみ除外
-const RETIRED_GAME_KEYS=new Set(['balanceMob','cup','crisis']);
+const RETIRED_GAME_KEYS=new Set();
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob']);
+const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob']);
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
 function activeGameIndices(){return GAMES.map((_,i)=>i).filter(i=>!isRetiredGameIndex(i))}
 function activeGameCount(){return activeGameIndices().length}
@@ -412,9 +412,8 @@ function isDeathGameChallengeEligible(){
 function isGameEligibleForCurrentMode(gameIndex){
   const g=GAMES[gameIndex];
   if(!g||RETIRED_GAME_KEYS.has(g.key))return false;
-  // V11.17: GAME 111〜122 は全モードで使用可能。
-  // チーム戦・CPU戦・各カップでも通常の抽選対象から外さない。
-  if(g.no>=111&&g.no<=122)return true;
+  // Late-series mini games are intentionally usable in every mode.
+  if(UNIVERSAL_GAME_KEYS.has(g.key))return true;
   if(g.key==='mobSpeedRacer'||g.key==='summonMaster')return isTagDuoGameEligible();
   if(g.key==='billiardsBattleRoyale')return isBilliardsBattleRoyaleEligible();
   if(g.key==='linkedCartBlast')return isLinkedCartBlastEligible();
@@ -425,7 +424,7 @@ function isGameEligibleForCurrentMode(gameIndex){
 function gameEligibilityReason(gameIndex){
   const g=GAMES[gameIndex];
   if(!g)return 'このモードでは遊べません';
-  if(g.no>=111&&g.no<=122)return g.sub;
+  if(UNIVERSAL_GAME_KEYS.has(g.key))return g.sub;
   if(g.key==='mobSpeedRacer'||g.key==='summonMaster'||g.key==='linkedCartBlast')return '2対2タッグ専用 / 1人フリーでは全役を自分で操作';
   if(g.key==='billiardsBattleRoyale')return '4人専用 / 個人4人 または 2対2タッグ';
   if(g.key==='soloCartBlast')return '4人の個人戦専用';
@@ -494,12 +493,12 @@ function freshState(){
     roundIndex:0,
     records:{
       reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
-      crisis:{},factory:{},catcher:{},tidy:{},ski:{},slot:{},rope:{},pk:{},cut:{},climb:{},errand:{},dontHitMob:{},mobStop:{},overlap:{},shutter:{},cup:{},darts:{},parachute:{},mobCount:{},brake:{},feint:{},bomb:{},overlapMaster:{},jumpingMob:{},heroMaybe:{},popularGame:{},planetEnergy:{},painter:{},bikeJump:{},trampoline:{},mobTrain:{},giantMob:{},wizardMob:{},brawlerMob:{},summonerMob:{},blackjackMob:{},mobIssen:{},crowEscape:{},dancingMob:{},guardianMob:{},mob50m:{},sniperMob:{},mobRacePredict:{},mobRocket:{},bossDuel:{},plushCatcher:{},toyOnOff:{},dodgeballMob:{},amidakujiMob:{},katanaSmith:{},homeRunMob:{},mobMisfortune:{},aimMob:{},balanceMob:{},mobDice:{},mobCombo:{},electricMaze:{},cardShop:{},
+      factory:{},catcher:{},tidy:{},ski:{},slot:{},rope:{},pk:{},cut:{},climb:{},errand:{},dontHitMob:{},mobStop:{},overlap:{},shutter:{},darts:{},parachute:{},mobCount:{},brake:{},feint:{},bomb:{},overlapMaster:{},jumpingMob:{},heroMaybe:{},popularGame:{},planetEnergy:{},painter:{},bikeJump:{},trampoline:{},mobTrain:{},giantMob:{},wizardMob:{},brawlerMob:{},summonerMob:{},blackjackMob:{},mobIssen:{},crowEscape:{},dancingMob:{},guardianMob:{},mob50m:{},sniperMob:{},mobRacePredict:{},mobRocket:{},bossDuel:{},plushCatcher:{},toyOnOff:{},dodgeballMob:{},amidakujiMob:{},katanaSmith:{},homeRunMob:{},mobMisfortune:{},aimMob:{},mobDice:{},mobCombo:{},electricMaze:{},cardShop:{},
         bungeeMob:{},waterSlide:{},
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
         changeMob:{},baggageMob:{},treasureMob:{},rouletteMob:{},excavationMob:{},
         oldMaidDuel:{},robotMarch:{},monsterMaster:{},scoutMan:{},
-        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{}
+        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{},ohajikiMob:{},dontBreakBlocksMob:{}
     },
     total:{},
     roundPoints:[],
@@ -2895,6 +2894,8 @@ function scoreRuleForGame(index){
   if(legacyIndex===135)return "10秒で正しく分別した紙ゴミ数 / 20個で100点";
   if(legacyIndex===136)return "全30個を吸い切るタイム / 2.50秒以下=100点 / 7.50秒以上=0点";
   if(legacyIndex===137)return "10秒以内にモブくんを丸で囲う / 1.5秒以内100点、10秒で0点 / 時間切れ後に答え表示";
+  if(legacyIndex===138)return "10秒で相手おはじきを落とす / 1個10点 / 10個=100点 / 自分が落ちたら終了";
+  if(legacyIndex===139)return "崩れたブロック1個=3点 / 30個すべて崩れるまで生存できたら100点";
   return [
     "0.150秒以下=100点 / 0.300秒=50点 / 0.500秒以上=0点",
     "正解数×10点 / 10枚正解=100点",
@@ -3287,6 +3288,10 @@ function showGameIntro(index){
     rules=`<li>見下ろし型。長押ししたまま移動すると掃除機で周囲のゴミを吸います。</li><li>30個すべてを吸い終えるまでのタイムを競います。2.50秒以下が100点ラインです。</li>`;
   }else if(legacyIndex===137){
     rules=`<li>看板・車・箱・植木・コーンなど大量のオブジェが散乱する街中から、10秒以内に本物のモブくんを探します。</li><li>見つけたらタップではなく指で丸く囲います。時間切れになると操作終了し、本物の位置を「答えはここ！」で表示します。</li>`;
+  }else if(legacyIndex===138){
+    rules=`<li>長方形テーブル上の自分のおはじきをスワイプして飛ばし、相手のおはじき10個を外へ落とします。</li><li>10秒勝負。1個落とすごとに10点。自分のおはじきが落ちた瞬間に終了、10個全部落とせば100点です。</li>`;
+  }else if(legacyIndex===139){
+    rules=`<li>縦3×横10のブロックの上にいるモブくんを左右へ動かします。ブロックは下からランダムにどんどん崩れます。</li><li>崩れたブロック1個につき3点。足場がなくなって落ちると終了。30個すべて崩れるまで生き残れば100点です。</li>`;
   }else{
     rules=`<li>${esc(g.sub)}</li>`;
   }
@@ -3459,6 +3464,8 @@ function humanReady(gameIndex,humanIndex){
     else if(legacyIndex===135)startPoiGameMob(p,humanIndex,runId);
     else if(legacyIndex===136)startCleaningMob(p,humanIndex,runId);
     else if(legacyIndex===137)startFindMob(p,humanIndex,runId);
+    else if(legacyIndex===138)startOhajikiMob(p,humanIndex,runId);
+    else if(legacyIndex===139)startDontBreakBlocksMob(p,humanIndex,runId);
     else{
       gameSessionActive=false;
       activeGameIndex=-1;
@@ -22290,7 +22297,7 @@ async function startMonsterMaster(p,humanIndex,runId){
 
 
 // =========================================================
-// V11.18 GAME 84 — モブくんはスカウトマン！ / RARITY SCOUT
+// V11.19 — モブくんはスカウトマン！ / COMPACT RARITY SCOUT
 // =========================================================
 async function startScoutMan(p,humanIndex,runId){
   gameFit();
@@ -22299,17 +22306,47 @@ async function startScoutMan(p,humanIndex,runId){
   const rarityScore={MOB:100,UR:85,SSR:65,SR:40,R:15};
   const baseDeck=['MOB',...Array(2).fill('UR'),...Array(3).fill('SSR'),...Array(5).fill('SR'),...Array(10).fill('R')];
   let posIndex=0,active=false,busy=false,timer=null,picks=[];
-  screen.innerHTML=`<div class="scout218-shell gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんはスカウトマン！</h2><p class="lead">HIGH RARITY FIRST</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
-  <div class="v125-hud"><div><span>POSITION</span><b id="scout218Pos">P</b></div><div><span>TIME</span><b id="scout218Time">2.40</b></div><div><span>TEAM</span><b id="scout218Team">0 / 9</b></div></div>
-  <div class="scout218-stage"><h3 id="scout218Name">ピッチャー</h3><div id="scout218Line" class="scout218-line"></div><div id="scout218Call" class="scout218-call">高レアを探せ！</div></div></div>`;
-  const line=document.getElementById('scout218Line'),posEl=document.getElementById('scout218Pos'),timeEl=document.getElementById('scout218Time'),teamEl=document.getElementById('scout218Team'),nameEl=document.getElementById('scout218Name'),call=document.getElementById('scout218Call');
-  function cardHtml(r,i){return `<button class="scout218-card r-${r.toLowerCase()}" data-r="${r}" type="button"><span>${r}</span><small>${rarityScore[r]}</small></button>`}
-  function startRound(){busy=false;active=true;const [pos,name]=positions[posIndex];posEl.textContent=pos;nameEl.textContent=name;call.textContent='高レアを探せ！';const deck=shuffle([...baseDeck]);line.innerHTML=deck.map(cardHtml).join('');line.scrollLeft=0;const begin=performance.now();if(timer)clearInterval(timer);timer=setInterval(()=>{const rem=Math.max(0,2400-(performance.now()-begin));timeEl.textContent=(rem/1000).toFixed(2);if(rem<=0){clearInterval(timer);timer=null;choose('R',true)}},25)}
-  async function choose(r,timeout=false){if(!active||busy)return;busy=true;active=false;if(timer){clearInterval(timer);timer=null}picks.push(r);teamEl.textContent=`${picks.length} / 9`;call.textContent=timeout?'TIME UP → R':`${r} SCOUT!`;call.className=`scout218-call pick-${r.toLowerCase()}`;beep(r==='MOB'?1140:r==='UR'?920:r==='SSR'?740:r==='SR'?560:380,100,.025);await wait(420);if(!isGameRunValid(runId))return;posIndex++;if(posIndex>=positions.length)finish();else startRound()}
-  line.addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-r]');if(!b||!active||busy)return;e.preventDefault();choose(b.dataset.r,false)},{passive:false});
-  function finish(){active=false;const total=picks.reduce((a,r)=>a+rarityScore[r],0),score=Math.round(total/picks.length);state.records.scoutMan[p.id]=score;line.parentElement.innerHTML=`<div class="scout218-result"><h3>SCOUT COMPLETE</h3><div>${picks.map((r,i)=>`<span class="r-${r.toLowerCase()}"><b>${positions[i][0]}</b>${r}</span>`).join('')}</div><strong>${score}<small>/100 pt</small></strong></div>`;setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`MOB ${picks.filter(x=>x==='MOB').length} / UR ${picks.filter(x=>x==='UR').length} / SSR ${picks.filter(x=>x==='SSR').length}`)},900)}
-  if(!(await countdown('SCOUT START',runId,{transparent:true})))return;startRound();
+
+  screen.innerHTML=`<div class="scout219-shell gameplay-fit">
+    <div class="scout219-title"><span>RARITY SCOUT</span><b>モブくんはスカウトマン！</b><small>高レアを見つけてタップ！</small></div>
+    <div class="scout219-hud"><div><span>守備</span><b id="scout219Pos">P</b></div><div><span>TIME</span><b id="scout219Time">2.80</b></div><div><span>SCOUT</span><b id="scout219Team">0/9</b></div></div>
+    <div class="scout219-stage">
+      <div id="scout219Round" class="scout219-round">PITCHER SCOUT!</div>
+      <div id="scout219Line" class="scout219-line"></div>
+      <div class="scout219-tip">← 横へスクロールして高レアを探す →</div>
+      <div id="scout219Call" class="scout219-call">HIGH RARITY GET!</div>
+    </div>
+    <div id="scout219Burst" class="scout219-burst" hidden><b></b><span>SCOUT!</span></div>
+  </div>`;
+
+  const line=document.getElementById('scout219Line'),posEl=document.getElementById('scout219Pos'),timeEl=document.getElementById('scout219Time'),teamEl=document.getElementById('scout219Team'),roundEl=document.getElementById('scout219Round'),call=document.getElementById('scout219Call'),burst=document.getElementById('scout219Burst');
+  function cardHtml(r){return `<button class="scout219-card r-${r.toLowerCase()}" data-r="${r}" type="button"><span>${r}</span><small>${rarityScore[r]}pt</small><em>SELECT</em></button>`}
+  function showBurst(r){burst.hidden=false;burst.className=`scout219-burst r-${r.toLowerCase()}`;burst.querySelector('b').textContent=`${r} GET!`;setTimeout(()=>{burst.hidden=true},300)}
+  function startRound(){
+    busy=false;active=true;
+    const [pos,name]=positions[posIndex];
+    posEl.textContent=pos;roundEl.textContent=`${name}をスカウト！`;call.textContent='高レアを選べ！';call.className='scout219-call';
+    const deck=shuffle([...baseDeck]);line.innerHTML=deck.map(cardHtml).join('');
+    requestAnimationFrame(()=>{const max=Math.max(0,line.scrollWidth-line.clientWidth);line.scrollLeft=max?rand(0,max):0});
+    const begin=performance.now();if(timer)clearInterval(timer);
+    timer=setInterval(()=>{const rem=Math.max(0,2800-(performance.now()-begin));timeEl.textContent=(rem/1000).toFixed(2);if(rem<=0){clearInterval(timer);timer=null;choose('R',true)}},25);
+  }
+  async function choose(r,timeout=false){
+    if(!active||busy)return;busy=true;active=false;if(timer){clearInterval(timer);timer=null}
+    picks.push(r);teamEl.textContent=`${picks.length}/9`;call.textContent=timeout?'TIME UP → R':`${r} SCOUT!`;call.className=`scout219-call pick-${r.toLowerCase()}`;showBurst(r);
+    beep(r==='MOB'?1140:r==='UR'?920:r==='SSR'?740:r==='SR'?560:380,100,.025);
+    await wait(390);if(!isGameRunValid(runId))return;posIndex++;if(posIndex>=positions.length)finish();else startRound();
+  }
+  line.addEventListener('click',e=>{const b=e.target.closest('button[data-r]');if(!b||!active||busy)return;choose(b.dataset.r,false)});
+  function finish(){
+    active=false;const total=picks.reduce((a,r)=>a+rarityScore[r],0),score=Math.round(total/picks.length);state.records.scoutMan[p.id]=score;
+    document.querySelector('.scout219-stage').innerHTML=`<div class="scout219-result"><span>SCOUT COMPLETE</span><h3>${score}<small>/100 pt</small></h3><div>${picks.map((r,i)=>`<b class="r-${r.toLowerCase()}">${positions[i][0]} ${r}</b>`).join('')}</div></div>`;
+    setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`MOB ${picks.filter(x=>x==='MOB').length} / UR ${picks.filter(x=>x==='UR').length} / SSR ${picks.filter(x=>x==='SSR').length}`)},900);
+  }
+  if(!(await countdown('SCOUT MAN!',runId,{transparent:true})))return;
+  call.textContent='HIGH RARITY GET!';startRound();
 }
+
 // =========================================================
 // V10.36 GAME 85 — モブくんあたふたサバイバル
 // =========================================================
@@ -27003,7 +27040,7 @@ function softenCpuResultV121(gameIndex,p,ultra){
 
   const specificallyTuned=new Set([
     50,51,54,59,62,63,
-    64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,95,96,97,98,99,100,101,102,105,107,108,110,115,118,119,120,125,126,127,128,129,130,131,132,133,134,135,136,137
+    64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,95,96,97,98,99,100,101,102,105,107,108,110,115,118,119,120,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139
   ]);
 
   if(
@@ -27402,6 +27439,10 @@ function simulateOneCpu(gameIndex,p){
     state.records.cleaningMob[p.id]=ultra?randi(2450,3550):randi(3100,7200);
   }else if(legacyIndex===137){
     state.records.findMob[p.id]=ultra?randi(900,1900):randi(1800,9200);
+  }else if(legacyIndex===138){
+    state.records.ohajikiMob[p.id]=ultra?randi(7,10):randi(2,8);
+  }else if(legacyIndex===139){
+    state.records.dontBreakBlocksMob[p.id]=ultra?randi(24,30):randi(8,27);
   }else{
     const fallbackKey=GAMES[gameIndex]?.key;
     if(fallbackKey&&state.records[fallbackKey])state.records[fallbackKey][p.id]=0;
@@ -27418,6 +27459,72 @@ function simulateOneCpu(gameIndex,p){
 }
 
 // RANKING ------------------------------------------------
+// =========================================================
+// V11.19 GAME — モブくんのおはじき
+// =========================================================
+async function startOhajikiMob(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='ohajikiMob');
+  screen.innerHTML=`<div class="ohj219-shell gameplay-fit">
+    <div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのおはじき</h2><p class="lead">10 SEC / 1 OUT = 10 PT</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+    <div class="ohj219-hud"><b id="ohjTime219">10.00</b><span id="ohjOut219">0 / 10 OUT</span></div>
+    <div id="ohjTable219" class="ohj219-table"><div class="ohj219-center"></div><div id="ohjAim219" class="ohj219-aim"></div><div id="ohjCall219" class="ohj219-call">自分のおはじきをスワイプ！</div></div>
+  </div>`;
+  const table=document.getElementById('ohjTable219'),timeEl=document.getElementById('ohjTime219'),outEl=document.getElementById('ohjOut219'),aim=document.getElementById('ohjAim219'),call=document.getElementById('ohjCall219');
+  void table.offsetHeight;
+  const W=table.clientWidth,H=table.clientHeight,R=15,SELF_R=18;
+  let active=false,finished=false,raf=null,last=performance.now(),started=0,drag=null,out=0;
+  const pieces=[];
+  function addPiece(x,y,self=false,i=0){const el=document.createElement('div');el.className=`ohj219-piece ${self?'self':'enemy e'+(i%4)}`;if(self)el.innerHTML='<img src="icon/01.png" alt="">';table.appendChild(el);const q={x,y,vx:0,vy:0,r:self?SELF_R:R,self,dead:false,el};pieces.push(q);return q}
+  const self=addPiece(W*.5,H*.82,true);
+  const slots=[];for(let row=0;row<2;row++)for(let col=0;col<5;col++)slots.push([W*(.18+col*.16)+rand(-7,7),H*(.28+row*.18)+rand(-8,8)]);
+  shuffle(slots).forEach((slt,i)=>addPiece(slt[0],slt[1],false,i));
+  function render(){pieces.forEach(q=>{if(!q.dead){q.el.style.left=`${q.x}px`;q.el.style.top=`${q.y}px`}})}render();
+  function local(e){const r=table.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+  table.addEventListener('pointerdown',e=>{if(!active||finished||self.dead||Math.hypot(self.vx,self.vy)>45)return;const pt=local(e);if(Math.hypot(pt.x-self.x,pt.y-self.y)>SELF_R+22)return;e.preventDefault();drag={id:e.pointerId,x0:pt.x,y0:pt.y,x:pt.x,y:pt.y};table.setPointerCapture?.(e.pointerId);aim.style.display='block';aim.style.left=`${self.x}px`;aim.style.top=`${self.y}px`},{passive:false});
+  table.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const pt=local(e);drag.x=pt.x;drag.y=pt.y;const dx=pt.x-drag.x0,dy=pt.y-drag.y0,len=Math.min(95,Math.hypot(dx,dy));aim.style.width=`${len}px`;aim.style.transform=`rotate(${Math.atan2(dy,dx)}rad)`},{passive:false});
+  table.addEventListener('pointerup',e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const dx=drag.x-drag.x0,dy=drag.y-drag.y0,len=Math.hypot(dx,dy);drag=null;aim.style.display='none';if(len<12)return;const sp=clamp(len*5.4,120,520);self.vx=dx/len*sp;self.vy=dy/len*sp;beep(520,35,.012)},{passive:false});
+  function collide(a,b){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),min=a.r+b.r;if(!d||d>=min)return;const nx=dx/d,ny=dy/d,over=min-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const rel=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;if(rel<=0)return;const j=rel*.92;a.vx-=j*nx;a.vy-=j*ny;b.vx+=j*nx;b.vy+=j*ny;beep(340,18,.004)}
+  function finish(reason='TIME UP!'){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.ohajikiMob[p.id]=out;call.textContent=reason;call.className='ohj219-call result';setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${out}<small>個 OUT</small>`,`${Math.min(100,out*10)}/100 pt`)},650)}
+  if(!(await countdown('OHajiki!',runId,{transparent:true})))return;active=true;started=last=performance.now();call.textContent='SWIPE!';
+  function frame(now){if(finished||!isGameRunValid(runId))return;const dt=Math.min(.024,(now-last)/1000);last=now;const rem=Math.max(0,10000-(now-started));timeEl.textContent=(rem/1000).toFixed(2);
+    pieces.forEach(q=>{if(q.dead)return;q.x+=q.vx*dt;q.y+=q.vy*dt;const f=Math.pow(.982,dt*60);q.vx*=f;q.vy*=f;if(Math.hypot(q.vx,q.vy)<4){q.vx=q.vy=0}});
+    for(let i=0;i<pieces.length;i++)for(let j=i+1;j<pieces.length;j++)if(!pieces[i].dead&&!pieces[j].dead)collide(pieces[i],pieces[j]);
+    pieces.forEach(q=>{if(q.dead)return;if(q.x<-q.r||q.x>W+q.r||q.y<-q.r||q.y>H+q.r){q.dead=true;q.el.classList.add('out');setTimeout(()=>q.el.remove(),180);if(q.self){finish('自分が落ちた！');return}else{out++;outEl.textContent=`${out} / 10 OUT`;call.textContent=`OUT! +10`;beep(880,55,.018);if(out>=10)finish('CLEAR!')}}});
+    if(rem<=0)finish('TIME UP!');render();if(!finished)raf=requestAnimationFrame(frame)}
+  raf=requestAnimationFrame(frame);
+}
+
+// =========================================================
+// V11.19 GAME — モブくんのブロック崩さないで
+// =========================================================
+async function startDontBreakBlocksMob(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='dontBreakBlocksMob');
+  screen.innerHTML=`<div class="dbb219-shell gameplay-fit">
+    <div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのブロック崩さないで</h2><p class="lead">3 × 10 BLOCK SURVIVAL</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+    <div class="dbb219-hud"><b id="dbbScore219">0 pt</b><span id="dbbRemain219">30 BLOCK</span></div>
+    <div id="dbbStage219" class="dbb219-stage"><div id="dbbBlocks219" class="dbb219-blocks"></div><div id="dbbMob219" class="dbb219-mob"><img src="icon/01.png" alt=""></div><div id="dbbCall219" class="dbb219-call">左右へ逃げろ！</div></div>
+    <div class="dbb219-controls"><button id="dbbLeft219" type="button">◀</button><button id="dbbRight219" type="button">▶</button></div>
+  </div>`;
+  const stage=document.getElementById('dbbStage219'),layer=document.getElementById('dbbBlocks219'),mob=document.getElementById('dbbMob219'),scoreEl=document.getElementById('dbbScore219'),remainEl=document.getElementById('dbbRemain219'),call=document.getElementById('dbbCall219'),leftBtn=document.getElementById('dbbLeft219'),rightBtn=document.getElementById('dbbRight219');
+  void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight,COLS=10,ROWS=3,gap=3,side=5,bw=(W-side*2-gap*(COLS-1))/COLS,bh=52,baseY=H-20;
+  const cols=Array.from({length:COLS},()=>[]);let col=4,broken=0,active=false,finished=false,timer=null;
+  for(let c=0;c<COLS;c++)for(let r=0;r<ROWS;r++){const el=document.createElement('div');el.className=`dbb219-block b${(c+r)%5}`;el.style.left=`${side+c*(bw+gap)}px`;el.style.width=`${bw}px`;el.style.height=`${bh}px`;el.style.bottom=`${20+r*(bh+gap)}px`;layer.appendChild(el);cols[c].push({el,alive:true,row:r})}
+  function topY(c){const alive=cols[c].filter(b=>b.alive);if(!alive.length)return null;const maxRow=Math.max(...alive.map(b=>b.row));return baseY-(maxRow+1)*(bh+gap)-38}
+  function placeMob(animate=true){const x=side+col*(bw+gap)+bw/2,y=topY(col);mob.style.transition=animate?'left .12s ease, top .12s ease':'none';mob.style.left=`${x}px`;if(y!==null)mob.style.top=`${y}px`}
+  placeMob(false);
+  function move(dir){if(!active||finished)return;col=clamp(col+dir,0,COLS-1);placeMob();if(topY(col)===null)fallOut()}
+  leftBtn.addEventListener('pointerdown',e=>{e.preventDefault();move(-1)},{passive:false});rightBtn.addEventListener('pointerdown',e=>{e.preventDefault();move(1)},{passive:false});
+  let sx=null;stage.addEventListener('pointerdown',e=>{if(!active)return;sx=e.clientX},{passive:true});stage.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx;sx=null;if(Math.abs(dx)>24)move(dx>0?1:-1)},{passive:true});
+  function chooseColumn(){const available=[];for(let c=0;c<COLS;c++)if(cols[c].some(b=>b.alive))available.push(c);if(!available.length)return -1;const safer=available.filter(c=>c!==col);if(safer.length&&Math.random()<.72)return safer[randi(0,safer.length-1)];return available[randi(0,available.length-1)]}
+  function breakOne(){if(!active||finished)return;const c=chooseColumn();if(c<0){finish(true);return}const alive=cols[c].filter(b=>b.alive).sort((a,b)=>a.row-b.row);const b=alive[0];b.alive=false;b.el.classList.add('break');broken++;const pts=broken>=30?100:broken*3;scoreEl.textContent=`${pts} pt`;remainEl.textContent=`${30-broken} BLOCK`;beep(250+broken*5,22,.005);setTimeout(()=>b.el.remove(),240);if(c===col){const y=topY(col);if(y===null){fallOut();return}placeMob()}if(broken>=30){finish(true);return}const next=clamp(520-broken*5,330,520);timer=setTimeout(breakOne,next)}
+  function fallOut(){if(finished)return;active=false;mob.classList.add('fall');call.textContent='FALL!';setTimeout(()=>finish(false),520)}
+  function finish(clear){if(finished)return;finished=true;active=false;if(timer)clearTimeout(timer);const raw=broken;state.records.dontBreakBlocksMob[p.id]=raw;const pts=raw>=30?100:raw*3;call.textContent=clear?'ALL BLOCKS! 100 PT':'GAME OVER';call.className='dbb219-call result';setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${raw}<small>/30 BLOCK</small>`,`${pts}/100 pt`)},650)}
+  if(!(await countdown('DON’T BREAK!',runId,{transparent:true})))return;active=true;call.textContent='MOVE!';timer=setTimeout(breakOne,650);
+}
+
+
 function performancePoints(gameIndex,v){
   const legacyIndex=legacyGameIndex(gameIndex);
   if(legacyIndex===0){
@@ -27602,6 +27709,8 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===135)return clamp(Math.round(v/20*100),0,100);
   if(legacyIndex===136){if(v<=2500)return 100;if(v>=7500)return 0;return clamp(Math.round((7500-v)/5000*100),0,100);}
   if(legacyIndex===137){if(v<=1500)return 100;if(v>=10000)return 0;return clamp(Math.round((10000-v)/8500*100),0,100);}
+  if(legacyIndex===138)return clamp(Math.round(v*10),0,100);
+  if(legacyIndex===139)return v>=30?100:clamp(Math.round(v*3),0,100);
   return clamp(Math.round(v),0,100);
 }
 
@@ -27743,6 +27852,8 @@ function formatRecord(gameIndex,v){
   if(legacyIndex===135)return `${Math.round(v)}個`;
   if(legacyIndex===136)return `${(v/1000).toFixed(2)}秒`;
   if(legacyIndex===137)return `${(v/1000).toFixed(2)}秒`;
+  if(legacyIndex===138)return `${Math.round(v)}個 OUT`;
+  if(legacyIndex===139)return `${Math.round(v)}/30 BLOCK`;
   return `${Math.round(v)}pt`;
 }
 
@@ -30289,8 +30400,8 @@ async function startAirHockeyMob(p,humanIndex,runId){
 
   function resolveDefense(puck){
     const barY=63;
-    const halfW=32;
-    const halfH=10;
+    const halfW=18;
+    const halfH=9;
 
     if(
       puck.y-PUCK_R<=barY+halfH&&
