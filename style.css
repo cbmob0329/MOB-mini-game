@@ -29488,3 +29488,54 @@ canvas{
 .dbb219-mob{position:absolute;z-index:20;width:36px;height:42px;transform:translate(-50%,-100%)}.dbb219-mob img{width:100%;height:100%;object-fit:contain}.dbb219-mob.fall{transition:top .48s ease-in!important;top:115%!important;transform:translate(-50%,-100%) rotate(25deg)}
 .dbb219-controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:7px;padding-bottom:max(4px,env(safe-area-inset-bottom))}.dbb219-controls button{min-height:50px;border:4px solid var(--ink);border-radius:14px;background:#fff;font-size:24px;font-weight:1000;box-shadow:0 4px 0 var(--ink)}
 @media(max-height:690px){.ohj219-table{height:320px}.dbb219-stage{height:285px}.scout219-title b{font-size:17px}.scout219-card{height:52px}.scout219-stage{min-height:112px}}
+
+/* =========================================================
+   V11.20 — layout fixes + new games
+   ========================================================= */
+/* Swimming: always reserve a visible bottom control row. */
+.swim-shell-v203{display:grid!important;grid-template-rows:auto auto minmax(150px,1fr) auto!important;height:100%!important;min-height:0!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important;overflow:hidden!important}
+.swim-stage-v203{min-height:150px!important;max-height:none!important}
+.swim-controls-v203{position:relative!important;z-index:80!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;flex:0 0 auto!important;margin:0!important;padding:0!important;visibility:visible!important;opacity:1!important}
+.swim-controls-v203 button{display:block!important;min-height:58px!important;visibility:visible!important;opacity:1!important}
+
+/* Don't Break Blocks: mob feet sit exactly on the platform, with jump control. */
+.dbb219-mob{width:38px;height:44px;transform:translate(-50%,-100%);transform-origin:50% 100%;pointer-events:none}
+.dbb219-controls{grid-template-columns:1fr 1.12fr 1fr!important}
+.dbb219-controls .jump{background:#ffe45f;font-size:16px;letter-spacing:.5px}
+.dbb219-controls .jump.active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);background:#ffbd3e}
+
+/* Ohajiki MOB Shoot */
+.ohs220-shell{min-height:0;padding-bottom:max(10px,env(safe-area-inset-bottom));overflow:hidden}
+.ohs220-hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding:6px 10px;border:4px solid var(--ink);border-radius:14px;background:#fff6d7;box-shadow:0 4px 0 var(--ink)}
+.ohs220-hud b{font-size:17px}.ohs220-hud span{font-size:18px;font-weight:1000}
+.ohs220-table{position:relative;height:400px;max-height:60dvh;overflow:hidden;touch-action:none;border:7px solid #30210f;border-radius:22px;background:linear-gradient(135deg,#2bc7b6 0 22%,#30a9d8 22% 50%,#f2bd45 50% 73%,#ec745a 73% 100%);box-shadow:inset 0 0 0 6px #f8e8b8,0 5px 0 #30210f}
+.ohs220-table::before{content:"";position:absolute;inset:14px;border:3px dashed rgba(255,255,255,.72);border-radius:13px;pointer-events:none}
+.ohs220-lines{position:absolute;left:50%;top:62px;bottom:38px;border-left:3px dashed rgba(255,255,255,.55)}
+.ohs220-goal{position:absolute;z-index:18;left:50%;top:4px;transform:translateX(-50%);height:42px;border:5px solid var(--ink);border-top:0;border-radius:0 0 12px 12px;background:#fff;transition:width .32s cubic-bezier(.2,.85,.3,1.25);box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.ohs220-goal i{position:absolute;inset:7px;background:repeating-linear-gradient(45deg,rgba(30,30,30,.16) 0 3px,transparent 3px 8px);border-radius:5px}
+.ohs220-goal b{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:8px;font-weight:1000;z-index:2;white-space:nowrap}
+.ohs220-goal.burst{animation:ohsGoal220 .42s ease}@keyframes ohsGoal220{40%{transform:translateX(-50%) scale(1.16);background:#fff56a}100%{transform:translateX(-50%) scale(1)}}
+.ohs220-puck{position:absolute;z-index:24;width:30px;height:30px;border:3px solid var(--ink);border-radius:50%;background:#fff;box-shadow:0 3px 0 rgba(0,0,0,.3);will-change:transform}
+.ohs220-puck img{width:24px;height:24px;object-fit:contain;position:absolute;inset:0;margin:auto;pointer-events:none}
+.ohs220-puck.shot{filter:drop-shadow(0 5px 0 rgba(0,0,0,.18))}
+.ohs220-aim{position:absolute;z-index:30;height:5px;background:#111;border-radius:999px;transform-origin:0 50%;display:none;pointer-events:none}
+.ohs220-call{position:absolute;z-index:40;left:50%;top:56px;transform:translateX(-50%);padding:6px 11px;border:4px solid var(--ink);border-radius:999px;background:#fff;font-size:12px;font-weight:1000;white-space:nowrap;box-shadow:0 3px 0 var(--ink)}
+.ohs220-call.goal{background:#ffe45f;font-size:16px;animation:ohsCall220 .32s ease}@keyframes ohsCall220{50%{transform:translateX(-50%) scale(1.18) rotate(-2deg)}}
+.ohs220-call.miss{background:#ffd6d0}
+
+/* Kochi-dayo MOB II */
+.em2220-shell{min-height:0;padding-bottom:max(10px,env(safe-area-inset-bottom));overflow:hidden}
+.em2220-hud{display:flex;justify-content:space-between;align-items:center;padding:6px 9px;margin-bottom:6px;border:4px solid var(--ink);border-radius:13px;background:#fff;box-shadow:0 4px 0 var(--ink)}
+.em2220-hud b{font-size:17px}.em2220-hud span{font-size:10px;font-weight:1000}
+.em2220-stage{position:relative;height:410px;max-height:61dvh;overflow:hidden;touch-action:none;border:6px solid var(--ink);border-radius:18px;background:#f6e9c8;background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.6) 0 2px,transparent 3px);background-size:22px 22px}
+.em2220-svg{position:absolute;inset:0;width:100%;height:100%;z-index:5;overflow:visible}
+.em2220-stick{stroke:#222;stroke-width:12;stroke-linecap:round}.em2220-stick.start{stroke:#5abf77}.em2220-stick.goal{stroke:#ed765f}
+.em2220-dot{fill:#fff;stroke:#111;stroke-width:4}.em2220-dot.start{fill:#78d48f}.em2220-dot.goal{fill:#ff7d67}
+.em2220-route{stroke:#2478c7;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 0 rgba(0,0,0,.18))}.em2220-temp{stroke:#111;stroke-width:5;stroke-dasharray:7 5;stroke-linecap:round;opacity:.72}
+.em2220-startbar,.em2220-goalbar{position:absolute;z-index:12;top:8px;padding:4px 7px;border:3px solid var(--ink);border-radius:7px;background:#fff;font-size:8px;font-weight:1000}.em2220-startbar{left:8px}.em2220-goalbar{right:8px}
+.em2220-mob{position:absolute;z-index:24;width:36px;height:40px;transform:translate(-50%,-100%);will-change:left,top;pointer-events:none}
+.em2220-mob img{width:100%;height:100%;object-fit:contain}
+.em2220-call{position:absolute;z-index:35;left:50%;bottom:10px;transform:translateX(-50%);padding:6px 10px;border:4px solid var(--ink);border-radius:999px;background:#fff;font-size:11px;font-weight:1000;white-space:nowrap;box-shadow:0 3px 0 var(--ink)}
+.em2220-call.goal{background:#ffe45f;font-size:15px}
+@media(max-height:700px){.ohs220-table{height:330px}.em2220-stage{height:335px}.swim-controls-v203 button{min-height:52px!important}.dbb219-controls button{min-height:46px}}
+.ohs220-hud em{font-style:normal;font-size:10px;font-weight:1000;padding:3px 7px;border:2px solid var(--ink);border-radius:999px;background:#ffe45f}
