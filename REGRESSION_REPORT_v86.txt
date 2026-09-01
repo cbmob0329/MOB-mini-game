@@ -1,0 +1,22 @@
+MOB QUEST v86 REGRESSION REPORT
+
+[PASS] version86
+[PASS] sequential_helper
+[PASS] only_next_render
+[PASS] completed_hidden
+[PASS] challenge_guard
+[PASS] reward_defined
+[PASS] reward_idempotent
+[PASS] reward_all_types
+[PASS] clear_double_guard
+[PASS] area_name_stored
+[PASS] area_title_uses_stored
+[PASS] no_subquest_description
+[PASS] css_description_hidden
+[PASS] abandon_preserved
+[PASS] castle_load_preserved
+[PASS] v85_clear_overlay_preserved
+[PASS] inline_css_sync
+[PASS] inline_js_sync
+
+TOTAL: 18/18 PASS

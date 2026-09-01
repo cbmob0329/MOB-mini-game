@@ -1,0 +1,12 @@
+MOB QUEST v82 - First Grass Rescue 2-use Check
+PASS: GAME_ASSET_VERSION=82
+PASS: title v82
+PASS: firstGrassReviveCount default=0
+PASS: rescue gate allows count 0 and 1
+PASS: rescue gate blocks count 2
+PASS: rescue increments count with max 2
+PASS: old boolean save migrates to count 1
+PASS: camp checkpoint restore preserves highest rescue count
+PASS: rescue restores HP/MP, down and status effects
+PASS: rescue resumes the same battle
+PASS: original rescue messages retained

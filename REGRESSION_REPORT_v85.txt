@@ -1,0 +1,14 @@
+MOB QUEST v85 REGRESSION REPORT
+
+PASS: サブクエスト報酬で \\n を文字として表示しない
+PASS: サブクエスト専用 SUB QUEST CLEAR 演出
+PASS: 報酬はダイヤ/COIN/WEAPON/ARMOR/MEDALを独立行表示
+PASS: 報酬カードはベージュ背景＋濃い文字
+PASS: サブクエスト上部ヘッダーを横長固定
+PASS: SUB QUEST / エリア・QUEST番号のコンパクト表示
+PASS: 非ジャーナルQUESTで隠し戻るボタン列がヘッダー幅を奪わない
+PASS: v84までのサブクエスト・防具・冒険諦める・城ロード順を維持
+PASS: game.js 構文チェック
+PASS: index内蔵JS 構文チェック
+PASS: 外部CSSとindex内蔵CSS同期
+PASS: 外部data.js+game.jsとindex内蔵JS同期

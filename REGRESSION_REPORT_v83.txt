@@ -1,0 +1,23 @@
+MOB QUEST v83 REGRESSION REPORT
+
+RESULT: PASS
+
+- game.js Node syntax: PASS
+- index.html inline JS Node syntax: PASS
+- WEAPONS: 88/88
+- ARMORS: 67/67
+- reward-defined playable subquests: 16
+- total subquest entries: 60 (16 playable / 44 pending source completion)
+- Subquest icon/first guide/normal guide/confirmation/non-retry: PASS
+- Grass/Desert/Rural/Neon confirmed rewards: PASS
+- spenemy/007.png, 008.png, 009.png special enemies: PASS
+- 5-enemy wave generation/layout: PASS
+- Armor slot/drop-only/inventory/effects: PASS
+- Weapon sale 20% / armor sale 100%: PASS
+- index inline code synchronized to v83 external game/CSS/data: PASS
+- v82 two-rescue counter retained: PASS
+
+Source gaps intentionally NOT fabricated:
+- 田舎町 QUEST3 has battle/dialogue but no reward line. Locked until reward is specified.
+- ネオン街 QUEST3-5 lack complete dialogue/reward IDs. Locked.
+- マグマ～砂漠II currently provide quest concepts/enemy plans but no complete dialogue+reward IDs. Listed as pending and locked.

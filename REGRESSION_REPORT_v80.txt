@@ -1,0 +1,11 @@
+MOB QUEST v80 regression checks
+- v79 skill/ultimate/passive update retained
+- default NEW: 0G / 0 diamonds
+- opening grant: 15,000G + mob-tent x2, once only
+- first grassland normal encounter max 2
+- first grassland exploration ambush max 2
+- first grassland one-time full-party revive safety event
+- checkpoint restore preserves one-time rescue usage
+- level-up text contrast override present
+- explore banner beige/dark-text override present
+- title/cache version v80

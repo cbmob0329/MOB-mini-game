@@ -1,0 +1,19 @@
+MOB QUEST v75 REGRESSION REPORT
+
+今回の修正対象
+[PASS] 敵通常攻撃: 敵ユニットが味方側へ大きく突進する
+[PASS] 敵特殊攻撃: 遠距離指定以外は同じ突進処理を使用
+[PASS] 敵被弾: 赤フラッシュ + 敵ユニット全体シェイク
+[PASS] 通常攻撃後の被弾表示時間を延長
+[PASS] 魔法/特技/必殺技でも被弾表示時間を確保
+[PASS] 全体攻撃でも敵ごとに被弾シェイクを実行
+[PASS] 冒険パーティーbutton/imgの背景・枠・box-shadowを強制透明化
+[PASS] 画像自体が白背景の場合、端から連結する白〜薄灰色のみ実行時透過
+[PASS] 元から透過PNGの場合は画像変換をスキップ
+[PASS] 冒険画面の勇・桃・砂など一文字フォールバックを非表示のまま維持
+[PASS] v74 canonical仕様を土台として維持
+[PASS] タイトル画面に v75 表示
+[PASS] css/data/game キャッシュ番号 v75
+[PASS] JavaScript構文チェック
+[PASS] HTML ID重複なし
+[PASS] CSS波括弧数一致

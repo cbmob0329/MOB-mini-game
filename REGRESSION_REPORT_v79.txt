@@ -1,0 +1,36 @@
+MOB QUEST v79 REGRESSION REPORT
+
+PASS - v79 title
+PASS - v79 cache
+PASS - inline game synchronized
+PASS - inline data synchronized
+PASS - ultimate levels 1/15/30/50
+PASS - ultimate square cutin then animation
+PASS - hero skill2 47-50
+PASS - goremagardy exact frames
+PASS - hokumawing exact frames
+PASS - neomanipool exact frames
+PASS - all-target center
+PASS - skill confirmation
+PASS - technique size unified
+PASS - critical then damage
+PASS - battle dialogue >=1750
+PASS - D2 ally cutin exists
+PASS - D2 four revive dialogue
+PASS - D2 30% heal
+PASS - victory beige black
+PASS - desert passive 10%
+PASS - denden passive 10%
+PASS - jessie passive 50%
+PASS - tetsu passive 30%
+PASS - lilith 60% revive
+PASS - pink simultaneous revive selection
+PASS - hero fifth event lock
+PASS - Denden exactly 3 hits
+PASS - Lilith sisters 4 elements
+PASS - Pink team guard 2 turns
+PASS - Goldfish gold steal
+PASS - one-stage enemy dash
+PASS - v78 opening retained
+
+RESULT: 32/32 PASS

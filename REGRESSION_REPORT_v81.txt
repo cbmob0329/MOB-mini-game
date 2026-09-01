@@ -1,0 +1,22 @@
+MOB QUEST v81 - Grassland Rebalance Check
+
+PASS 01 モブスライム 水 Lv1-3 enemy/01.png
+PASS 02 モブロック 地 Lv2-3 enemy/02.png
+PASS 03 モブジョーロ 水 Lv3固定 enemy/03.png
+PASS 04 モブテンデビ 水 Lv2-3 enemy/04.png
+PASS 05 モブバード 風 Lv1-3 enemy/05.png
+PASS 06 モブピヨミドリ 風 Lv2-3 enemy/06.png
+PASS 07 モブピヨレッド 火 Lv2-3 enemy/07.png
+PASS 08 モブビーバー 地 Lv2固定 enemy/08.png
+PASS 09 AREA1 ビーバーLv3×2 + サバンナLv5
+PASS 10 AREA1 中央配置: ビーバー / サバンナ / ビーバー
+PASS 11 サバンナダンス: 単体・地属性・小ダメージ
+PASS 12 AREA2 モブイワキリ 雷 Lv6
+PASS 13 イワキリサンダー: 全体・雷属性・小ダメージ
+PASS 14 AREA3 モブアックス 地 Lv6
+PASS 15 アックススクラッチ: 単体・風属性・小ダメージ
+PASS 16 AREA4 モブホーク 風 Lv8 boss/01.png
+PASS 17 ホークダイブ: 敵全体・物理・小ダメージ
+PASS 18 最初の草原 通常遭遇最大2体仕様を維持
+PASS 19 GAME_ASSET_VERSION=81 / タイトル v81
+PASS 20 外部 game.js / index.html 内蔵JS 構文チェック

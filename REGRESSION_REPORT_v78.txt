@@ -1,0 +1,24 @@
+PASS version78
+PASS persistent_opening
+PASS opening_no_tap_label
+PASS opening_tap_gate
+PASS protected_japanese
+PASS coach_two_messages
+PASS castle_measured_position
+PASS home_tutorial_lower
+PASS program_panel_dark_text
+PASS program_cards_white_text
+PASS single_dash_keyframes
+PASS v75_hit_effect_kept
+PASS v75_white_frame_fix_kept
+PASS figure_lock_kept
+PASS battle_ct_kept
+
+TOTAL 15/15 PASS
+
+BROWSER TESTS
+PASS browser_boot {'ready': True, 'active': ['titleScreen'], 'ver': 'v78'}
+PASS opening_black_sequence {'overlay': True, 'text': 'とある世界のお話', 'tap': False, 'loading': False}
+PASS rapid_tap_guard 'とある世界のお話'->'様々な種族が'
+PASS training_contrast_computed {'note': 'rgb(56, 42, 27)', 'season': 'rgb(255, 255, 255)', 'card': 'rgb(255, 255, 255)'}
+PASS single_dash_computed enemyDashTowardPartyV78

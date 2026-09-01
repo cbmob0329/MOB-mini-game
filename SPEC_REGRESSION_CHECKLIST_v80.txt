@@ -1,0 +1,26 @@
+MOB QUEST v80 regression checklist
+
+[START / OPENING]
+[ ] NEW starts with 0G
+[ ] NEW starts with 0 diamonds
+[ ] Opening ending grants exactly +15,000G and mob-tent x2 once
+[ ] Test-mode opening skip still receives canonical starter supplies silently
+
+[FIRST GRASSLAND]
+[ ] Normal field battles contain at most 2 enemies
+[ ] Exploration ambushes contain at most 2 enemies
+[ ] Boss/mid-boss/event formations are not reduced by this rule
+[ ] First total defeat triggers the story rescue once
+[ ] Rescue fully restores HP/MP, revives all party members, and clears status ailments
+[ ] Rescue usage survives checkpoint restore and cannot repeat
+
+[READABILITY]
+[ ] Victory level-up stat gains use light cream cells with dark text
+[ ] Level-up name/level text is high contrast
+[ ] Exploration banner is beige in every area
+[ ] Exploration banner uses dark text without white shadow
+
+[REGRESSION]
+[ ] v79 skills / ultimates / passive changes retained
+[ ] v78 opening anti-spam and Japanese wrapping retained
+[ ] v75 enemy lunge / hit shake / red flash retained

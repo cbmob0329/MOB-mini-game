@@ -1,0 +1,29 @@
+MOB QUEST v81 canonical addition
+
+最初の草原の敵レベルは以下を優先する。
+通常敵:
+- モブスライム 水 Lv1-3 enemy/01.png
+- モブロック 地 Lv2-3 enemy/02.png
+- モブジョーロ 水 Lv3 enemy/03.png
+- モブテンデビ 水 Lv2-3 enemy/04.png
+- モブバード 風 Lv1-3 enemy/05.png
+- モブピヨミドリ 風 Lv2-3 enemy/06.png
+- モブピヨレッド 火 Lv2-3 enemy/07.png
+- モブビーバー 地 Lv2 enemy/08.png
+
+AREA1 中ボス:
+- モブビーバー Lv3 ×2
+- モブサバンナ 地 Lv5 enemy/09.png / 中央配置
+- サバンナダンス: 単体地属性小ダメージ
+
+AREA2 中ボス:
+- モブイワキリ 雷 Lv6 enemy/10.png
+- イワキリサンダー: 全体雷属性小ダメージ
+
+AREA3 中ボス:
+- モブアックス 地 Lv6 enemy/13.png
+- アックススクラッチ: 単体風属性小ダメージ
+
+AREA4 ボス:
+- モブホーク 風 Lv8 boss/01.png
+- ホークダイブ: 物理 / 敵全体小ダメージ

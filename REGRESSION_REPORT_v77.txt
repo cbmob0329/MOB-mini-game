@@ -1,0 +1,18 @@
+PASS v77_title
+PASS v77_asset
+PASS title_initial
+PASS loader_inactive
+PASS inline_css
+PASS inline_data
+PASS inline_game
+PASS no_external_js
+PASS direct_new
+PASS boot_ready
+PASS setup_recovery
+PASS opening_lock
+PASS enemy_lunge
+PASS enemy_hit
+FAIL white_frame
+PASS maple_lock
+
+PASS 15/16

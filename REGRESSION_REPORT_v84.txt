@@ -1,0 +1,27 @@
+MOB QUEST v84 REGRESSION REPORT
+
+PASS: game.js syntax
+PASS: data.js syntax
+PASS: inline data+game syntax
+PASS: GAME_ASSET_VERSION 84
+PASS: title v84
+PASS: adventure abandon button exists
+PASS: adventure run snapshot exists
+PASS: HOME navigation blocked during active adventure
+PASS: CONTINUE resumes unfinished adventure
+PASS: world clear commits adventure run before legitimate HOME/report flow
+PASS: castle-room asset preload and paint wait
+PASS: blacksmith paint wait before first dialogue
+PASS: subquest beige UI forced dark/black text
+PASS: Grass Q5 diamond 50
+PASS: Desert Q5 diamond 50
+PASS: Rural Q5 diamond 50
+PASS: Neon Q1-5 playable
+PASS: Magma Q1-5 playable
+PASS: Sea Q1-5 playable
+PASS: Grassland II Q1-5 playable
+PASS: playable subquests 34
+PASS: pending/unconfigured subquests 26
+PASS: five-enemy battle support retained
+PASS: armor system retained
+PASS: weapon/medal system retained

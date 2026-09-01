@@ -1,0 +1,32 @@
+MOB QUEST v76 REGRESSION REPORT
+
+[PASS] opening pure black
+[PASS] opening prepaint guard
+[PASS] opening no label
+[PASS] king lines are speech
+[PASS] explicit narration only
+[PASS] pink run-in
+[PASS] pink boku
+[PASS] home tutorial compact
+[PASS] canonical tutorial text
+[PASS] no orphan line helper
+[PASS] facility compact width
+[PASS] castle compact width
+[PASS] maple hidden before desert
+[PASS] training gold contrast
+[PASS] training exp contrast
+[PASS] training boss contrast
+[PASS] training program contrast
+[PASS] v75 enemy dash retained
+[PASS] v75 hit shake retained
+[PASS] v75 red flash retained
+[PASS] v75 white-frame cleanup retained
+[PASS] adventure symbol hidden
+[PASS] figure 184 retained
+[PASS] ultimate CT retained
+[PASS] test all skills retained
+[PASS] v76 version
+
+PASS 26/26
+HTML duplicate IDs: []
+CSS braces: 2542 / 2542
