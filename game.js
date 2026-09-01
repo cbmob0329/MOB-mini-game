@@ -365,13 +365,22 @@ const GAMES=[
   {no:127,key:"gomokuOneMoveMob",title:"モブくんの五目並べ",sub:"木目盤の黒石。あと1個で5個揃う交点を探して置く",legacy:146},
   {no:128,key:"mathChallengeMob",title:"モブくん算数にチャレンジ",sub:"0.3秒ごとに出る1～9を暗算して、5択から素早く合計を答える",legacy:147},
   {no:129,key:"colorTrapMob",title:"モブくんのカラートラップ",sub:"上がった『色』『文字』の旗を見て、2つの色文字ボタンから正解を瞬時に選ぶ",legacy:148},
-  {no:130,key:"reverseJankenMob",title:"モブくんの逆ジャンケン",sub:"モブくんの手にわざと負けろ。10問、1問1秒の逆転じゃんけん",legacy:149}
+  {no:130,key:"reverseJankenMob",title:"モブくんの逆ジャンケン",sub:"モブくんの手にわざと負けろ。10問、1問1秒の逆転じゃんけん",legacy:149},
+  {no:131,key:"pinPullMob",title:"モブくんのピンを抜け！",sub:"ピンを正しい順番でスワイプして、水・マグマ・岩を利用し宝箱をモブくんへ届ける3ステージ",legacy:150},
+  {no:132,key:"mergeMob",title:"モブくんマージ",sub:"同じレベルのモブボールをドラッグで合体。10秒でMOBまで育てる",legacy:151},
+  {no:133,key:"mini2048Mob",title:"モブくん2048ミニ",sub:"3×3盤面を上下左右スワイプ。同じ数字を合体させ10秒で最大タイルを作る",legacy:152},
+  {no:134,key:"parkingEscapeMob",title:"モブくん駐車場脱出",sub:"縦車は上下、横車は左右へドラッグ。モブカーをEXITから脱出させる",legacy:153},
+  {no:135,key:"elevatorMob",title:"モブくんエレベーター",sub:"上下するエレベーターをSTOPで指定階にぴったり止める5回勝負",legacy:154},
+  {no:136,key:"hotspring42Mob",title:"モブくん温泉42℃",sub:"HOT/COLDを長押しして湯温を42.0℃へ。余熱を読んで入浴ボタンで確定",legacy:155},
+  {no:137,key:"cashierMob",title:"モブくんレジ打ち",sub:"流れる商品をスキャンして合計し、お客のお金から正しいお釣りを作る",legacy:156},
+  {no:138,key:"coinPusherMob",title:"モブくんコインプッシャー",sub:"投入口を左右に動かして10枚のコインをDROP。プッシャーのタイミングで大量GETを狙う",legacy:157},
+  {no:139,key:"survivorMob",title:"モブくんサバイバー",sub:"見下ろし型10秒サバイバー。移動だけ操作し自動攻撃、途中で強化を2回選ぶ",legacy:158}
 ];
 
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set();
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob']);
-const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob']);
+const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob','pinPullMob','mergeMob','mini2048Mob','parkingEscapeMob','elevatorMob','hotspring42Mob','cashierMob','coinPusherMob','survivorMob']);
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
 function activeGameIndices(){return GAMES.map((_,i)=>i).filter(i=>!isRetiredGameIndex(i))}
 function activeGameCount(){return activeGameIndices().length}
@@ -507,7 +516,7 @@ function freshState(){
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
         changeMob:{},baggageMob:{},treasureMob:{},rouletteMob:{},excavationMob:{},
         oldMaidDuel:{},robotMarch:{},monsterMaster:{},scoutMan:{},
-        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{},ohajikiMob:{},dontBreakBlocksMob:{},ohajikiShootMob:{},electricMaze2:{},truckHaulMob:{},fishingMob:{},othelloOneMoveMob:{},gomokuOneMoveMob:{},mathChallengeMob:{},colorTrapMob:{},reverseJankenMob:{}
+        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{},ohajikiMob:{},dontBreakBlocksMob:{},ohajikiShootMob:{},electricMaze2:{},truckHaulMob:{},fishingMob:{},othelloOneMoveMob:{},gomokuOneMoveMob:{},mathChallengeMob:{},colorTrapMob:{},reverseJankenMob:{},pinPullMob:{},mergeMob:{},mini2048Mob:{},parkingEscapeMob:{},elevatorMob:{},hotspring42Mob:{},cashierMob:{},coinPusherMob:{},survivorMob:{}
     },
     total:{},
     roundPoints:[],
@@ -2914,6 +2923,15 @@ function scoreRuleForGame(index){
   if(legacyIndex===147)return "流れた5個の数字の合計を5択で回答 / 正解なら最低50点・1秒以内100点・2秒80点・3秒60点";
   if(legacyIndex===148)return "10秒で正解した回数×10点 / 10問正解で100点";
   if(legacyIndex===149)return "10問 / モブくんに負けると+10・勝つと-10・あいこ0 / 最大100点";
+  if(legacyIndex===150)return "3ステージ / 正しいピン順で宝箱を届ける。各CLEAR約30点＋速度ボーナス、3ステージ高速成功で100点";
+  if(legacyIndex===151)return "10秒マージ / 高レベル合体ほど高得点。MOB完成85点＋合体数・残り時間ボーナスで最大100点";
+  if(legacyIndex===152)return "10秒・3×3 / 8=20、16=40、32=65、64=85、MOB=100を基準に合体数も加点";
+  if(legacyIndex===153)return "駐車場脱出 / CLEARを大きく評価し、最短手数・クリアタイムが少ないほど100点へ近づく";
+  if(legacyIndex===154)return "5回STOP / PERFECT=20、GREAT=16、GOOD=10、MISS=0。5回PERFECTで100点";
+  if(legacyIndex===155)return "42.0℃との誤差で採点 / 42.0=100、±0.5≈94、±1.0≈85、±2.0≈70";
+  if(legacyIndex===156)return "商品スキャン40点＋二重スキャン防止10点＋正しいお釣り30点＋速度20点";
+  if(legacyIndex===157)return "10枚DROP / 手前へ落とした通常コイン5点、金MOBコイン15点。最大100点";
+  if(legacyIndex===158)return "10秒サバイバー / 撃破60＋残HP15＋レベル15＋エリート10。上手く攻めて生存すると100点";
   return [
     "0.150秒以下=100点 / 0.300秒=50点 / 0.500秒以上=0点",
     "正解数×10点 / 10枚正解=100点",
@@ -3511,6 +3529,15 @@ function humanReady(gameIndex,humanIndex){
     else if(legacyIndex===147)startMathChallengeMob(p,humanIndex,runId);
     else if(legacyIndex===148)startColorTrapMob(p,humanIndex,runId);
     else if(legacyIndex===149)startReverseJankenMob(p,humanIndex,runId);
+    else if(legacyIndex===150)startPinPullMob(p,humanIndex,runId);
+    else if(legacyIndex===151)startMergeMob(p,humanIndex,runId);
+    else if(legacyIndex===152)startMini2048Mob(p,humanIndex,runId);
+    else if(legacyIndex===153)startParkingEscapeMob(p,humanIndex,runId);
+    else if(legacyIndex===154)startElevatorMob(p,humanIndex,runId);
+    else if(legacyIndex===155)startHotSpring42Mob(p,humanIndex,runId);
+    else if(legacyIndex===156)startCashierMob(p,humanIndex,runId);
+    else if(legacyIndex===157)startCoinPusherMob(p,humanIndex,runId);
+    else if(legacyIndex===158)startSurvivorMob(p,humanIndex,runId);
     else{
       gameSessionActive=false;
       activeGameIndex=-1;
@@ -27085,7 +27112,7 @@ function softenCpuResultV121(gameIndex,p,ultra){
 
   const specificallyTuned=new Set([
     50,51,54,59,62,63,
-    64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,95,96,97,98,99,100,101,102,105,107,108,110,115,118,119,120,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139
+    64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,95,96,97,98,99,100,101,102,105,107,108,110,115,118,119,120,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,150,151,152,153,154,155,156,157,158
   ]);
 
   if(
@@ -27506,6 +27533,24 @@ function simulateOneCpu(gameIndex,p){
     state.records.colorTrapMob[p.id]=ultra?randi(8,12):randi(3,9);
   }else if(legacyIndex===149){
     state.records.reverseJankenMob[p.id]=ultra?randi(60,100):randi(10,80);
+  }else if(legacyIndex===150){
+    state.records.pinPullMob[p.id]=ultra?randi(88,100):randi(42,86);
+  }else if(legacyIndex===151){
+    state.records.mergeMob[p.id]=ultra?randi(86,100):randi(38,84);
+  }else if(legacyIndex===152){
+    state.records.mini2048Mob[p.id]=ultra?randi(84,100):randi(35,82);
+  }else if(legacyIndex===153){
+    state.records.parkingEscapeMob[p.id]=ultra?randi(86,100):randi(32,83);
+  }else if(legacyIndex===154){
+    state.records.elevatorMob[p.id]=ultra?randi(86,100):randi(35,82);
+  }else if(legacyIndex===155){
+    state.records.hotspring42Mob[p.id]=ultra?randi(90,100):randi(40,86);
+  }else if(legacyIndex===156){
+    state.records.cashierMob[p.id]=ultra?randi(86,100):randi(35,83);
+  }else if(legacyIndex===157){
+    state.records.coinPusherMob[p.id]=ultra?randi(82,100):randi(25,78);
+  }else if(legacyIndex===158){
+    state.records.survivorMob[p.id]=ultra?randi(84,100):randi(30,80);
   }else{
     const fallbackKey=GAMES[gameIndex]?.key;
     if(fallbackKey&&state.records[fallbackKey])state.records[fallbackKey][p.id]=0;
@@ -28077,6 +28122,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===147)return clamp(Math.round(v),0,100);
   if(legacyIndex===148)return clamp(Math.round(v*10),0,100);
   if(legacyIndex===149)return clamp(Math.round(v),0,100);
+  if(legacyIndex>=150&&legacyIndex<=158)return clamp(Math.round(v),0,100);
   return clamp(Math.round(v),0,100);
 }
 
@@ -28229,6 +28275,7 @@ function formatRecord(gameIndex,v){
   if(legacyIndex===147)return `${Math.round(v)}pt`;
   if(legacyIndex===148)return `${Math.round(v)}問`;
   if(legacyIndex===149)return `${Math.round(v)}pt`;
+  if(legacyIndex>=150&&legacyIndex<=158)return `${Math.round(v)}pt`;
   return `${Math.round(v)}pt`;
 }
 
@@ -38804,6 +38851,173 @@ function mobCupSpecialDefeat(title,detail){
   const c=state.mobCupSpecial;c.playerAlive=false;screen.innerHTML=`<div class="mcs-defeat-v214"><span>MOB CUP SPECIAL</span><h2>敗退</h2><strong>${esc(title)}</strong><p>${esc(detail)}</p><div class="mcs-defeat-team-v214">${mobCupSpecialTeamVisual(mobCupSpecialTeamById('player'))}</div><button id="mcsDefeatReplay214" class="primary" type="button">最初から再挑戦</button><button id="mcsDefeatHome214" class="secondary" type="button">モードセレクトへ</button></div>`;document.getElementById('mcsDefeatReplay214').addEventListener('click',setupMobCupSpecial);document.getElementById('mcsDefeatHome214').addEventListener('click',renderBattleTypeSelect);gameTop()
 }
 function mobCupSpecialSimCpuPhase(){const c=state.mobCupSpecial;c.phaseGames.forEach(gi=>c.activeTeamIds.forEach(id=>{c.phaseScores[id]+=mobCupSpecialCpuGameScore(mobCupSpecialTeamById(id),gi,false)}));mobCupSpecialResolvePhase()}
+
+
+// =========================================================
+// V11.26 GAME 131 — モブくんのピンを抜け！
+// =========================================================
+async function startPinPullMob(p,humanIndex,runId){
+  gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='pinPullMob');
+  screen.innerHTML=`<div class="pp226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのピンを抜け！</h2><p class="lead">SWIPE THE PINS / 3 STAGES</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="pp226-hud"><b id="ppStage226">STAGE 1/3</b><span id="ppTime226">0.00</span><em id="ppScore226">0 PT</em></div><div id="ppBoard226" class="pp226-board"><div class="pp226-tower"><div id="ppTop226" class="pp226-room top"></div><div id="ppMid226" class="pp226-room mid"></div><div id="ppBot226" class="pp226-room bot"></div><div id="ppMob226" class="pp226-mob"><img src="icon/01.png" alt=""></div><div id="ppChest226" class="pp226-chest">★</div><button class="pp226-pin p1" data-pin="0"><i></i></button><button class="pp226-pin p2" data-pin="1"><i></i></button><button class="pp226-pin p3" data-pin="2"><i></i></button><button class="pp226-pin p4" data-pin="3"><i></i></button><button class="pp226-pin p5" data-pin="4"><i></i></button></div><div id="ppCall226" class="pp226-call">ピンを横へスワイプ！</div></div></div>`;
+  const board=document.getElementById('ppBoard226'),stageEl=document.getElementById('ppStage226'),timeEl=document.getElementById('ppTime226'),scoreEl=document.getElementById('ppScore226'),call=document.getElementById('ppCall226'),top=document.getElementById('ppTop226'),mid=document.getElementById('ppMid226'),bot=document.getElementById('ppBot226'),chest=document.getElementById('ppChest226');
+  const pins=[...board.querySelectorAll('.pp226-pin')];
+  const templates=[
+    {n:3,order:[1,0,2],rooms:['WATER','LAVA','SAFE']},
+    {n:4,order:[2,0,3,1],rooms:['ROCK','WATER','LAVA']},
+    {n:5,order:[1,3,0,4,2],rooms:['LAVA','WATER','TREASURE']}
+  ];
+  let st=0,step=0,score=0,active=false,finished=false,stageStart=0,globalStart=0,raf=null,drag=null;
+  function room(el,type){el.className='pp226-room '+(el===top?'top':el===mid?'mid':'bot')+' '+type.toLowerCase();el.innerHTML=type==='WATER'?'<b>WATER</b><i class="drop"></i>':type==='LAVA'?'<b>MAGMA</b><i class="lava"></i>':type==='ROCK'?'<b>ROCK</b><i class="rock"></i>':'<b>SAFE</b>';}
+  function setup(){const t=templates[st];step=0;stageEl.textContent=`STAGE ${st+1}/3`;room(top,t.rooms[0]);room(mid,t.rooms[1]);room(bot,t.rooms[2]);pins.forEach((x,i)=>{x.style.display=i<t.n?'block':'none';x.classList.remove('pulled','wrong');x.disabled=false});chest.classList.remove('drop','get');call.textContent='正しい順番で抜け！';stageStart=performance.now();}
+  function pull(pin,i,dx){if(!active||finished||pin.classList.contains('pulled'))return;const t=templates[st];pin.classList.add('pulled');pin.style.setProperty('--pull',`${dx<0?-150:150}px`);beep(650,45,.012);if(i!==t.order[step]){pin.classList.add('wrong');call.textContent='MISS! 流れが崩れた！';beep(170,100,.025);setTimeout(()=>finishStage(false),420);return;}step++;call.textContent=step===t.n?'TREASURE!!':'スポン！ NICE!';if(step===t.n){chest.classList.add('drop','get');setTimeout(()=>finishStage(true),650)}}
+  function finishStage(ok){if(!active||finished)return;active=false;const sec=(performance.now()-stageStart)/1000;if(ok){const pts=clamp(Math.round(30+Math.max(0,4-sec)*2),30,34);score+=pts;scoreEl.textContent=`${score} PT`;call.textContent=`STAGE CLEAR! +${pts}`;}else call.textContent='STAGE FAILED';setTimeout(()=>{st++;if(st>=3)finish();else{setup();active=true}},700)}
+  function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const totalSec=(performance.now()-globalStart)/1000;score=clamp(score+(score>=90?Math.round(Math.max(0,10-totalSec)):0),0,100);state.records.pinPullMob[p.id]=score;call.textContent=score>=90?'PIN MASTER!!':'FINISH!';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`3 STAGE / ${totalSec.toFixed(2)}秒`),700)}
+  pins.forEach((pin,i)=>{pin.addEventListener('pointerdown',e=>{if(!active)return;e.preventDefault();drag={pin,i,x:e.clientX};pin.setPointerCapture?.(e.pointerId)},{passive:false});pin.addEventListener('pointerup',e=>{if(!drag||drag.pin!==pin)return;const dx=e.clientX-drag.x;drag=null;if(Math.abs(dx)>=34)pull(pin,i,dx)},{passive:false});pin.addEventListener('pointercancel',()=>drag=null)});
+  setup();if(!(await countdown('PULL THE PIN!',runId,{transparent:true})))return;active=true;globalStart=stageStart=performance.now();function tick(now){if(finished)return;timeEl.textContent=((now-globalStart)/1000).toFixed(2);raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
+}
+
+// =========================================================
+// V11.26 GAME 132 — モブくんマージ
+// =========================================================
+async function startMergeMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='mergeMob');
+  screen.innerHTML=`<div class="mg226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんマージ</h2><p class="lead">SAME + SAME = BIG MOB / 10 SEC</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="mg226-hud"><b id="mgScore226">0 PT</b><span id="mgTime226">10.0</span><em id="mgMax226">MAX Lv1</em></div><div id="mgField226" class="mg226-field"><div id="mgCall226" class="mg226-call">同じモブを重ねろ！</div></div></div>`;
+  const field=document.getElementById('mgField226'),scoreEl=document.getElementById('mgScore226'),timeEl=document.getElementById('mgTime226'),maxEl=document.getElementById('mgMax226'),call=document.getElementById('mgCall226');void field.offsetHeight;const W=field.clientWidth,H=field.clientHeight;
+  const balls=[];let score=0,maxLv=1,merges=0,active=false,finished=false,start=0,raf=null,drag=null,idSeq=0;
+  function add(lv,x=rand(32,W-32),y=rand(45,H-45)){const el=document.createElement('div');el.className=`mg226-ball lv${lv}`;el.innerHTML=`<img src="icon/01.png" alt=""><b>${lv===7?'MOB':'Lv'+lv}</b>`;field.appendChild(el);const b={id:++idSeq,lv,x,y,el,alive:true};balls.push(b);renderBall(b);return b}
+  function renderBall(b){const r=18+b.lv*3;b.el.style.width=b.el.style.height=`${r*2}px`;b.el.style.transform=`translate3d(${b.x-r}px,${b.y-r}px,0)`}
+  function findTarget(b){let best=null,bd=1e9;for(const q of balls){if(q===b||!q.alive||q.lv!==b.lv)continue;const d=Math.hypot(q.x-b.x,q.y-b.y);if(d<bd){bd=d;best=q}}return bd<42+b.lv*5?best:null}
+  function merge(a,b){if(!a.alive||!b.alive)return;const lv=Math.min(7,a.lv+1),x=(a.x+b.x)/2,y=(a.y+b.y)/2;a.alive=b.alive=false;a.el.remove();b.el.remove();merges++;const pts=[0,2,4,7,12,20,30,38][lv]||2;score+=pts;maxLv=Math.max(maxLv,lv);scoreEl.textContent=`${Math.min(100,score)} PT`;maxEl.textContent=`MAX ${lv===7?'MOB':'Lv'+lv}`;call.textContent=lv===7?'MOB COMPLETE!!':'MERGE!';call.classList.remove('burst');void call.offsetWidth;call.classList.add('burst');beep(600+lv*90,70,.018);add(lv,x,y);if(lv<7&&balls.filter(q=>q.alive).length<14)add(Math.random()<.72?1:2)}
+  for(let i=0;i<12;i++)add(i<8?1:2);
+  field.addEventListener('pointerdown',e=>{if(!active||finished)return;const rect=field.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;const b=[...balls].reverse().find(q=>q.alive&&Math.hypot(q.x-x,q.y-y)<32+q.lv*3);if(!b)return;e.preventDefault();drag={b,dx:x-b.x,dy:y-b.y};b.el.classList.add('drag');field.setPointerCapture?.(e.pointerId)},{passive:false});
+  field.addEventListener('pointermove',e=>{if(!drag)return;e.preventDefault();const rect=field.getBoundingClientRect();drag.b.x=clamp(e.clientX-rect.left-drag.dx,28,W-28);drag.b.y=clamp(e.clientY-rect.top-drag.dy,30,H-30);renderBall(drag.b)},{passive:false});
+  field.addEventListener('pointerup',e=>{if(!drag)return;e.preventDefault();const b=drag.b;b.el.classList.remove('drag');drag=null;const t=findTarget(b);if(t)merge(b,t)},{passive:false});field.addEventListener('pointercancel',()=>{if(drag)drag.b.el.classList.remove('drag');drag=null});
+  function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);let final=score;if(maxLv>=7)final=Math.max(final,85)+Math.min(15,merges);final=clamp(Math.round(final),0,100);state.records.mergeMob[p.id]=final;call.textContent=maxLv>=7?'MOB COMPLETE!!':'TIME UP!';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${final}<small>/100 pt</small>`,`MAX ${maxLv>=7?'MOB':'Lv'+maxLv} / MERGE ${merges}`),700)}
+  if(!(await countdown('MERGE!',runId,{transparent:true})))return;active=true;start=performance.now();function tick(now){const rem=Math.max(0,10-(now-start)/1000);timeEl.textContent=rem.toFixed(1);if(rem<=0){finish();return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
+}
+
+// =========================================================
+// V11.26 GAME 133 — モブくん2048ミニ
+// =========================================================
+async function startMini2048Mob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='mini2048Mob');
+  screen.innerHTML=`<div class="m2048-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん2048ミニ</h2><p class="lead">3×3 / SWIPE / 10 SEC</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="m2048-hud"><b id="m2048Max">MAX 4</b><span id="m2048Time">10.0</span><em id="m2048Merge">MERGE 0</em></div><div id="m2048Board" class="m2048-board"></div><div id="m2048Call" class="m2048-call">上下左右にスワイプ！</div></div>`;
+  const boardEl=document.getElementById('m2048Board'),maxEl=document.getElementById('m2048Max'),timeEl=document.getElementById('m2048Time'),mergeEl=document.getElementById('m2048Merge'),call=document.getElementById('m2048Call');let a=Array(9).fill(0),merges=0,active=false,finished=false,start=0,raf=null,sx=0,sy=0;
+  function empty(){return a.map((v,i)=>v?null:i).filter(v=>v!==null)}function spawn(){const e=empty();if(!e.length)return;a[e[randi(0,e.length-1)]]=Math.random()<.82?2:4}
+  function render(){boardEl.innerHTML=a.map(v=>`<div class="m2048-cell ${v?'v'+Math.min(v,64):''}">${v?`<b>${v>=128?'MOB':v}</b>`:''}</div>`).join('');const mx=Math.max(...a);maxEl.textContent=`MAX ${mx>=128?'MOB':mx||0}`}
+  spawn();spawn();render();
+  function compress(line){const vals=line.filter(Boolean),out=[];for(let i=0;i<vals.length;i++){if(vals[i]===vals[i+1]){out.push(vals[i]*2);merges++;i++}else out.push(vals[i])}while(out.length<3)out.push(0);return out}
+  function move(dir){const before=a.join(',');const n=Array(9).fill(0);for(let k=0;k<3;k++){let idx=[];if(dir==='L')idx=[k*3,k*3+1,k*3+2];if(dir==='R')idx=[k*3+2,k*3+1,k*3];if(dir==='U')idx=[k,k+3,k+6];if(dir==='D')idx=[k+6,k+3,k];const vals=compress(idx.map(i=>a[i]));idx.forEach((id,j)=>n[id]=vals[j])}a=n;if(a.join(',')!==before){spawn();render();mergeEl.textContent=`MERGE ${merges}`;const mx=Math.max(...a);call.textContent=mx>=128?'MOB TILE!!':mx>=64?'64!!':mx>=32?'32!':'SWIPE!';beep(440+Math.min(6,Math.log2(mx||2))*55,35,.008)}}
+  boardEl.addEventListener('pointerdown',e=>{if(!active)return;e.preventDefault();sx=e.clientX;sy=e.clientY;boardEl.setPointerCapture?.(e.pointerId)},{passive:false});boardEl.addEventListener('pointerup',e=>{if(!active)return;e.preventDefault();const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.hypot(dx,dy)<24)return;move(Math.abs(dx)>Math.abs(dy)?(dx>0?'R':'L'):(dy>0?'D':'U'))},{passive:false});
+  function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const mx=Math.max(...a),base=mx>=128?100:mx>=64?85:mx>=32?65:mx>=16?40:mx>=8?20:8;const score=clamp(base+(mx<128?Math.min(14,merges):0),0,100);state.records.mini2048Mob[p.id]=score;call.textContent=mx>=128?'2048 MOB!!':'TIME UP!';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`MAX ${mx>=128?'MOB':mx} / MERGE ${merges}`),650)}
+  if(!(await countdown('2048 MINI!',runId,{transparent:true})))return;active=true;start=performance.now();function tick(now){const rem=Math.max(0,10-(now-start)/1000);timeEl.textContent=rem.toFixed(1);if(rem<=0){finish();return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
+}
+
+// =========================================================
+// V11.26 GAME 134 — モブくん駐車場脱出
+// =========================================================
+async function startParkingEscapeMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='parkingEscapeMob');
+  screen.innerHTML=`<div class="pk226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん駐車場脱出</h2><p class="lead">DRAG CARS → EXIT</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="pk226-hud"><b id="pkMoves226">MOVE 0</b><span id="pkTime226">0.00</span><em>EXIT →</em></div><div id="pkLot226" class="pk226-lot"><div class="pk226-grid"></div><div class="pk226-exit">EXIT</div><div id="pkCall226" class="pk226-call">車の向きに沿ってドラッグ！</div></div></div>`;
+  const lot=document.getElementById('pkLot226'),movesEl=document.getElementById('pkMoves226'),timeEl=document.getElementById('pkTime226'),call=document.getElementById('pkCall226');void lot.offsetHeight;const size=Math.min(lot.clientWidth/6,(lot.clientHeight-10)/6),ox=(lot.clientWidth-size*6)/2,oy=5;
+  const templates=[
+    [{id:'M',r:2,c:0,len:2,o:'h'},{id:'A',r:0,c:2,len:3,o:'v'},{id:'B',r:3,c:2,len:2,o:'h'},{id:'C',r:4,c:4,len:2,o:'v'},{id:'D',r:0,c:4,len:2,o:'h'}],
+    [{id:'M',r:2,c:1,len:2,o:'h'},{id:'A',r:0,c:3,len:3,o:'v'},{id:'B',r:3,c:0,len:3,o:'h'},{id:'C',r:3,c:4,len:2,o:'v'},{id:'D',r:0,c:0,len:2,o:'v'}],
+    [{id:'M',r:2,c:0,len:2,o:'h'},{id:'A',r:1,c:2,len:2,o:'v'},{id:'B',r:0,c:3,len:3,o:'h'},{id:'C',r:3,c:1,len:2,o:'h'},{id:'D',r:3,c:4,len:3,o:'v'}]
+  ];
+  // use solvable easy configuration and shuffle colors; target must clear path by moving A vertically.
+  const cars=templates[randi(0,templates.length-1)].map((x,i)=>({...x,color:i}));let moves=0,active=false,finished=false,start=0,raf=null,drag=null;
+  function collides(car,r,c){if(r<0||c<0||r+(car.o==='v'?car.len:1)>6||c+(car.o==='h'?car.len:1)>6)return true;for(const q of cars){if(q===car)continue;const cells=[];for(let k=0;k<q.len;k++)cells.push([q.r+(q.o==='v'?k:0),q.c+(q.o==='h'?k:0)]);for(let k=0;k<car.len;k++){const rr=r+(car.o==='v'?k:0),cc=c+(car.o==='h'?k:0);if(cells.some(z=>z[0]===rr&&z[1]===cc))return true}}return false}
+  function render(){lot.querySelectorAll('.pk226-car').forEach(e=>e.remove());for(const car of cars){const e=document.createElement('div');e.className=`pk226-car ${car.o} c${car.color} ${car.id==='M'?'mobcar':''}`;e.dataset.id=car.id;e.innerHTML=car.id==='M'?'<img src="icon/01.png" alt=""><b>MOB</b>':'<b>'+car.id+'</b>';const w=(car.o==='h'?car.len:1)*size-6,h=(car.o==='v'?car.len:1)*size-6;e.style.cssText=`left:${ox+car.c*size+3}px;top:${oy+car.r*size+3}px;width:${w}px;height:${h}px`;lot.appendChild(e)}}render();
+  lot.addEventListener('pointerdown',e=>{if(!active||finished)return;const el=e.target.closest('.pk226-car');if(!el)return;e.preventDefault();const car=cars.find(x=>x.id===el.dataset.id);drag={car,sx:e.clientX,sy:e.clientY,r:car.r,c:car.c};lot.setPointerCapture?.(e.pointerId)},{passive:false});
+  lot.addEventListener('pointerup',e=>{if(!drag)return;e.preventDefault();const {car,sx,sy,r,c}=drag;drag=null;const d=(car.o==='h'?e.clientX-sx:e.clientY-sy),steps=Math.round(d/size);if(!steps)return;let nr=r,nc=c,dir=Math.sign(steps);for(let k=0;k<Math.abs(steps);k++){const tr=nr+(car.o==='v'?dir:0),tc=nc+(car.o==='h'?dir:0);if(collides(car,tr,tc))break;nr=tr;nc=tc}if(nr!==car.r||nc!==car.c){car.r=nr;car.c=nc;moves++;movesEl.textContent=`MOVE ${moves}`;beep(420,30,.008);render();check()}},{passive:false});
+  function check(){const m=cars[0];if(m.r===2&&m.c+m.len>=6){finish(true);return} // exit when reaches right edge
+    // allow target drag out after clear path by c=4
+    if(m.r===2&&m.c===4)finish(true)}
+  function finish(clear){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const sec=(performance.now()-start)/1000;let score=clear?clamp(Math.round(100-Math.max(0,moves-5)*6-Math.max(0,sec-4)*3),55,100):clamp(Math.round(40-Math.max(0,sec-8)*4),0,40);state.records.parkingEscapeMob[p.id]=score;call.textContent=clear?'ESCAPE!!':'TIME UP';call.classList.add(clear?'clear':'fail');setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,clear?`${moves} MOVES / ${sec.toFixed(2)}秒`:'未脱出'),750)}
+  if(!(await countdown('PARKING ESCAPE!',runId,{transparent:true})))return;active=true;start=performance.now();function tick(now){const sec=(now-start)/1000;timeEl.textContent=sec.toFixed(2);if(sec>=12){finish(false);return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
+}
+
+// =========================================================
+// V11.26 GAME 135 — モブくんエレベーター
+// =========================================================
+async function startElevatorMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='elevatorMob');
+  screen.innerHTML=`<div class="el226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんエレベーター</h2><p class="lead">STOP ×5</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="el226-hud"><b id="elRound226">1 / 5</b><span id="elTarget226">3Fへ止めろ！</span><em id="elScore226">0 PT</em></div><div id="elShaft226" class="el226-shaft"><div class="el226-floor-lines">${[5,4,3,2,1].map((f,i)=>`<i style="top:${8+i*21}%"><b>${f}F</b></i>`).join('')}</div><div id="elCar226" class="el226-car"><div class="doors"><span></span><span></span></div><img src="icon/01.png" alt=""></div><div id="elJudge226" class="el226-judge">READY</div></div><button id="elStop226" class="el226-stop mobile-safe-controls-v203" disabled>STOP!</button></div>`;
+  const shaft=document.getElementById('elShaft226'),car=document.getElementById('elCar226'),roundEl=document.getElementById('elRound226'),targetEl=document.getElementById('elTarget226'),scoreEl=document.getElementById('elScore226'),judge=document.getElementById('elJudge226'),stop=document.getElementById('elStop226');void shaft.offsetHeight;const floors=[.08,.29,.50,.71,.92];let round=0,score=0,y=.82,dir=-1,speed=.34,target=2,active=false,finished=false,last=0,raf=null;
+  function newRound(){roundEl.textContent=`${round+1} / 5`;target=randi(0,4);targetEl.textContent=`${5-target}Fへ止めろ！`;speed=.30+round*.025+rand(-.018,.018);dir=Math.random()<.5?-1:1;y=dir<0?.88:.12;stop.disabled=false;active=true;judge.textContent=round>=2?'SPEED UP!':'STOPでピッタリ！';judge.className='el226-judge'}
+  function render(){car.style.top=`${y*100}%`}
+  stop.addEventListener('click',()=>{if(!active||finished)return;active=false;stop.disabled=true;const d=Math.abs(y-floors[target])*shaft.clientHeight;let pts,label;if(d<=3){pts=20;label='PERFECT!!'}else if(d<=8){pts=16;label='GREAT!'}else if(d<=16){pts=10;label='GOOD'}else{pts=0;label='MISS'}score+=pts;scoreEl.textContent=`${score} PT`;judge.textContent=`${label} +${pts}`;judge.className='el226-judge '+label.toLowerCase().replaceAll('!','');car.classList.add('open');beep(pts===20?1100:pts?720:180,100,.02);setTimeout(()=>{car.classList.remove('open');round++;if(round>=5)finish();else newRound()},700)});
+  function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.elevatorMob[p.id]=score;judge.textContent=score===100?'ALL PERFECT!!':'FINISH!';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`5 STOP CHALLENGE`),700)}
+  newRound();render();if(!(await countdown('ELEVATOR!',runId,{transparent:true})))return;last=performance.now();function frame(now){const dt=Math.min(.03,(now-last)/1000);last=now;if(active){y+=dir*speed*dt;if(y<.06){y=.06;dir=1}else if(y>.94){y=.94;dir=-1}render()}if(!finished)raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
+
+// =========================================================
+// V11.26 GAME 136 — モブくん温泉42℃
+// =========================================================
+async function startHotSpring42Mob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='hotspring42Mob');
+  screen.innerHTML=`<div class="hs226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん温泉42℃</h2><p class="lead">JUST 42.0℃</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="hs226-hud"><b id="hsTemp226">--.-℃</b><span>目標 42.0℃</span><em id="hsTime226">10.0</em></div><div class="hs226-scene"><div class="hs226-mountain"></div><div class="hs226-bath"><div id="hsSteam226" class="hs226-steam"></div><img src="icon/01.png" alt=""><div id="hsCall226" class="hs226-call">HOT / COLD 長押し</div></div></div><div class="hs226-controls mobile-safe-controls-v203"><button id="hsCold226" class="cold" disabled>COLD</button><button id="hsDone226" class="done" disabled>入浴！</button><button id="hsHot226" class="hot" disabled>HOT</button></div></div>`;
+  const tempEl=document.getElementById('hsTemp226'),timeEl=document.getElementById('hsTime226'),call=document.getElementById('hsCall226'),cold=document.getElementById('hsCold226'),hot=document.getElementById('hsHot226'),done=document.getElementById('hsDone226'),steam=document.getElementById('hsSteam226');let temp=Math.random()<.5?rand(25,35):rand(50,65),heat=0,active=false,finished=false,start=0,last=0,raf=null;
+  function hold(btn,v){btn.addEventListener('pointerdown',e=>{if(!active)return;e.preventDefault();heat=v;btn.setPointerCapture?.(e.pointerId)},{passive:false});btn.addEventListener('pointerup',()=>heat=0);btn.addEventListener('pointercancel',()=>heat=0);btn.addEventListener('pointerleave',()=>{if(active)heat=0})}hold(hot,1);hold(cold,-1);
+  function finish(){if(finished)return;finished=true;active=false;heat=0;if(raf)cancelAnimationFrame(raf);cold.disabled=hot.disabled=done.disabled=true;const err=Math.abs(temp-42);let score=err<=.05?100:err<=.2?98:err<=.5?94:err<=1?85:err<=2?70:err<=5?40:clamp(Math.round(30-err*2),0,30);state.records.hotspring42Mob[p.id]=score;call.textContent=err<=.2?'極楽～！！':temp>44?'アチィ！！':temp<40?'さむっ！':'いい湯！';call.classList.add('result');setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${temp.toFixed(1)}<small>℃</small>`,`ERROR ${temp>=42?'+':''}${(temp-42).toFixed(1)}℃ / ${score}/100 pt`),750)}done.addEventListener('click',finish);
+  if(!(await countdown('42℃!',runId,{transparent:true})))return;active=true;cold.disabled=hot.disabled=done.disabled=false;start=last=performance.now();function frame(now){const dt=Math.min(.03,(now-last)/1000);last=now;const rem=Math.max(0,10-(now-start)/1000);timeEl.textContent=rem.toFixed(1);const inertia=heat*4.8;temp+=inertia*dt; // deliberate small thermal inertia via lingering drift below
+    if(heat===0){const drift=(42-temp)*.002;temp+=drift*dt}temp=clamp(temp,15,80);tempEl.textContent=`${temp.toFixed(1)}℃`;steam.style.opacity=clamp((temp-30)/30,.1,1);if(rem<=0){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
+
+// =========================================================
+// V11.26 GAME 137 — モブくんレジ打ち
+// =========================================================
+async function startCashierMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='cashierMob');
+  const items=shuffle([{n:'APPLE',v:120},{n:'BREAD',v:180},{n:'JUICE',v:150},{n:'MILK',v:220},{n:'CAKE',v:280}]).slice(0,4),total=items.reduce((a,b)=>a+b.v,0),paid=[1000,1200,1500].find(v=>v>=total)||1500,change=paid-total;
+  screen.innerHTML=`<div class="ca226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんレジ打ち</h2><p class="lead">SCAN → CHANGE / 10 SEC</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="ca226-hud"><b id="caStep226">SCAN 0/4</b><span id="caTime226">10.0</span><em id="caTotal226">¥0</em></div><div class="ca226-counter"><div class="ca226-belt" id="caBelt226">${items.map((it,i)=>`<button class="ca226-item" data-i="${i}"><i>${it.n[0]}</i><b>${it.n}</b><span>¥${it.v}</span></button>`).join('')}</div><div class="ca226-scanner">SCAN</div><div class="ca226-register"><div id="caDisplay226">¥0</div><div id="caCall226">商品を順番にスキャン！</div></div></div><div id="caMoney226" class="ca226-money"><div class="ca226-paid">お客：¥${paid}</div><div class="ca226-coins">${[500,100,50,10].map(v=>`<button data-v="${v}" disabled>¥${v}</button>`).join('')}</div><button id="caPay226" class="primary" disabled>お釣りを渡す</button></div></div>`;
+  const belt=document.getElementById('caBelt226'),stepEl=document.getElementById('caStep226'),timeEl=document.getElementById('caTime226'),totalEl=document.getElementById('caTotal226'),display=document.getElementById('caDisplay226'),call=document.getElementById('caCall226'),money=document.getElementById('caMoney226'),payBtn=document.getElementById('caPay226');let scanned=new Set(),sum=0,give=0,errors=0,active=false,finished=false,start=0,raf=null;
+  belt.querySelectorAll('.ca226-item').forEach(btn=>btn.addEventListener('click',()=>{if(!active||finished)return;const i=+btn.dataset.i;if(scanned.has(i)){errors++;call.textContent='二重スキャン！';beep(160,60,.02);return}scanned.add(i);sum+=items[i].v;btn.classList.add('scanned');stepEl.textContent=`SCAN ${scanned.size}/4`;display.textContent=totalEl.textContent=`¥${sum}`;call.textContent='ピッ！';beep(820,30,.01);if(scanned.size===items.length){money.classList.add('active');money.querySelectorAll('button[data-v]').forEach(b=>b.disabled=false);payBtn.disabled=false;call.textContent=`お釣り ¥${change} を作れ！`}}));
+  money.querySelectorAll('button[data-v]').forEach(b=>b.addEventListener('click',()=>{if(!active||finished||scanned.size<4)return;give+=+b.dataset.v;b.classList.add('used');call.textContent=`お釣り：¥${give} / ¥${change}`;beep(520,25,.007)}));
+  payBtn.addEventListener('click',()=>{if(!active||finished)return;finish(give===change)});
+  function finish(correct){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const sec=(performance.now()-start)/1000;const scanPts=Math.round(scanned.size/items.length*40),safePts=errors===0?10:Math.max(0,10-errors*5),changePts=correct?30:0,speedPts=correct?clamp(Math.round((10-sec)/6*20),0,20):0,score=clamp(scanPts+safePts+changePts+speedPts,0,100);state.records.cashierMob[p.id]=score;call.textContent=correct?'THANK YOU!!':'CHANGE MISS';call.className=correct?'ok':'ng';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`SCAN ${scanned.size}/4 / お釣り ${correct?'正解':'不正解'}`),700)}
+  if(!(await countdown('CASHIER!',runId,{transparent:true})))return;active=true;start=performance.now();function tick(now){const rem=Math.max(0,10-(now-start)/1000);timeEl.textContent=rem.toFixed(1);if(rem<=0){finish(false);return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
+}
+
+// =========================================================
+// V11.26 GAME 138 — モブくんコインプッシャー
+// =========================================================
+async function startCoinPusherMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='coinPusherMob');
+  screen.innerHTML=`<div class="cp226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんコインプッシャー</h2><p class="lead">10 COINS / DROP TIMING</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="cp226-hud"><b id="cpGet226">GET 0 PT</b><span id="cpTime226">10.0</span><em id="cpStock226">COIN 10</em></div><div id="cpStage226" class="cp226-stage"><div id="cpDropper226" class="cp226-dropper">▼</div><div id="cpPusher226" class="cp226-pusher">MOB PUSHER</div><div id="cpCoins226" class="cp226-coins"></div><div class="cp226-edge">DROP ZONE</div><div id="cpCall226" class="cp226-call">上を左右ドラッグ → DROP!</div></div><div class="cp226-controls mobile-safe-controls-v203"><input id="cpRange226" type="range" min="10" max="90" value="50"><button id="cpDrop226" disabled>DROP!</button></div></div>`;
+  const stage=document.getElementById('cpStage226'),coinsEl=document.getElementById('cpCoins226'),pusher=document.getElementById('cpPusher226'),dropper=document.getElementById('cpDropper226'),range=document.getElementById('cpRange226'),dropBtn=document.getElementById('cpDrop226'),getEl=document.getElementById('cpGet226'),timeEl=document.getElementById('cpTime226'),stockEl=document.getElementById('cpStock226'),call=document.getElementById('cpCall226');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let coins=[],stock=10,score=0,active=false,finished=false,start=0,last=0,raf=null,phase=0,id=0;
+  function add(x,y,gold=false,vy=0){const el=document.createElement('i');el.className='cp226-coin'+(gold?' gold':'');el.textContent=gold?'M':'●';coinsEl.appendChild(el);const c={id:++id,x,y,gold,vy,el,dead:false};coins.push(c);render(c)}function render(c){c.el.style.transform=`translate3d(${c.x-12}px,${c.y-12}px,0)`}
+  for(let i=0;i<22;i++)add(rand(35,W-35),rand(H*.45,H*.78),i<2);
+  range.addEventListener('input',()=>{dropper.style.left=`${range.value}%`});dropper.style.left='50%';dropBtn.addEventListener('click',()=>{if(!active||stock<=0)return;stock--;stockEl.textContent=`COIN ${stock}`;const x=W*(+range.value/100);add(x,55,Math.random()<.08,80);beep(520,25,.008);if(stock===0)dropBtn.disabled=true});
+  function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.coinPusherMob[p.id]=clamp(score,0,100);call.textContent='COIN RESULT!';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${Math.min(100,score)}<small>/100 pt</small>`,`DROP COINS / ${stock}枚残り`),800)}
+  if(!(await countdown('COIN PUSHER!',runId,{transparent:true})))return;active=true;dropBtn.disabled=false;start=last=performance.now();function frame(now){const dt=Math.min(.03,(now-last)/1000);last=now;const sec=(now-start)/1000,rem=Math.max(0,10-sec);timeEl.textContent=rem.toFixed(1);phase+=dt*2.15;const py=H*.28+(Math.sin(phase)*.5+.5)*70;pusher.style.top=`${py}px`;const pushFront=py+48;for(const c of coins){if(c.dead)continue;if(c.y<pushFront+16&&c.y>pushFront-25){c.y+=70*dt}if(c.vy){c.y+=c.vy*dt;c.vy+=80*dt} // loose pile drift
+      if(c.y>H-40){c.dead=true;c.el.classList.add('fall');const gain=c.gold?15:5;score=clamp(score+gain,0,100);getEl.textContent=`GET ${score} PT`;call.textContent=c.gold?`GOLD MOB!! +15`:`GET! +5`;beep(c.gold?1120:760,80,.018);setTimeout(()=>c.el.remove(),250);continue}render(c)}coins=coins.filter(c=>!c.dead);if(rem<=0){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
+
+// =========================================================
+// V11.26 GAME 139 — モブくんサバイバー
+// =========================================================
+async function startSurvivorMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='survivorMob');
+  screen.innerHTML=`<div class="sv226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんサバイバー</h2><p class="lead">MOVE ONLY / AUTO ATTACK / 10 SEC</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="sv226-hud"><b id="svKo226">KO 0</b><span id="svTime226">10.0</span><em id="svHp226">♥♥♥</em><strong id="svLv226">Lv1</strong></div><div id="svField226" class="sv226-field"><div id="svMob226" class="sv226-mob"><img src="icon/01.png" alt=""></div><div id="svCall226" class="sv226-call">ドラッグで移動！攻撃は自動！</div><div id="svLevel226" class="sv226-level"><b>LEVEL UP!</b><div></div></div></div></div>`;
+  const field=document.getElementById('svField226'),mob=document.getElementById('svMob226'),koEl=document.getElementById('svKo226'),timeEl=document.getElementById('svTime226'),hpEl=document.getElementById('svHp226'),lvEl=document.getElementById('svLv226'),call=document.getElementById('svCall226'),level=document.getElementById('svLevel226'),levelBtns=level.querySelector('div');void field.offsetHeight;const W=field.clientWidth,H=field.clientHeight;let x=W/2,y=H/2,tx=x,ty=y,hp=3,ko=0,lv=1,active=false,finished=false,start=0,last=0,raf=null,shotAt=0,spawnAt=0,paused=false,upgrades={rapid:0,power:0,wide:0,move:0},enemies=[],bullets=[],eid=0;
+  function addEnemy(elite=false){const edge=randi(0,3),e={id:++eid,elite,hp:elite?3:1,x:edge===0?-20:edge===1?W+20:rand(10,W-10),y:edge===2?-20:edge===3?H+20:rand(10,H-10),r:elite?18:12,speed:elite?38:50+rand(-8,12)};const el=document.createElement('i');el.className='sv226-enemy'+(elite?' elite':'');el.textContent=elite?'★':'●';field.appendChild(el);e.el=el;enemies.push(e)}
+  function addBullet(angle){const b={x,y,vx:Math.cos(angle)*260,vy:Math.sin(angle)*260,r:5,dead:false};const el=document.createElement('i');el.className='sv226-bullet';field.appendChild(el);b.el=el;bullets.push(b)}
+  field.addEventListener('pointerdown',e=>{if(!active||paused)return;e.preventDefault();const r=field.getBoundingClientRect();tx=e.clientX-r.left;ty=e.clientY-r.top;field.setPointerCapture?.(e.pointerId)},{passive:false});field.addEventListener('pointermove',e=>{if(!active||paused||!(e.buttons||e.pressure>0))return;e.preventDefault();const r=field.getBoundingClientRect();tx=clamp(e.clientX-r.left,20,W-20);ty=clamp(e.clientY-r.top,20,H-20)},{passive:false});
+  function chooseUpgrade(){paused=true;active=false;const opts=shuffle(['RAPID','POWER','WIDE','MOVE']).slice(0,3);level.classList.add('show');levelBtns.innerHTML=opts.map(o=>`<button data-u="${o}">${o}</button>`).join('');levelBtns.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const u=b.dataset.u.toLowerCase();upgrades[u]++;lv++;lvEl.textContent=`Lv${lv}`;level.classList.remove('show');paused=false;active=true;call.textContent=`${b.dataset.u} UP!`;beep(1050,100,.025)},{once:true}))}
+  function hurt(){if(!active||finished)return;hp--;hpEl.textContent='♥'.repeat(hp)+'♡'.repeat(3-hp);call.textContent='HIT!';mob.classList.remove('hit');void mob.offsetWidth;mob.classList.add('hit');beep(150,100,.025);if(hp<=0)finish(false)}
+  function finish(survived=true){if(finished)return;finished=true;active=false;paused=false;if(raf)cancelAnimationFrame(raf);const score=clamp(Math.round(Math.min(60,ko*2)+(hp/3)*15+Math.min(15,(lv-1)*7.5)+Math.min(10,enemies.filter(e=>e.elite&&e.dead).length*10)),0,100);state.records.survivorMob[p.id]=score;call.textContent=survived?'SURVIVED!':'KNOCKED OUT!';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`KO ${ko} / Lv${lv} / HP ${hp}`),850)}
+  for(let i=0;i<5;i++)addEnemy(false);
+  if(!(await countdown('SURVIVOR!',runId,{transparent:true})))return;active=true;start=last=performance.now();function frame(now){if(finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;const sec=(now-start)/1000,rem=Math.max(0,10-sec);timeEl.textContent=rem.toFixed(1);if(!paused){const sp=125+upgrades.move*25,dx=tx-x,dy=ty-y,d=Math.hypot(dx,dy);if(d>3){x+=dx/d*Math.min(d,sp*dt);y+=dy/d*Math.min(d,sp*dt)}mob.style.transform=`translate3d(${x-18}px,${y-18}px,0)`;
+      if(now-spawnAt>clamp(700-sec*25,360,700)){spawnAt=now;addEnemy(sec>7&&Math.random()<.18)}
+      if(now-shotAt>Math.max(170,480-upgrades.rapid*95)){shotAt=now;const alive=enemies.filter(e=>!e.dead);if(alive.length){alive.sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y));const t=alive[0],ang=Math.atan2(t.y-y,t.x-x);addBullet(ang);if(upgrades.wide){addBullet(ang-.18);addBullet(ang+.18)}}}
+      for(const e of enemies){if(e.dead)continue;const dx=x-e.x,dy=y-e.y,d=Math.max(1,Math.hypot(dx,dy));e.x+=dx/d*e.speed*dt;e.y+=dy/d*e.speed*dt;e.el.style.transform=`translate3d(${e.x-e.r}px,${e.y-e.r}px,0)`;if(d<e.r+16){e.dead=true;e.el.remove();hurt()}}
+      for(const b of bullets){if(b.dead)continue;b.x+=b.vx*dt;b.y+=b.vy*dt;b.el.style.transform=`translate3d(${b.x-5}px,${b.y-5}px,0)`;if(b.x<-20||b.x>W+20||b.y<-20||b.y>H+20){b.dead=true;b.el.remove();continue}for(const e of enemies){if(e.dead)continue;if(Math.hypot(b.x-e.x,b.y-e.y)<e.r+6){b.dead=true;b.el.remove();e.hp-=1+upgrades.power;if(e.hp<=0){e.dead=true;e.el.classList.add('dead');setTimeout(()=>e.el.remove(),180);ko++;koEl.textContent=`KO ${ko}`;beep(650,20,.006)}break}}}
+      bullets=bullets.filter(b=>!b.dead);enemies=enemies.filter(e=>!e.dead||e.elite);if((lv===1&&sec>=3.1)||(lv===2&&sec>=6.2))chooseUpgrade();if(rem<=2&&rem>1.9){call.textContent='FINAL WAVE!!';call.classList.add('final')}if(rem<=0){finish(true);return}}
+    raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
 
 
 renderHome();
