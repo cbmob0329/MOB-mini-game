@@ -360,16 +360,18 @@ const GAMES=[
   {no:122,key:"ohajikiShootMob",title:"おはじきモブくんシュート",sub:"10秒でおはじきをスワイプシュート。GOALは左右に動き、入るたび小さくなる",legacy:140},
   {no:123,key:"electricMaze2",title:"こっちだよモブくんⅡ",sub:"ランダムな点を線でつないでルートを作り、自動で進むモブくんをゴールへ導く",legacy:141},
   {no:124,key:"truckHaulMob",title:"モブくんのトラック運び",sub:"LEFT・RIGHTを交互に3回ずつ→頑張る！を3連打。トラックを実際に引っ張って160mを目指す",legacy:142},
-  {no:125,key:"fishingMob",title:"モブくんの魚釣り",sub:"ウキが沈んだ瞬間にHOOK！ 魚の動きに合わせてテンションを保ちながら釣り上げる",legacy:143},
-  {no:126,key:"ringTossMob",title:"モブくんの輪投げ",sub:"輪をスワイプで放物線状に投げる。5投で棒へ通した合計点を競う",legacy:144},
-  {no:127,key:"othelloOneMoveMob",title:"モブくんオセロ1手勝負",sub:"最善手だけでなく判断速度も重要。返せる枚数＋残り時間で得点",legacy:145},
-  {no:128,key:"gomokuOneMoveMob",title:"モブくんの五目並べ",sub:"黒があと1個で5個揃う場所を探して、正しい交点へ1手だけ置く",legacy:146}
+  {no:125,key:"fishingMob",title:"モブくんの魚釣り",sub:"80%のBESTラインを狙って遠投。遠いほどレア魚率UP、HOOK＋REELで釣り上げる",legacy:143},
+  {no:126,key:"othelloOneMoveMob",title:"モブくんオセロ1手勝負",sub:"最善手だけでなく判断速度も重要。返せる枚数＋残り時間で得点",legacy:145},
+  {no:127,key:"gomokuOneMoveMob",title:"モブくんの五目並べ",sub:"木目盤の黒石。あと1個で5個揃う交点を探して置く",legacy:146},
+  {no:128,key:"mathChallengeMob",title:"モブくん算数にチャレンジ",sub:"0.3秒ごとに出る1～9を暗算して、5択から素早く合計を答える",legacy:147},
+  {no:129,key:"colorTrapMob",title:"モブくんのカラートラップ",sub:"上がった『色』『文字』の旗を見て、2つの色文字ボタンから正解を瞬時に選ぶ",legacy:148},
+  {no:130,key:"reverseJankenMob",title:"モブくんの逆ジャンケン",sub:"モブくんの手にわざと負けろ。10問、1問1秒の逆転じゃんけん",legacy:149}
 ];
 
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set();
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob']);
-const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','ringTossMob','othelloOneMoveMob','gomokuOneMoveMob']);
+const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob']);
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
 function activeGameIndices(){return GAMES.map((_,i)=>i).filter(i=>!isRetiredGameIndex(i))}
 function activeGameCount(){return activeGameIndices().length}
@@ -505,7 +507,7 @@ function freshState(){
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
         changeMob:{},baggageMob:{},treasureMob:{},rouletteMob:{},excavationMob:{},
         oldMaidDuel:{},robotMarch:{},monsterMaster:{},scoutMan:{},
-        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{},ohajikiMob:{},dontBreakBlocksMob:{},ohajikiShootMob:{},electricMaze2:{},truckHaulMob:{},fishingMob:{},ringTossMob:{},othelloOneMoveMob:{},gomokuOneMoveMob:{}
+        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{},ohajikiMob:{},dontBreakBlocksMob:{},ohajikiShootMob:{},electricMaze2:{},truckHaulMob:{},fishingMob:{},othelloOneMoveMob:{},gomokuOneMoveMob:{},mathChallengeMob:{},colorTrapMob:{},reverseJankenMob:{}
     },
     total:{},
     roundPoints:[],
@@ -2906,10 +2908,12 @@ function scoreRuleForGame(index){
   if(legacyIndex===140)return "10秒・全5ショット / 1 GOAL=20点 / 5 GOAL=100点 / GOALは左右移動し、入るたび小さくなる";
   if(legacyIndex===141)return "ルート作成開始からゴールまでのタイム / 6.5秒以下=100点 / 18秒以上=0点";
   if(legacyIndex===142)return "10秒で引っ張った距離 / 160m以上=100点 / 距離に比例して0〜100点";
-  if(legacyIndex===143)return "HOOKタイミング40点 + REELテンション維持60点 / 合計100点";
-  if(legacyIndex===144)return "輪5投 / 棒へ通せば15〜20点 / 投げる距離が遠い棒ほど高得点 / 最大100点";
+  if(legacyIndex===143)return "CAST精度で魚レア度抽選 / Rは最大60点・MOBは釣れれば90点以上 / HOOK＋REELで同レア内の点数決定";
   if(legacyIndex===145)return "返せる枚数の質70点 + 判断速度30点 / 最善手でも遅いと100点にならない";
-  if(legacyIndex===146)return "黒を1手だけ置いて五目完成 / 正解必須 + 早く見つけるほど高得点";
+  if(legacyIndex===146)return "木目盤へ黒石を1手だけ置いて五目完成 / 正解必須 + 早く見つけるほど高得点";
+  if(legacyIndex===147)return "流れた5個の数字の合計を5択で回答 / 正解なら最低50点・1秒以内100点・2秒80点・3秒60点";
+  if(legacyIndex===148)return "10秒で正解した回数×10点 / 10問正解で100点";
+  if(legacyIndex===149)return "10問 / モブくんに負けると+10・勝つと-10・あいこ0 / 最大100点";
   return [
     "0.150秒以下=100点 / 0.300秒=50点 / 0.500秒以上=0点",
     "正解数×10点 / 10枚正解=100点",
@@ -3313,13 +3317,17 @@ function showGameIntro(index){
   }else if(legacyIndex===142){
     rules=`<li>LEFT→RIGHTを交互に3回ずつ、合計6回正しく押すと「頑張る！」が出現します。</li><li>「頑張る！」を3連打するとモブくんとトラックが実際に前へ進みます。10秒で160mが100点です。</li>`;
   }else if(legacyIndex===143){
-    rules=`<li>CAST後、ウキが沈んだ瞬間にHOOK！を押します。早押し・遅押しはHOOK点が下がります。</li><li>その後はREELを長押ししてテンション針を緑ゾーンに保ちます。長押し中も文字選択・メニュー表示は完全ロックします。</li>`;
-  }else if(legacyIndex===144){
-    rules=`<li>輪を上へスワイプして5投。スワイプ方向と強さに合わせて輪が放物線で飛びます。</li><li>棒の近くへ投げれば補助判定で入りやすく、遠い棒ほど少し高得点。最大100点です。</li>`;
+    rules=`<li>最初にCASTゲージが往復します。約80%の白いBESTラインで止めるほど遠くへ投げられ、レアな魚が釣れる確率が上がります。</li><li>魚はR / SR / SSR / UR / MOBの5種類。アタリでHOOK、その後REEL長押しでテンション維持。Rは完璧でも最大60点、MOBは釣れた時点で90点以上です。</li>`;
   }else if(legacyIndex===145){
     rules=`<li>毎回ランダムなオセロ盤面で黒を1手だけ置きます。置けない場所は選べません。</li><li>返せる枚数の良さに加えて判断速度も採点します。最善手でも遅いと100点にはなりません。</li>`;
   }else if(legacyIndex===146){
-    rules=`<li>黒があと1個で5個揃う盤面が出ます。自分は黒です。</li><li>5秒以内に完成する交点を探して1手だけ置きます。正解＋速さで最大100点です。</li>`;
+    rules=`<li>木目の五目盤に黒石と白石が置かれています。黒があと1個で5個揃う交点を探します。</li><li>5秒以内に黒石を1手だけ置きます。正解＋速さで最大100点です。</li>`;
+  }else if(legacyIndex===147){
+    rules=`<li>カウントダウン後、1～9の数字が0.3秒ごとに5個出ます。全部を暗算して合計を覚えます。</li><li>その後の5択から回答。正解なら最低50点、1秒以内100点・2秒80点・3秒60点です。</li>`;
+  }else if(legacyIndex===148){
+    rules=`<li>モブくんが『色』『文字』の2本の旗を持ち、問題ごとに片方だけ上げます。上がった旗の色がTARGETです。</li><li>『色』ならボタンの塗り色、『文字』なら書かれた色名で判断。10秒で10問正解すれば100点です。</li>`;
+  }else if(legacyIndex===149){
+    rules=`<li>モブくんが『じゃんけん ぽん！』で手を出します。表示後1秒以内にグー・チョキ・パーを選びます。</li><li>わざと負ければ+10点、勝つと-10点、あいこ0点。全10問です。</li>`;
   }else{
     rules=`<li>${esc(g.sub)}</li>`;
   }
@@ -3498,9 +3506,11 @@ function humanReady(gameIndex,humanIndex){
     else if(legacyIndex===141)startElectricMaze2(p,humanIndex,runId);
     else if(legacyIndex===142)startTruckHaulMob(p,humanIndex,runId);
     else if(legacyIndex===143)startFishingMob(p,humanIndex,runId);
-    else if(legacyIndex===144)startRingTossMob(p,humanIndex,runId);
     else if(legacyIndex===145)startOthelloOneMoveMob(p,humanIndex,runId);
     else if(legacyIndex===146)startGomokuOneMoveMob(p,humanIndex,runId);
+    else if(legacyIndex===147)startMathChallengeMob(p,humanIndex,runId);
+    else if(legacyIndex===148)startColorTrapMob(p,humanIndex,runId);
+    else if(legacyIndex===149)startReverseJankenMob(p,humanIndex,runId);
     else{
       gameSessionActive=false;
       activeGameIndex=-1;
@@ -27485,13 +27495,17 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===142){
     state.records.truckHaulMob[p.id]=ultra?randi(135,180):randi(55,145);
   }else if(legacyIndex===143){
-    state.records.fishingMob[p.id]=ultra?randi(82,100):randi(38,88);
-  }else if(legacyIndex===144){
-    state.records.ringTossMob[p.id]=ultra?randi(78,100):randi(35,88);
+    state.records.fishingMob[p.id]=ultra?randi(78,100):randi(25,86);
   }else if(legacyIndex===145){
     state.records.othelloOneMoveMob[p.id]=ultra?randi(82,100):randi(35,88);
   }else if(legacyIndex===146){
     state.records.gomokuOneMoveMob[p.id]=ultra?randi(82,100):randi(28,88);
+  }else if(legacyIndex===147){
+    state.records.mathChallengeMob[p.id]=ultra?randi(80,100):[0,50,60,80,100][randi(0,4)];
+  }else if(legacyIndex===148){
+    state.records.colorTrapMob[p.id]=ultra?randi(8,12):randi(3,9);
+  }else if(legacyIndex===149){
+    state.records.reverseJankenMob[p.id]=ultra?randi(60,100):randi(10,80);
   }else{
     const fallbackKey=GAMES[gameIndex]?.key;
     if(fallbackKey&&state.records[fallbackKey])state.records[fallbackKey][p.id]=0;
@@ -27719,64 +27733,46 @@ async function startTruckHaulMob(p,humanIndex,runId){
 }
 
 // =========================================================
-// V11.22 GAME 125 — モブくんの魚釣り
+// V11.24 GAME 125 — モブくんの魚釣り
 // =========================================================
 async function startFishingMob(p,humanIndex,runId){
   gameFit();
   const gameIndex=GAMES.findIndex(g=>g.key==='fishingMob');
-  screen.innerHTML=`<div class="fish222-shell gameplay-fit v203-safe-game">
-    <div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんの魚釣り</h2><p class="lead">アタリを見てHOOK → テンションを保て！</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
-    <div class="fish222-stage" id="fishStage222"><div class="fish222-sky"><i></i></div><div class="fish222-shore"></div><div class="fish222-water"><i></i><i></i><i></i></div>
-      <div class="fish222-mob"><img src="icon/01.png" alt=""><span class="rod"></span></div><div class="fish222-line" id="fishLine222"></div><div class="fish222-float" id="fishFloat222"><i></i></div><div class="fish222-fish" id="fishFish222"><i></i></div>
-      <div id="fishCall222" class="fish222-call">CASTでスタート！</div>
+  const rarityData={
+    R:{min:18,max:60,color:'#8fd47b'},SR:{min:34,max:72,color:'#75c9f1'},SSR:{min:50,max:84,color:'#c28cf4'},UR:{min:68,max:94,color:'#ffcf4c'},MOB:{min:90,max:100,color:'#ff5b5b'}
+  };
+  screen.innerHTML=`<div class="fish224-shell gameplay-fit v203-safe-game">
+    <div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんの魚釣り</h2><p class="lead">CAST → HOOK → REEL / 遠投ほどレア魚率UP!</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+    <div class="fish224-stage" id="fishStage224">
+      <div class="fish224-sun"></div><div class="fish224-cloud c1"></div><div class="fish224-cloud c2"></div><div class="fish224-hills"></div><div class="fish224-water"><i></i><i></i><i></i></div><div class="fish224-bank"></div>
+      <div class="fish224-mob" id="fishMob224"><img src="icon/01.png" draggable="false" alt=""><span class="rod"></span></div>
+      <div class="fish224-line" id="fishLine224"></div><div class="fish224-float" id="fishFloat224"></div><div class="fish224-fish" id="fishFish224"><i></i><b id="fishRare224">?</b></div>
+      <div class="fish224-cast-arc" id="fishArc224"></div><div class="fish224-call" id="fishCall224">80%の白線を狙え！</div>
     </div>
-    <div class="fish222-meter"><span>TENSION</span><div class="track"><i id="fishGreen222"></i><b id="fishNeedle222"></b></div><strong id="fishScore222">HOOK -- / REEL --</strong></div>
-    <div class="fish222-controls mobile-safe-controls-v203"><button id="fishCast222" class="cast" type="button" disabled>CAST!</button><button id="fishHook222" class="hook" type="button" disabled>HOOK!</button><button id="fishReel222" class="reel" type="button" disabled>REEL<small>長押し</small></button></div>
+    <div class="fish224-castbox" id="fishCastBox224"><div class="fish224-label"><span>CAST POWER</span><b id="fishCastPct224">0%</b></div><div class="fish224-casttrack"><i class="best"></i><b id="fishCastNeedle224"></b></div><small>白線 ≈ 80% = 最長キャスト</small></div>
+    <div class="fish224-meter" id="fishFight224"><div class="fish224-label"><span>TENSION</span><b id="fishFightText224">HOOK -- / REEL --</b></div><div class="fish224-tension"><i id="fishGreen224"></i><b id="fishNeedle224"></b></div></div>
+    <div class="fish224-controls mobile-safe-controls-v203"><button id="fishCast224" class="cast" type="button" disabled>CAST!<small>ゲージを止める</small></button><button id="fishHook224" class="hook" type="button" disabled>HOOK!</button><button id="fishReel224" class="reel" type="button" disabled>REEL<small>長押し</small></button></div>
   </div>`;
-  const shell=screen.querySelector('.fish222-shell'),stage=document.getElementById('fishStage222'),floatEl=document.getElementById('fishFloat222'),fishEl=document.getElementById('fishFish222'),call=document.getElementById('fishCall222'),cast=document.getElementById('fishCast222'),hook=document.getElementById('fishHook222'),reel=document.getElementById('fishReel222'),needle=document.getElementById('fishNeedle222'),green=document.getElementById('fishGreen222'),scoreEl=document.getElementById('fishScore222');
-  let phase='ready',finished=false,biteAt=0,hookAt=0,hookScore=0,tension=50,hold=false,reelStart=0,last=0,goodMs=0,raf=null,biteTimer=null;
-  function setFloat(x,y){floatEl.style.left=`${x}%`;floatEl.style.top=`${y}%`}
-  // Fishing uses long holds; aggressively suppress iOS selection/callout without changing game input.
-  const lockFishSelection=e=>{e.preventDefault();clearAllSelectionV156()};
-  ['selectstart','contextmenu','dragstart'].forEach(n=>shell.addEventListener(n,lockFishSelection,{passive:false}));
-  cast.addEventListener('pointerdown',e=>{e.preventDefault();clearAllSelectionV156();if(phase!=='cast'||finished)return;phase='waiting';cast.disabled=true;call.textContent='ウキをよく見て…';stage.classList.add('casted');setFloat(64,64);beep(520,80,.02);biteTimer=setTimeout(()=>{if(finished||!isGameRunValid(runId))return;phase='bite';biteAt=performance.now();hook.disabled=false;floatEl.classList.add('bite');fishEl.classList.add('show');call.textContent='アタリ!! HOOK!!';stage.classList.add('bite');beep(1050,110,.04);setTimeout(()=>{if(phase==='bite')beginReel(0)},720)},rand(900,2200))});
-  hook.addEventListener('pointerdown',e=>{e.preventDefault();if(phase!=='bite'||finished)return;hookAt=performance.now();const err=hookAt-biteAt;hookScore=clamp(Math.round(40-(Math.max(0,err-80)/620)*40),0,40);hook.disabled=true;beginReel(hookScore)},{passive:false});
-  function beginReel(hs){if(finished||phase==='reel')return;clearTimeout(biteTimer);hookScore=hs;phase='reel';floatEl.classList.remove('bite');stage.classList.remove('bite');stage.classList.add('fight');reel.disabled=false;call.textContent=hookScore>30?'HIT!! テンションを緑に！':'浅いHOOK！ REELで取り返せ！';reelStart=performance.now();last=reelStart;goodMs=0;tension=50;beep(760,90,.03);raf=requestAnimationFrame(frame)}
-  const on=()=>{if(phase==='reel')hold=true},off=()=>{hold=false;reel.classList.remove('held');clearAllSelectionV156()};reel.addEventListener('pointerdown',e=>{e.preventDefault();clearAllSelectionV156();reel.setPointerCapture?.(e.pointerId);on();reel.classList.add('held')},{passive:false});['pointerup','pointercancel','lostpointercapture'].forEach(n=>reel.addEventListener(n,off));window.addEventListener('pointerup',off,{passive:true});
-  function finish(){if(finished)return;finished=true;phase='done';hold=false;reel.disabled=hook.disabled=cast.disabled=true;if(raf)cancelAnimationFrame(raf);clearTimeout(biteTimer);const reelScore=clamp(Math.round(goodMs/4500*60),0,60),total=clamp(hookScore+reelScore,0,100);state.records.fishingMob[p.id]=total;scoreEl.textContent=`HOOK ${hookScore}/40 / REEL ${reelScore}/60`;stage.classList.add(total>=75?'caught':'escaped');fishEl.classList.add(total>=75?'caught':'escape');call.textContent=total>=75?'BIG CATCH!!':total>=50?'CATCH!':'ESCAPED...';beep(total>=75?1180:total>=50?820:260,190,.045);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${total}<small>pt</small>`,`HOOK ${hookScore}/40 + REEL ${reelScore}/60`)},950)}
-  function frame(now){if(finished||phase!=='reel'||!isGameRunValid(runId))return;const dt=Math.min(.04,(now-last)/1000);last=now;const t=(now-reelStart)/1000;const center=50+Math.sin(t*1.7)*12+Math.sin(t*.61)*5;const lo=center-10,hi=center+10;green.style.left=`${lo}%`;green.style.width=`${20}%`;const fishForce=Math.sin(t*4.3)*10+Math.sin(t*2.1)*5;tension+=((hold?29:-21)+fishForce)*dt;tension=clamp(tension,0,100);needle.style.left=`${tension}%`;fishEl.style.transform=`translate(${Math.sin(t*4)*24}px,${Math.sin(t*2.6)*8}px) rotate(${Math.sin(t*3)*8}deg)`;if(tension>=lo&&tension<=hi)goodMs+=dt*1000;scoreEl.textContent=`HOOK ${hookScore}/40 / REEL ${clamp(Math.round(goodMs/4500*60),0,60)}/60`;if(t>=4.5){finish();return}raf=requestAnimationFrame(frame)}
-  if(!(await countdown('FISHING!',runId,{transparent:true})))return;phase='cast';cast.disabled=false;call.textContent='CAST! を押して投げろ！';
-}
-
-// =========================================================
-// V11.23 GAME 126 — モブくんの輪投げ
-// =========================================================
-async function startRingTossMob(p,humanIndex,runId){
-  gameFit();
-  const gameIndex=GAMES.findIndex(g=>g.key==='ringTossMob');
-  const posts=[
-    {x:20,y:49,v:15,assist:76},{x:35,y:38,v:16,assist:72},{x:51,y:31,v:17,assist:68},{x:68,y:25,v:18,assist:64},{x:83,y:20,v:20,assist:60}
-  ];
-  screen.innerHTML=`<div class="ring222-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんの輪投げ</h2><p class="lead">輪を引いて上へスワイプ！ 放物線で棒へ通せ</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
-    <div class="ring222-hud"><b id="ringScore222">0 pt</b><span id="ringRemain222">RING 1 / 5</span></div>
-    <div id="ringStage222" class="ring222-stage"><div class="ring222-fair"><span>輪投げ</span><i></i><i></i><i></i></div><div class="ring222-board"></div>${posts.map((q,i)=>`<div class="ring222-post p${i}" style="left:${q.x}%;top:${q.y}%"><b>${q.v}</b><i></i></div>`).join('')}<div id="ringMob222" class="ring222-mob"><img src="icon/01.png" alt=""></div><div id="ringGuide222" class="ring222-guide"></div><div id="ringShadow222" class="ring222-shadow"></div><div id="ringPiece222" class="ring222-piece"></div><div id="ringCall222" class="ring222-call">輪を引いて、上へシュッ！</div></div>
-  </div>`;
-  const stage=document.getElementById('ringStage222'),piece=document.getElementById('ringPiece222'),shadow=document.getElementById('ringShadow222'),guide=document.getElementById('ringGuide222'),scoreEl=document.getElementById('ringScore222'),remain=document.getElementById('ringRemain222'),call=document.getElementById('ringCall222');
-  let active=false,finished=false,shot=0,score=0,down=null,flying=false,raf=null;
-  function resetRing(){piece.className='ring222-piece';piece.style.left='50%';piece.style.top='84%';piece.style.transform='translate(-50%,-50%) rotateX(62deg)';piece.style.opacity='1';shadow.style.left='50%';shadow.style.top='88%';shadow.style.opacity='.35';guide.style.opacity='0';flying=false;remain.textContent=`RING ${Math.min(shot+1,5)} / 5`}
-  function point(e){const r=stage.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,w:r.width,h:r.height}}
-  function setGuide(dx,dy){const len=Math.min(150,Math.hypot(dx,dy)*.72),ang=Math.atan2(dy,dx)*180/Math.PI;guide.style.opacity='1';guide.style.width=`${len}px`;guide.style.transform=`rotate(${ang}deg)`}
-  piece.addEventListener('pointerdown',e=>{if(!active||finished||flying)return;e.preventDefault();clearAllSelectionV156();down=point(e);piece.setPointerCapture?.(e.pointerId);piece.classList.add('grab');call.textContent='方向と強さを決めて離す！'},{passive:false});
-  piece.addEventListener('pointermove',e=>{if(!down||flying)return;e.preventDefault();const q=point(e),dx=q.x-down.x,dy=q.y-down.y;setGuide(dx,dy);piece.style.transform=`translate(calc(-50% + ${dx*.18}px),calc(-50% + ${dy*.12}px)) rotateX(62deg) rotateZ(${dx*.11}deg)`},{passive:false});
-  piece.addEventListener('pointerup',e=>{if(!down||flying)return;e.preventDefault();const q=point(e),dx=q.x-down.x,dy=q.y-down.y;down=null;piece.classList.remove('grab');guide.style.opacity='0';const upward=-dy;if(upward<42){call.textContent='もっと上へスワイプ！';beep(180,45,.01);resetRing();return}flying=true;shot++;
-    const r=stage.getBoundingClientRect(),sx=r.width*.5,sy=r.height*.84,power=clamp(upward/180,.38,1.12),tx=clamp(sx+dx*1.12,28,r.width-28),ty=clamp(sy-(125+power*180),55,r.height*.55);
-    const targets=posts.map((po,i)=>({i,po,x:r.width*po.x/100,y:r.height*po.y/100,d:Math.hypot(tx-r.width*po.x/100,ty-r.height*po.y/100)})).sort((a,b)=>a.d-b.d),best=targets[0],hit=best.d<=best.po.assist;
-    const landX=hit?best.x:tx,landY=hit?best.y:ty,flightMs=720,apexY=Math.max(30,Math.min(sy,landY)-100-power*28),t0=performance.now();stage.classList.add('throw');
-    function fly(now){if(!isGameRunValid(runId)||finished)return;const t=clamp((now-t0)/flightMs,0,1),ease=t*t*(3-2*t),x=sx+(landX-sx)*ease,y=(1-t)*(1-t)*sy+2*(1-t)*t*apexY+t*t*landY,scale=1-.42*t;piece.style.left=`${x}px`;piece.style.top=`${y}px`;piece.style.transform=`translate(-50%,-50%) rotateX(${62+18*t}deg) rotateZ(${t*760+dx*.18}deg) scale(${scale})`;shadow.style.left=`${x}px`;shadow.style.top=`${Math.min(r.height-24,y+70*(1-t)+24)}px`;shadow.style.transform=`translate(-50%,-50%) scale(${.9-.45*t})`;shadow.style.opacity=String(.35*(1-t));if(t<1){raf=requestAnimationFrame(fly);return}stage.classList.remove('throw');if(hit){score=Math.min(100,score+best.po.v);scoreEl.textContent=`${score} pt`;call.textContent=`スポッ!! +${best.po.v}`;piece.classList.add('in');stage.querySelector(`.p${best.i}`)?.classList.add('hit');beep(980+best.po.v*6,110,.04)}else{call.textContent='おしい！ MISS';piece.classList.add('miss');beep(250,80,.02)}setTimeout(()=>{if(shot>=5){finish();return}resetRing();call.textContent='次の輪！'},620)}
-    raf=requestAnimationFrame(fly);
-  },{passive:false});
-  function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.ringTossMob[p.id]=score;call.textContent=score>=80?'RING MASTER!!':'FINISH!';call.classList.add('result');beep(score>=80?1180:720,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`5 RINGS / ${score}/100 pt`)},850)}
-  resetRing();if(!(await countdown('RING TOSS!',runId,{transparent:true})))return;active=true;call.textContent='輪を引いて、上へシュッ！';
+  const shell=screen.querySelector('.fish224-shell'),stage=document.getElementById('fishStage224'),mob=document.getElementById('fishMob224'),floatEl=document.getElementById('fishFloat224'),line=document.getElementById('fishLine224'),fish=document.getElementById('fishFish224'),rareEl=document.getElementById('fishRare224'),arc=document.getElementById('fishArc224'),call=document.getElementById('fishCall224'),cast=document.getElementById('fishCast224'),hook=document.getElementById('fishHook224'),reel=document.getElementById('fishReel224'),castBox=document.getElementById('fishCastBox224'),castNeedle=document.getElementById('fishCastNeedle224'),castPct=document.getElementById('fishCastPct224'),fight=document.getElementById('fishFight224'),needle=document.getElementById('fishNeedle224'),green=document.getElementById('fishGreen224'),fightText=document.getElementById('fishFightText224');
+  let phase='ready',finished=false,castStart=0,castRAF=null,castValue=0,castDir=1,castQuality=0,rarity='R',biteAt=0,hookQuality=0,tension=50,hold=false,reelStart=0,last=0,goodMs=0,raf=null,biteTimer=null;
+  const lock=e=>{e.preventDefault();clearAllSelectionV156()};['selectstart','contextmenu','dragstart'].forEach(n=>shell.addEventListener(n,lock,{passive:false}));
+  function weightedRarity(q){
+    const low=[70,22,6,1.8,.2],high=[25,30,25,15,5],keys=['R','SR','SSR','UR','MOB'];
+    const w=low.map((v,i)=>v+(high[i]-v)*q),sum=w.reduce((a,b)=>a+b,0);let r=Math.random()*sum;
+    for(let i=0;i<w.length;i++){r-=w[i];if(r<=0)return keys[i]}return 'R';
+  }
+  function updateCast(now){if(phase!=='castGauge'||finished)return;const dt=Math.min(.04,(now-castStart)/1000||.016);castStart=now;castValue+=castDir*dt*82;if(castValue>=100){castValue=100;castDir=-1}else if(castValue<=0){castValue=0;castDir=1}castNeedle.style.left=`${castValue}%`;castPct.textContent=`${Math.round(castValue)}%`;castRAF=requestAnimationFrame(updateCast)}
+  function castStop(){if(phase!=='castGauge'||finished)return;if(castRAF)cancelAnimationFrame(castRAF);phase='casting';cast.disabled=true;const err=Math.abs(castValue-80);castQuality=clamp(1-err/48,0,1);rarity=weightedRarity(castQuality);const dist=38+castQuality*55;call.textContent=castQuality>.9?'PERFECT CAST!!':castQuality>.68?'NICE CAST!':'CAST!';call.classList.add('pop');mob.classList.add('cast');arc.classList.add('show');floatEl.classList.add('flying');floatEl.style.setProperty('--tx',`${dist}%`);floatEl.style.setProperty('--ty',`${56+rand(-3,3)}%`);beep(castQuality>.9?1100:720,100,.03);
+    setTimeout(()=>{if(finished||!isGameRunValid(runId))return;floatEl.classList.remove('flying');floatEl.style.left=`${dist}%`;floatEl.style.top=`${58+rand(-2,2)}%`;line.style.setProperty('--end',`${dist}%`);arc.classList.remove('show');mob.classList.remove('cast');phase='waiting';call.classList.remove('pop');call.textContent=`飛距離 ${Math.round(castQuality*100)}% / アタリを待て…`;biteTimer=setTimeout(bite,rand(850,1900))},850);
+  }
+  function bite(){if(finished||phase!=='waiting'||!isGameRunValid(runId))return;phase='bite';biteAt=performance.now();hook.disabled=false;floatEl.classList.add('bite');fish.classList.add('shadow');call.textContent='アタリ!! HOOK!!';stage.classList.add('bite');beep(1080,115,.045);setTimeout(()=>{if(phase==='bite')beginReel(0)},760)}
+  function beginReel(hq){if(finished||phase==='reel')return;clearTimeout(biteTimer);phase='reel';hookQuality=hq;hook.disabled=true;reel.disabled=false;floatEl.classList.remove('bite');stage.classList.remove('bite');castBox.classList.add('hidden');fight.classList.add('show');call.textContent=hookQuality>.72?'HIT!! 緑をキープ！':'浅いHOOK！ REELで粘れ！';reelStart=performance.now();last=reelStart;goodMs=0;tension=50;beep(760,90,.03);raf=requestAnimationFrame(frame)}
+  function finish(){if(finished)return;finished=true;phase='done';hold=false;reel.disabled=hook.disabled=cast.disabled=true;if(raf)cancelAnimationFrame(raf);clearTimeout(biteTimer);const reelQuality=clamp(goodMs/4600,0,1),skill=clamp(hookQuality*.35+reelQuality*.65,0,1),caught=skill>=.28;let total=0;if(caught){const d=rarityData[rarity];total=clamp(Math.round(d.min+(d.max-d.min)*skill),d.min,d.max)}state.records.fishingMob[p.id]=total;rareEl.textContent=rarity;fish.style.setProperty('--fish-color',rarityData[rarity].color);fish.classList.remove('shadow');fish.classList.add(caught?'caught':'escape');stage.classList.add(caught?'caught':'escaped');fightText.textContent=`${rarity} / HOOK ${Math.round(hookQuality*100)}% / REEL ${Math.round(reelQuality*100)}%`;call.textContent=caught?(rarity==='MOB'?'MOB FISH!!!':`${rarity} GET!!`):`${rarity}… ESCAPED!`;call.classList.add(caught?'success':'fail');beep(caught?(rarity==='MOB'?1320:1040):230,200,.05);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${total}<small>pt</small>`,caught?`${rarity} FISH / CAST ${Math.round(castQuality*100)}% / HOOK ${Math.round(hookQuality*100)}% / REEL ${Math.round(reelQuality*100)}%`:`${rarity} FISH ESCAPED / 0 pt`)},1250)}
+  function frame(now){if(finished||phase!=='reel'||!isGameRunValid(runId))return;const dt=Math.min(.04,(now-last)/1000);last=now;const t=(now-reelStart)/1000;const difficulty={R:.75,SR:.9,SSR:1.05,UR:1.18,MOB:1.32}[rarity];const center=50+Math.sin(t*1.8*difficulty)*13+Math.sin(t*.73)*5,lo=center-10,hi=center+10;green.style.left=`${lo}%`;green.style.width='20%';const fishForce=(Math.sin(t*4.1*difficulty)*11+Math.sin(t*2.3)*5)*difficulty;tension+=((hold?30:-22)+fishForce)*dt;tension=clamp(tension,0,100);needle.style.left=`${tension}%`;fish.style.transform=`translate(${Math.sin(t*4.2)*25*difficulty}px,${Math.sin(t*2.6)*9}px) rotate(${Math.sin(t*3)*8}deg)`;if(tension>=lo&&tension<=hi)goodMs+=dt*1000;fightText.textContent=`${rarity} ? / REEL ${Math.round(clamp(goodMs/4600,0,1)*100)}%`;if(t>=4.6){finish();return}raf=requestAnimationFrame(frame)}
+  cast.addEventListener('pointerdown',e=>{e.preventDefault();clearAllSelectionV156();castStop()},{passive:false});
+  hook.addEventListener('pointerdown',e=>{e.preventDefault();if(phase!=='bite'||finished)return;const err=performance.now()-biteAt;hookQuality=clamp(1-Math.max(0,err-70)/700,0,1);beginReel(hookQuality)},{passive:false});
+  const off=()=>{hold=false;reel.classList.remove('held');clearAllSelectionV156()};reel.addEventListener('pointerdown',e=>{e.preventDefault();clearAllSelectionV156();if(phase!=='reel')return;reel.setPointerCapture?.(e.pointerId);hold=true;reel.classList.add('held')},{passive:false});['pointerup','pointercancel','lostpointercapture'].forEach(n=>reel.addEventListener(n,off));window.addEventListener('pointerup',off,{passive:true});
+  if(!(await countdown('FISHING!',runId,{transparent:true})))return;phase='castGauge';cast.disabled=false;castStart=performance.now();call.textContent='80%の白線でCASTを止めろ！';castRAF=requestAnimationFrame(updateCast);
 }
 
 // =========================================================
@@ -27819,6 +27815,61 @@ async function startGomokuOneMoveMob(p,humanIndex,runId){
   function timeout(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.gomokuOneMoveMob[p.id]=0;render(true);call.textContent='TIME UP! 答えはここ！';call.classList.add('bad');setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`0<small>pt</small>`,`TIME UP / 答え表示`)},950)}
   if(!(await countdown('FIND FIVE!',runId,{transparent:true})))return;active=true;start=performance.now();call.textContent='5秒以内に五目を完成！';
   function frame(now){if(finished||!isGameRunValid(runId))return;const rem=Math.max(0,5000-(now-start));timeEl.textContent=(rem/1000).toFixed(1);if(rem<=0){timeout();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
+
+
+// =========================================================
+// V11.24 GAME 128 — モブくん算数にチャレンジ
+// =========================================================
+async function startMathChallengeMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='mathChallengeMob');
+  const nums=Array.from({length:5},()=>randi(1,9)),answer=nums.reduce((a,b)=>a+b,0);
+  screen.innerHTML=`<div class="math224-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん算数にチャレンジ</h2><p class="lead">0.3秒ごとの数字を全部足せ！</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="math224-stage"><div class="math224-board"><span>MOB MATH</span><b id="mathNumber224">?</b><small id="mathStep224">READY</small></div><div class="math224-mob"><img src="icon/01.png" alt=""><i>＋</i></div><div id="mathCall224" class="math224-call">数字を覚えて足し算！</div></div><div id="mathChoices224" class="math224-choices"></div></div>`;
+  const numEl=document.getElementById('mathNumber224'),step=document.getElementById('mathStep224'),call=document.getElementById('mathCall224'),choices=document.getElementById('mathChoices224');let finished=false,answerStart=0,raf=null;
+  if(!(await countdown('MATH CHALLENGE!',runId,{transparent:true})))return;
+  for(let i=0;i<nums.length;i++){if(!isGameRunValid(runId))return;numEl.textContent=nums[i];numEl.classList.remove('pop');void numEl.offsetWidth;numEl.classList.add('pop');step.textContent=`${i+1} / ${nums.length}`;beep(520+i*55,45,.012);await new Promise(r=>setTimeout(r,300))}
+  numEl.textContent='？';step.textContent='ANSWER!';call.textContent='合計はいくつ？';
+  const opts=new Set([answer]);while(opts.size<5){opts.add(Math.max(5,answer+randi(-8,8)))}const arr=[...opts].sort(()=>Math.random()-.5);choices.innerHTML=arr.map(v=>`<button type="button" data-v="${v}">${v}</button>`).join('');answerStart=performance.now();
+  choices.addEventListener('click',e=>{const b=e.target.closest('button');if(finished||!b)return;finished=true;if(raf)cancelAnimationFrame(raf);const elapsed=performance.now()-answerStart,ok=Number(b.dataset.v)===answer;let score=0;if(ok){score=elapsed<=1000?100:elapsed<=2000?80:elapsed<=3000?60:50;b.classList.add('correct');call.textContent=score===100?'PERFECT ANSWER!!':'正解!!'}else{b.classList.add('wrong');[...choices.children].find(x=>Number(x.dataset.v)===answer)?.classList.add('correct');call.textContent=`× 正解は ${answer}`;beep(180,100,.03)}state.records.mathChallengeMob[p.id]=score;if(ok)beep(score===100?1250:920,150,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,ok?`正解 ${answer} / ${(elapsed/1000).toFixed(2)}秒`:`不正解 / ${nums.join(' + ')} = ${answer}`)},900)},{passive:true});
+  function tick(now){if(finished||!isGameRunValid(runId))return;const t=(now-answerStart)/1000;step.textContent=`ANSWER ${t.toFixed(1)}s`;raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
+}
+
+// =========================================================
+// V11.24 GAME 129 — モブくんのカラートラップ
+// =========================================================
+async function startColorTrapMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='colorTrapMob');
+  const colors=[['赤','#e83b35'],['青','#3285e8'],['緑','#38a852'],['黄','#f1cf2b'],['紫','#9b55d4'],['橙','#ef8a2e']];
+  screen.innerHTML=`<div class="color224-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのカラートラップ</h2><p class="lead">旗が「色」なら塗り色、「文字」なら書かれた文字！</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="color224-hud"><b id="colorTime224">10.0</b><strong id="colorScore224">0 CORRECT</strong></div><div class="color224-stage"><div class="color224-mob"><div class="flag left" id="flagColor224"><b>色</b></div><div class="flag right" id="flagWord224"><b>文字</b></div><img src="icon/01.png" alt=""></div><div class="color224-target">TARGET <b id="colorTarget224">?</b></div><div id="colorJudge224" class="color224-judge">旗を見ろ！</div></div><div id="colorChoices224" class="color224-choices"><button type="button"></button><button type="button"></button></div></div>`;
+  const timeEl=document.getElementById('colorTime224'),scoreEl=document.getElementById('colorScore224'),flagC=document.getElementById('flagColor224'),flagW=document.getElementById('flagWord224'),targetEl=document.getElementById('colorTarget224'),judge=document.getElementById('colorJudge224'),choices=document.getElementById('colorChoices224');let active=false,finished=false,start=0,correct=0,current=null,raf=null,locked=false;
+  function next(){if(finished)return;locked=false;let a=randi(0,colors.length-1),b;do{b=randi(0,colors.length-1)}while(b===a);const modeIsColor=Math.random()<.5,target=colors[a],other=colors[b],swap=Math.random()<.5;current={modeIsColor,answer:swap?0:1};
+    // option answer composition depends on mode; both always conflict.
+    const optGood=modeIsColor?{bg:target[1],txt:other[0]}:{bg:other[1],txt:target[0]};
+    const optBad=modeIsColor?{bg:other[1],txt:target[0]}:{bg:target[1],txt:other[0]};const opts=swap?[optGood,optBad]:[optBad,optGood];
+    flagC.classList.toggle('up',modeIsColor);flagW.classList.toggle('up',!modeIsColor);flagC.style.setProperty('--flag-color',target[1]);flagW.style.setProperty('--flag-color',target[1]);targetEl.textContent=target[0];targetEl.style.color=target[1];
+    [...choices.children].forEach((btn,i)=>{btn.style.background=opts[i].bg;btn.innerHTML=`<span>${opts[i].txt}</span>`;btn.className='';});judge.textContent=modeIsColor?'「色」＝ボタンの色を見ろ！':'「文字」＝書かれた文字を見ろ！';judge.className='color224-judge';
+  }
+  choices.addEventListener('click',e=>{const b=e.target.closest('button');if(!active||finished||locked||!b)return;locked=true;const idx=[...choices.children].indexOf(b),ok=idx===current.answer;if(ok){correct++;b.classList.add('ok');judge.textContent='○ CORRECT!';judge.classList.add('ok');beep(980,60,.025)}else{b.classList.add('ng');choices.children[current.answer].classList.add('ok');judge.textContent='× TRAP!';judge.classList.add('ng');beep(180,60,.02)}scoreEl.textContent=`${correct} CORRECT`;setTimeout(()=>{if(!finished)next()},190)},{passive:true});
+  function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const rec=correct;state.records.colorTrapMob[p.id]=rec;judge.textContent=correct>=10?'COLOR MASTER!!':'TIME UP!';judge.className='color224-judge result';setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${Math.min(100,correct*10)}<small>pt</small>`,`${correct}問正解 / 10秒`)},750)}
+  if(!(await countdown('COLOR TRAP!',runId,{transparent:true})))return;active=true;start=performance.now();next();
+  function frame(now){if(finished||!isGameRunValid(runId))return;const rem=Math.max(0,10000-(now-start));timeEl.textContent=(rem/1000).toFixed(1);if(rem<=0){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
+
+// =========================================================
+// V11.24 GAME 130 — モブくんの逆ジャンケン
+// =========================================================
+async function startReverseJankenMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='reverseJankenMob');
+  const hands=[{n:'グー',m:'✊'},{n:'チョキ',m:'✌'},{n:'パー',m:'✋'}];
+  screen.innerHTML=`<div class="rps224-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんの逆ジャンケン</h2><p class="lead">勝つな！ モブくんに負けろ！</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="rps224-hud"><b id="rpsRound224">1 / 10</b><strong id="rpsScore224">0 PT</strong></div><div class="rps224-stage"><div id="rpsBubble224" class="rps224-bubble">じゃんけん…</div><div class="rps224-mob"><img src="icon/01.png" alt=""><b id="rpsMobHand224">?</b></div><div id="rpsJudge224" class="rps224-judge">負ける手を押せ！</div></div><div id="rpsChoices224" class="rps224-choices">${hands.map((h,i)=>`<button type="button" data-i="${i}"><b>${h.m}</b><span>${h.n}</span></button>`).join('')}</div></div>`;
+  const roundEl=document.getElementById('rpsRound224'),scoreEl=document.getElementById('rpsScore224'),bubble=document.getElementById('rpsBubble224'),mobHand=document.getElementById('rpsMobHand224'),judge=document.getElementById('rpsJudge224'),choices=document.getElementById('rpsChoices224');let round=0,score=0,cpu=0,accept=false,timer=null,finished=false;
+  function outcome(player,cpu){if(player===cpu)return 0;const playerWins=(player===0&&cpu===1)||(player===1&&cpu===2)||(player===2&&cpu===0);return playerWins?-10:10}
+  function lockButtons(v){[...choices.children].forEach(b=>b.disabled=v)}
+  function nextRound(){if(finished)return;if(round>=10){finish();return}round++;roundEl.textContent=`${round} / 10`;accept=false;lockButtons(true);mobHand.textContent='?';bubble.textContent='じゃんけん…';judge.textContent='負ける準備！';judge.className='rps224-judge';cpu=randi(0,2);setTimeout(()=>{if(finished)return;bubble.textContent='ぽん！';mobHand.textContent=hands[cpu].m;mobHand.classList.remove('pop');void mobHand.offsetWidth;mobHand.classList.add('pop');accept=true;lockButtons(false);judge.textContent='1秒！ 負ける手を押せ！';beep(820,50,.02);timer=setTimeout(()=>resolve(null),1000)},320)}
+  function resolve(player){if(!accept||finished)return;accept=false;clearTimeout(timer);lockButtons(true);let delta=0;if(player!==null)delta=outcome(player,cpu);score=clamp(score+delta,-100,100);scoreEl.textContent=`${score>=0?'+':''}${score} PT`;judge.textContent=player===null?'TIME! 0':delta===10?'負けた！ +10':delta===-10?'勝っちゃった！ -10':'あいこ 0';judge.classList.add(delta===10?'good':delta===-10?'bad':'draw');if(delta===10)beep(1040,70,.025);else if(delta===-10)beep(180,70,.02);setTimeout(nextRound,260)}
+  choices.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!accept)return;resolve(Number(b.dataset.i))},{passive:true});
+  function finish(){if(finished)return;finished=true;clearTimeout(timer);accept=false;lockButtons(true);state.records.reverseJankenMob[p.id]=score;bubble.textContent='FINISH!';mobHand.textContent='★';judge.textContent=score>=80?'逆ジャンケンMASTER!!':`${score>=0?'+':''}${score} PT`;setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,`10問 / 負け +10・勝ち -10・あいこ 0`)},800)}
+  if(!(await countdown('REVERSE JANKEN!',runId,{transparent:true})))return;nextRound();
 }
 
 
@@ -28012,9 +28063,11 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===141){if(v<=6500)return 100;if(v>=18000)return 0;return clamp(Math.round((18000-v)/11500*100),0,100);}
   if(legacyIndex===142)return clamp(Math.round(v/160*100),0,100);
   if(legacyIndex===143)return clamp(Math.round(v),0,100);
-  if(legacyIndex===144)return clamp(Math.round(v),0,100);
   if(legacyIndex===145)return clamp(Math.round(v),0,100);
   if(legacyIndex===146)return clamp(Math.round(v),0,100);
+  if(legacyIndex===147)return clamp(Math.round(v),0,100);
+  if(legacyIndex===148)return clamp(Math.round(v*10),0,100);
+  if(legacyIndex===149)return clamp(Math.round(v),0,100);
   return clamp(Math.round(v),0,100);
 }
 
@@ -28162,9 +28215,11 @@ function formatRecord(gameIndex,v){
   if(legacyIndex===141)return `${(v/1000).toFixed(2)}秒`;
   if(legacyIndex===142)return `${Math.round(v)}m`;
   if(legacyIndex===143)return `${Math.round(v)}pt`;
-  if(legacyIndex===144)return `${Math.round(v)}pt`;
   if(legacyIndex===145)return `${Math.round(v)}pt`;
   if(legacyIndex===146)return `${Math.round(v)}pt`;
+  if(legacyIndex===147)return `${Math.round(v)}pt`;
+  if(legacyIndex===148)return `${Math.round(v)}問`;
+  if(legacyIndex===149)return `${Math.round(v)}pt`;
   return `${Math.round(v)}pt`;
 }
 
