@@ -371,13 +371,16 @@ const GAMES=[
   {no:133,key:"elevatorMob",title:"モブくんエレベーター",sub:"上下するエレベーターをSTOPで指定階にぴったり止める5回勝負",legacy:154},
   {no:134,key:"cashierMob",title:"モブくんレジ打ち",sub:"商品4つをタップでスキャンし、画面を切り替えて正しいお釣りを作る",legacy:156},
   {no:135,key:"coinPusherMob",title:"モブくんコインプッシャー",sub:"投入口を左右に動かして10枚のコインをDROP。プッシャーのタイミングで大量GETを狙う",legacy:157},
-  {no:136,key:"survivorMob",title:"モブくんサバイバー",sub:"見下ろし型15秒サバイバー。移動だけ操作し自動攻撃、途中の強化はランダムで即決定",legacy:158}
+  {no:136,key:"survivorMob",title:"モブくんサバイバー",sub:"見下ろし型15秒サバイバー。移動だけ操作し自動攻撃、途中の強化はランダムで即決定",legacy:158},
+  {no:137,key:"ringToss3DMob",title:"モブくん3D輪投げ",sub:"Three.js 3D。5本の輪をスワイプで投げ、奥の高得点ポールを狙う",legacy:159},
+  {no:138,key:"bowling3DMob",title:"モブくん3Dボウリング",sub:"Three.js 3D。位置とスワイプ角度を決め、2投で10ピンを倒す",legacy:160},
+  {no:139,key:"homeRun3DMob",title:"モブくん3Dホームランチャレンジ",sub:"Three.js 3D。5球の投球をタイミングよくSWINGしてホームランを狙う",legacy:161}
 ];
 
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set();
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob']);
-const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob','mergeMob','parkingEscapeMob','elevatorMob','cashierMob','coinPusherMob','survivorMob','deathGameChallenge']);
+const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob','mergeMob','parkingEscapeMob','elevatorMob','cashierMob','coinPusherMob','survivorMob','ringToss3DMob','bowling3DMob','homeRun3DMob','deathGameChallenge']);
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
 function activeGameIndices(){return GAMES.map((_,i)=>i).filter(i=>!isRetiredGameIndex(i))}
 function activeGameCount(){return activeGameIndices().length}
@@ -506,7 +509,7 @@ function freshState(){
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
         changeMob:{},baggageMob:{},treasureMob:{},rouletteMob:{},excavationMob:{},
         oldMaidDuel:{},robotMarch:{},monsterMaster:{},scoutMan:{},
-        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{},ohajikiMob:{},dontBreakBlocksMob:{},ohajikiShootMob:{},electricMaze2:{},truckHaulMob:{},fishingMob:{},othelloOneMoveMob:{},gomokuOneMoveMob:{},mathChallengeMob:{},colorTrapMob:{},reverseJankenMob:{},mergeMob:{},parkingEscapeMob:{},elevatorMob:{},cashierMob:{},coinPusherMob:{},survivorMob:{}
+        atafutaSurvival:{},waveMaster:{},battleRoyaleMob:{},littleMobShot:{},monsterBoxMob:{},alienBattleMob:{},mobMusou:{},iaidoMaster:{},killLeaderMob:{},mobSpeedRacer:{},summonMaster:{},mobPinball:{},hurdleRun:{},longJumpMob:{},pkKicker:{},threePoint:{},bowlingMob:{},waterSkip:{},tamaireMob:{},mineCartMob:{},airHockeyMob:{},ropeSwingMob:{},billiardsMob:{},billiardsBattleRoyale:{},linkedCartBlast:{},soloCartBlast:{},deathGameChallenge:{},tokotokoCatcher:{},amidakujiMasters:{},djMaster:{},rocketPunch:{},flagRaise:{},flyingCarpet:{},fruitCatchMob:{},senryobakoMob:{},tableclothPull:{},bombPassMob:{},obstacleRaceMob:{},sphereMob:{},frontFlipMob:{},swimmingMob:{},cheerLeaderMob:{},zeroOrHundredMob:{},fireworkStandMob:{},poiGameMob:{},cleaningMob:{},findMob:{},ohajikiMob:{},dontBreakBlocksMob:{},ohajikiShootMob:{},electricMaze2:{},truckHaulMob:{},fishingMob:{},othelloOneMoveMob:{},gomokuOneMoveMob:{},mathChallengeMob:{},colorTrapMob:{},reverseJankenMob:{},mergeMob:{},parkingEscapeMob:{},elevatorMob:{},cashierMob:{},coinPusherMob:{},survivorMob:{},ringToss3DMob:{},bowling3DMob:{},homeRun3DMob:{}
     },
     total:{},
     roundPoints:[],
@@ -2919,6 +2922,9 @@ function scoreRuleForGame(index){
   if(legacyIndex===156)return "商品スキャン40点＋二重スキャン防止10点＋正しいお釣り30点＋速度20点";
   if(legacyIndex===157)return "15秒 / 10枚DROP / 手前へ落とした通常コイン5点、金MOBコイン15点。最大100点";
   if(legacyIndex===158)return "15秒サバイバー / 撃破60＋残HP15＋レベル15＋エリート10。上手く攻めて生存すると100点";
+  if(legacyIndex===159)return "3D輪投げ5投 / ポール10〜20点。5投すべて中央20点ポールで100点";
+  if(legacyIndex===160)return "3Dボウリング2投 / 10ピン×10点。STRIKEまたは全ピン倒して100点";
+  if(legacyIndex===161)return "3Dホームラン5球 / 1HR=20点。5球すべてホームランで100点";
   return [
     "0.150秒以下=100点 / 0.300秒=50点 / 0.500秒以上=0点",
     "正解数×10点 / 10枚正解=100点",
@@ -3522,6 +3528,9 @@ function humanReady(gameIndex,humanIndex){
     else if(legacyIndex===156)startCashierMob(p,humanIndex,runId);
     else if(legacyIndex===157)startCoinPusherMob(p,humanIndex,runId);
     else if(legacyIndex===158)startSurvivorMob(p,humanIndex,runId);
+    else if(legacyIndex===159)startRingToss3DMob(p,humanIndex,runId);
+    else if(legacyIndex===160)startBowling3DMob(p,humanIndex,runId);
+    else if(legacyIndex===161)startHomeRun3DMob(p,humanIndex,runId);
     else{
       gameSessionActive=false;
       activeGameIndex=-1;
@@ -27529,6 +27538,12 @@ function simulateOneCpu(gameIndex,p){
     state.records.coinPusherMob[p.id]=ultra?randi(82,100):randi(25,78);
   }else if(legacyIndex===158){
     state.records.survivorMob[p.id]=ultra?randi(84,100):randi(30,80);
+  }else if(legacyIndex===159){
+    state.records.ringToss3DMob[p.id]=ultra?[80,85,90,95,100][randi(0,4)]:[20,30,40,50,60,70,80][randi(0,6)];
+  }else if(legacyIndex===160){
+    state.records.bowling3DMob[p.id]=ultra?randi(80,100):randi(30,88);
+  }else if(legacyIndex===161){
+    state.records.homeRun3DMob[p.id]=ultra?[60,80,100,100][randi(0,3)]:[0,20,40,60,80][randi(0,4)];
   }else{
     const fallbackKey=GAMES[gameIndex]?.key;
     if(fallbackKey&&state.records[fallbackKey])state.records[fallbackKey][p.id]=0;
@@ -38928,7 +38943,7 @@ async function startCashierMob(p,humanIndex,runId){
   function scanItem(btn){if(!active||finished||phaseName!=='scan')return;const i=+btn.dataset.i;if(scanned.has(i)){errors++;call.textContent='二重スキャン！';reg.classList.add('error');setTimeout(()=>reg.classList.remove('error'),260);beep(160,60,.02);return}scanned.add(i);sum+=items[i].v;btn.classList.add('scanned');scanner.classList.remove('flash');void scanner.offsetWidth;scanner.classList.add('flash');stepEl.textContent=`SCAN ${scanned.size}/4`;display.textContent=totalEl.textContent=`¥${sum}`;call.textContent=`ピッ！ ${items[i].n}`;beep(860,36,.012);if(scanned.size===items.length)setTimeout(renderChange,260)}
   belt.addEventListener('click',e=>{const btn=e.target.closest('.ca227-item');if(btn)scanItem(btn)});
   function updateChangeView(){const give=enteredChange(),giveEl=document.getElementById('caGive227'),hist=document.getElementById('caCoinHistory228');if(giveEl)giveEl.textContent=`¥${give}`;if(hist)hist.textContent=`¥500×${coinCounts[500]}  ¥100×${coinCounts[100]}  ¥50×${coinCounts[50]}  ¥10×${coinCounts[10]}`}
-  function renderChange(){if(finished||phaseName==='change')return;phaseName='change';phaseStart=performance.now();call.textContent=`お客：¥${paid}　お釣りはいくら？`;stepEl.textContent='CHANGE';totalEl.textContent='お釣りを作る';bottom.textContent='コインを選ぶ → 金額を確認 →「決定！」';phase.innerHTML=`<div class="ca227-change"><div class="ca227-paid"><span>お会計</span><b>¥${total}</b><i>お客から ¥${paid}</i></div><div class="ca227-give"><span>あなたのお釣り</span><b id="caGive227">¥0</b><em>自分で計算して決めよう！</em></div><div class="ca227-coins">${[500,100,50,10].map(v=>`<button data-coin="${v}" type="button">¥${v}</button>`).join('')}</div><div id="caCoinHistory228" class="ca228-coin-history">¥500×0  ¥100×0  ¥50×0  ¥10×0</div><div class="ca227-change-actions"><button data-reset type="button">やり直す</button><button data-pay class="ca230-confirm" type="button">決定！</button></div></div>`;phase.addEventListener('click',changeClick,{once:false});updateChangeView()}
+  function renderChange(){if(finished||phaseName==='change')return;phaseName='change';phaseStart=performance.now();call.textContent=`お客：¥${paid}　お釣りはいくら？`;stepEl.textContent='CHANGE';totalEl.textContent='お釣りを作る';bottom.textContent='コインを選ぶ → 金額を確認 →「決定！」';phase.innerHTML=`<div class="ca227-change"><div class="ca227-paid"><span>お会計</span><b>¥${total}</b><i>お客から ¥${paid}</i></div><div class="ca227-give"><span>あなたのお釣り</span><b id="caGive227">¥0</b><em>自分で計算して決めよう！</em></div><div class="ca227-coins">${[500,100,50,10].map(v=>`<button data-coin="${v}" type="button">¥${v}</button>`).join('')}</div><div id="caCoinHistory228" class="ca228-coin-history">¥500×0  ¥100×0  ¥50×0  ¥10×0</div><div class="ca227-change-actions"><button data-reset type="button">やり直す</button><button data-pay class="ca230-confirm" type="button">決定！</button></div></div>`;phase.addEventListener('click',changeClick,{once:false});requestAnimationFrame(()=>phase.querySelector('[data-pay]')?.scrollIntoView({block:'nearest'}));updateChangeView()}
   function changeClick(e){if(!active||finished||phaseName!=='change')return;const coin=e.target.closest('[data-coin]');if(coin){const v=+coin.dataset.coin;coinCounts[v]++;updateChangeView();coin.classList.add('tap');setTimeout(()=>coin.classList.remove('tap'),120);beep(540,25,.007);return}if(e.target.closest('[data-reset]')){for(const v of [500,100,50,10])coinCounts[v]=0;updateChangeView();call.textContent='お釣りを0円に戻した！';return}if(e.target.closest('[data-pay]')){const entered=enteredChange();errors+=entered===change?0:1;finish(entered===change)}}
   function finish(correct){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const sec=(performance.now()-wholeStart)/1000,scanPts=Math.round(scanned.size/items.length*40),safePts=errors===0?10:Math.max(0,10-errors*3),changePts=correct?30:0,speedPts=correct?clamp(Math.round((14-sec)/8*20),0,20):0,score=clamp(scanPts+safePts+changePts+speedPts,0,100);state.records.cashierMob[p.id]=score;reg.classList.add(correct?'success':'error');call.textContent=correct?'THANK YOU!! 正しいお釣り！':'お釣りが違う！';bottom.textContent=correct?`¥${change} 正解！ レジOPEN！`:`正解のお釣りは ¥${change}`;beep(correct?1120:160,correct?180:120,.035);setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`SCAN ${scanned.size}/4 / お釣り ${correct?'正解':'未完了'} / ${sec.toFixed(1)}秒`),900)}
   if(!(await countdown('CASHIER!',runId,{transparent:true})))return;active=true;wholeStart=phaseStart=performance.now();function tick(now){const limit=phaseName==='scan'?6:8,elapsed=(now-phaseStart)/1000,rem=Math.max(0,limit-elapsed);timeEl.textContent=`${phaseName==='scan'?'SCAN':'CHANGE'} ${rem.toFixed(1)}`;if(rem<=0){if(phaseName==='scan'&&scanned.size===items.length){renderChange()}else{finish(false)}return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
@@ -38977,6 +38992,89 @@ async function startSurvivorMob(p,humanIndex,runId){
     for(const e of enemies){if(e.dead)continue;const ex=x-e.x,ey=y-e.y,ed=Math.max(1,Math.hypot(ex,ey));e.x+=ex/ed*e.speed*dt;e.y+=ey/ed*e.speed*dt;e.el.style.transform=`translate3d(${e.x-e.r}px,${e.y-e.r}px,0)`;if(ed<e.r+18){e.dead=true;e.el.remove();hurt()}}
     for(const b of bullets){if(b.dead)continue;b.x+=b.vx*dt;b.y+=b.vy*dt;b.el.style.transform=`translate3d(${b.x-5}px,${b.y-5}px,0)`;if(b.x<-20||b.x>W+20||b.y<-20||b.y>H+20){b.dead=true;b.el.remove();continue}for(const e of enemies){if(e.dead)continue;if(Math.hypot(b.x-e.x,b.y-e.y)<e.r+6){b.dead=true;b.el.remove();e.hp-=1+upgrades.power;if(e.hp<=0)kill(e);break}}}
     bullets=bullets.filter(b=>!b.dead);enemies=enemies.filter(e=>!e.dead);if(rem<=0){finish(true);return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
+}
+
+
+// =========================================================
+// V11.31 — Three.js 3D mini games
+// =========================================================
+function three3dBase(host,opts={}){
+  if(typeof THREE==='undefined')return null;
+  const w=Math.max(280,host.clientWidth||360),h=Math.max(300,host.clientHeight||440);
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(opts.bg||0x7cc8ff);
+  const camera=new THREE.PerspectiveCamera(opts.fov||48,w/h,.1,300);
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(w,h,false);
+  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.domElement.className='three231-canvas';renderer.domElement.style.touchAction='none';host.appendChild(renderer.domElement);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x42536a,1.45));
+  const sun=new THREE.DirectionalLight(0xffffff,1.55);sun.position.set(6,12,7);sun.castShadow=true;scene.add(sun);
+  return {scene,camera,renderer,w,h};
+}
+function three3dDispose(pack){
+  if(!pack)return;try{pack.scene.traverse(o=>{o.geometry?.dispose?.();if(o.material){const a=Array.isArray(o.material)?o.material:[o.material];a.forEach(m=>m?.dispose?.())}});pack.renderer.dispose()}catch(_){ }
+}
+function three3dFallback(title,p,humanIndex,gameIndex,key){
+  screen.innerHTML=`<div class="three231-fallback"><h2>${esc(title)}</h2><b>3D ENGINE ERROR</b><p>Three.jsを読み込めませんでした。通信を確認して再読み込みしてください。</p></div>`;
+  state.records[key][p.id]=0;setTimeout(()=>recordScreen(gameIndex,p,humanIndex,'0<small>/100 pt</small>','Three.js LOAD ERROR'),700);
+}
+function threeRoundRectMesh(w,h,d,color){const g=new THREE.BoxGeometry(w,h,d),m=new THREE.MeshStandardMaterial({color,roughness:.62,metalness:.06});const x=new THREE.Mesh(g,m);x.castShadow=x.receiveShadow=true;return x}
+function threeLabelSprite(text,bg='#111',fg='#fff'){
+  const c=document.createElement('canvas');c.width=256;c.height=96;const x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,c.width,c.height);x.fillStyle=fg;x.font='900 42px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(text,128,49);const tex=new THREE.CanvasTexture(c);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));sp.scale.set(2.4,.9,1);return sp;
+}
+async function startRingToss3DMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='ringToss3DMob');
+  screen.innerHTML=`<div class="three231-shell ring"><div class="three231-head"><div><span>THREE.js 3D</span><h2>モブくん3D輪投げ</h2></div><b>${playBadge(humanIndex)}</b></div><div class="three231-hud"><b id="rt3Throw">RING 1/5</b><strong id="rt3Score">0 PT</strong><span id="rt3Call">輪を上へスワイプ！</span></div><div id="rt3Stage" class="three231-stage"></div><div class="three231-guide">↕ 長く上へ = 強く投げる　↔ 横方向 = 狙い</div></div>`;
+  const host=document.getElementById('rt3Stage'),pack=three3dBase(host,{bg:0x65bdf2,fov:48});if(!pack){three3dFallback('モブくん3D輪投げ',p,humanIndex,gameIndex,'ringToss3DMob');return}
+  const {scene,camera,renderer}=pack;camera.position.set(0,5.5,10.8);camera.lookAt(0,.6,-4.6);
+  const ground=threeRoundRectMesh(10,.5,16,0xf2c45d);ground.position.set(0,-.3,-2.8);scene.add(ground);
+  const matSide=new THREE.MeshStandardMaterial({color:0xe55742,roughness:.7});for(const x of [-4.8,4.8]){const rail=new THREE.Mesh(new THREE.BoxGeometry(.25,.55,16),matSide);rail.position.set(x,0,-2.8);scene.add(rail)}
+  const pegs=[[-2.6,-4.2,10,0x55c8ff],[-1.3,-6.2,15,0xff6c9c],[0,-7.7,20,0xffdd35],[1.3,-6.2,15,0x63e07e],[2.6,-4.2,10,0xa56cff]].map((a,i)=>{const [x,z,pts,col]=a;const base=threeRoundRectMesh(1.35,.28,1.35,0xffffff);base.position.set(x,.08,z);scene.add(base);const peg=new THREE.Mesh(new THREE.CylinderGeometry(.14,.18,1.7,20),new THREE.MeshStandardMaterial({color:col,roughness:.5}));peg.position.set(x,.95,z);peg.castShadow=true;scene.add(peg);const lab=threeLabelSprite(String(pts), '#111','#ffe75b');lab.position.set(x,2.1,z);scene.add(lab);return{x,z,pts,peg,stack:0}});
+  const mobBase=new THREE.Mesh(new THREE.SphereGeometry(.5,24,18),new THREE.MeshStandardMaterial({color:0xffffff,roughness:.7}));mobBase.position.set(0,.5,3.4);scene.add(mobBase);const mobLabel=threeLabelSprite('MOB','#111','#fff');mobLabel.scale.set(1.1,.42,1);mobLabel.position.set(0,1.35,3.4);scene.add(mobLabel);
+  let ring=null,vel={x:0,y:0,z:0},throws=0,score=0,flying=false,finished=false,raf=0,last=performance.now(),startPt=null;
+  const scoreEl=document.getElementById('rt3Score'),throwEl=document.getElementById('rt3Throw'),call=document.getElementById('rt3Call');
+  function spawnRing(){if(ring){scene.remove(ring);ring.geometry.dispose();ring.material.dispose()}ring=new THREE.Mesh(new THREE.TorusGeometry(.5,.105,12,32),new THREE.MeshStandardMaterial({color:[0xff4d5a,0x52d4ff,0xffd83d,0x73df79,0xb46cff][throws%5],roughness:.38,metalness:.12}));ring.rotation.x=Math.PI/2;ring.position.set(0,.55,2.55);ring.castShadow=true;scene.add(ring)}
+  function finish(){if(finished)return;finished=true;state.records.ringToss3DMob[p.id]=clamp(score,0,100);call.textContent=score>=80?'RING MASTER!!':'FINISH!';setTimeout(()=>{three3dDispose(pack);if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`5 RINGS / ${score} PT`)},900)}
+  function nextRing(){throws++;flying=false;if(throws>=5){finish();return}throwEl.textContent=`RING ${throws+1}/5`;call.textContent='次の輪をスワイプ！';spawnRing()}
+  function resolve(){let best=null,bd=99;for(const peg of pegs){const d=Math.hypot(ring.position.x-peg.x,ring.position.z-peg.z);if(d<bd){bd=d;best=peg}}if(best&&bd<.56&&ring.position.y<1.65){score+=best.pts;best.stack++;ring.position.set(best.x,.36+best.stack*.13,best.z);ring.rotation.x=Math.PI/2;call.textContent=`IN! +${best.pts}`;scoreEl.textContent=`${score} PT`;beep(best.pts===20?1150:850,90,.025);setTimeout(nextRing,650)}else{call.textContent='MISS!';beep(180,70,.02);setTimeout(nextRing,520)}}
+  const cvs=renderer.domElement;cvs.addEventListener('pointerdown',e=>{if(flying||finished)return;e.preventDefault();startPt={x:e.clientX,y:e.clientY};cvs.setPointerCapture?.(e.pointerId)},{passive:false});cvs.addEventListener('pointerup',e=>{if(!startPt||flying||finished)return;e.preventDefault();const dx=e.clientX-startPt.x,dy=startPt.y-e.clientY;startPt=null;if(dy<35){call.textContent='もっと上へスワイプ！';return}const power=clamp(dy/180,.55,1.25);vel.x=clamp(dx/85,-3.3,3.3);vel.y=4.6+power*2.2;vel.z=-(7.3+power*3.5);flying=true;call.textContent='FLY!!';beep(620,45,.012)},{passive:false});
+  spawnRing();if(!(await countdown('3D RING TOSS!',runId,{transparent:true}))){three3dDispose(pack);return}function loop(now){if(finished||!isGameRunValid(runId)){three3dDispose(pack);return}const dt=Math.min(.03,(now-last)/1000);last=now;if(flying){vel.y-=9.6*dt;ring.position.x+=vel.x*dt;ring.position.y+=vel.y*dt;ring.position.z+=vel.z*dt;ring.rotation.z+=dt*4.2;ring.rotation.y+=dt*2.8;if((vel.y<0&&ring.position.y<1.55&&ring.position.z<-3.3)||ring.position.y<.15||ring.position.z<-11.5){flying=false;resolve()}}renderer.render(scene,camera);raf=requestAnimationFrame(loop)}raf=requestAnimationFrame(loop)
+}
+async function startBowling3DMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='bowling3DMob');
+  screen.innerHTML=`<div class="three231-shell bowl"><div class="three231-head"><div><span>THREE.js 3D</span><h2>モブくん3Dボウリング</h2></div><b>${playBadge(humanIndex)}</b></div><div class="three231-hud"><b id="bw3Try">BALL 1/2</b><strong id="bw3Score">0 / 10 PIN</strong><span id="bw3Call">ボールから上へスワイプ！</span></div><div id="bw3Stage" class="three231-stage tall"></div><div class="three231-guide">開始位置で左右を狙い、上スワイプの角度でコースを曲げる</div></div>`;
+  const host=document.getElementById('bw3Stage'),pack=three3dBase(host,{bg:0x162446,fov:43});if(!pack){three3dFallback('モブくん3Dボウリング',p,humanIndex,gameIndex,'bowling3DMob');return}
+  const {scene,camera,renderer}=pack;camera.position.set(0,5.4,12);camera.lookAt(0,.3,-4);
+  const lane=threeRoundRectMesh(6,.35,22,0xd99f54);lane.position.set(0,-.25,-2);scene.add(lane);for(const x of [-3.35,3.35]){const gut=threeRoundRectMesh(.55,.18,22,0x324660);gut.position.set(x,-.1,-2);scene.add(gut)}
+  const back=threeRoundRectMesh(9,4,.3,0x304567);back.position.set(0,1.8,-13.2);scene.add(back);const sign=threeLabelSprite('MOB BOWL','#e64b47','#fff');sign.position.set(0,3,-13);sign.scale.set(4.2,1.2,1);scene.add(sign);
+  const pinPos=[[0,-9],[-.6,-9.9],[.6,-9.9],[-1.15,-10.8],[0,-10.8],[1.15,-10.8],[-1.7,-11.7],[-.57,-11.7],[.57,-11.7],[1.7,-11.7]];
+  const pins=pinPos.map(([x,z],i)=>{const g=new THREE.Group(),body=new THREE.Mesh(new THREE.CylinderGeometry(.16,.24,1.05,18),new THREE.MeshStandardMaterial({color:0xffffff,roughness:.45}));body.position.y=.52;body.castShadow=true;g.add(body);const band=new THREE.Mesh(new THREE.CylinderGeometry(.175,.175,.16,18),new THREE.MeshStandardMaterial({color:0xef3d43}));band.position.y=.72;g.add(band);g.position.set(x,0,z);scene.add(g);return{x,z,g,down:false,fall:0}});
+  let ball=null,shot=0,knocked=0,flying=false,finished=false,vel={x:0,z:0},startPt=null,raf=0,last=performance.now();const call=document.getElementById('bw3Call'),tryEl=document.getElementById('bw3Try'),scoreEl=document.getElementById('bw3Score');
+  function spawnBall(x=0){if(ball)scene.remove(ball);ball=new THREE.Mesh(new THREE.SphereGeometry(.38,24,18),new THREE.MeshStandardMaterial({color:0x26273a,roughness:.25,metalness:.22}));ball.position.set(x,.4,7.4);ball.castShadow=true;scene.add(ball);camera.position.set(0,5.4,12);camera.lookAt(0,.3,-4)}
+  function knock(pin,impact=1){if(pin.down)return;pin.down=true;pin.fall=(Math.random()-.5)*1.5;knocked++;scoreEl.textContent=`${knocked} / 10 PIN`;beep(520+knocked*25,35,.008);setTimeout(()=>{for(const q of pins){if(!q.down&&Math.hypot(q.x-pin.x,q.z-pin.z)<1.35&&Math.random()<.38*impact)knock(q,.75)}},40)}
+  function finish(){if(finished)return;finished=true;const score=knocked*10;state.records.bowling3DMob[p.id]=score;call.textContent=knocked===10?'STRIKE / CLEAR!!':'FRAME END!';setTimeout(()=>{three3dDispose(pack);if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`${knocked}/10 PIN / ${shot} BALL`)},1000)}
+  function next(){shot++;flying=false;if(knocked>=10||shot>=2){finish();return}tryEl.textContent='BALL 2/2';call.textContent='残りのピンを狙え！';spawnBall(0)}
+  const cvs=renderer.domElement;cvs.addEventListener('pointerdown',e=>{if(flying||finished)return;e.preventDefault();const r=cvs.getBoundingClientRect(),nx=(e.clientX-r.left)/r.width;ball.position.x=clamp((nx-.5)*4.6,-2.25,2.25);startPt={x:e.clientX,y:e.clientY};cvs.setPointerCapture?.(e.pointerId)},{passive:false});cvs.addEventListener('pointerup',e=>{if(!startPt||flying||finished)return;e.preventDefault();const dx=e.clientX-startPt.x,dy=startPt.y-e.clientY;startPt=null;if(dy<40){call.textContent='上へ大きくスワイプ！';return}const power=clamp(dy/200,.55,1.2);vel.z=-(9.5+power*6.5);vel.x=clamp(dx/115,-2.6,2.6);flying=true;call.textContent='ROLL!!';beep(360,50,.012)},{passive:false});spawnBall();if(!(await countdown('3D BOWLING!',runId,{transparent:true}))){three3dDispose(pack);return}
+  function loop(now){if(finished||!isGameRunValid(runId)){three3dDispose(pack);return}const dt=Math.min(.03,(now-last)/1000);last=now;if(flying){ball.position.z+=vel.z*dt;ball.position.x+=vel.x*dt;ball.rotation.x-=vel.z*dt*.7;ball.rotation.z-=vel.x*dt*.7;vel.x*=Math.pow(.992,dt*60);for(const pin of pins){if(pin.down)continue;if(Math.hypot(ball.position.x-pin.x,ball.position.z-pin.z)<.62)knock(pin,1)}camera.position.z+=(clamp(ball.position.z+8,-3,12)-camera.position.z)*.07;camera.position.x+=(ball.position.x*.24-camera.position.x)*.06;camera.lookAt(ball.position.x*.15,.25,ball.position.z-3.5);if(ball.position.z<-13.2||Math.abs(ball.position.x)>3.25){flying=false;setTimeout(next,650)}}for(const pin of pins){if(pin.down){pin.g.rotation.z+=(1.45+pin.fall-pin.g.rotation.z)*.10;pin.g.position.x+=pin.fall*.004}}renderer.render(scene,camera);raf=requestAnimationFrame(loop)}raf=requestAnimationFrame(loop)
+}
+async function startHomeRun3DMob(p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='homeRun3DMob');
+  screen.innerHTML=`<div class="three231-shell homerun"><div class="three231-head"><div><span>THREE.js 3D</span><h2>モブくん3Dホームランチャレンジ</h2></div><b>${playBadge(humanIndex)}</b></div><div class="three231-hud"><b id="hr3Pitch">PITCH 1/5</b><strong id="hr3Score">HR 0 / 5</strong><span id="hr3Call">投球をよく見てSWING!</span></div><div id="hr3Stage" class="three231-stage tall"></div><button id="hr3Swing" class="three231-swing" type="button">SWING!</button></div>`;
+  const host=document.getElementById('hr3Stage'),pack=three3dBase(host,{bg:0x78c9ff,fov:48});if(!pack){three3dFallback('モブくん3Dホームランチャレンジ',p,humanIndex,gameIndex,'homeRun3DMob');return}
+  const {scene,camera,renderer}=pack;camera.position.set(7.8,4.2,10.5);camera.lookAt(0,1,-2.5);
+  const field=new THREE.Mesh(new THREE.CircleGeometry(17,64,0,Math.PI),new THREE.MeshStandardMaterial({color:0x54a951,roughness:.9}));field.rotation.x=-Math.PI/2;field.rotation.z=Math.PI/2;field.position.set(0,-.04,-5);scene.add(field);const dirt=new THREE.Mesh(new THREE.CircleGeometry(4.5,48),new THREE.MeshStandardMaterial({color:0xc28a52}));dirt.rotation.x=-Math.PI/2;dirt.position.set(0,.01,1);scene.add(dirt);
+  const fence=new THREE.Mesh(new THREE.TorusGeometry(15,.14,10,80,Math.PI),new THREE.MeshStandardMaterial({color:0x245e9d}));fence.rotation.x=Math.PI/2;fence.rotation.z=Math.PI/2;fence.position.set(0,.8,-5);scene.add(fence);
+  const sign=threeLabelSprite('MOB STADIUM','#173a69','#fff');sign.position.set(0,4,-17);sign.scale.set(4.6,1.35,1);scene.add(sign);
+  const pitcher=threeRoundRectMesh(.8,1.7,.7,0xf2f2f2);pitcher.position.set(0,.85,-8.5);scene.add(pitcher);const batter=threeRoundRectMesh(.85,1.65,.7,0xffd246);batter.position.set(1.35,.82,2.2);scene.add(batter);const batPivot=new THREE.Group();batPivot.position.set(.8,1.25,2);const bat=new THREE.Mesh(new THREE.CylinderGeometry(.07,.12,2.4,12),new THREE.MeshStandardMaterial({color:0xa76633}));bat.position.y=1.05;batPivot.add(bat);batPivot.rotation.z=-.9;scene.add(batPivot);
+  let ball=null,phase='ready',pitchNo=0,hr=0,maxDist=0,scoreExtra=0,finished=false,raf=0,last=performance.now(),pitchSpeed=0,hitVel={x:0,y:0,z:0},flightStartZ=0,swingAnim=0;const call=document.getElementById('hr3Call'),pitchEl=document.getElementById('hr3Pitch'),scoreEl=document.getElementById('hr3Score'),swingBtn=document.getElementById('hr3Swing');
+  function spawnBall(){if(ball)scene.remove(ball);ball=new THREE.Mesh(new THREE.SphereGeometry(.14,20,14),new THREE.MeshStandardMaterial({color:0xffffff,roughness:.3}));ball.position.set(0,1.45,-8);ball.castShadow=true;scene.add(ball)}
+  function startPitch(){if(finished)return;if(pitchNo>=5){finish();return}phase='pitch';spawnBall();pitchSpeed=8.7+Math.random()*2.1;pitchEl.textContent=`PITCH ${pitchNo+1}/5`;call.textContent='NOW... SWING!';camera.position.set(7.8,4.2,10.5);camera.lookAt(0,1,-2.5)}
+  function finish(){if(finished)return;finished=true;phase='done';const score=clamp(hr*20,0,100);state.records.homeRun3DMob[p.id]=score;call.textContent=hr===5?'PERFECT HOME RUN!!':'CHALLENGE END!';setTimeout(()=>{three3dDispose(pack);if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`HOME RUN ${hr}/5 / MAX ${Math.round(maxDist)}m`)},1000)}
+  function endPitch(text){phase='wait';call.textContent=text;pitchNo++;setTimeout(startPitch,850)}
+  swingBtn.addEventListener('pointerdown',e=>{e.preventDefault();if(phase!=='pitch')return;swingAnim=1;const err=Math.abs(ball.position.z-1.75);if(err>1.35){beep(160,80,.025);endPitch('MISS!');return}const quality=clamp(1-err/1.35,0,1);const distance=58+quality*62+Math.random()*7;maxDist=Math.max(maxDist,distance);const isHr=distance>=90;if(isHr){hr++;scoreEl.textContent=`HR ${hr} / 5`;beep(1180,130,.035)}else beep(620,60,.018);phase='hit';flightStartZ=ball.position.z;hitVel={x:(Math.random()-.5)*(2.4-quality),y:7.5+quality*3.2,z:-(12+quality*7)};call.textContent=isHr?`HOME RUN!! ${Math.round(distance)}m`:`HIT! ${Math.round(distance)}m`;ball.userData.targetDistance=distance;ball.userData.hr=isHr},{passive:false});
+  if(!(await countdown('HOME RUN CHALLENGE!',runId,{transparent:true}))){three3dDispose(pack);return}startPitch();
+  function loop(now){if(finished||!isGameRunValid(runId)){three3dDispose(pack);return}const dt=Math.min(.03,(now-last)/1000);last=now;if(swingAnim>0){swingAnim=Math.max(0,swingAnim-dt*3.4);batPivot.rotation.z=-.9+(1-swingAnim)*2.2;if(swingAnim===0)batPivot.rotation.z=-.9}if(phase==='pitch'){ball.position.z+=pitchSpeed*dt;if(ball.position.z>3.35)endPitch('STRIKE!')}else if(phase==='hit'){hitVel.y-=9.8*dt;ball.position.x+=hitVel.x*dt;ball.position.y+=hitVel.y*dt;ball.position.z+=hitVel.z*dt;ball.rotation.x+=dt*10;const travelled=Math.max(0,(flightStartZ-ball.position.z)*5.1);camera.position.x+=(ball.position.x+5-camera.position.x)*.05;camera.position.y+=(Math.max(3.3,ball.position.y+2.3)-camera.position.y)*.05;camera.position.z+=(ball.position.z+9-camera.position.z)*.07;camera.lookAt(ball.position.x,Math.max(.5,ball.position.y),ball.position.z-3);if(travelled>=ball.userData.targetDistance||ball.position.y<.12){endPitch(ball.userData.hr?`HOME RUN!! ${Math.round(ball.userData.targetDistance)}m`:`HIT ${Math.round(ball.userData.targetDistance)}m`)}}renderer.render(scene,camera);raf=requestAnimationFrame(loop)}raf=requestAnimationFrame(loop)
 }
 
 
