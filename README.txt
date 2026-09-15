@@ -1,4 +1,9 @@
-MOB PARTY GAMES V11.31
+MOB PARTY GAMES V11.32
+
+V11.32 更新
+- 3D輪投げ: 左右照準強化、飛距離調整、投げた輪を残す、IN演出強化
+- 3Dボウリング: 20ピン化、AIM+THROW操作、演出強化
+- 3Dホームラン: MOB STADIUM化、球/ヒットゾーン/追従視認性強化
 
 139 GAMES
 
