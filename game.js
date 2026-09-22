@@ -566,7 +566,7 @@ function randi(min,max){return Math.floor(rand(min,max+1))}
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function beep(freq=480,ms=65,vol=.025){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(audioCtx.destination);o.start();setTimeout(()=>o.stop(),ms)}catch(e){}}
+function beep(freq=480,ms=65,vol=.025){if(window.MobPartyUI?.settings.sound===false)return;try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(audioCtx.destination);o.start();setTimeout(()=>o.stop(),ms)}catch(e){}}
 function cancelActiveAnimation(){if(activeAnimation){cancelAnimationFrame(activeAnimation);activeAnimation=null}}
 function cancelCountdown(){
   countdownSerial++;
@@ -636,46 +636,7 @@ function renderHome(){
   invalidateGameRun();
   state=freshState();
 
-  screen.innerHTML=`
-    <section class="hero hero-v119">
-      <div>
-        <span class="kicker">SMARTPHONE PARTY GAME</span>
-        <h1>${activeGameCount()} MINI<br>GAMES</h1>
-        <p>通常対戦、ゲーム王、モブカップに加えて、50チームで決勝を目指す「モブカップスペシャル」を遊べます。</p>
-      </div>
-      <div class="hero-mark">MOB</div>
-    </section>
-
-    <section class="home-action-grid-v119">
-      <button id="openModeSelect" class="home-main-action-v119" type="button">
-        <span>MODE SELECT</span>
-        <b>モードセレクト</b>
-        <small>チーム戦 / 個人戦 / ゲーム王 / モブカップ / モブカップスペシャル</small>
-      </button>
-
-      <button id="openFreePlay" class="home-sub-action-v119" type="button">
-        <span>FREE PLAY</span>
-        <b>1人で遊ぶ</b>
-      </button>
-
-      <button id="openGameGuide" class="home-sub-action-v119" type="button">
-        <span>GUIDE</span>
-        <b>各ゲームの説明</b>
-      </button>
-    </section>
-
-    <section class="panel flat">
-      <div class="panel-head"><h3>${activeGameCount()} MINI GAMES</h3><span class="tag">ACTIVE ${activeGameCount()}</span></div>
-      <div class="compact-game-grid home-compact-games-v119">
-        ${activeGameIndices().map(i=>{const g=GAMES[i];return `<div><b>${g.no}</b><span>${g.title}</span></div>`}).join("")}
-      </div>
-    </section>
-  `;
-
-  document.getElementById('openModeSelect').addEventListener('click',renderBattleTypeSelect);
-  document.getElementById('openFreePlay').addEventListener('click',renderFreePlaySelect);
-  document.getElementById('openGameGuide').addEventListener('click',renderGameGuide);
-  gameTop();
+  partyUI.home();
 }
 
 function renderFreePlaySelect(){
@@ -2870,7 +2831,7 @@ function renderCustomPicker(){
 function renderModeLobby(){
   clearGameFit();
   const m=mode();
-  const scoreRules=`<div class="score-rule-grid">${GAMES.map((g,i)=>`<div><b>${g.title}</b><span>${scoreRuleForGame(i)}</span></div>`).join('')}</div>`;
+  const scoreRules=`<div class="score-rule-grid">${[...new Set(state.playlist)].map(i=>`<div><b>${GAMES[i].title}</b><span>${scoreRuleForGame(i)}</span></div>`).join('')}</div>`;
 
   screen.innerHTML=`
     <div class="game-head">
@@ -39447,6 +39408,24 @@ async function startMazeBall3DMob(p,humanIndex,runId){
 }
 
 
+const partyUI=window.MobPartyUI.create({
+  screen,players:PLAYERS,games:GAMES,esc,beep,gameTop,
+  activeIndices:activeGameIndices,
+  eligibleIndices:eligibleGameIndices,
+  home:renderHome,
+  guide:renderGameGuide,
+  advanced:renderBattleTypeSelect,
+  free:startFreeGame,
+  configure(count,cup){
+    state=freshState();
+    applyConfiguredBattle(cup
+      ? {type:'team',rule:'score',teamCount:5,teamSize:count,assignments:Array.from({length:5},(_,i)=>({players:i===0?count:0,cpus:i===0?0:count}))}
+      : {type:'individual',rule:'score',humanCount:count,cpuCount:0});
+    if(cup){MODES.configured.name='MOB PARTY CUP';MODES.configured.teamNames.A='YOUR TEAM';}
+    return participants();
+  },
+  launch(indices){state.playStyle='custom';state.playlist=indices;state.roundIndex=0;renderModeLobby();}
+});
 renderHome();
 })();
 
