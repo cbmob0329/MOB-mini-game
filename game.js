@@ -28410,6 +28410,11 @@ function renderGameResult(gameIndex,ranked){
   const totals=competitionRankTotals(),tt=teamTotals(),g=GAMES[gameIndex],scoreMode=mode().performance;
   const hasNext=state.roundIndex+1<state.playlist.length;
 
+  if(mode().team){
+    window.MobPartyResults.show({screen,esc,model:window.MobPartyResults.pages({players:participants(),teams:mode().teams,names:mode().teamNames,ranked,round:state.roundPoints[state.roundIndex]||{},total:state.total}),game:g.title,round:state.roundIndex+1,beep,top:gameTop,done:()=>{if(hasNext){state.roundIndex++;showGameIntro(state.playlist[state.roundIndex]);}else renderFinal();}});
+    return;
+  }
+
   screen.innerHTML=`
     ${partyCommentary(gameIndex,ranked)}
     <div class="game-head">
