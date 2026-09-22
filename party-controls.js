@@ -1,6 +1,12 @@
 (()=>{
   'use strict';
-  window.MobPartyControls={stick(pad,held,enabled){
+  window.MobPartyControls={horizontal(left,right,enabled){
+    const pad=document.createElement('div'),held=new Set();
+    left.replaceWith(pad);right.remove();
+    const dispose=this.stick(pad,held,enabled);
+    pad.setAttribute('aria-label','左右スティック。左右にドラッグして操作');
+    return {held,dispose};
+  },stick(pad,held,enabled){
     if(!pad)return ()=>{};
     const controller=new AbortController(),signal=controller.signal;
     pad.className='party-stick';pad.tabIndex=0;pad.setAttribute('role','group');

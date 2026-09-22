@@ -32,7 +32,7 @@
         const choiceRun=run;
         let settled=false,timer=null;
         const finish=value=>{if(settled)return;settled=true;clearTimeout(timer);screen.querySelectorAll('[data-choice]').forEach(b=>{b.disabled=true;b.onclick=null;});resolve(value);};
-        screen.querySelector('#eventChoices').innerHTML=options.map((text,i)=>`<button data-choice="${i}">${text}</button>`).join('');
+        screen.querySelector('#eventChoices').innerHTML=(timeout?`<div class="party-choice-clock" role="timer" aria-label="制限時間${timeout/1000}秒"><span style="animation-duration:${timeout}ms"></span><small>${timeout/1000}秒以内に選択</small></div>`:'')+options.map((text,i)=>`<button data-choice="${i}">${text}</button>`).join('');
         screen.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>finish(Number(b.dataset.choice)));
         if(timeout)timer=setTimeout(()=>{if(api.valid(choiceRun))finish(-1);else{settled=true;resolve(-1);}},timeout);
       });
@@ -41,6 +41,13 @@
     async function handoff(s,title){
       shell(title,`<p class="party-event-call">${esc(s.team)} · ${esc(s.name)} の番です</p><div class="party-event-actor">${portrait(s)}</div><p>端末を受け取ったら準備OKを押してください。</p><div id="eventChoices"></div>`);
       await choice(['準備OK']);
+    }
+    async function reveal(s,title,message,kind,ownRun){
+      if(!api.valid(ownRun))return;
+      shell(title,`<div class="party-reveal ${kind}"><div class="party-event-actor">${portrait(s)}</div><strong>${esc(s.name)}</strong><p>${esc(s.team)}</p><p class="party-event-call">${message}</p></div><div id="eventChoices"></div>`);
+      api.beep(kind==='danger'?140:850,160,.025);
+      await pause(950);if(!api.valid(ownRun))return;
+      await choice(['確認して次へ →']);
     }
     async function start(index){
       run=api.begin(index);
@@ -55,7 +62,7 @@
         const guests=core.roster.filter(c=>!used.has(c.img)).slice(0,3);
         slots.push(...guests.map((c,i)=>({...c,id:`guest${i}`,cpu:true,guest:true,team:`CPU ${i+1}`})));
       }
-      slots=slots.map(s=>({...s,score:0,lives:2,out:false,bank:0}));
+      slots=slots.map(s=>({...s,score:0,lives:2,out:false,bank:0,scouts:1}));
       api.representatives(slots.filter(s=>!s.guest).map(s=>s.id));
       shell(api.games[index].title,`${standings(slots)}<p class="party-event-call">${slots.length}人がエントリー！ スマホを順番に渡して挑戦しよう。</p><div id="eventChoices"></div>`);
       await choice(['全員準備OK · スタート']);if(!api.valid(ownRun))return;
@@ -92,8 +99,9 @@
         loser.out=true;
         const place=alive.length;
         loser.score=place===2?70:place===3?50:Math.round((slots.length-place)/Math.max(1,slots.length-3)*40);
-        shell('扉が消滅！',`<p class="party-event-call">${dangerous+1}番の扉 · ${esc(loser.name)} が脱落</p>${standings(slots)}`);
-        api.beep(160,100,.02);await pause(700);
+        shell('運命の扉が開く…',`<p class="party-event-call">ROUND ${round} · 残り${alive.length}人</p><div class="party-door-reveal">🚪</div><p>誰の扉が消える…？</p>`);
+        api.beep(260,130,.02);await pause(1100);if(!api.valid(ownRun))return;
+        await reveal(loser,'ELIMINATED / 脱落',`${dangerous+1}番の扉が崩壊！<br>${place}位 · ${loser.score}点<br>生存者は残り${alive.length-1}人`, 'danger',ownRun);
       }
       const winner=slots.find(s=>!s.out);if(winner)winner.score=100;
     }
@@ -102,44 +110,61 @@
         if(!api.valid(ownRun))return;
         for(const s of slots.filter(s=>!s.out)){
           if(!api.valid(ownRun))return;
-          const danger=Math.floor(Math.random()*3);
-          let pick;
-          if(s.cpu){const strength=core.cpuScore(s.rank);pick=Math.random()<.40+strength/180?(danger+1+Math.floor(Math.random()*2))%3:danger;}
+          const length=round+2,route=Array.from({length},()=>Math.floor(Math.random()*3));
+          let safe=true;
+          if(s.cpu){const strength=core.cpuScore(s.rank);safe=Math.random()<Math.max(.18,.84+strength/550-round*.10);}
           else{
             await handoff(s,`カラーブリッジ · STAGE ${round} / 5`);if(!api.valid(ownRun))return;
-            shell('モブくんカラーブリッジ',`<p class="party-event-call">STAGE ${round} / 5 · ${esc(s.name)} · ♥ ${s.lives}</p><div class="party-event-actor">${portrait(s)}</div><p id="bridgeHint">危険な足場「×」の位置を覚えよう！</p><div class="party-bridge">${[0,1,2].map(i=>`<div class="${i===danger?'danger':''}">${i===danger?'×':'○'}</div>`).join('')}</div><div id="eventChoices"></div>`);
-            await pause(1050);if(!api.valid(ownRun))return;
-            screen.querySelectorAll('.party-bridge div').forEach(el=>{el.textContent='?';el.classList.remove('danger');});
-            screen.querySelector('#bridgeHint').textContent='安全な足場へ！ 6秒以内に選ぼう。';
-            pick=await choice(['左の足場','中央の足場','右の足場'],6000);
+            shell('モブくんカラーブリッジ',`<p class="party-event-call">STAGE ${round} / 5 · ${esc(s.name)} · ♥ ${s.lives}</p><p id="bridgeHint">${length}歩の安全なルートを順番に覚えよう</p><div class="party-bridge">${[0,1,2].map(()=>'<div>?</div>').join('')}</div><div id="eventChoices"></div>`);
+            const tiles=[...screen.querySelectorAll('.party-bridge div')];
+            for(let step=0;step<length;step++){
+              if(!api.valid(ownRun))return;
+              screen.querySelector('#bridgeHint').textContent=`記憶 ${step+1} / ${length}`;
+              tiles.forEach((el,i)=>{el.textContent=i===route[step]?'○':'×';el.classList.toggle('danger',i!==route[step]);});
+              await pause(Math.max(300,780-round*80));if(!api.valid(ownRun))return;
+              tiles.forEach(el=>{el.textContent='?';el.classList.remove('danger');});await pause(160);
+            }
+            for(let step=0;step<length;step++){
+              if(!api.valid(ownRun))return;
+              const seconds=Math.max(1.3,3-round*.3);
+              screen.querySelector('#bridgeHint').textContent=`${step+1}歩目 / ${length} · ${seconds.toFixed(1)}秒以内！`;
+              const pick=await choice(['左の足場','中央の足場','右の足場'],seconds*1000);
+              if(!api.valid(ownRun))return;
+              if(pick!==route[step]){safe=false;break;}
+              tiles[pick].textContent='✓';api.beep(500+step*70,25,.01);
+              await pause(180);if(!api.valid(ownRun))return;tiles[pick].textContent='?';
+            }
           }
           if(!api.valid(ownRun))return;
-          const safe=pick>=0&&pick!==danger;
           if(safe)s.score+=16;else s.lives--;
           if(s.lives<=0)s.out=true;
-          if(!s.cpu){screen.querySelector('.party-event-call').textContent=safe?'CLEAR! +16 pt':'足場が崩れた！';api.beep(safe?820:170,70,.016);await pause(420);}
+          if(!s.cpu)await reveal(s,safe?'BRIDGE CLEAR!':'足場が崩れた！',safe?`ルート踏破！ +16点 · 合計${s.score}点`:`${s.out?'脱落！':'ライフ −1'} · 残り ♥ ${s.lives}`,safe?'success':'danger',ownRun);
         }
       }
       slots.forEach(s=>{s.score=Math.min(100,s.score+Math.max(0,s.lives)*10);s.out=true;});
     }
     async function treasure(slots,ownRun){
       for(let round=1;round<=5;round++){
-        const risk=.08+round*.065;
+        const risk=.16+round*.055,small=8+round*2,large=22+round*3;
         for(const s of slots.filter(s=>!s.out)){
           if(!api.valid(ownRun))return;
           let pick;
-          if(s.cpu)pick=s.bank>=40&&Math.random()<.25+round*.08?1:0;
+          let guarded=false;
+          if(s.cpu)pick=s.bank>=50&&Math.random()<.20+round*.10?2:Math.random()<.40?0:1;
           else{
             await handoff(s,`お宝エスケープ · ROOM ${round} / 5`);if(!api.valid(ownRun))return;
-            shell('モブくんお宝エスケープ',`<p class="party-event-call">ROOM ${round} / 5 · ${esc(s.name)}</p><div class="party-event-actor">${portrait(s)}</div><div class="party-treasure-bank">${s.bank}<small>未確定のお宝ポイント</small></div><p>次の宝箱は +20点。トラップ確率 ${Math.round(risk*100)}%。<br>トラップを引くと半分の点数で脱出します。</p><div id="eventChoices"></div>`);
-            pick=await choice(['宝箱を開ける +20','今のお宝を持ち帰る'],10000);
+            shell('モブくんお宝エスケープ',`<p class="party-event-call">ROOM ${round} / 5 · ${esc(s.name)}</p><div class="party-vault-track">${Array.from({length:5},(_,i)=>`<span class="${i<round?'lit':''}">${i+1}</span>`).join('')}</div><div class="party-treasure-bank">${s.bank}<small>未確定のお宝 / 上限100点</small></div><p>慎重な箱：+${small}点・罠${Math.round(risk*.3*100)}%<br>豪華な箱：+${large}点・罠${Math.round(risk*100)}%<br>罠にかかると半分で強制脱出。最終部屋は自動帰還。</p><p id="vaultHint">偵察は1回だけ。今回の罠確率を半減できます。<br>現在の最多所持：${Math.max(...slots.map(x=>x.bank))}点</p><div id="eventChoices"></div>`);
+            const options=()=>[`慎重な箱 +${small}`,`豪華な箱 +${large}`,`${s.bank}点で脱出`,...(s.scouts?['偵察を使う（残り1回）']:[])];
+            pick=await choice(options(),14000);
+            if(pick===3){s.scouts=0;guarded=true;screen.querySelector('#vaultHint').textContent=`偵察成功！今回のみ罠確率半減：慎重${Math.round(risk*.15*100)}% / 豪華${Math.round(risk*.5*100)}%`;api.beep(650,80,.02);pick=await choice(options(),14000);}
           }
           if(!api.valid(ownRun))return;
           let message;
-          if(pick!==0){s.score=s.bank;s.out=true;message=`${s.score}点を確保！`;}
-          else if(Math.random()<risk){s.score=Math.floor(s.bank/2);s.out=true;message=`トラップ！ ${s.score}点で脱出`;}
-          else{s.bank+=20;s.score=s.bank;message=`お宝GET! ${s.bank}点`;if(round===5)s.out=true;}
-          if(!s.cpu){screen.querySelector('.party-event-call').textContent=message;api.beep(s.out?400:850,70,.016);await pause(450);}
+          let trapped=false;
+          if(pick<0||pick===2){s.score=s.bank;s.out=true;message=`無事に帰還！ ${s.score}点を確保`;}
+          else if(Math.random()<risk*(pick===0?.3:1)*(guarded?.5:1)){s.score=Math.floor(s.bank/2);s.out=true;trapped=true;message=`トラップ発動！ ${s.bank-s.score}点を失い、${s.score}点で脱出`;}
+          else{const gain=Math.min(100-s.bank,pick===0?small:large);s.bank+=gain;s.score=s.bank;message=`${pick===0?'慎重な箱':'豪華な箱'}から +${gain}点！ 合計${s.bank}点`;if(round===5||s.bank>=100){s.out=true;message+=' · 帰還成功！';}}
+          if(!s.cpu){screen.querySelector('.party-event-call').textContent=pick===2||pick<0?'出口へ向かう…':'宝箱を開封中…';await pause(700);if(!api.valid(ownRun))return;await reveal(s,trapped?'TRAP!':s.out?'ESCAPE!':'TREASURE GET!',message,trapped?'danger':'success',ownRun);}
         }
       }
     }
