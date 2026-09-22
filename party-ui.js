@@ -5,14 +5,7 @@
   try{const saved=JSON.parse(localStorage.getItem('mob-party-settings'));for(const key of Object.keys(settings))if(typeof saved?.[key]==='boolean')settings[key]=saved[key];}catch(_){}
   function applySettings(){document.documentElement.dataset.partyMotion=settings.motion?'on':'off';}
   applySettings();
-  const groups=[
-    ['MAIN CHARACTERS',[[1,'モブパティレッド'],[2,'モブパティブルー'],[3,'モブパティゴールド'],[4,'モブパティシルバー'],[5,'モブパティトレーナー'],[6,'モブパティDJ'],[7,'モブパティロボ']]],
-    ['MOB STORY',[[9,'モブ勇者'],[11,'モブデンデン'],[12,'モブピンク'],[13,'モブマニー']]],
-    ['MOB MONSTERS',[[14,'モブスライム'],[15,'モブミイラ'],[16,'モブサバンナ'],[17,'モブロック']]],
-    ['MOB SHOT',[[18,'モブコドラ'],[19,'モブイルカエル'],[20,'モブウルフ']]],
-    ['MOB BR',[[21,'モブテツBR'],[22,'マルモブBR'],[23,'モブポヨBR']]]
-  ];
-  const roster=groups.flatMap(([group,items])=>items.map(([id,name])=>({id,name,group,img:`main/${String(id).padStart(3,'0')}.png`})));
+  const {groups,roster,genre,allocateTeams}=window.MobPartyCore;
   window.MobPartyUI={settings,create(api){
     const {screen,esc}=api;
     const originals=api.players.map(p=>({...p}));
@@ -24,13 +17,13 @@
     function back(fn,label='戻る'){on('partyBack',fn);}
     const backButton='<button id="partyBack" class="party-back" type="button">← 戻る</button>';
     function home(){
-      api.players.forEach((p,i)=>Object.assign(p,originals[i]));
+      api.players.forEach((p,i)=>(delete p.characterRank,Object.assign(p,originals[i])));
       selected=[];
       draw(`<section class="party-title">
         <div class="party-orbit" aria-hidden="true"></div>
         <span class="party-eyebrow">EVERYONE IS THE MAIN CHARACTER</span>
         <h1><span>MOB</span>PARTY GAME<span class="party-title-star" aria-hidden="true">✦</span></h1>
-        <p class="party-tagline">今日の主役は、キミだ。</p>
+        <p class="party-tagline">今日は、どんなゲームで遊ぶ？</p>
         <div class="party-cast">${image(roster[0],'party-red')}${image(roster[1],'party-blue')}<span class="party-stage-label">LET’S PARTY!</span></div>
         <div class="party-menu">
           <button id="partySolo" class="party-menu-button solo"><span class="party-menu-icon">01</span><span><small>SOLO PLAY</small><b>ソロプレイ</b><em>ひとりで、自己ベストに挑戦。</em></span><span aria-hidden="true">↗</span></button>
@@ -59,38 +52,36 @@
       back(()=>{if(selected.length){selected.pop();selectCharacter();}else if(count>1)chooseCount();else api.home();});
       screen.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>{category=Number(b.dataset.category);selectCharacter();});
       screen.querySelectorAll('[data-character]').forEach(b=>b.onclick=()=>{const available=roster.filter(c=>!selected.includes(c.id));preview=b.dataset.character==='random'?available[Math.floor(Math.random()*available.length)]:roster.find(c=>c.id===Number(b.dataset.character));refresh();api.beep(640,45,.012);});
-      on('partyConfirm',()=>{selected.push(preview.id);const p=api.players.find(p=>p.id===`p${selected.length}`);p.img=preview.img;p.name=preview.name;api.beep(900,70,.018);if(selected.length<count)selectCharacter();else chooseStyle();});
+      on('partyConfirm',()=>{selected.push(preview.id);const p=api.players.find(p=>p.id===`p${selected.length}`);p.img=preview.img;p.name=preview.name;p.characterRank=preview.rank;api.beep(900,70,.018);if(selected.length<count)selectCharacter();else chooseStyle();});
     }
     function chooseStyle(){
-      draw(`${backButton}${heading('03 / LET’S PLAY','どんなパーティーにする？','好きなゲームをひとつ。あるいは、チームでカップに挑戦。')}<div class="party-team">${selected.map(id=>image(roster.find(c=>c.id===id))).join('')}</div><div class="party-style-grid"><button id="partySingle"><small>ONE GAME</small><b>ゲームを選んで1プレイ</b><span>好きな種目を見つけて、すぐにスタート ↗</span></button><button id="partyCup"><small>TEAM CHALLENGE</small><b>MOB PARTY CUP</b><span>5チームで競う、合計スコアの大会 ↗</span></button></div><button id="partyAdvanced" class="party-back">その他の対戦ルール →</button>`);
+      draw(`${backButton}${heading('03 / LET’S PLAY','どんなパーティーにする？','好きなゲームをひとつ。あるいは、チームでカップに挑戦。')}<div class="party-team">${selected.map(id=>image(roster.find(c=>c.id===id))).join('')}</div><div class="party-style-grid"><button id="partySingle"><small>ONE GAME</small><b>ゲームを選んで1プレイ</b><span>好きな種目を見つけて、すぐにスタート ↗</span></button><button id="partyCup"><small>TEAM CHALLENGE</small><b>MOB PARTY CUP</b><span>8チームで競う、合計スコアの大会 ↗</span></button></div><button id="partyAdvanced" class="party-back">その他の対戦ルール →</button>`);
       back(()=>{selected.pop();selectCharacter();});on('partySingle',()=>{api.configure(count,false);library(1);});on('partyCup',cupLength);on('partyAdvanced',api.advanced);
     }
     function cupLength(){
-      draw(`${backButton}${heading('MOB PARTY CUP','目指せ、パーティーの頂点。',`自チーム＋CPU4チーム。1ゲーム最大${count*100}点を積み重ねよう。`)}<div class="party-counts">${[10,20].map(n=>`<button data-rounds="${n}"><span>${n}</span><b>ゲーム</b></button>`).join('')}<button data-rounds="0"><span>＋</span><b>カスタム</b></button></div><p class="party-note">次の画面でプレイするゲームと順番を選びます。</p>`);
+      draw(`${backButton}${heading('MOB PARTY CUP','目指せ、パーティーの頂点。',`自チーム＋CPU7チーム。1ゲーム最大${count*100}点を積み重ねよう。`)}<div class="party-counts">${[10,20].map(n=>`<button data-rounds="${n}"><span>${n}</span><b>ゲーム</b></button>`).join('')}<button data-rounds="0"><span>＋</span><b>カスタム</b></button></div><p class="party-note">次の画面でプレイするゲームと順番を選びます。</p>`);
       back(chooseStyle);screen.querySelectorAll('[data-rounds]').forEach(b=>b.onclick=()=>{
         const entrants=api.configure(count,true);
         let available=roster.filter(c=>!selected.includes(c.id));
         const cpu=entrants.filter(p=>p.cpu);
-        // Prefer a complete collaboration group before filling a mixed team.
-        for(let start=0;start<cpu.length;start+=count){
-          const candidates=groups.map(([name])=>available.filter(c=>c.group===name));
-          const sameGroup=candidates.find(g=>g.length>=count)||candidates.sort((a,b)=>b.length-a.length)[0];
-          const team=sameGroup.slice(0,count);
-          while(team.length<count)team.push(available.find(c=>!team.includes(c)));
-          team.forEach((c,i)=>{cpu[start+i].name=c.name;cpu[start+i].img=c.img;});
-          available=available.filter(c=>!team.includes(c));
-        }
+        const teams=allocateTeams(available,count,cpu.length/count);
+        teams.flat().forEach((c,i)=>{cpu[i].name=c.name;cpu[i].img=c.img;cpu[i].characterRank=c.rank;});
         library(Number(b.dataset.rounds),true);
       });
     }
     function library(target,cup=false){
-      const indices=api.eligibleIndices(),queue=[];
-      draw(`${backButton}${heading(cup?'CUP / GAME SELECT':'ONE GAME / GAME SELECT',cup?'大会のプログラムを作ろう':'今日は、どれで遊ぶ？',cup?`遊ぶ順番に${target?target+'ゲーム':'1〜50ゲーム'}を選択。重複もOK。`:'ゲーム名・番号・キーワードで検索できます。')}<div class="party-search"><label for="partySearch">ゲームを探す</label><input id="partySearch" type="search" placeholder="例：ホッケー、記憶、140" autocomplete="off"><span id="partyFound" role="status"></span></div>${cup?'<section class="party-queue"><div id="partyQueue" aria-live="polite"></div><div class="party-queue-actions"><button id="partyRandomFill">おまかせで選ぶ</button><button id="partyUndo">ひとつ戻す</button></div><button id="partyLaunch" class="party-primary" disabled>ゲームを選択してください</button></section>':''}<div id="partyGames" class="party-games"></div>`);
+      const indices=!cup&&count===1?api.freeIndices():api.eligibleIndices(),queue=[];let selectedGenre="すべて",composing=false;
+      draw(`${backButton}${heading(cup?'CUP / GAME SELECT':'ONE GAME / GAME SELECT',cup?'大会のプログラムを作ろう':'今日は、どれで遊ぶ？',cup?`遊ぶ順番に${target?target+'ゲーム':'1〜50ゲーム'}を選択。重複もOK。`:'ゲーム名・番号・キーワードで検索できます。')}<div class="party-search"><label for="partySearch">ゲームを探す</label><input id="partySearch" type="search" placeholder="例：ホッケー、記憶、140" autocomplete="off"><span id="partyFound" role="status"></span></div><div class="party-genres" role="group" aria-label="ゲームジャンル">${["すべて",...new Set(indices.map(i=>genre(api.games[i])))].map(name=>`<button data-genre="${name}" aria-pressed="${name===selectedGenre}">${name}</button>`).join('')}</div>${cup?'<section class="party-queue"><div id="partyQueue" aria-live="polite"></div><div class="party-queue-actions"><button id="partyRandomFill">おまかせで選ぶ</button><button id="partyUndo">ひとつ戻す</button></div><button id="partyLaunch" class="party-primary" disabled>ゲームを選択してください</button></section>':''}<div id="partyGames" class="party-games"></div>`);
       back(cup?cupLength:chooseStyle);
       const list=screen.querySelector('#partyGames');
       function updateQueue(){if(!cup)return;screen.querySelector('#partyQueue').textContent=queue.length?queue.map((i,n)=>`${n+1}. ${api.games[i].title}`).join(' / '):'まだゲームが選ばれていません';const launch=screen.querySelector('#partyLaunch');launch.disabled=target?queue.length!==target:queue.length===0;launch.textContent=`${queue.length}${target?` / ${target}`:''}ゲーム · このプログラムで進む →`;screen.querySelector('#partyUndo').disabled=!queue.length;list.querySelectorAll('button').forEach(b=>b.disabled=queue.length>=(target||50));}
-      function filter(){const q=screen.querySelector('#partySearch').value.trim().normalize('NFKC').toLowerCase();const found=indices.filter(i=>{const g=api.games[i];return `${g.no} ${g.title} ${g.sub}`.normalize('NFKC').toLowerCase().includes(q);});screen.querySelector('#partyFound').textContent=`${found.length} / ${indices.length} GAMES`;list.innerHTML=found.length?found.map(i=>{const g=api.games[i];return `<button data-game="${i}"><small>GAME ${String(g.no).padStart(3,'0')}</small><b>${esc(g.title)}</b><span>${esc(g.sub)}</span><em>${cup?'＋ プログラムに追加':'遊び方を確認 →'}</em></button>`;}).join(''):'<p class="party-empty">見つかりませんでした。別のキーワードで探してみよう。</p>';list.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.game);if(cup){if(queue.length<(target||50)){queue.push(i);updateQueue();api.beep(660,35,.01);}}else if(count===1)api.free(i);else api.launch([i]);});updateQueue();}
-      screen.querySelector('#partySearch').addEventListener('input',filter);filter();
+      function filter(){const q=screen.querySelector('#partySearch').value.trim().normalize('NFKC').toLowerCase();const found=indices.filter(i=>{const g=api.games[i];return (selectedGenre==='すべて'||genre(g)===selectedGenre)&&`${g.no} ${g.title} ${g.sub}`.normalize('NFKC').toLowerCase().includes(q);});screen.querySelector('#partyFound').textContent=`${found.length} / ${indices.length} GAMES`;list.innerHTML=found.length?found.map(i=>{const g=api.games[i];return `<button data-game="${i}"><small>GAME ${String(g.no).padStart(3,'0')}</small><b>${esc(g.title)}</b><span>${esc(g.sub)}</span><em>${cup?'＋ プログラムに追加':'遊び方を確認 →'}</em></button>`;}).join(''):'<p class="party-empty">見つかりませんでした。別のキーワードで探してみよう。</p>';list.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.game);if(cup){if(queue.length<(target||50)){queue.push(i);updateQueue();api.beep(660,35,.01);}}else if(count===1)api.free(i);else api.launch([i]);});updateQueue();}
+      const search=screen.querySelector('#partySearch');
+      search.addEventListener('compositionstart',()=>composing=true);
+      search.addEventListener('compositionend',()=>{composing=false;filter();});
+      search.addEventListener('input',()=>{if(!composing)filter();});
+      screen.querySelectorAll('[data-genre]').forEach(b=>b.onclick=()=>{selectedGenre=b.dataset.genre;screen.querySelectorAll('[data-genre]').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
+      filter();
       if(cup){on('partyUndo',()=>{queue.pop();updateQueue();});on('partyRandomFill',()=>{const shuffled=[...indices].sort(()=>Math.random()-.5);while(queue.length<(target||10))queue.push(shuffled[queue.length%shuffled.length]);updateQueue();});on('partyLaunch',()=>api.launch([...queue]));}
     }
     function showSettings(){
