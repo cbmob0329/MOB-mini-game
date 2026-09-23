@@ -85,6 +85,11 @@ test('mastery scoring preserves full marks but never rounds a near miss into 100
 });
 
 // Evaluate the actual scoring expressions used by each playable implementation.
+test('brake rewards close stops while keeping crashes and distant stops at zero',()=>{
+  const e=engine(),index=e.GAMES.findIndex(g=>g.key==='brake');
+  for(const [gap,expected] of [[0,100],[.5,100],[.6,99],[3,95],[6,85],[10,70],[20,30],[30,0],[999,0]])assert.equal(e.performancePoints(index,gap),expected,`gap ${gap}`);
+  let previous=100;for(let tenth=0;tenth<=300;tenth++){const score=e.performancePoints(index,tenth/10);assert.ok(score<=previous&&score>=0);previous=score;}
+});
 function gameScore(name,pattern,variables){
   const source=fs.readFileSync(require.resolve('../game.js'),'utf8');
   const start=source.indexOf('async function start'+name+'('),end=source.indexOf('\nasync function ',start+1);

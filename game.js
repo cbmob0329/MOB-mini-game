@@ -3014,7 +3014,7 @@ function scoreRuleForGame(index){
     "中心距離0%=100点 / 外周100%=0点",
     "！から3.000秒後が100点 / 誤差1.000秒以上=0点",
     "正解=100点 / 誤差1人=75 / 2人=50 / 3人=25",
-    "停止差0m=100点 / 10m以上または衝突=0点",
+    "停止差0.5m以内=100点 / 3m=95点 / 6m=85点 / 10m=70点 / 30m以上または衝突=0点",
     "0.150秒以下=100点 / 0.300秒=50点 / フェイント押し=0点",
     "チキンスコア10000=100点 / 爆発=0点",
     "4円一致率100%=100点 / TIME UP=0点",
@@ -8372,7 +8372,7 @@ async function startEmergencyBrake(p,humanIndex,runId){
   if(!(await countdown('DRIVE',runId)))return;last=performance.now();const revealAt=last+rand(1050,1850);
   function camera(){const vw=stage.clientWidth,cam=clamp(carX-vw*.28,0,worldW-vw);world.style.transform=`translateX(${-cam}px)`}
   function finishCrash(){if(done)return;done=true;state.records.brake[p.id]=999;car.classList.add('crash');alert.textContent='CRASH!';beep(120,220,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(26,p,humanIndex,`0<small>pt</small>`,`CRASH`)},560)}
-  btn.addEventListener('pointerdown',e=>{if(done||!obstacleVisible||!isGameRunValid(runId))return;e.preventDefault();const front=carX+58;if(front>=obstacleX){finishCrash();return;}done=true;if(raf)cancelAnimationFrame(raf);speed=0;speedEl.textContent='0';car.classList.add('braking','instant-stop');const gap=Math.max(0,(obstacleX-front)/10),rec=Math.round(gap*10)/10;state.records.brake[p.id]=rec;alert.textContent=gap<=1?'PERFECT STOP!':'STOP!';beep(gap<=1?980:gap<=4?720:420,90,.025);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(26,p,humanIndex,`${rec.toFixed(1)}<small>m</small>`,`INSTANT STOP GAP`)},520)},{passive:false});
+  btn.addEventListener('pointerdown',e=>{if(done||!obstacleVisible||!isGameRunValid(runId))return;e.preventDefault();const front=carX+58;if(front>=obstacleX){finishCrash();return;}done=true;if(raf)cancelAnimationFrame(raf);speed=0;speedEl.textContent='0';car.classList.add('braking','instant-stop');const gap=Math.max(0,(obstacleX-front)/10),rec=Math.round(gap*10)/10;state.records.brake[p.id]=rec;alert.textContent=rec<=.5?'PERFECT STOP!':rec<=6?'GREAT STOP!':'STOP!';beep(rec<=.5?980:rec<=6?720:420,90,.025);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(26,p,humanIndex,`${rec.toFixed(1)}<small>m</small>`,`INSTANT STOP GAP`)},520)},{passive:false});
   function frame(now){if(done||!isGameRunValid(runId))return;const dt=Math.min(32,now-last)/1000;last=now;if(!obstacleVisible&&now>=revealAt){obstacleVisible=true;obstacleX=carX+rand(300,350);obs.style.left=`${obstacleX}px`;obs.classList.add('show');alert.textContent='障害物！';beep(890,80,.025)}carX+=speed*dt;car.style.left=`${carX}px`;camera();if(obstacleVisible&&carX+58>=obstacleX){finishCrash();return;}raf=requestAnimationFrame(frame)}
   raf=requestAnimationFrame(frame);
 }
@@ -28046,7 +28046,15 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===23)return clamp(Math.round(100-v),0,100);
   if(legacyIndex===24)return v>=9000?0:clamp(Math.round(100-v/10),0,100);
   if(legacyIndex===25)return [100,75,50,25,0][Math.min(4,Math.round(v))];
-  if(legacyIndex===26)return v>=900?0:clamp(Math.round(100-v/10*100),0,100);
+  if(legacyIndex===26){
+    if(v>=30)return 0; // Crash records (999) also score zero.
+    if(v<=.5)return 100;
+    const stops=[[.5,100],[3,95],[6,85],[10,70],[20,30],[30,0]];
+    for(let i=1;i<stops.length;i++)if(v<=stops[i][0]){
+      const [a,high]=stops[i-1],[b,low]=stops[i];
+      return Math.min(99,Math.round(high+(low-high)*(v-a)/(b-a)));
+    }
+  }
   if(legacyIndex===27){
     if(v>=900)return 0;
     if(v<=150)return 100;

@@ -189,6 +189,8 @@ html[data-party-motion=off] :is(.party-results *,.party-fighter-select *,.ready-
 .league-champions{border:4px solid #ffcf58;background:radial-gradient(ellipse at top,#705325,#172238 65%)}.league-champions h1{font-size:clamp(32px,7vw,60px);text-shadow:0 0 22px #e3ac54}.league-champions .league-show-body:before{content:'★ LEAGUE WINNER ★';text-align:center;font-weight:bold;color:#ffe18c;letter-spacing:.1em}.league-champions .league-team-grid{grid-template-columns:1fr}
 
 /* V11.45: score readability, collectibles, and the five-game challenge. */
+.king-history-placement{display:grid;gap:8px;text-align:center;margin:20px 0;padding:18px 10px;background:#fff2c2;border:3px solid #aa7b20;border-radius:14px;color:#302744}
+.king-history-placement small{font-size:12px;font-weight:800}.king-history-placement strong{font-size:clamp(28px,8vw,44px);line-height:1.2}.king-history-placement span{font-size:12px;line-height:1.5}
 .king-page:has(.king-rank-reveal){background:radial-gradient(ellipse at top,#fff2bd,#fff 65%);border:3px solid #d9b85c;box-shadow:0 0 32px #d1a54444}
 .king-page .king-rank-reveal{animation:king-rank-arrival 1.8s cubic-bezier(.16,.75,.25,1) both;box-shadow:0 0 0 3px #e2bd55,0 5px 24px #b6894544}
 .king-final-score{animation:league-title .7s ease-out both;font-variant-numeric:tabular-nums}
