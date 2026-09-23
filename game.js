@@ -637,14 +637,25 @@ function isGameRunValid(runId){
 function gameTop(){requestAnimationFrame(()=>{try{window.scrollTo(0,0)}catch(e){};screen.scrollTop=0;});}
 function gameFit(){
   screen.classList.add("gameplay-fit");
+  updatePartyViewport();
   gameTop();
 }
+function updatePartyViewport(){
+  const visibleHeight=window.visualViewport?.height||window.innerHeight;
+  const top=document.querySelector('.topbar')?.getBoundingClientRect().height||58;
+  document.documentElement.style.setProperty('--party-play-height',`${Math.max(180,visibleHeight-top-16)}px`);
+}
+window.addEventListener('resize',updatePartyViewport);
+window.visualViewport?.addEventListener('resize',updatePartyViewport);
 function clearGameFit(){
   screen.classList.remove("gameplay-fit");
 }
 function imgTag(p,cls="avatar"){return `<img draggable="false" class="${cls}" src="${p.img}" alt="${esc(p.name)}" onerror="this.style.visibility='hidden'">`}
 
 homeBtn.addEventListener("click",()=>{
+  if(!state.freePlay&&(state.competitionStarted||state.mobCup?.active||state.mobCupSpecial?.active||state.tournament?.active)){
+    if(!window.confirm('大会を終了してホームに戻りますか？\n現在の大会の進行と得点は失われます。\n続ける場合はキャンセルを選んでください。'))return;
+  }
   cancelActiveAnimation();
   invalidateGameRun();
   renderHome();
@@ -680,6 +691,10 @@ function renderHome(){
   state=freshState();
 
   partyUI.home();
+}
+function chooseAnotherPartyGame(){
+  clearGameFit();cancelActiveAnimation();invalidateGameRun();
+  if(!partyUI.otherGames())renderFreePlaySelect();
 }
 
 function renderFreePlaySelect(){
@@ -3095,6 +3110,7 @@ function scoreRuleForGame(index){
 }
 
 function showGameIntro(index){
+  if(!state.freePlay)state.competitionStarted=true;
   state.partyRepresentatives=null;
   clearGameFit();
   state.gameIndex=index;
@@ -20330,7 +20346,7 @@ async function startBungeeMob(p,humanIndex,runId){
   gameFit();let active=false,finished=false,start=0,last=0,raf=null,x=72,y=66;const ground=388,anchor={x:72,y:50};
   screen.innerHTML=`<div class="bungee-shell-v127"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんバンジー</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div id="bungeeStage127" class="bungee-stage-v127"><div class="bungee-platform-v127">JUMP</div><svg class="bungee-svg-v127" viewBox="0 0 360 430" preserveAspectRatio="none"><line id="bungeeCord127" x1="72" y1="50" x2="72" y2="66"/></svg><div id="bungeeMob127" class="bungee-mob-v127" style="background-image:url('${partyActorImage()}')"></div><div class="bungee-ground-v127"></div><div id="bungeeRead127" class="bungee-read-v127">READY</div></div><button id="bungeeStop127" class="primary bungee-stop-v127">STOP!</button></div>`;
   const stage=document.getElementById('bungeeStage127'),mob=document.getElementById('bungeeMob127'),cord=document.getElementById('bungeeCord127'),read=document.getElementById('bungeeRead127'),stop=document.getElementById('bungeeStop127');
-  function render(){mob.style.left=`${x/360*100}%`;mob.style.top=`${y}px`;cord.setAttribute('x2',x);const sy=Math.max(0,(y-26)/Math.max(1,stage.clientHeight)*430);cord.setAttribute('y2',sy);}
+  function render(){mob.style.left=`${x/360*100}%`;mob.style.top=`${y/430*100}%`;const size=stage.clientHeight*64/430;mob.style.width=`${size}px`;mob.style.height=`${size}px`;cord.setAttribute('x2',x);cord.setAttribute('y2',Math.max(0,y-26));}
   async function finish(crash=false){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);stop.disabled=true;const clearance=Math.max(0,ground-(y+31));const score=crash?0:clamp(Math.round(100-Math.abs(clearance-10)*1.55),0,100);state.records.bungeeMob[p.id]=score;if(crash){stage.classList.add('crash-v127');read.textContent='GROUND HIT!';beep(120,180,.05);}else{read.textContent=score>=90?'PERFECT REBOUND!':`${score} POINT`;beep(score>=90?1020:720,160,.04);const baseY=y,amp=clamp(110+score*.9,120,205),bs=performance.now();stage.classList.add('rebound-v127');while(isGameRunValid(runId)){const t=(performance.now()-bs)/1150;if(t>=1)break;y=baseY-Math.sin(t*Math.PI)*amp;render();await wait(16);}y=baseY-18;render();}await wait(650);if(isGameRunValid(runId))recordScreen(67,p,humanIndex,`${score}<small>pt</small>`,crash?'GROUND HIT':`地面まで約${Math.round(clearance)}px`);}
   stop.addEventListener('pointerdown',e=>{e.preventDefault();if(active&&!finished)finish(false);},{passive:false});
   if(!(await countdown('BUNGEE',runId,{transparent:true})))return;active=true;start=last=performance.now();stage.classList.add('jumping-v127');
@@ -27094,8 +27110,9 @@ function recordScreen(gameIndex,p,humanIndex,main,sub=""){
     return;
   }
   if(state.freePlay){
-    screen.innerHTML=`<div class="ready-wrap"><div class="ready-card">${imgTag(p,"ready-avatar")}<div class="record-label">${GAMES[gameIndex].title} / SOLO RECORD</div><div class="big-record">${main}</div><div class="record-score100-v204">${score100}<small>/100 pt</small></div>${sub?`<p class="lead">${sub}</p>`:""}<button id="soloReplay" class="primary">同じゲームをもう一度</button><div style="height:8px"></div><button id="soloHome" class="secondary">メインメニューへ</button></div></div>`;
+    screen.innerHTML=`<div class="ready-wrap"><div class="ready-card">${imgTag(p,"ready-avatar")}<div class="record-label">${GAMES[gameIndex].title} / SOLO RECORD</div><div class="big-record">${main}</div><div class="record-score100-v204">${score100}<small>/100 pt</small></div>${sub?`<p class="lead">${sub}</p>`:""}<button id="soloReplay" class="primary">同じゲームをもう一度</button><div style="height:8px"></div><button id="soloOther" class="secondary">他のゲームを選ぶ</button><div style="height:8px"></div><button id="soloHome" class="secondary">メインメニューへ</button></div></div>`;
     document.getElementById("soloReplay").addEventListener("click",()=>startFreeGame(gameIndex));
+    document.getElementById("soloOther").addEventListener("click",chooseAnotherPartyGame);
     document.getElementById("soloHome").addEventListener("click",renderHome);
     return;
   }
@@ -28465,6 +28482,7 @@ function renderGameResult(gameIndex,ranked){
 function rankRow(p,rank,record,badge){const tier=p.cpu&&!state.freePlay?state.cpuTier[`${state.roundIndex}:${p.id}`]:null;const tc=mode().team?teamClass(p.id):"";return `<div class="rank-row ${tc}"><div class="rank-place">${rank}位</div>${imgTag(p)}<div class="rank-name">${esc(p.name)}<span>${p.cpu?"CPU":`PLAYER ${p.no}`}${mode().team?` / ${teamName(p.id)}`:""}${tier==="SUPER"?" / SUPER CPU":""}</span></div><div class="rank-score"><b>${record}</b><span class="point-badge">${badge}</span></div></div>`}
 
 function renderFinal(){
+  state.competitionStarted=false;
   clearGameFit();
   const totals=competitionRankTotals();
   const tt=teamTotals();
@@ -28516,6 +28534,7 @@ function renderFinal(){
       </div>
     </section>
 
+    ${state.playlist.length===1&&!state.partyCup?'<button id="singleOther" class="secondary">他のゲームを選ぶ</button><div style="height:8px"></div>':''}
     <button id="replay" class="primary">同じ内容でもう一度</button>
     <div style="height:8px"></div>
     <button id="modeChange" class="secondary">モードセレクトへ</button>
@@ -28523,6 +28542,7 @@ function renderFinal(){
 
   gameTop();
 
+  document.getElementById('singleOther')?.addEventListener('click',chooseAnotherPartyGame);
   document.getElementById('replay').addEventListener('click',()=>{
     const k=state.modeKey;
     const style=state.playStyle;
@@ -39061,16 +39081,16 @@ async function startCashierMob(p,humanIndex,runId){
 async function startCoinPusherMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='coinPusherMob');
   screen.innerHTML=`<div class="cp227-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんコインプッシャー</h2><p class="lead">押し板が前へ来るタイミングでコインを落とせ！</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="cp226-hud"><b id="cpGet226">GET 0 PT</b><span id="cpTime226">15.0</span><em id="cpStock226">COIN 10</em></div><div id="cpStage226" class="cp227-stage"><div class="cp227-back"><b>MOB COIN PUSHER</b></div><div id="cpDropLane227" class="cp227-drop-lane"><div id="cpDropper226" class="cp227-dropper"><i></i><b>▼</b></div><span>ここを左右ドラッグ</span></div><div id="cpPusher226" class="cp227-pusher"><b>PUSH</b></div><div class="cp227-table"></div><div id="cpCoins226" class="cp227-coins"></div><div class="cp227-lip"><span>COIN DROP</span></div><div class="cp227-rail left"></div><div class="cp227-rail right"></div></div><div id="cpCall226" class="cp227-call">投入口を動かして DROP!</div><button id="cpDrop226" class="cp227-drop-btn mobile-safe-controls-v203" disabled>DROP COIN!</button></div>`;
-  const stage=document.getElementById('cpStage226'),lane=document.getElementById('cpDropLane227'),coinsEl=document.getElementById('cpCoins226'),pusher=document.getElementById('cpPusher226'),dropper=document.getElementById('cpDropper226'),dropBtn=document.getElementById('cpDrop226'),getEl=document.getElementById('cpGet226'),timeEl=document.getElementById('cpTime226'),stockEl=document.getElementById('cpStock226'),call=document.getElementById('cpCall226');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight,R=13;let coins=[],stock=10,score=0,active=false,finished=false,start=0,last=0,raf=null,phase=0,id=0,dropX=W*.5,prevFront=0;
-  function addCoin(x,y,gold=false,falling=false){const el=document.createElement('i');el.className='cp227-coin'+(gold?' gold':'')+(falling?' falling':'');el.innerHTML=gold?'<b>M</b>':'<b>●</b>';coinsEl.appendChild(el);const c={id:++id,x,y,gold,falling,vy:falling?90:0,dead:false,el};coins.push(c);render(c);return c}function render(c){c.el.style.transform=`translate3d(${c.x-R}px,${c.y-R}px,0)`}
-  for(let i=0;i<30;i++){const row=i%6,col=Math.floor(i/6),x=42+row*(W-84)/5+rand(-7,7),y=H*.52+col*25+rand(-4,4);addCoin(x,y,i===8||i===21,false)}
+  const stage=document.getElementById('cpStage226'),lane=document.getElementById('cpDropLane227'),coinsEl=document.getElementById('cpCoins226'),pusher=document.getElementById('cpPusher226'),dropper=document.getElementById('cpDropper226'),dropBtn=document.getElementById('cpDrop226'),getEl=document.getElementById('cpGet226'),timeEl=document.getElementById('cpTime226'),stockEl=document.getElementById('cpStock226'),call=document.getElementById('cpCall226');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight,R=Math.min(13,H/24);let coins=[],stock=10,score=0,active=false,finished=false,start=0,last=0,raf=null,phase=0,id=0,dropX=W*.5,prevFront=0;
+  function addCoin(x,y,gold=false,falling=false){const el=document.createElement('i');el.className='cp227-coin'+(gold?' gold':'')+(falling?' falling':'');el.innerHTML=gold?'<b>M</b>':'<b>●</b>';el.style.width=el.style.height=`${R*2}px`;coinsEl.appendChild(el);const c={id:++id,x,y,gold,falling,vy:falling?90:0,dead:false,el};coins.push(c);render(c);return c}function render(c){c.el.style.transform=`translate3d(${c.x-R}px,${c.y-R}px,0)`}
+  for(let i=0;i<30;i++){const row=i%6,col=Math.floor(i/6),x=42+row*(W-84)/5+rand(-7,7),y=H*.52+col*(H*.30/4)+rand(-4,4);addCoin(x,y,i===8||i===21,false)}
   function setDropX(clientX){const r=stage.getBoundingClientRect();dropX=clamp(clientX-r.left,35,W-35);dropper.style.left=`${dropX}px`}
   lane.addEventListener('pointerdown',e=>{if(!active)return;e.preventDefault();setDropX(e.clientX);lane.setPointerCapture?.(e.pointerId)},{passive:false});lane.addEventListener('pointermove',e=>{if(!active||!(e.buttons||e.pressure>0))return;e.preventDefault();setDropX(e.clientX)},{passive:false});dropper.style.left=`${dropX}px`;
-  dropBtn.addEventListener('click',()=>{if(!active||stock<=0)return;stock--;stockEl.textContent=`COIN ${stock}`;addCoin(dropX,48,Math.random()<.07,true);dropBtn.classList.remove('kick');void dropBtn.offsetWidth;dropBtn.classList.add('kick');beep(560,32,.01);if(stock===0)dropBtn.disabled=true});
+  dropBtn.addEventListener('click',()=>{if(!active||stock<=0)return;stock--;stockEl.textContent=`COIN ${stock}`;addCoin(dropX,H*.13,Math.random()<.07,true);dropBtn.classList.remove('kick');void dropBtn.offsetWidth;dropBtn.classList.add('kick');beep(560,32,.01);if(stock===0)dropBtn.disabled=true});
   function resolveCollisions(){for(let pass=0;pass<2;pass++){for(let i=0;i<coins.length;i++){const a=coins[i];if(a.dead||a.falling)continue;for(let j=i+1;j<coins.length;j++){const b=coins[j];if(b.dead||b.falling)continue;let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<1){dx=1;dy=0;d=1}const min=R*2-1;if(d<min){const push=(min-d)*.5,nx=dx/d,ny=dy/d;a.x-=nx*push;a.y-=ny*push;b.x+=nx*push;b.y+=ny*push}}a.x=clamp(a.x,28,W-28)}}}
   function take(c){c.dead=true;c.el.classList.add('fallout');const gain=c.gold?15:5;score=clamp(score+gain,0,100);getEl.textContent=`GET ${score} PT`;call.textContent=c.gold?'GOLD MOB!! +15':'GET! +5';beep(c.gold?1180:790,75,.018);setTimeout(()=>c.el.remove(),300)}
   function finish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.coinPusherMob[p.id]=clamp(score,0,100);call.textContent='COIN RESULT!';setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`GET ${score} PT / 手持ち ${stock}枚`),900)}
-  if(!(await countdown('COIN PUSHER!',runId,{transparent:true})))return;active=true;dropBtn.disabled=false;start=last=performance.now();function frame(now){const dt=Math.min(.028,(now-last)/1000);last=now;const sec=(now-start)/1000,rem=Math.max(0,15-sec);timeEl.textContent=rem.toFixed(1);phase+=dt*2.1;const prog=(1-Math.cos(phase))/2,pusherY=H*.18+prog*H*.25,front=pusherY+58,advance=Math.max(0,front-prevFront);prevFront=front;pusher.style.transform=`translate3d(0,${pusherY}px,0)`;
+  if(!(await countdown('COIN PUSHER!',runId,{transparent:true})))return;active=true;dropBtn.disabled=false;start=last=performance.now();function frame(now){const dt=Math.min(.028,(now-last)/1000);last=now;const sec=(now-start)/1000,rem=Math.max(0,15-sec);timeEl.textContent=rem.toFixed(1);phase+=dt*2.1;const prog=(1-Math.cos(phase))/2,pusherY=H*.18+prog*H*.25,front=pusherY+H*.16,advance=Math.max(0,front-prevFront);prevFront=front;pusher.style.transform=`translate3d(0,${pusherY}px,0)`;
     for(const c of coins){if(c.dead)continue;if(c.falling){c.vy+=520*dt;c.y+=c.vy*dt;const land=Math.min(H*.47,front+R+8);if(c.y>=land){c.y=land;c.falling=false;c.el.classList.remove('falling');c.vy=0}render(c);continue}if(advance>0&&c.y>pusherY-4&&c.y<front+R+7)c.y+=advance*.96;if(advance>0&&c.y>=front-4)c.y+=advance*.10;render(c)}resolveCollisions();for(const c of coins){if(c.dead||c.falling)continue;c.x=clamp(c.x,28,W-28);if(c.y>H*.885){take(c);continue}c.y=clamp(c.y,H*.30,H*.91);render(c)}coins=coins.filter(c=>!c.dead);if(rem<=0){finish();return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
 }
 

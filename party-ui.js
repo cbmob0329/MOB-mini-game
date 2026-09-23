@@ -88,6 +88,11 @@
       draw(`${backButton}${heading('SETTINGS','遊びやすさを、自分好みに。','設定はこの端末に保存されます。')}<section class="party-options">${[['sound','効果音','決定音やゲーム中の電子音'],['motion','画面のアニメーション','登場演出やスポットライトの動き']].map(([key,label,desc])=>`<div><span><b>${label}</b><small>${desc}</small></span><button data-setting="${key}" role="switch" aria-label="${label}" aria-checked="${settings[key]}">${settings[key]?'ON':'OFF'}</button></div>`).join('')}</section><p class="party-note" id="partySaveStatus" role="status">音量は端末の音量ボタンでも調整できます。</p>`);
       back(api.home);screen.querySelectorAll('[data-setting]').forEach(b=>b.onclick=()=>{const key=b.dataset.setting;settings[key]=!settings[key];b.setAttribute('aria-checked',String(settings[key]));b.textContent=settings[key]?'ON':'OFF';applySettings();try{localStorage.setItem('mob-party-settings',JSON.stringify(settings));}catch(_){screen.querySelector('#partySaveStatus').textContent='このブラウザでは設定を保存できません。現在の画面には適用されます。';}if(key==='sound'&&settings.sound)api.beep();});
     }
-    return {home};
+    function otherGames(){
+      // Keep the selected portraits and player count while resetting match scores.
+      if(!selected.length)return false;
+      api.configure(count,false);library(1);return true;
+    }
+    return {home,otherGames};
   }};
 })();

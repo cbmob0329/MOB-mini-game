@@ -106,8 +106,27 @@ html[data-party-motion=off] :is(.party-reveal *,.party-door-reveal){animation:no
 html[data-party-motion=off] :is(.party-results *,.party-fighter-select *,.ready-wrap *,.champion){animation:none!important;transition:none!important}
 .party-fighter-select .party-character-grid button{width:100%;max-width:100%;aspect-ratio:auto;height:84px}.party-fighter-select .party-character-grid button img{height:61px}.party-fighter-select .party-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px}.party-fighter-select .party-tabs button{width:auto;padding:8px 3px;min-height:40px;font-size:11px}.party-fighter-select .party-heading{padding:0}.party-fighter-select .party-heading h1{margin:6px 0;font-size:28px}.party-fighter-select .party-heading p{margin:4px 0;font-size:11px}.party-fighter-select .party-spotlight{min-height:105px}.party-fighter-select #partyPreview{height:105px}
 .ready-wrap .ready-card .kicker{color:#2b2334;background:#ffdd67}.ready-wrap .ready-avatar{width:170px;height:180px;object-fit:contain;background:none;border:0;border-radius:0}.ready-wrap .ready-card{padding:20px}.ready-wrap{padding-bottom:max(40px,env(safe-area-inset-bottom))}
+/* Gameplay must reserve the real header height and a browser-toolbar buffer. */
+#screen.gameplay-fit{box-sizing:border-box;flex:0 0 auto;height:var(--party-play-height,calc(100dvh - 110px))!important;max-height:var(--party-play-height,calc(100dvh - 110px))!important;min-height:0!important;padding:6px 8px max(48px,env(safe-area-inset-bottom))!important;overflow:hidden!important}
+#screen.gameplay-fit:has(.three231-stage){height:var(--party-play-height,calc(100dvh - 110px))!important;max-height:var(--party-play-height,calc(100dvh - 110px))!important;padding-bottom:max(48px,env(safe-area-inset-bottom))!important;overflow:hidden!important}
+#screen.gameplay-fit :is(.three231-shell,.three233-shell,.three234-shell){height:100%!important;min-height:0!important;padding-bottom:0!important;max-height:none!important}
+#screen.gameplay-fit :is(.bungee-shell-v127,.summoner-shell){height:100%!important;min-height:0!important;display:flex;flex-direction:column;overflow:hidden;gap:5px}
+#screen.gameplay-fit :is(.bungee-stage-v127,.summoner-stage){flex:1 1 0!important;height:auto!important;min-height:0!important;max-height:none!important}
+#screen.gameplay-fit :is(.game-head,.summoner-hud,.bungee-stop-v127){flex-shrink:0}
+#screen.gameplay-fit .bungee-stop-v127{height:60px!important;min-height:60px!important;margin-bottom:5px!important}
+#screen.gameplay-fit .bungee-ground-v127{top:90.2326%;height:16.28%}#screen.gameplay-fit .bungee-platform-v127{top:8.8372%;height:5.5814%;min-height:14px}
+@media(max-height:740px){#screen.gameplay-fit .game-head h2{font-size:17px;line-height:1.15}#screen.gameplay-fit .summoner-hud b{font-size:17px}#screen.gameplay-fit .summoner-hud>div{padding:4px}}
 @media(max-width:600px){.party-fighter-select .party-character-grid button{height:68px}.party-fighter-select .party-character-grid button img{height:51px}.party-fighter-select .party-tabs button{font-size:9px}.party-fighter-select #partyPreview{height:90px}.party-fighter-select .party-spotlight{min-height:90px}.party-fighter-select .party-heading h1{font-size:22px}}
 @media(max-height:740px){.mob3d-swipepad-v237.small small{display:none}.mob3d-swipepad-v237.small b{font-size:13px}}
 .party-reveal{position:relative}.party-reveal:before{position:absolute;top:8px;right:12px;font-size:26px!important}
 @media(max-width:600px) and (max-height:760px){.party-event:has(.party-treasure-bank) header{padding:10px!important;margin-bottom:8px!important}.party-event:has(.party-treasure-bank) header small{display:none}.party-event:has(.party-treasure-bank) header h2{margin:5px 0}.party-event:has(.party-treasure-bank) .party-event-call{padding:8px}.party-event:has(.party-treasure-bank) .party-vault-track{margin:4px}.party-event:has(.party-treasure-bank) .party-treasure-bank{padding:6px;font-size:30px}}
 @media(max-width:600px){.party-event:has(.party-reveal) header,.party-event:has(.party-treasure-bank) header{padding:14px 10px;margin-bottom:12px}.party-event:has(.party-reveal) header h2,.party-event:has(.party-treasure-bank) header h2{font-size:21px}.party-reveal{padding:16px 10px}.party-reveal .party-event-actor{height:100px}.party-reveal>strong{font-size:20px;margin-top:10px}.party-reveal p{margin:8px 0}.party-reveal .party-event-call{padding:12px}.party-vault-track{margin:8px;gap:8px}.party-vault-track span{padding:6px 10px}.party-treasure-bank{font-size:36px;padding:8px}.party-event:has(.party-treasure-bank)>p{font-size:12px;margin:8px 0}.party-event:has(.party-treasure-bank) #eventChoices{display:grid;grid-template-columns:1fr 1fr;margin:10px 0}.party-event:has(.party-treasure-bank) #eventChoices button{font-size:12px;padding:8px}}
+
+/* Reserve the action row before sizing the coin table. */
+#screen.gameplay-fit .cp227-shell{display:flex;flex-direction:column;height:100%!important;min-height:0!important;overflow:hidden}
+#screen.gameplay-fit .cp227-stage{flex:1 1 0!important;height:auto!important;min-height:0!important;max-height:none!important}
+#screen.gameplay-fit :is(.cp226-hud,.cp227-call,.cp227-drop-btn){flex-shrink:0}
+#screen.gameplay-fit .cp227-pusher{height:16%}
+#screen.gameplay-fit .cp227-back{height:14%}
+#screen.gameplay-fit .cp227-drop-lane{top:13.5%;height:13%;min-height:32px}
+#screen.gameplay-fit .cp227-dropper{height:100%}
