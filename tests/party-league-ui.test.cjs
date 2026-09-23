@@ -16,17 +16,14 @@ function fixture(deferred=false,humanCount=0){
   return {screen,roster,teams,pending,next(){assert.match(screen.innerHTML,/id="leagueNext"/);screen.querySelector('#leagueNext').onclick();},until(text){for(let i=0;i<400&&!screen.innerHTML.includes(text);i++)this.next();assert.ok(screen.innerHTML.includes(text),text);}};
 }
 test('rapid next taps cannot submit an unfinished CPU round twice',()=>{
-  const f=fixture(true);for(let i=0;i<4;i++)f.next();const next=f.screen.querySelector('#leagueNext').onclick;
-  next();next();assert.equal(f.pending.length,1);f.pending.shift()();assert.match(f.screen.innerHTML,/今回の個人順位/);
+  const f=fixture(true);for(let i=0;i<5;i++)f.next();const next=f.screen.querySelector('#leagueNext').onclick;
+  next();next();assert.equal(f.pending.length,1);f.pending.shift()();assert.match(f.screen.innerHTML,/今回のチーム順位/);
 });
 test('human tag heat announces both opposing teams before gameplay',()=>{
   const f=fixture(false,1);f.until('タッグ対戦、開幕');f.next();assert.match(f.screen.innerHTML,/<h1>TEAM 1 VS TEAM 2<\/h1>/);assert.match(f.screen.innerHTML,/league-vs/);
 });
-test('individual and round results omit qualification; cumulative standings have narration first',()=>{
-  const f=fixture();f.until('今回の個人順位');assert.doesNotMatch(f.screen.innerHTML,/通過ボーダー|上位8チームが通過/);
-  f.next();assert.match(f.screen.innerHTML,/今回のチーム順位/);assert.doesNotMatch(f.screen.innerHTML,/通過ボーダー|上位8チームが通過/);
-  f.next();assert.match(f.screen.innerHTML,/現在の総合順位はこちら/);f.next();assert.match(f.screen.innerHTML,/ステージ個人総合/);assert.doesNotMatch(f.screen.innerHTML,/通過ボーダー|上位8チームが通過/);
-  f.next();assert.match(f.screen.innerHTML,/現在の総合順位はこちら/);f.next();assert.match(f.screen.innerHTML,/上位8チームが通過/);
+test('only team results appear during league, with cumulative narration before the totals',()=>{
+  const f=fixture();f.until('今回のチーム順位');assert.doesNotMatch(f.screen.innerHTML,/個人順位|通過ボーダー/);f.next();assert.match(f.screen.innerHTML,/現在の総合順位はこちら/);f.next();assert.match(f.screen.innerHTML,/ステージチーム総合/);assert.match(f.screen.innerHTML,/上位8チームが通過/);f.until('CHAMPION!!');assert.doesNotMatch(f.screen.innerHTML,/今回のチーム順位/);f.until('大会最終・個人総合順位');
 });
 test('CPU league still presents matchups, bonus round, advancement, ignition and expanded awards',()=>{
   const f=fixture();f.until('タッグ対戦、開幕');assert.match(f.screen.innerHTML.replace(/<[^>]*>/g,''),/TEAM 1 VS TEAM 2/);

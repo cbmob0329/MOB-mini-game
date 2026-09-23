@@ -68,6 +68,8 @@
       await choice(['全員準備OK · スタート']);if(!api.valid(ownRun))return;
       if(key==='deathGameChallenge')await doors(slots,ownRun);
       else if(key==='colorBridgeParty')await bridge(slots,ownRun);
+      else if(key==='treasureRuneParty')await runeVault(slots,ownRun);
+      else if(key==='treasureDuoParty')await duoVault(slots,ownRun);
       else await treasure(slots,ownRun);
       if(!api.valid(ownRun))return;
       const ordered=[...slots].sort((a,b)=>b.score-a.score);
@@ -77,31 +79,26 @@
       api.finish(index,slots.filter(s=>!s.guest));
     }
     async function doors(slots,ownRun){
-      const order=[...slots].sort(()=>Math.random()-.5);
       let round=0;
       while(slots.filter(s=>!s.out).length>1&&api.valid(ownRun)){
-        round++;
-        const alive=order.filter(s=>!s.out),doorCount=alive.length,free=Array.from({length:doorCount},(_,i)=>i);
-        const dangerous=Math.floor(Math.random()*doorCount),choices=[];
+        round++;const alive=slots.filter(s=>!s.out),target=[30,15,5,3,1].find(n=>n<alive.length)||1;
+        const free=Array.from({length:alive.length},(_,i)=>i),shuffled=[...free];
+        for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+        const dangerous=new Set(shuffled.slice(0,alive.length-target)),choices=[];
         for(const s of alive){
-          if(!api.valid(ownRun))return;
-          let pick;
+          if(!api.valid(ownRun))return;let pick;
           if(s.cpu)pick=Math.floor(Math.random()*free.length);
-          else{
-            shell('モブくんデスゲーム',`<p class="party-event-call">ROUND ${round} · ${esc(s.team)} / ${esc(s.name)}</p><div class="party-event-actor">${portrait(s)}</div><p>安全な扉はどれ？ 1つの扉が消滅します。</p><div id="eventChoices" class="party-door-choices"></div>`);
-            pick=await choice(free.map(n=>`🚪 ${n+1}`),12000);
-            if(pick<0)pick=0;
+          else{await handoff(s,'運命の扉 · ROUND '+round);if(!api.valid(ownRun))return;
+            shell('デスゲーム · 運命の扉',`<p class="party-event-call">${alive.length}人 → ${target}人！ 今回は${alive.length-target}人が脱落</p><div class="party-death-count">${alive.length}<span>→</span>${target}</div><p>${esc(s.team)} / ${esc(s.name)} · 扉を1つ選択</p><div id="eventChoices" class="party-door-choices"></div>`);
+            pick=await choice(free.map(n=>'🚪 '+(n+1)),12000);if(pick<0)pick=0;
           }
-          if(!api.valid(ownRun))return;
           choices.push({s,door:free.splice(pick,1)[0]});
         }
-        const loser=choices.find(x=>x.door===dangerous).s;
-        loser.out=true;
-        const place=alive.length;
-        loser.score=place===2?70:place===3?50:Math.round((slots.length-place)/Math.max(1,slots.length-3)*40);
-        shell('運命の扉が開く…',`<p class="party-event-call">ROUND ${round} · 残り${alive.length}人</p><div class="party-door-reveal">🚪</div><p>誰の扉が消える…？</p>`);
-        api.beep(260,130,.02);await pause(1100);if(!api.valid(ownRun))return;
-        await reveal(loser,'ELIMINATED / 脱落',`${dangerous+1}番の扉が崩壊！<br>${place}位 · ${loser.score}点<br>生存者は残り${alive.length-1}人`, 'danger',ownRun);
+        if(!api.valid(ownRun))return;
+        const losers=choices.filter(x=>dangerous.has(x.door));
+        for(const {s} of losers){s.out=true;s.score=alive.length===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80;}
+        shell('運命の扉、崩壊！',`<div class="party-death-count">${alive.length}<span>→</span>${target}</div><p class="party-event-call">${losers.length}人が脱落。残る席は${target}つ！</p><div class="party-door-reveal">🚪 ⚡</div>`);api.beep(140,240,.025);await pause(1100);if(!api.valid(ownRun))return;
+        let page=0;while(page<losers.length){const batch=losers.slice(page,page+6);shell('ELIMINATED / 脱落',`<p class="party-event-call">ROUND ${round} · 生存者は残り${target}人</p>${standings(batch.map(x=>x.s))}<p>扉が崩壊… この選手たちの挑戦はここで終了！</p><div id="eventChoices"></div>`);await choice(['脱落者を確認して次へ →']);if(!api.valid(ownRun))return;page+=6;}
       }
       const winner=slots.find(s=>!s.out);if(winner)winner.score=100;
     }
@@ -166,6 +163,36 @@
           else{const gain=Math.min(100-s.bank,pick===0?small:large);s.bank+=gain;s.score=s.bank;message=`${pick===0?'慎重な箱':'豪華な箱'}から +${gain}点！ 合計${s.bank}点`;if(round===5||s.bank>=100){s.out=true;message+=' · 帰還成功！';}}
           if(!s.cpu){screen.querySelector('.party-event-call').textContent=pick===2||pick<0?'出口へ向かう…':'宝箱を開封中…';await pause(700);if(!api.valid(ownRun))return;await reveal(s,trapped?'TRAP!':s.out?'ESCAPE!':'TREASURE GET!',message,trapped?'danger':'success',ownRun);}
         }
+      }
+    }
+    async function runeVault(slots,ownRun){
+      const glyphs=['☀ 太陽','☾ 月','★ 星'];
+      for(let room=1;room<=6;room++)for(const s of slots.filter(s=>!s.out)){
+        if(!api.valid(ownRun))return;const code=Math.floor(Math.random()*3);let pick;
+        if(s.cpu)pick=Math.random()<.60+core.cpuScore(s.rank)/300?code:(code+1)%3;
+        else{
+          await handoff(s,'お宝ルーン迷宮 · 第'+room+'の封印');if(!api.valid(ownRun))return;
+          shell('封印の記号を記憶せよ',`<div class="party-rune-symbol">${glyphs[code]}</div><p>正しい記号はこれ！ 次へ進むと隠れます。</p><div id="eventChoices"></div>`);await choice(['NEXT · 記憶した']);if(!api.valid(ownRun))return;
+          shell('お宝ルーン迷宮',`<p class="party-event-call">ROOM ${room} / 6 · ${esc(s.name)}</p><div class="party-treasure-bank">${s.bank}<small>所持お宝 · 残りライフ ${s.lives}</small></div><p>正解で +${12+room*3}点。失敗すると所持品の25%とライフ1を失う。いつ脱出するかもあなた次第！</p><div id="eventChoices"></div>`);pick=await choice([...glyphs,'今のお宝で脱出'],Math.max(1800,5200-room*450));
+        }
+        if(!api.valid(ownRun))return;
+        if(pick===3)s.out=true;else if(pick===code)s.bank=Math.min(100,s.bank+12+room*3);else{s.bank=Math.floor(s.bank*.75);s.lives--;}
+        s.score=s.bank;if(s.lives<=0||room===6||s.bank===100)s.out=true;
+        if(!s.cpu)await reveal(s,pick===code?'SEAL OPEN!':pick===3?'ESCAPE!':'CURSE!',`${s.bank}点 · ${s.out?'帰還！':'残りライフ '+s.lives}`,pick===code||pick===3?'success':'danger',ownRun);
+      }
+    }
+    async function duoVault(slots,ownRun){
+      if(api.solo())slots.forEach((s,i)=>s.team=i<2?'YOUR TAG':'CPU TAG');
+      const teams=[...new Set(slots.map(s=>s.team))].map(name=>({name,members:slots.filter(s=>s.team===name),bank:0,out:false}));
+      for(let room=1;room<=5;room++)for(const t of teams.filter(t=>!t.out)){
+        if(!api.valid(ownRun))return;const scout=t.members[(room-1)%2],runner=t.members[room%2],safe=Math.floor(Math.random()*3);let mark;
+        if(scout.cpu)mark=Math.random()<.85?safe:(safe+1)%3;
+        else{await handoff(scout,'偵察担当 · '+t.name);if(!api.valid(ownRun))return;shell('お宝ツイン強奪 · 偵察',`<p class="party-event-call">安全な扉は ${safe+1} 番！</p><div class="party-rune-symbol">🚪 ${safe+1}</div><p>相棒に送るマークを選ぼう。次は相棒が回収に向かう！</p><div id="eventChoices"></div>`);mark=await choice(['1番を知らせる','2番を知らせる','3番を知らせる']);}
+        if(!api.valid(ownRun))return;let pick;
+        if(runner.cpu)pick=t.bank>=75&&room>=4?3:mark;
+        else{await handoff(runner,'回収担当 · '+t.name);if(!api.valid(ownRun))return;shell('お宝ツイン強奪 · 回収',`<p class="party-event-call">ROOM ${room}/5 · 相棒のマークは ${mark+1} 番</p><div class="party-treasure-bank">${t.bank}<small>チーム共有のお宝</small></div><p>安全な扉は +25点。罠は所持品の30%を失う。帰還すれば以後の罠を回避！</p><p>ライバル：${teams.filter(x=>x!==t).map(x=>esc(x.name)+' '+x.bank+'点').join(' / ')}</p><div id="eventChoices"></div>`);pick=await choice(['1番へ','2番へ','3番へ','チームで脱出']);}
+        if(!api.valid(ownRun))return;if(pick===3)t.out=true;else if(pick===safe)t.bank=Math.min(100,t.bank+25);else t.bank=Math.floor(t.bank*.7);if(room===5||t.bank===100)t.out=true;t.members.forEach(s=>{s.bank=s.score=t.bank;s.out=t.out;});
+        if(t.members.some(s=>!s.cpu))await reveal(runner,pick===safe?'TAG SUCCESS!':pick===3?'ESCAPE!':'TRAP!',`${t.name} · 2人それぞれ${t.bank}点！ 次の部屋では役割を交代。`,pick===safe||pick===3?'success':'danger',ownRun);
       }
     }
     return {start};

@@ -40,7 +40,7 @@
     }
     return teams;
   }
-  const representativeKeys=new Set(['deathGameChallenge','colorBridgeParty','treasureEscapeParty']);
+  const representativeKeys=new Set(['deathGameChallenge','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty']);
   function genre(g){
     if(representativeKeys.has(g.key))return '代表バトル';
     if(/3D/.test(g.title))return '3D';

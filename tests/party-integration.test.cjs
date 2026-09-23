@@ -36,10 +36,17 @@ test('CPU tag heats return four finite scores and team-shared results',()=>{
     if(key==='summonMaster')assert.equal(Object.values(result).reduce((a,b)=>a+b,0),200);
   }
 });
-test('157 games have records; new games score directly on a 100-point scale',()=>{
-  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,157);
+test('158 games have records; new games score directly on a 100-point scale',()=>{
+  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,158);
   for(const g of e.GAMES)assert.ok(state.records[g.key],g.key);
-  for(const key of ['colorBridgeParty','treasureEscapeParty']){const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(i>=0);assert.equal(e.performancePoints(i,80),80);}
+  for(const key of ['colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty']){const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(i>=0);assert.equal(e.performancePoints(i,80),80);}
+});
+test('fast CPU death game keeps the exact elimination distribution',()=>{
+  const e=engine(),players=Array.from({length:40},(_,i)=>({id:'leagueCpu'+i,name:'CPU '+i,cpu:true,characterRank:'A'}));
+  const teams=Array.from({length:20},(_,i)=>({id:'L'+i,name:'Team '+i,members:players.slice(i*2,i*2+2).map(p=>p.id)}));
+  e.league.configure(players,teams);let result;e.league.run('deathGameChallenge',teams,{round:9},scores=>result=scores);e.flush();
+  const counts={};Object.values(result).forEach(n=>counts[n]=(counts[n]||0)+1);
+  assert.deepEqual(counts,{10:10,30:15,50:10,65:2,80:2,100:1});
 });
 test('8-team cup has 32 participants; representatives alone score and omitted players stay unchanged',()=>{
   const e=engine();e.applyConfiguredBattle({type:'team',rule:'score',teamCount:8,teamSize:4,assignments:Array.from({length:8},(_,i)=>({players:i?0:4,cpus:i?4:0}))});
@@ -61,8 +68,8 @@ test('rank-based CPU record generation yields finite records and scores for ever
 
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
-  assert.ok(!('boxing3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,157);
+  assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
+  assert.equal(e.activeGameIndices().length,158);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
   assert.equal(e.GAMES.find(g=>g.key==='treasureEscapeParty').legacy,181);
 });
@@ -84,11 +91,10 @@ function gameScore(name,pattern,variables){
   const match=source.slice(start,end).match(pattern);assert.ok(match,name);
   return vm.runInNewContext(match[1],{...variables,Math,clamp:(v,a,b)=>Math.max(a,Math.min(b,v)),masteryPoints:engine().masteryPoints});
 }
-test('a spare and rally farming alone cannot award full marks',()=>{
+test('a spare cannot award full marks',()=>{
   const bowling=(knocked,shot)=>gameScore('Bowling3DMob',/const score=([^;]+);/,{knocked,shot});
   assert.equal(bowling(10,1),100);assert.equal(bowling(10,2),85);assert.equal(bowling(9,2),81);
-  const hockey=(goals,bestRally)=>gameScore('Hockey3DMob',/const score=([^;]+);/,{goals,bestRally});
-  assert.equal(hockey(0,100),20);assert.equal(hockey(5,0),80);assert.equal(hockey(5,10),100);
+
 });
 test('climbing full marks require fast completion without wrong-side inputs',()=>{
   const score=(index,sec,mistakes)=>gameScore('BuildingClimb3DMob',/score=(index>=10[^;]+);/,{index,sec,mistakes});
@@ -97,7 +103,7 @@ test('climbing full marks require fast completion without wrong-side inputs',()=
 test('shot-put perfect distance is reachable at multiple frame rates but not with partial charge',()=>{
   function distance(charge,angle,dt){let y=1.35,z=.15,vy=Math.sin(angle*Math.PI/180)*(8.5+charge*10.8),vz=-Math.cos(angle*Math.PI/180)*(8.5+charge*10.8);while(y>.25){vy-=9.8*dt;y+=vy*dt;z+=vz*dt;}return (-z-1)*2.8;}
   for(const dt of [1/120,1/60,.025]){
-    assert.equal(gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(1,44,dt)}),100);
-    assert.ok(gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(.8,44,dt)})<80);
+    const best=Math.max(...Array.from({length:25},(_,i)=>{const angle=43.4+i*.05;return gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(1,angle,dt),charge:1,angle});}));assert.equal(best,100);
+    assert.ok(gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(.8,44,dt),charge:.8,angle:44})<80);
   }
 });

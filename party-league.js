@@ -1,7 +1,7 @@
 /* Pure tournament rules. UI and mini-game execution live in party-league-ui.js. */
 (function(root){
   'use strict';
-  const TAG=['mobSpeedRacer','summonMaster','linkedCartBlast'];
+  const TAG=['mobSpeedRacer','summonMaster','linkedCartBlast','treasureDuoParty'];
   const pick=(a,r)=>a[Math.floor(r()*a.length)];
   function program(pool,random=Math.random){
     if(!pool.length)throw Error('League needs a game pool');

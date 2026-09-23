@@ -2,13 +2,14 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-function setup(key,random=.9){
+function setup(key,random=.9,teamsOverride=null){
   let html='',buttons=[],tiles=[],nodes={},clock=0,id=0,finished=null;
   const timers=new Map();
   const element=()=>({textContent:'',classList:{toggle(){},remove(){}},disabled:false});
   const choices={set innerHTML(value){buttons=[...value.matchAll(/data-choice="(\d+)"[^>]*>(.*?)<\/button>/g)].map(m=>({...element(),label:m[2],dataset:{choice:m[1]}}));}};
   const screen={set innerHTML(value){html=value;buttons=[];nodes={};for(const m of value.matchAll(/id="([^"]+)"/g))nodes[m[1]]=element();nodes.eventChoices=choices;nodes.call=element();tiles=value.includes('party-bridge')?[element(),element(),element()]:[];},querySelector(q){return q==='.party-event-call'?nodes.call:nodes[q.slice(1)];},querySelectorAll(q){return q==='[data-choice]'?buttons:q==='.party-bridge div'?tiles:[];}};
   const api={screen,esc:s=>s,valid:()=>true,begin:()=>1,top(){},beep(){},round:()=>0,solo:()=>false,games:[{key,title:key}],teams:()=>[{name:'A',members:[{id:'p',name:'Player',img:'p',cpu:false,rank:'B'}]},{name:'B',members:[{id:'c',name:'CPU',img:'c',cpu:true,rank:'B'}]}],representatives(){},finish(i,slots){finished=slots;}};
+  if(teamsOverride)api.teams=()=>teamsOverride;
   const window={MobPartyCore:{cpuScore:()=>50}};
   const math=Object.create(Math);math.random=()=>random;
   vm.runInNewContext(fs.readFileSync(require.resolve('../party-games.js'),'utf8'),{window,Math:math,setTimeout(fn,ms){timers.set(++id,{fn,time:clock+ms});return id},clearTimeout(i){timers.delete(i)}});
@@ -22,6 +23,14 @@ test('death-game elimination waits for explicit acknowledgement and scores once'
   assert.match(h.html,/ELIMINATED/);await h.tick();assert.match(h.buttons[0].label,/確認/);
   assert.equal(await h.tick(),false);assert.match(h.html,/ELIMINATED/);assert.equal(h.finished,null);
   await h.click();assert.match(h.html,/RESULT/);await h.click();assert.deepEqual(Array.from(h.finished,s=>s.score).sort((a,b)=>a-b),[70,100]);
+});
+test('40-player death game eliminates exactly 10, 15, 10, 2, 2 players and one survives',async()=>{
+  const teams=Array.from({length:20},(_,i)=>({name:'Team '+i,members:[0,1].map(j=>({id:i+'-'+j,name:'CPU '+i+'-'+j,img:'c',cpu:true}))}));
+  const h=setup('deathGameChallenge',.7,teams);await h.settle();
+  for(let i=0;i<150&&!h.finished;i++){if(h.buttons.some(b=>b.onclick))await h.click();else assert.ok(await h.tick());}
+  assert.ok(h.finished);
+  const buckets={};for(const s of h.finished)buckets[s.score]=(buckets[s.score]||0)+1;
+  assert.deepEqual(buckets,{10:10,30:15,50:10,65:2,80:2,100:1});
 });
 test('bridge wrong route loses lives and eliminates after two mistakes',async()=>{
   const h=setup('colorBridgeParty',.9);await h.settle();
@@ -41,4 +50,11 @@ test('treasure scouting is single use; safe chest gains points and exit banks th
   await h.tick();assert.match(h.html,/10点/);await h.tick();await h.click();
   await h.click();assert.equal(h.buttons.length,3);await h.click(2);await h.tick();await h.tick();await h.click();await h.click();
   assert.equal(h.finished.find(s=>s.id==='p').score,10);
+});
+for(const key of ['treasureRuneParty','treasureDuoParty'])test(key+' completes and returns bounded scores for every entrant',async()=>{
+  const teams=Array.from({length:2},(_,i)=>({name:'Team '+i,members:[0,1].map(j=>({id:i+'-'+j,name:'CPU '+i+'-'+j,img:'c',cpu:true}))}));
+  const h=setup(key,.7,teams);await h.settle();
+  for(let i=0;i<200&&!h.finished;i++){if(h.buttons.some(b=>b.onclick))await h.click();else assert.ok(await h.tick());}
+  assert.equal(h.finished.length,4);assert.ok(h.finished.every(s=>Number.isFinite(s.score)&&s.score>=0&&s.score<=100));
+  if(key==='treasureDuoParty'){assert.equal(h.finished[0].score,h.finished[1].score);assert.equal(h.finished[2].score,h.finished[3].score);}
 });
