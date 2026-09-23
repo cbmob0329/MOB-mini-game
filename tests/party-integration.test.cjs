@@ -6,12 +6,36 @@ const core=require('../party-core.js');
 function engine(){
   const element={addEventListener(){},removeEventListener(){},classList:{add(){},remove(){},contains(){return false;}},querySelector(){return null;},querySelectorAll(){return [];},style:{setProperty(){}},setAttribute(){},removeAttribute(){}};
   const document={addEventListener(){},getElementById(){return element;},querySelector(){return element;},querySelectorAll(){return [];},documentElement:element,body:element};
-  const window={MobPartyCore:core,MobPartyUI:{create(){return {};}},MobPartyGames:{create(){return {};}},addEventListener(){}};
-  const context=vm.createContext({window,document,console,Math,performance:{now:()=>0},setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,cancelAnimationFrame(){},Image:class{},URL,localStorage:{getItem(){return null;},setItem(){}}});
+  const pending=[];
+  const window={MobPartyCore:core,MobPartyLeague:require('../party-league.js'),MobPartyLeagueUI:{create(api){window.leagueAdapter=api;return {stop(){}};}},MobPartyUI:{create(){return {};}},MobPartyGames:{create(){return {};}},addEventListener(){}};
+  const context=vm.createContext({window,document,console,Math,performance:{now:()=>0},setTimeout:fn=>{pending.push(fn);return pending.length;},clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,cancelAnimationFrame(){},Image:class{},URL,localStorage:{getItem(){return null;},setItem(){}}});
   let source=fs.readFileSync(require.resolve('../game.js'),'utf8');
   source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
-  vm.runInContext(source,context);return window.__test;
+  vm.runInContext(source,context);return {...window.__test,league:window.leagueAdapter,flush(){while(pending.length)pending.shift()();}};
 }
+
+test('league adapter supports 40 entrants and freely assigned eight humans',()=>{
+  const e=engine(),players=Array.from({length:40},(_,i)=>({id:i<8?'p'+(i+1):'leagueCpu'+i,name:'Player '+i,cpu:i>=8,characterRank:'A'}));
+  const teams=Array.from({length:20},(_,i)=>({id:'L'+i,name:'Team '+i,members:[players[i].id,players[39-i].id]}));
+  [teams[0].members[1],teams[7].members[0]]=[teams[7].members[0],teams[0].members[1]];
+  e.league.configure(players,teams);
+  assert.equal(e.participants().length,40);assert.equal(e.participants().filter(p=>!p.cpu).length,8);
+  assert.deepEqual(Array.from(e.MODES.configured.teams.L0),['p1','p8']);
+  assert.deepEqual(Array.from(e.MODES.configured.teams.L7),['leagueCpu39','leagueCpu32']);
+  assert.equal(e.getState().competitionStarted,true);
+});
+
+test('CPU tag heats return four finite scores and team-shared results',()=>{
+  const e=engine(),players=Array.from({length:40},(_,i)=>({id:'leagueCpu'+i,name:'CPU '+i,cpu:true,characterRank:'A'}));
+  const teams=Array.from({length:20},(_,i)=>({id:'L'+i,name:'Team '+i,members:players.slice(i*2,i*2+2).map(p=>p.id)}));
+  e.league.configure(players,teams);
+  for(const key of require('../party-league.js').TAG){
+    let result=null;e.league.run(key,teams.slice(0,2),{round:3},scores=>result=scores);e.flush();
+    assert.equal(Object.keys(result).length,4,key);
+    for(const t of teams.slice(0,2)){assert.equal(result[t.members[0]],result[t.members[1]],key);assert.ok(result[t.members[0]]>=0&&result[t.members[0]]<=100,key);}
+    if(key==='summonMaster')assert.equal(Object.values(result).reduce((a,b)=>a+b,0),200);
+  }
+});
 test('157 games have records; new games score directly on a 100-point scale',()=>{
   const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,157);
   for(const g of e.GAMES)assert.ok(state.records[g.key],g.key);

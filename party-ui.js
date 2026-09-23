@@ -28,12 +28,12 @@
         <div class="party-menu">
           <button id="partySolo" class="party-menu-button solo"><span class="party-menu-icon">01</span><span><small>SOLO PLAY</small><b>ソロプレイ</b><em>ひとりで、自己ベストに挑戦。</em></span><span aria-hidden="true">↗</span></button>
           <button id="partyMulti" class="party-menu-button multi"><span class="party-menu-icon">02</span><span><small>MULTI PLAY</small><b>マルチプレイ</b><em>2〜4人で、いっしょに熱くなろう。</em></span><span aria-hidden="true">↗</span></button>
-          <button id="partySettings" class="party-settings-link">⚙ 設定</button>
+          <button id="partyLeague" class="party-menu-button league"><span class="party-menu-icon">03</span><span><small>TAG BATTLE LEAGUE</small><b>タッグバトルリーグ</b><em>20チーム・40名 / プレイヤー最大8名</em></span><span>↗</span></button><button id="partySettings" class="party-settings-link">⚙ 設定</button>
         </div>
         <footer class="party-footer"><span><b>${api.activeIndices().length}</b> MINI GAMES</span><span>1台で交代プレイ</span><button id="partyGuide">遊び方を見る ↗</button></footer>
       </section>`);
       on('partySolo',()=>{count=1;selectCharacter();});
-      on('partyMulti',chooseCount);on('partySettings',showSettings);on('partyGuide',api.guide);
+      on('partyLeague',api.league);on('partyMulti',chooseCount);on('partySettings',showSettings);on('partyGuide',api.guide);
     }
     function chooseCount(){
       draw(`${backButton}${heading('01 / PLAYERS','何人で遊ぶ？','1台の端末を順番に交代して遊べます。')}<div class="party-counts">${[2,3,4].map(n=>`<button data-count="${n}"><span>${n}</span><b>人でプレイ</b></button>`).join('')}</div><p class="party-note">次は、ひとりずつキャラクターを選ぼう。</p>`);
