@@ -51,7 +51,16 @@
     return 'アクション';
   }
   function bridgeScore(step,lives){return clamp(step*10+Math.max(0,lives)*10,0,100);}
-  const core={groups,roster,cpuScore,cpuRaw,allocateTeams,representativeKeys,genre,bridgeScore};
+  function leagueCpuPairs(humanTeams,random=Math.random){
+    const used=new Set(humanTeams.flat().map(c=>c.id)),pool=roster.filter(c=>!used.has(c.id));
+    const result=humanTeams.map(t=>[...t]);
+    const take=group=>{const candidates=pool.filter(c=>!group||c.group===group),fallback=roster.filter(c=>!used.has(c.id)),matching=fallback.filter(c=>c.group===group),source=candidates.length?candidates:pool.length?pool:matching.length?matching:fallback;const c=source[Math.floor(random()*source.length)];const i=pool.indexOf(c);if(i>=0)pool.splice(i,1);return c;};
+    // Fill human partners first, then keep full CPU pairs within one collaboration.
+    result.filter(t=>t.length===1).forEach(t=>t.push(take(t[0].group)));
+    result.filter(t=>!t.length).forEach(t=>{const groups=[...new Set(pool.map(c=>c.group))].filter(g=>pool.filter(c=>c.group===g).length>=2);const g=groups[Math.floor(random()*groups.length)];t.push(take(g));t.push(take(t[0].group));});
+    return result;
+  }
+  const core={groups,roster,cpuScore,cpuRaw,allocateTeams,leagueCpuPairs,representativeKeys,genre,bridgeScore};
   if(typeof module!=='undefined'&&module.exports)module.exports=core;
   root.MobPartyCore=core;
 })(typeof window!=='undefined'?window:globalThis);
