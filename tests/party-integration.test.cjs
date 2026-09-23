@@ -9,11 +9,11 @@ function engine(){
   const window={MobPartyCore:core,MobPartyUI:{create(){return {};}},MobPartyGames:{create(){return {};}},addEventListener(){}};
   const context=vm.createContext({window,document,console,Math,performance:{now:()=>0},setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,cancelAnimationFrame(){},Image:class{},URL,localStorage:{getItem(){return null;},setItem(){}}});
   let source=fs.readFileSync(require.resolve('../game.js'),'utf8');
-  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
+  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
   vm.runInContext(source,context);return window.__test;
 }
-test('158 games have records; new games score directly on a 100-point scale',()=>{
-  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,158);
+test('157 games have records; new games score directly on a 100-point scale',()=>{
+  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,157);
   for(const g of e.GAMES)assert.ok(state.records[g.key],g.key);
   for(const key of ['colorBridgeParty','treasureEscapeParty']){const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(i>=0);assert.equal(e.performancePoints(i,80),80);}
 });
@@ -33,4 +33,47 @@ test('10 teams of 2 produce 20 distinct participants',()=>{
 test('rank-based CPU record generation yields finite records and scores for every game',()=>{
   const e=engine();const p=e.PLAYERS.find(p=>p.cpu);p.characterRank='SS';
   for(let i=0;i<e.GAMES.length;i++){e.simulateOneCpu(i,p);const raw=e.getState().records[e.GAMES[i].key][p.id],points=e.performancePoints(i,raw);assert.ok(Number.isFinite(raw),e.GAMES[i].key);assert.ok(Number.isFinite(points)&&points>=0&&points<=100,e.GAMES[i].key);}
+});
+
+test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
+  const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
+  assert.ok(!('boxing3DMob' in e.freshState().records));
+  assert.equal(e.activeGameIndices().length,157);
+  assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
+  assert.equal(e.GAMES.find(g=>g.key==='treasureEscapeParty').legacy,181);
+});
+
+test('mastery scoring preserves full marks but never rounds a near miss into 100',()=>{
+  const {masteryPoints:score}=engine();
+  for(const target of [990,105,.995]){
+    assert.equal(score(0,target),0);assert.equal(score(target,target),100);
+    assert.equal(score(target*2,target),100);assert.ok(score(target-.00001,target)<100);
+    let previous=0;for(let i=0;i<=100;i++){const points=score(target*i/100,target);assert.ok(points>=previous&&points<=100);previous=points;}
+  }
+  assert.ok(score(833,990,1.8)<80);assert.ok(score(100,105,1.6)<100);
+});
+
+// Evaluate the actual scoring expressions used by each playable implementation.
+function gameScore(name,pattern,variables){
+  const source=fs.readFileSync(require.resolve('../game.js'),'utf8');
+  const start=source.indexOf('async function start'+name+'('),end=source.indexOf('\nasync function ',start+1);
+  const match=source.slice(start,end).match(pattern);assert.ok(match,name);
+  return vm.runInNewContext(match[1],{...variables,Math,clamp:(v,a,b)=>Math.max(a,Math.min(b,v)),masteryPoints:engine().masteryPoints});
+}
+test('a spare and rally farming alone cannot award full marks',()=>{
+  const bowling=(knocked,shot)=>gameScore('Bowling3DMob',/const score=([^;]+);/,{knocked,shot});
+  assert.equal(bowling(10,1),100);assert.equal(bowling(10,2),85);assert.equal(bowling(9,2),81);
+  const hockey=(goals,bestRally)=>gameScore('Hockey3DMob',/const score=([^;]+);/,{goals,bestRally});
+  assert.equal(hockey(0,100),20);assert.equal(hockey(5,0),80);assert.equal(hockey(5,10),100);
+});
+test('climbing full marks require fast completion without wrong-side inputs',()=>{
+  const score=(index,sec,mistakes)=>gameScore('BuildingClimb3DMob',/score=(index>=10[^;]+);/,{index,sec,mistakes});
+  assert.equal(score(10,6,0),100);assert.ok(score(10,7,0)<100);assert.ok(score(10,6,1)<100);assert.ok(score(9,5,0)<70);
+});
+test('shot-put perfect distance is reachable at multiple frame rates but not with partial charge',()=>{
+  function distance(charge,angle,dt){let y=1.35,z=.15,vy=Math.sin(angle*Math.PI/180)*(8.5+charge*10.8),vz=-Math.cos(angle*Math.PI/180)*(8.5+charge*10.8);while(y>.25){vy-=9.8*dt;y+=vy*dt;z+=vz*dt;}return (-z-1)*2.8;}
+  for(const dt of [1/120,1/60,.025]){
+    assert.equal(gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(1,44,dt)}),100);
+    assert.ok(gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(.8,44,dt)})<80);
+  }
 });
