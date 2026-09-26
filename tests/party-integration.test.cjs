@@ -10,7 +10,7 @@ function engine(){
   const window={MobPartyCore:core,MobPartyLeague:require('../party-league.js'),MobPartyLeagueUI:{create(api){window.leagueAdapter=api;return {stop(){}};}},MobPartyUI:{create(){return {};}},MobPartyGames:{create(){return {};}},addEventListener(){}};
   const context=vm.createContext({window,document,console,Math,performance:{now:()=>0},setTimeout:fn=>{pending.push(fn);return pending.length;},clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,cancelAnimationFrame(){},Image:class{},URL,localStorage:{getItem(){return null;},setItem(){}}});
   let source=fs.readFileSync(require.resolve('../game.js'),'utf8');
-  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
+  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,hoppingHasSupport,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
   vm.runInContext(source,context);return {...window.__test,league:window.leagueAdapter,flush(){while(pending.length)pending.shift()();}};
 }
 
@@ -69,7 +69,7 @@ test('rank-based CPU record generation yields finite records and scores for ever
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,158);
+  assert.equal(e.activeGameIndices().length,140);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
   assert.equal(e.GAMES.find(g=>g.key==='treasureEscapeParty').legacy,181);
 });
@@ -85,6 +85,28 @@ test('mastery scoring preserves full marks but never rounds a near miss into 100
 });
 
 // Evaluate the actual scoring expressions used by each playable implementation.
+test('retired game numbers are excluded everywhere and 025 remains available',()=>{
+  const e=engine(),numbers=e.activeGameIndices().map(i=>e.GAMES[i].no);
+  for(const n of [18,19,39,42,48,50,51,53,55,59,60,63,65,67,68,70,159,160])assert.ok(!numbers.includes(n),String(n));
+  assert.ok(numbers.includes(25));assert.ok(!e.league.pool().includes('treasureDuoParty'));
+});
+test('walking off a hopping platform releases grounded state; a platform below cannot hold a player in midair',()=>{
+  const {hoppingHasSupport:support}=engine(),platforms=[{x:100,y:28,h:12,w:78}];
+  assert.equal(support(platforms,100,40),true);assert.equal(support(platforms,147,40),true);
+  assert.equal(support(platforms,149,40),false);assert.equal(support(platforms,100,80),false);
+});
+test('requested score boosts preserve zero and cap full marks',()=>{
+  const e=engine(),score=(key,v)=>e.performancePoints(e.GAMES.findIndex(g=>g.key===key),v);
+  assert.equal(score('overlapMaster',64),80);assert.equal(score('overlapMaster',0),0);
+  assert.equal(score('heroMaybe',60),69);assert.equal(score('heroMaybe',100),100);
+  assert.equal(score('giantMob',12),50);assert.equal(score('giantMob',24),100);
+  assert.ok(score('breakdance',20)>51);assert.equal(score('breakdance',40),0);
+});
+test('catcher awards four points per figure and change detection rewards faster answers',()=>{
+  for(const [gotCount,expected] of [[0,0],[1,4],[24,96],[25,100],[33,100]])assert.equal(gameScore('Catcher',/function scoreNow\(\)\s*\{\s*return ([^;]+);/,{gotCount}),expected);
+  const score=t=>gameScore('ChangeMob',/sc=(clamp\(Math\.floor[^;]+);/,{t});
+  assert.equal(score(1000),100);assert.equal(score(4000),70);assert.equal(score(7000),40);assert.equal(score(12000),10);
+});
 test('brake rewards close stops while keeping crashes and distant stops at zero',()=>{
   const e=engine(),index=e.GAMES.findIndex(g=>g.key==='brake');
   for(const [gap,expected] of [[0,100],[.5,100],[.6,99],[3,95],[6,85],[10,70],[20,30],[30,0],[999,0]])assert.equal(e.performancePoints(index,gap),expected,`gap ${gap}`);

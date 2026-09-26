@@ -6,15 +6,22 @@ const points=(s,fn)=>Object.fromEntries(s.active.flatMap(id=>s.teams.find(t=>t.i
 const play=(s,fn)=>L.submit(s,points(s,fn),L.next(s,()=>0));
 function qualified(){const s=fresh();for(let i=0;i<10;i++)play(s,t=>100-t*3);return s;}
 function finals(){const s=qualified();for(let i=0;i<3;i++)play(s,t=>100-t*3);return s;}
-test('schedule matches fixed games, tag-only third round and two bonus rounds',()=>{
-  const s=fresh();assert.deepEqual(s.schedule.qualifier,['monsterBoxMob','reaction','mobSpeedRacer','ohajikiMob','reaction','reaction','reaction','reaction','deathGameChallenge','amidakujiMob']);
+test('schedule matches fixed games, tag-only third round and four bonus rounds',()=>{
+  const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','reaction','mobSpeedRacer','ohajikiMob','catcher','individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob']);
   assert.deepEqual(s.schedule.repechage,['longJumpMob','cardShop','bowling3DMob']);
   assert.deepEqual(s.schedule.final,['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge']);
-  for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,9].includes(i)?2:1);play(s,t=>100-t);}
+  for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,4,6,9].includes(i)?2:1);play(s,t=>100-t);}
 });
 test('40 independent entrants, direct eight and reset twelve-team repechage',()=>{
   const s=qualified();assert.equal(s.teams.flatMap(t=>t.members).length,40);assert.equal(s.direct.length,8);assert.equal(s.active.length,12);assert.ok(s.active.every(t=>!s.direct.includes(t)));assert.equal(s.phase,'repechage');assert.deepEqual(s.scores,{});assert.deepEqual(s.personal,{});
   assert.equal(s.history[3].teamPoints.L0,400);assert.equal(s.history[9].teamPoints.L0,400);
+});
+test('game 6 offers three unique individual games and death round doubles only the winner',()=>{
+  const s=fresh();s.round=5;const d=L.next(s,()=>.4);assert.equal(d.choices.length,3);assert.equal(new Set(d.choices).size,3);assert.ok(d.choices.every(k=>!L.TAG.includes(k)));
+  s.round=8;const scores=points(s,()=>50);scores.a0=100;const r=L.submit(s,scores,L.next(s));assert.equal(r.record.points.a0,200);assert.equal(r.record.points.b0,50);assert.equal(r.record.teamPoints.L0,250);assert.equal(r.record.rawPoints.a0,100);
+});
+test('random matchup shuffle preserves all twenty distinct teams',()=>{
+  const original=teams().map(t=>t.id),order=L.sample(original,20,()=>.25);assert.equal(order.length,20);assert.deepEqual([...order].sort(),[...original].sort());assert.notDeepEqual(order,original);
 });
 test('only boundary ties enter overtime, tied survivors replay until slots are resolved',()=>{
   const s=fresh();let result;for(let i=0;i<10;i++)result=play(s,t=>t<7?100:t<10?80:20);
