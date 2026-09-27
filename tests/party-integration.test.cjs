@@ -10,7 +10,7 @@ function engine(){
   const window={MobPartyCore:core,MobPartyLeague:require('../party-league.js'),MobPartyLeagueUI:{create(api){window.leagueAdapter=api;return {stop(){}};}},MobPartyUI:{create(){return {};}},MobPartyGames:{create(){return {};}},addEventListener(){}};
   const context=vm.createContext({window,document,console,Math,performance:{now:()=>0},setTimeout:fn=>{pending.push(fn);return pending.length;},clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,cancelAnimationFrame(){},Image:class{},URL,localStorage:{getItem(){return null;},setItem(){}}});
   let source=fs.readFileSync(require.resolve('../game.js'),'utf8');
-  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,show1990Final,startTestRecord(i){activeGameIndex=i;gameSessionActive=true;},getHTML(){return screen.innerHTML;},hoppingHasSupport,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
+  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,points1990,show1990Final,startTestRecord(i){activeGameIndex=i;gameSessionActive=true;},getHTML(){return screen.innerHTML;},hoppingHasSupport,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
   vm.runInContext(source,context);return {...window.__test,league:window.leagueAdapter,flush(){while(pending.length)pending.shift()();}};
 }
 
@@ -100,7 +100,7 @@ test('requested score boosts preserve zero and cap full marks',()=>{
   assert.equal(score('overlapMaster',64),80);assert.equal(score('overlapMaster',0),0);
   assert.equal(score('heroMaybe',60),69);assert.equal(score('heroMaybe',100),100);
   assert.equal(score('giantMob',12),50);assert.equal(score('giantMob',24),100);
-  assert.ok(score('breakdance',20)>51);assert.equal(score('breakdance',40),0);
+  assert.equal(score('breakdance',20),20);assert.equal(score('breakdance',40),40);
 });
 test('catcher awards four points per figure and change detection rewards faster answers',()=>{
   for(const [gotCount,expected] of [[0,0],[1,4],[24,96],[25,100],[33,100]])assert.equal(gameScore('Catcher',/function scoreNow\(\)\s*\{\s*return ([^;]+);/,{gotCount}),expected);
@@ -145,10 +145,15 @@ test('change detection deducts fifteen points per mistake while allowing recover
 test('1990 world final uses the shared 100-point score and replay/other-game navigation',()=>{
   for(const rank of [1,10,40]){
     const e=engine(),state=e.freshState(),p={id:'p1',name:'Test',img:'icon/01.png'},index=e.GAMES.findIndex(g=>g.key==='breakdance');
-    state.freePlay=true;state.records.breakdance[p.id]=rank;e.setState(state);e.startTestRecord(index);
+    state.freePlay=true;state.records.breakdance[p.id]=e.points1990(12);e.setState(state);e.startTestRecord(index);
     e.show1990Final(p,0,12,rank);
-    const html=e.getHTML();assert.ok(html.includes('record-score100-v204">'+e.performancePoints(index,rank)+'<small>/100 pt</small>'));
+    const html=e.getHTML();assert.ok(html.includes('record-score100-v204">'+e.points1990(12)+'<small>/100 pt</small>'));
     assert.ok(html.includes('1990を12周'));assert.ok(html.includes('世界順位 '+rank+'位'));
     for(const id of ['soloReplay','soloOther','soloHome'])assert.ok(html.includes('id="'+id+'"'));
   }
+});
+
+test('earned point games keep 69 earned points as 69 score and cap at 100',()=>{
+  const e=engine();for(const key of ['cardShop','breakdance']){const i=e.GAMES.findIndex(g=>g.key===key);for(let n=0;n<=100;n++)assert.equal(e.performancePoints(i,n),n,key);assert.equal(e.performancePoints(i,180),100);}
+  for(const [laps,points] of [[0,0],[1,6],[8,50],[12,75],[15,94],[16,100],[20,100]])assert.equal(e.points1990(laps),points);
 });

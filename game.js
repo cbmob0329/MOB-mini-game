@@ -2993,7 +2993,7 @@ function scoreRuleForGame(index){
     "2.50秒=100点 / 6.00秒以上=0点",
     "2000m=100点 / 0m=0点",
     "20体以上=100点 / 15体=75点 / 0体=0点",
-    "世界1位=100点 / 世界40位=0点",
+    "獲得ポイント＝スコア / 16周以上100点 / 周回数÷16×100を四捨五入（世界順位は演出）",
     "20回以上=100点 / 0回=0点",
     "18箱以上=100点 / 12箱で約75点 / 0箱=0点",
     "1体4点 / 25体以上=100点",
@@ -3052,7 +3052,7 @@ function scoreRuleForGame(index){
     "5個合計5=1点 / 合計30=100点",
     "20 COMBO=100点 / 0 COMBO=0点",
     "10.00秒以内=100点 / 30.00秒以上=0点",
-    "90ポイント以上=100点 / 30ポイント以下=0点",
+    "獲得ポイント＝スコア / 6枚の合計・最大100点",
     "3秒以内に8個全部乗せる / 離した位置がそのまま着地点 / 配置も採点",
     "固定配置の滅→剛→力を5秒で順番連打 / ENERGY最大100点",
     "地面から約8pxでSTOP=100点 / 接触=0点",
@@ -3138,7 +3138,7 @@ function showGameIntro(index){
   }else if(legacyIndex===4){
     rules=`<li>1体ずつつかんで積みます。</li><li>10秒。時間が経つほど風が強化。中央への連続PERFECTで残り時間が増えます。</li>`;
   }else if(legacyIndex===5){
-    rules=`<li>12秒間の4択。以前より見分けやすい数字が多く出ます。</li><li>左上・右上・左下・右下のどこか1つだけが1990。罠の出現率も低下しています。</li>`;
+    rules=`<li>12秒間の4択。以前より見分けやすい数字が多く出ます。</li><li>左上・右上・左下・右下のどこか1つだけが1990。罠の出現率も低下しています。</li><li>16周で100点（周回数÷16×100を四捨五入）。5連続正解でさらに1周。罠は1周減点。最大100点。世界順位による再換算はありません。</li>`;
   }else if(legacyIndex===6){
     rules=`<li>3体を少し近めの横一列に配置。</li><li>足元の小さいエネルギーをP1 → P2 → P3が順番にジャンプ。</li><li>成功するほど急激に高速化。</li>`;
   }else if(legacyIndex===7){
@@ -3254,7 +3254,7 @@ function showGameIntro(index){
   }else if(legacyIndex===63){
     rules=`<li>以前より簡単で抜け道の多い迷路。タップした場所へモブくんが歩きます。</li><li>ビリビリは2体だけ。ステージ内をゆっくりランダム移動し、触れると1秒スタンします。</li>`;
   }else if(legacyIndex===64){
-    rules=`<li>中央にMOBと描かれたパックを1つ購入して開封します。1パック6枚入り。</li><li>「開封！」を押すと1枚ずつカードが表示され、レア度ごとの演出が入ります。</li><li>最後に6枚のカードが並び、合計ポイントを発表。合計ポイントが高いほど有利です。</li><li>レア度は R=5点 / SR=8点 / SSR=10点 / UR=15点 / MOB=30点。</li>`;
+    rules=`<li>中央にMOBと描かれたパックを1つ購入して開封します。1パック6枚入り。</li><li>「開封！」を押すと1枚ずつカードが表示され、レア度ごとの演出が入ります。</li><li>最後に6枚のカードが並び、合計ポイントを発表。獲得ポイントがそのままスコアになります（最大100点）。</li><li>レア度は R=5点 / SR=8点 / SSR=10点 / UR=15点 / MOB=30点。合計100点で満点です。</li>`;
   }else if(legacyIndex===67){
     rules=`<li>モブくんが台から飛び出し、逆さになって高速落下します。</li><li>地面ギリギリだと思った瞬間にSTOP。</li><li>約8px手前がPERFECT。地面接触は0点。</li><li>成功するとゴムが縮み、モブくんが大きく跳ね返ります。</li>`;
   }else if(legacyIndex===68){
@@ -4288,6 +4288,8 @@ const NINETEEN90_DECOYS=[
 const WORLD_COUNTRIES=["アメリカ","日本","ロシア","ウクライナ","韓国","フランス","ドイツ","ベネズエラ","ブラジル","カナダ","イギリス","イタリア","スペイン","ポルトガル","オランダ","ベルギー","スイス","オーストリア","ポーランド","チェコ","スロバキア","ハンガリー","ルーマニア","ブルガリア","ギリシャ","トルコ","ジョージア","カザフスタン","モンゴル","中国","台湾","香港","タイ","ベトナム","フィリピン","インドネシア","マレーシア","シンガポール","インド","オーストラリア","ニュージーランド","メキシコ","アルゼンチン","チリ","コロンビア","ペルー","南アフリカ","エジプト","モロッコ","ケニア"];
 const COUNTRY_1990_BIAS={"アメリカ":5.2,"日本":4.8,"ロシア":4.5,"ウクライナ":4.2,"韓国":3.9,"フランス":3.5,"ドイツ":3.2,"ベネズエラ":3.0};
 
+function points1990(laps){return clamp(Math.round(Math.max(0,laps)/16*100),0,100);}
+
 function build1990WorldRanking(laps){
   const strong=Object.keys(COUNTRY_1990_BIAS);
   const others=shuffle(WORLD_COUNTRIES.filter(x=>!strong.includes(x))).slice(0,31);
@@ -4349,7 +4351,7 @@ async function startGanbareMob(p,humanIndex,runId){
 
     <div class="ganbare-hud n1990-hud">
       <div class="ganbare-time"><span>TIME</span><b id="ganbareTime">12.00</b></div>
-      <div class="ganbare-count"><span>1990</span><b id="hitCount">0周</b></div>
+      <div class="ganbare-count"><span>獲得ポイント</span><b id="hitCount">0 pt</b></div>
       <div class="ganbare-count"><span>STREAK</span><b id="streakCount">0</b></div>
     </div>
 
@@ -4359,7 +4361,7 @@ async function startGanbareMob(p,humanIndex,runId){
 
     <div class="ganbare-message">
       <b id="ganbareMessage">4つの中から1990を探せ</b>
-      <span>5連続で BONUS +1周 / 罠は -1周</span>
+      <span>16周で100点 / 5連続で+1周 / 罠は−1周 / 最大100点</span>
     </div>
   </div>`;
 
@@ -4457,7 +4459,7 @@ async function startGanbareMob(p,humanIndex,runId){
       }
     }
 
-    hitEl.textContent=`${finalLaps()}周`;
+    hitEl.textContent=`${points1990(finalLaps())} pt`;
     streakEl.textContent=streak;
 
     buttons.forEach(b=>b.disabled=true);
@@ -4496,7 +4498,7 @@ async function startGanbareMob(p,humanIndex,runId){
       const laps=finalLaps();
       const ranking=build1990WorldRanking(laps);
       const mob=ranking.find(x=>x.mob);
-      state.records.breakdance[p.id]=mob.rank;
+      state.records.breakdance[p.id]=points1990(laps);
 
       setTimeout(()=>show1990Summary(p,humanIndex,{
         hits,bonus,penalty,laps,ranking,rank:mob.rank
@@ -4512,7 +4514,7 @@ async function startGanbareMob(p,humanIndex,runId){
 function show1990Summary(p,humanIndex,data){
   clearGameFit();
   screen.innerHTML=`<div class="ganbare-transition n1990-summary"><span class="kicker">1990 COMPLETE</span><h2>モブくんは世界大会で<br><strong>1990を${data.laps}周</strong>披露した</h2>
-    <div class="ganbare-summary"><div><span>1990 HIT</span><b>${data.hits}</b></div><div><span>5 STREAK BONUS</span><b>+${data.bonus}</b></div><div><span>TRAP</span><b>-${data.penalty}</b></div></div>
+    <p class="n1990-earned">獲得ポイント <strong>${points1990(data.laps)} / 100 pt</strong></p><div class="ganbare-summary"><div><span>1990 HIT</span><b>${data.hits}</b></div><div><span>5 STREAK BONUS</span><b>+${data.bonus}</b></div><div><span>TRAP</span><b>-${data.penalty}</b></div></div>
     <button id="worldRankingBtn" class="primary">世界ランキングを見る</button></div>`;gameTop();
   document.getElementById("worldRankingBtn").addEventListener("click",()=>show1990WorldRanking(p,humanIndex,data),{once:true});
 }
@@ -4528,7 +4530,7 @@ function show1990WorldRanking(p,humanIndex,data){
 function show1990Final(p,humanIndex,laps,rank){
   // Preserve the world tournament presentation, then use the shared score/handoff flow.
   const gameIndex=GAMES.findIndex(g=>g.key==='breakdance');
-  recordScreen(gameIndex,p,humanIndex,`${rank}<small>位</small>`,`世界大会で1990を${laps}周披露 / 世界順位 ${rank}位`);
+  recordScreen(gameIndex,p,humanIndex,`${points1990(laps)}<small>pt</small>`,`世界大会で1990を${laps}周披露 / 世界順位 ${rank}位`);
 }
 
 // GAME 7 -------------------------------------------------
@@ -20087,7 +20089,7 @@ async function startCardShop(p,humanIndex,runId){
   }
 
   const pulls=Array.from({length:6},draw);
-  const total=pulls.reduce((sum,c)=>sum+c.points,0);
+  const total=Math.min(100,pulls.reduce((sum,c)=>sum+c.points,0));
 
   screen.innerHTML=`<div class="cardshop-v128">
     <div class="cardshop-head-v128">
@@ -27255,7 +27257,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===4){
     state.records.stack[p.id]=ultra?randi(17,20):randi(10,17);
   }else if(legacyIndex===5){
-    state.records.breakdance[p.id]=ultra?1:randi(1,12);
+    state.records.breakdance[p.id]=points1990(ultra?16:randi(6,15));
   }else if(legacyIndex===6){
     state.records.crisis[p.id]=ultra?randi(22,28):randi(12,23);
   }else if(legacyIndex===7){
@@ -27413,7 +27415,7 @@ function simulateOneCpu(gameIndex,p){
 
     let total=0;
     for(let i=0;i<6;i++)total+=cpuCardPoints();
-    state.records.cardShop[p.id]=total;
+    state.records.cardShop[p.id]=Math.min(100,total);
   }else if(legacyIndex===67){
     state.records.bungeeMob[p.id]=ultra?randi(80,95):randi(32,79);
   }else if(legacyIndex===68){
@@ -28033,7 +28035,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===2)return clamp(Math.round((6000-v)/3500*100),0,100);
   if(legacyIndex===3)return clamp(Math.round((v/10)/2000*100),0,100);
   if(legacyIndex===4)return clamp(Math.round(v/20*100),0,100);
-  if(legacyIndex===5)return clamp(Math.round(Math.pow(Math.max(0,(40-v)/39),.75)*100),0,100);
+  if(legacyIndex===5)return clamp(Math.round(v),0,100);
   if(legacyIndex===6)return clamp(Math.round(v/20*100),0,100);
   if(legacyIndex===7)return masteryPoints(v,18,.68);
   if(legacyIndex===8)return clamp(Math.round(v),0,100);
@@ -28140,11 +28142,7 @@ function performancePoints(gameIndex,v){
       0,100
     );
   }
-  if(legacyIndex===64){
-    if(v<=30)return 0;
-    if(v>=90)return 100;
-    return clamp(Math.round((v-30)/60*100),0,100);
-  }
+  if(legacyIndex===64)return clamp(Math.round(v),0,100);
   if(legacyIndex===71)return clamp(Math.round(v/35*100),0,100);
   if(legacyIndex===79)return clamp(Math.round(v/225*100),0,100);
   if(legacyIndex===80)return clamp(110-Math.round(v)*10,0,100);
@@ -28231,7 +28229,7 @@ function performancePoints(gameIndex,v){
 
 function rankRecords(gameIndex){
   const legacyIndex=legacyGameIndex(gameIndex);
-  const key=GAMES[gameIndex].key,records=state.records[key],ascRaw=(legacyIndex===0||legacyIndex===2||legacyIndex===5||legacyIndex===21||legacyIndex===23||legacyIndex===24||legacyIndex===25||legacyIndex===26||legacyIndex===27||legacyIndex===37||legacyIndex===40||legacyIndex===47||legacyIndex===51||legacyIndex===53||legacyIndex===63||legacyIndex===80||legacyIndex===86||legacyIndex===89||legacyIndex===92||legacyIndex===93||legacyIndex===96||legacyIndex===105||legacyIndex===127||legacyIndex===136||legacyIndex===137||legacyIndex===141);
+  const key=GAMES[gameIndex].key,records=state.records[key],ascRaw=(legacyIndex===0||legacyIndex===2||legacyIndex===21||legacyIndex===23||legacyIndex===24||legacyIndex===25||legacyIndex===26||legacyIndex===27||legacyIndex===37||legacyIndex===40||legacyIndex===47||legacyIndex===51||legacyIndex===53||legacyIndex===63||legacyIndex===80||legacyIndex===86||legacyIndex===89||legacyIndex===92||legacyIndex===93||legacyIndex===96||legacyIndex===105||legacyIndex===127||legacyIndex===136||legacyIndex===137||legacyIndex===141);
   const arr=participants().filter(p=>!state.partyRepresentatives||state.partyRepresentatives.includes(p.id)).map(p=>({p,value:records[p.id]}));
   if(mode().performance){
     arr.forEach(e=>e.points=performancePoints(gameIndex,e.value));
@@ -28269,7 +28267,7 @@ function formatRecord(gameIndex,v){
   if(legacyIndex===2)return `${(v/1000).toFixed(2)}秒`;
   if(legacyIndex===3)return `${(v/10).toFixed(1)}m`;
   if(legacyIndex===4)return `${v}体`;
-  if(legacyIndex===5)return `世界${v}位`;
+  if(legacyIndex===5)return `${Math.round(v)}pt`;
   if(legacyIndex===6)return `${v}回`;
   if(legacyIndex===7)return `${v}箱`;
   if(legacyIndex===8)return `${Math.round(v)}pt`;
