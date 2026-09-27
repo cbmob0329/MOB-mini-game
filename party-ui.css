@@ -247,3 +247,87 @@ html[data-party-motion=off] :is(.party-results *,.party-fighter-select *,.ready-
   .wallpaper-tools p{font-size:10px;line-height:1.3;margin:6px 0}
   .wallpaper-workspace canvas{max-height:55dvh}
 }
+/* V11.48 shared gameplay contract: reserve controls, then allocate the playfield. */
+:root{--party-light-surface:#fffdf5;--party-light-ink:#172131;--party-dark-surface:#1c293b;--party-dark-ink:#fff}
+#screen.gameplay-fit>:is([class*="-shell"],[class$="-wrap"]){box-sizing:border-box;max-width:100%;height:100%;min-height:0;display:flex;flex-direction:column;gap:6px}
+#screen.gameplay-fit>div>:is(.game-head,[class*="-hud"],[class*="-controls"],button,.hint){flex-shrink:0}
+#screen.gameplay-fit>div>:is([class*="-stage"],[class*="-field"],[class*="-view"]){flex:1 1 0;min-height:0!important;max-height:none;height:auto!important}
+#screen.gameplay-fit :is([class*="-controls"],.mobile-safe-controls-v203){position:relative;bottom:auto;margin:0;flex-shrink:0}
+#screen.gameplay-fit :is([class*="-controls"],.mobile-safe-controls-v203) button{min-height:44px}
+#screen.gameplay-fit .game-head{margin:0;padding:3px 0;gap:6px}
+#screen.gameplay-fit .game-head h2{font-size:clamp(15px,4.5vw,22px);line-height:1.25;margin:0}
+#screen.gameplay-fit .game-head .lead{font-size:10px;margin:3px 0;line-height:1.3}
+.countdown-layer,.countdown-layer.stage-visible-v121{background:#19263c!important;opacity:1!important;backdrop-filter:none!important;position:fixed!important;inset:0!important;z-index:99999!important;color:#fff!important}
+.countdown-layer .count-number,.countdown-layer .count-label{color:#fff!important;text-shadow:none!important}
+body.countdown-active-v140 #screen{visibility:hidden!important}
+/* Light HUD/card surfaces always own their foreground as well. */
+#screen :is(.stat-box,.ganbare-hud>div,.blackjack-hud>div,.errand-hud>div,.n1990-choice4,.bj-card,.stack-callout){background-color:var(--party-light-surface);color:var(--party-light-ink)!important;text-shadow:none!important}
+#screen :is(.stat-box,.ganbare-hud>div,.blackjack-hud>div,.errand-hud>div,.n1990-choice4,.bj-card) :is(span,b,strong,small){color:var(--party-light-ink)!important;text-shadow:none!important}
+#screen .stack-wrap{display:flex;flex-direction:column;flex:1;min-height:0;gap:5px;overflow:visible}
+#screen .stack-stage{flex:1;min-height:0!important;height:auto!important}
+#screen .stack-hud{position:relative;inset:auto;flex-shrink:0}
+#screen .stack-callout{top:8px;left:50%;width:max-content;max-width:calc(100% - 20px);white-space:normal;font-size:12px;padding:5px 9px;line-height:1.35;text-align:center;box-sizing:border-box}
+#screen .stack-topline{flex-shrink:0}#screen .stack-topline h2{font-size:18px;margin:2px 0}
+#screen .stack-hint,#screen .stack-wrap>.hint{flex-shrink:0;font-size:11px;margin:2px;line-height:1.35}
+#screen .stack-sky-label{display:none}
+#screen .errand-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));flex:1;min-height:0;height:auto;overflow:visible;gap:3px;padding:0}
+#screen .errand-item{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0;min-height:0;padding:2px;border-width:1px;border-radius:5px}
+#screen .errand-item span{font-size:10px;line-height:1.1;overflow-wrap:anywhere;white-space:normal}#screen .errand-item b{font-size:12px}
+#screen .hero-maybe-scene{flex:1;min-height:90px;max-height:160px;position:relative;overflow:hidden}
+#screen .hero-choice-wheel{height:200px;min-height:170px;flex:1}
+#screen .hero-option-wheel i{display:block;font-style:normal;font-size:24px;line-height:1.2}
+#screen .hero-option-wheel{background:#fff9e2;color:#182338;border:2px solid #946626;box-shadow:0 3px 0 #523d29}
+#screen .hero-maybe-mob{filter:drop-shadow(0 0 12px #ffdc73)}
+#screen .hero-narration{background:#17243a;color:#fff;padding:6px 10px;border-radius:8px;font-size:13px;z-index:2}
+#screen .obsrace-goal-v202{top:auto;bottom:30px;height:160px}
+#screen .carpet-controls-v199 button{min-height:48px!important;font-size:22px}
+#screen .tama-basket-v170{top:25%}#screen .tama-zone-v170{pointer-events:none;color:#13213a;background:#fff5cd}
+#screen .em2220-dot{r:10px;stroke-width:3px;cursor:pointer}#screen .em2220-stage{touch-action:none}#screen .em2220-call{max-width:95%;white-space:normal;font-size:12px;color:#172131;background:#fff;padding:5px;pointer-events:none}
+#screen .room-prop-v127:disabled{opacity:.45}
+.curling48-shell{color:#162c45}.curling48-hud{display:flex;justify-content:space-between;background:#fff;padding:8px;border-radius:8px;border:1px solid #486880}
+.curling48-ice{position:relative;flex:1;min-height:150px;overflow:hidden;border:2px solid #62849c;border-radius:18px;background:repeating-linear-gradient(90deg,#effaff 0 38px,#deeff6 39px 40px);touch-action:none}
+.curling48-house{position:absolute;left:50%;top:25%;width:min(58%,160px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#fff 0 13%,#d44950 14% 33%,#fff 34% 55%,#28749d 56% 72%,transparent 73%)}
+.curling48-stone{position:absolute;width:32px;height:30px;border:3px solid #3e5971;border-radius:50%;background:#ffc951;transform:translate(-50%,-50%);box-shadow:0 4px 3px #0003;z-index:3}.curling48-stone img{width:100%;height:100%;object-fit:contain}
+.curling48-guide{position:absolute;left:50%;top:25%;height:61%;border-left:2px dashed #233f67;transform-origin:50% 100%;opacity:.5}
+.curling48-aim{display:flex;align-items:center;gap:14px;font-weight:bold;flex-shrink:0}.curling48-aim input{flex:1;min-height:44px;min-width:0}
+.curling48-power{position:relative;height:25px;background:#dbe6ee;border:2px solid #38546c;border-radius:5px;overflow:hidden;flex-shrink:0}.curling48-power i{display:block;height:100%;width:0;background:#2c779b}.curling48-power:after{content:'';position:absolute;left:53%;width:4%;top:0;bottom:0;border-inline:2px solid #132438;background:#ffe273}.curling48-power span{position:absolute;right:4px;top:2px;background:#fff;color:#14283d;font-size:11px}
+.curling48-call{margin:0;font-size:12px;line-height:1.4;min-height:34px;flex-shrink:0}.curling48-shell>button{min-height:48px;flex-shrink:0}
+@media(max-height:650px){#screen.gameplay-fit{padding-bottom:max(32px,env(safe-area-inset-bottom))!important}#screen .game-head .lead{display:none}#screen .hero-choice-wheel{min-height:150px}#screen .hero-maybe-scene{min-height:70px}#screen .errand-item span{font-size:9px}}
+#screen .n1990-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));flex:1;min-height:0;height:auto;gap:8px}
+#screen .n1990-choice4{display:flex;align-items:center;justify-content:center;flex-direction:row;gap:10px;min-height:44px;padding:6px;overflow:hidden}
+#screen .n1990-choice4 b{font-size:28px;line-height:1;position:static}#screen .n1990-mini-mob-v119{width:32px;height:34px;margin:0}
+#screen .n1990-shell h2{font-size:19px;line-height:1.2;margin:4px 0}#screen .n1990-shell .ganbare-message{margin:0;flex-shrink:0}
+#screen .curling48-ice{container-type:size}.curling48-house{width:min(58cqw,42cqh,160px)}
+#screen .hero-maybe-scene{flex:0 0 105px;min-height:70px;max-height:105px}
+#screen .hero-choice-wheel{flex:1;min-height:190px}
+#screen .hero-option-wheel{width:76px;height:76px;min-height:0;padding:4px}
+#screen .hero-option-wheel span{font-size:10px;line-height:1.2}
+#screen .stack-callout{right:auto!important;z-index:30}
+#screen .n1990-choice4.picked{background:#b9e8c8}#screen .n1990-choice4.wrong{background:#ffd7d4}#screen .n1990-choice4.bonus{background:#ffe39a}
+.hero-gain48{animation:hero-gain48 .4s ease-out}.hero-risk48{animation:hero-risk48 .3s ease-out}
+@keyframes hero-gain48{40%{box-shadow:inset 0 0 35px #ffdb5c,0 0 10px #ba842c}}
+@keyframes hero-risk48{40%{box-shadow:inset 0 0 28px #c54954}}
+@media(prefers-reduced-motion:reduce){.hero-gain48,.hero-risk48{animation:none}}
+/* Record screens reserve all navigation buttons just like gameplay controls. */
+#screen:has(.big-record) .ready-wrap{height:calc(100dvh - 115px);min-height:0;box-sizing:border-box;padding:4px 0 max(24px,env(safe-area-inset-bottom));display:flex}
+#screen:has(.big-record) .ready-card{height:100%;min-height:0;box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;background:#242439;color:#fff}
+#screen:has(.big-record) .ready-avatar{height:clamp(64px,17dvh,110px);width:120px;min-height:0;flex:1 1 90px;object-fit:contain}
+#screen:has(.big-record) :is(.record-label,.lead){font-size:12px;color:#f4f3ff!important;line-height:1.4;margin:0}
+#screen:has(.big-record) .big-record{font-size:30px;line-height:1.1;margin:0;color:#fff!important;text-shadow:none;flex-shrink:0}
+#screen:has(.big-record) .record-score100-v204{padding:5px 12px;font-size:22px;line-height:1.2;margin:0;color:#172131;background:#ffe57a;flex-shrink:0}
+#screen:has(.big-record) .ready-card>button{min-height:44px;width:100%;flex-shrink:0;margin:0;padding:8px;font-size:14px}
+#screen:has(.big-record) .ready-card>div[style="height:8px"]{display:none}
+/* Compact decoration leaves the full payment form and confirmation row visible. */
+#screen .ca227-shop{flex:1;min-height:0!important;height:auto!important;margin:3px 8px}
+#screen .ca227-shop:before{height:18px}
+#screen .ca227-customer{top:27px;height:48px}#screen .ca227-customer>b{font-size:8px;width:83px;padding:4px;left:37px}
+#screen .ca227-customer>i{width:31px;height:31px}
+#screen .ca227-register{top:25px;height:57px;width:132px;padding:3px}#screen .ca227-register>strong{font-size:19px}
+#screen .ca227-scanner{top:75px;height:17px}
+#screen .ca227-phase{top:96px;bottom:8px}
+#screen .ca227-change{grid-template-rows:48px minmax(44px,1fr) 20px 48px;gap:4px}
+#screen :is(.ca227-paid,.ca227-give){padding:2px}#screen :is(.ca227-paid b,.ca227-give b){font-size:16px}
+#screen :is(.ca227-paid i,.ca227-give em){font-size:8px}
+#screen .ca227-coins{min-height:44px}#screen .ca227-coins button{height:44px;min-height:44px;width:100%;aspect-ratio:auto;font-size:12px}
+#screen .ca227-bottom{flex-shrink:0;padding:4px;font-size:10px;margin:3px 8px}
+#screen :is(.ca227-paid,.ca227-give) :is(span,b,i,em){line-height:1.15;margin:0}

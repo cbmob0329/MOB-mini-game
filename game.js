@@ -289,7 +289,7 @@ const GAMES=[
   {no:14,key:"errand",title:"お使いモブくん",sub:"1000円を10秒で使い切る",legacy:17},
   {no:15,key:"dontHitMob",title:"モブくんを叩かないで",sub:"モグラだけを叩く10秒勝負",legacy:18},
   {no:16,key:"mobStop",title:"モブくんストップ",sub:"棒のギリギリで止める",legacy:19},
-  {no:17,key:"overlap",title:"重なる瞬間を狙え！",sub:"2つの円を10秒以内に重ねる",legacy:20},
+  {no:17,key:"overlap",title:"重なるモブくん",sub:"2つの円を10秒以内に重ねる",legacy:20},
   {no:18,key:"shutter",title:"モブくんシャッターチャンス",sub:"ジャンプの頂点を撮影",legacy:21},
   {no:19,key:"darts",title:"ダーツ1投勝負",sub:"縦・横ゲージの中央を狙う",legacy:23},
   {no:20,key:"parachute",title:"モブくんとパラシュート",sub:"開くタイミングで着地点を狙う",legacy:24},
@@ -334,7 +334,7 @@ const GAMES=[
   {no:59,key:"waterSlide",title:"モブくんウォータースライダー",sub:"波の横流れと障害物に耐えて10秒攻略",legacy:68},
   {no:60,key:"paperPlane",title:"モブくん紙飛行機研究所",sub:"完成済み機体へ翼を描いて実際に飛ばす",legacy:70},
   {no:61,key:"tankMob",title:"モブくん戦車に乗る",sub:"見下ろし戦車で4方向から迫るスライムを10秒撃退",legacy:71},
-  {no:62,key:"curlingMob",title:"モブくん氷上カーリング",sub:"1スワイプでハウス中央を狙う",legacy:72},
+  {no:62,key:"curlingMob",title:"モブくん氷上カーリング",sub:"方向とパワーを決める3投勝負。平均点で競う",legacy:72},
   {no:63,key:"bubbleMob",title:"モブくん巨大シャボン玉",sub:"画面中央の泡を見た目だけで限界まで膨らませる",legacy:73},
   {no:64,key:"changeMob",title:"モブくん何が変わった？",sub:"部屋の1ヶ所の変化を見抜く",legacy:74},
   {no:65,key:"baggageMob",title:"モブくん荷物検査",sub:"複数の箱が流れる検査ラインで「！」を1回勝負",legacy:75},
@@ -435,7 +435,7 @@ GAMES.push(
 );
 GAMES.push({no:159,key:'treasureRuneParty',title:'モブくんお宝ルーン迷宮',sub:'封印の記号を記憶して6部屋の遺跡へ。呪いでお宝を失う前に帰還！',legacy:182},{no:160,key:'treasureDuoParty',title:'モブくんお宝ツイン強奪',sub:'2VS2タッグ専用。偵察と回収を交代し、相棒の合図でお宝を持ち帰れ！',legacy:183});
 // V11.18 — 廃止ゲーム / 大会のみ除外
-const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,39,42,48,50,51,53,55,59,60,63,65,67,68,70,159,160].includes(g.no)).map(g=>g.key));
+const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,25,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,147,159,160].includes(g.no)).map(g=>g.key));
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob']);
 const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob','mergeMob','parkingEscapeMob','elevatorMob','cashierMob','coinPusherMob','survivorMob','ringToss3DMob','bowling3DMob','homeRun3DMob','puttGolf3DMob','freeThrow3DMob','curling3DMob','punchMachine3DMob','coinPusher3DMob','blackjack3DMob','skiJump3DMob','craneGame3DMob','giantHammer3DMob','shotPut3DMob','rescueHeli3DMob','submarine3DMob','foodCatch3DMob','buildingClimb3DMob','mazeBall3DMob','deathGameChallenge']);
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
@@ -2992,7 +2992,7 @@ function scoreRuleForGame(index){
     "正解数×10点 / 10枚正解=100点",
     "2.50秒=100点 / 6.00秒以上=0点",
     "2000m=100点 / 0m=0点",
-    "30体以上=100点 / 0体=0点",
+    "20体以上=100点 / 15体=75点 / 0体=0点",
     "世界1位=100点 / 世界40位=0点",
     "20回以上=100点 / 0回=0点",
     "18箱以上=100点 / 12箱で約75点 / 0箱=0点",
@@ -3060,9 +3060,9 @@ function scoreRuleForGame(index){
     "2回のフリップ平均 / 着地が大きくズレると高得点不可",
     "描いた翼の左右バランス・広がり・接続から最大100m",
     "10秒で35体撃破=100点 / 撃破数が多いほど高得点",
-    "ハウス中心0px=100点 / 外へ離れるほど減点",
+    "3投の平均点 / 各投ハウス中央=100点",
     "破裂直前の大きさ=100点 / 破裂=0点",
-    "変化を正解 + 速さで0〜100点 / 誤答0点",
+    "正解の速さで採点 / ミス1回につき15点減点 / 3回まで続行",
     "検査ゲートで！が出て105ms以内=100点 / 185ms以内=90点 / 1回勝負",
     "両岸接続・滑らかさ・傾斜をゆるめに判定して0〜100点",
     "選んだ宝箱のポイントがそのまま記録",
@@ -3184,7 +3184,7 @@ function showGameIntro(index){
   }else if(legacyIndex===28){
     rules=`<li>3・2・1後、爆弾が3.000秒から0.000秒へカウント。</li><li>好きなタイミングでSTOP。</li><li>0.000秒に近いほど高得点。</li><li>0秒を超えたら爆発して0点。</li>`;
   }else if(legacyIndex===29){
-    rules=`<li>「重なる瞬間を狙え！」のMASTER版。</li><li>4つの円がそれぞれ別の速度で左右移動。</li><li>10秒以内に4つ全部が重なる瞬間をタップ。</li><li>4円の広がりから一致率を計算。100.0%を狙います。</li>`;
+    rules=`<li>「重なるモブくん」のMASTER版。</li><li>4つの円がそれぞれ別の速度で左右移動。</li><li>10秒以内に4つ全部が重なる瞬間をタップ。</li><li>4円の広がりから一致率を計算。100.0%を狙います。</li>`;
   }else if(legacyIndex===30){
     rules=`<li>3・2・1後10秒。</li><li>モブくんはバネのホッピングマシーンに乗っています。</li><li>← →で左右移動、JUMPでジャンプ。</li><li>ランダムに並ぶ台を乗り継いで上へ。高い台ほど横幅が短くなります。</li><li>長距離はカメラが上方向へ追跡。900m以上で100点。</li>`;
   }else if(legacyIndex===31){
@@ -3264,11 +3264,11 @@ function showGameIntro(index){
   }else if(legacyIndex===71){
     rules=`<li>中央の戦車を動かさない見下ろし型シューティングです。</li><li>上下左右からスライムが戦車へ接近。画面をフリックした方向へ大砲を1発発射します。</li><li>発射方向は上・下・左・右の4方向。10秒間、後半ほど敵の出現間隔と移動速度が上がります。</li><li>倒したスライムの数が記録。戦車へ到達した敵は消滅し、撃破数には入りません。</li>`;
   }else if(legacyIndex===72){
-    rules=`<li>ストーンを上方向へ1回だけスワイプ。</li><li>スワイプ速度で距離、横方向のブレでコースが決まります。</li><li>氷の軌跡・スピン・ハウス到達演出を追加。</li><li>ハウス中央へ近いほど高得点。中心で100点。</li>`;
+    rules=`<li>スライダーで方向を調整し、パワーゲージを見て投球ボタンを押します。</li><li>黄色い目印が中央へ届く強さ。3投の平均点で競います。</li><li>投球結果を確認して「次の投球へ」で進みます。</li>`;
   }else if(legacyIndex===73){
     rules=`<li>画面中央の巨大シャボン玉を、モブくんが下から吹いて膨らませます。</li><li>BLOWを長押しして、好きなタイミングで離します。</li><li>残り余裕を文字では表示しません。泡の揺れと「!」だけがヒント。</li><li>限界直前ほど高得点。破裂すると0点です。</li>`;
   }else if(legacyIndex===74){
-    rules=`<li>カートゥーンの部屋を最初に3秒観察します。</li><li>小さな表示だけなので「覚えて！」が部屋を隠しません。</li><li>短い切替演出後、家具・小物の1ヶ所だけ色や形が変化。</li><li>変化した物をタップ。正解が速いほど高得点。</li>`;
+    rules=`<li>カートゥーンの部屋を最初に3秒観察します。</li><li>小さな表示だけなので「覚えて！」が部屋を隠しません。</li><li>短い切替演出後、家具・小物の1ヶ所だけ色や形が変化。</li><li>変化した物をタップ。速いほど高得点。3回の間違いまでは続行でき、1回につき15点減点。4回目の間違いで終了。</li>`;
   }else if(legacyIndex===75){
     rules=`<li>複数の箱が高速コンベアを流れ、順番にMOB CHECKゲートを通過します。</li><li>箱が検査ゲートを通る瞬間、マークが表示されることがあります。</li><li>「！」が出た瞬間に赤いDETECTを1回だけタップ。</li><li>！から105ms以内=100点、185ms以内=90点。押せるのは1回だけです。</li>`;
   }else if(legacyIndex===76){
@@ -3643,15 +3643,14 @@ async function countdown(
   if(!isGameRunValid(runId))return false;
 
   // ここへ来る前のDOM/初期座標を確定。
-  try{void screen.offsetHeight}catch(_){}
+  try{window.MobPartyLayout?.repair(screen);void screen.offsetHeight}catch(_){}
 
   document.body.classList.add("countdown-active-v140");
   if(screen)screen.setAttribute("inert","");
 
   const layer=document.createElement("div");
   layer.className=
-    "countdown-layer"+
-    (options.transparent?" stage-visible-v121":"");
+    "countdown-layer";
   layer.innerHTML=`<div class="count-label">${label}</div><div class="count-number">3</div>`;
   document.body.appendChild(layer);
   activeCountdownLayer=layer;
@@ -4056,22 +4055,17 @@ async function startStack(p,humanIndex,runId){
     return clamp(1-(endAt-performance.now())/10000,0,1);
   }
   function windPercent(){return Math.round(progress()*100)}
-  function windAmp(){return 1.4+progress()*17}
+  function windAmp(){return 5+progress()*21+Math.min(count,20)*.6}
   function handAmp(){return 2.4+progress()*8+Math.max(0,count-10)*.10}
   function requiredOverlapRatio(){
     return clamp(.22+progress()*.15+Math.max(0,count-12)*.006,.22,.48);
   }
-  function cameraShift(){
-    const top=baseBottom+(count+1)*pieceH;
-    return Math.max(0,top-(stage.clientHeight-145));
-  }
-  function updateCamera(){
-    world.style.transition="transform .18s ease";
-    world.style.transform=`translateY(${cameraShift()}px)`;
-  }
+  function towerScale(){return Math.min(1,Math.max(70,stage.clientHeight-135)/(baseBottom+(count+1)*pieceH));}
+  function cameraShift(){return 0;}
+  function updateCamera(){world.style.transition="transform .18s ease";world.style.transformOrigin="50% 100%";world.style.transform=`scale(${towerScale()})`;}
   function topLocalX(){return count===0?stageWidth()/2:stacked[stacked.length-1].x}
-  function topVisualX(){return topLocalX()+towerWobbleX}
-  function landingBottom(){return baseBottom+count*pieceH}
+  function topVisualX(){const a=towerWobbleRot*Math.PI/180;return stageWidth()/2+((topLocalX()-stageWidth()/2)*Math.cos(a)+(baseBottom+count*pieceH-30)*Math.sin(a)+towerWobbleX)*towerScale()}
+  function landingBottom(){return (baseBottom+count*pieceH)*towerScale()}
   function activeEl(){return document.getElementById("activeStackPiece")}
 
   function renderStack(){
@@ -4083,7 +4077,7 @@ async function startStack(p,humanIndex,runId){
   function showCallout(text,kind="good"){
     callout.className=`stack-callout show ${kind}`;
     callout.textContent=text;
-    setTimeout(()=>{if(callout.textContent===text)callout.className="stack-callout"},430);
+    setTimeout(()=>{if(callout.textContent===text)callout.className="stack-callout"},850);
   }
 
   function spawnPiece(){
@@ -4121,7 +4115,7 @@ async function startStack(p,humanIndex,runId){
       if(finished||!isGameRunValid(runId))return;
 
       const t=now-started;
-      const guide=document.getElementById('stackLandingGuide');guide.style.left=(topVisualX()-pieceW/2)+'px';guide.style.top=(stage.clientHeight-landingBottom()+cameraShift()-4)+'px';guide.style.width=pieceW+'px';
+      const guide=document.getElementById('stackLandingGuide');guide.style.left=(topVisualX()-pieceW*towerScale()/2)+'px';guide.style.top=(stage.clientHeight-landingBottom()+cameraShift()-4)+'px';guide.style.width=pieceW*towerScale()+'px';
       const amp=windAmp();
       const wp=windPercent();
 
@@ -4129,7 +4123,7 @@ async function startStack(p,humanIndex,runId){
       windFill.style.width=`${wp}%`;
 
       towerWobbleX=Math.sin(t/(300-wp*1.15))*amp*.55 + Math.sin(t/580)*amp*.22;
-      towerWobbleRot=Math.sin(t/440)*Math.min(4.0,amp*.18);
+      towerWobbleRot=Math.sin(t/440)*Math.min(7,amp*.24);
 
       stackLayer.style.transform=`translateX(${towerWobbleX}px) rotate(${towerWobbleRot}deg)`;
 
@@ -4164,7 +4158,8 @@ async function startStack(p,humanIndex,runId){
     const dropX=active.x+handWobbleX;
     const targetX=topVisualX();
     const distance=Math.abs(dropX-targetX);
-    const ratio=Math.max(0,pieceW-distance)/pieceW;
+    const landingWidth=pieceW*towerScale();
+    const ratio=Math.max(0,landingWidth-distance)/landingWidth;
     const need=requiredOverlapRatio();
 
     const stageH=stage.clientHeight;
@@ -4200,7 +4195,8 @@ async function startStack(p,humanIndex,runId){
       return;
     }
 
-    const localX=dropX-towerWobbleX;
+    const tilt=towerWobbleRot*Math.PI/180;
+    const localX=stageWidth()/2+((dropX-stageWidth()/2)/towerScale()-towerWobbleX-(baseBottom+count*pieceH-30)*Math.sin(tilt))/Math.cos(tilt);
     const offset=dropX-targetX;
     stacked.push({x:localX,rot:clamp(offset*.075+towerWobbleRot*.16,-6,6),icon:active.icon});
     count++;
@@ -7719,7 +7715,7 @@ async function startOverlapMoment(p,humanIndex,runId){
 
   screen.innerHTML=`<div class="overlap-shell">
     <div class="game-head">
-      <div><span class="kicker">${esc(p.name)}</span><h2>重なる瞬間を狙え！</h2></div>
+      <div><span class="kicker">${esc(p.name)}</span><h2>重なるモブくん</h2></div>
       <div class="game-badge">${playBadge(humanIndex)}</div>
     </div>
 
@@ -8679,7 +8675,7 @@ async function startHeroMaybe(p,humanIndex,runId){
     if(finished||!isGameRunValid(runId))return;
 
     const rect=choices.getBoundingClientRect();
-    const radius=Math.max(62,Math.min(rect.width,rect.height)*.33);
+    const radius=Math.max(0,Math.min(rect.width,rect.height)/2-46);
     const angle=(now-wheelStarted)/11500*Math.PI*2;
 
     choiceBtns.forEach((btn,i)=>{
@@ -8722,7 +8718,7 @@ async function startHeroMaybe(p,humanIndex,runId){
       const item=current[i];
       btn.disabled=!item;
       btn.classList.remove('picked');
-      btn.innerHTML=`<span>${item?item.name:'---'}</span>`;
+      btn.innerHTML=`<i aria-hidden="true">${['⚔️','🛡️','💎','📜'][i]}</i><span>${item?item.name:'---'}</span>`;
     });
   }
 
@@ -8740,6 +8736,7 @@ async function startHeroMaybe(p,humanIndex,runId){
 
     // Do not expose + / - values. Only the item name and current total are shown.
     narr.textContent=it.name;
+    const scene=narr.closest('.hero-maybe-scene');scene.classList.remove('hero-gain48','hero-risk48');void scene.offsetWidth;scene.classList.add(it.val>0?'hero-gain48':'hero-risk48');
 
     btn.classList.add('picked');
     choiceBtns.forEach(b=>b.disabled=true);
@@ -20929,15 +20926,23 @@ async function startTankMob(p,humanIndex,runId){
 
 // GAME 74 — モブくん氷上カーリング
 async function startCurlingMob(p,humanIndex,runId){
-  gameFit();let active=false,down=null,finished=false;
-  screen.innerHTML=`<div class="v126-shell"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん氷上カーリング</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
-    <div id="curlStageV126" class="curl-stage-v126"><div class="curl-ice-lines-v126"></div><div class="curl-house-v126"><i></i><b></b><em></em></div><div id="curlTrailV126" class="curl-trail-v126"></div><div id="curlStoneV126" class="curl-stone-v126"><span style="background-image:url('${partyActorImage()}')"></span></div><div class="curl-sweep-v126"><i></i><i></i></div><div id="curlMsgV126" class="curl-msg-v126">上へ1回スワイプ！ 中央を狙え！</div></div></div>`;
-  const stage=document.getElementById("curlStageV126"),stone=document.getElementById("curlStoneV126"),trail=document.getElementById("curlTrailV126"),msg=document.getElementById("curlMsgV126");
-  stage.addEventListener("pointerdown",e=>{if(!active||finished)return;e.preventDefault();down={x:e.clientX,y:e.clientY,t:performance.now(),id:e.pointerId};try{stage.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});
-  stage.addEventListener("pointerup",e=>{if(!active||finished||!down||e.pointerId!==down.id)return;e.preventDefault();const dt=Math.max(90,performance.now()-down.t),dx=e.clientX-down.x,dy=e.clientY-down.y;down=null;if(dy>-55){msg.textContent="もっと上へスワイプ！";beep(170,70,.018);return;}finished=true;active=false;const speed=(-dy)/dt,travel=clamp(speed*285,110,410),xShift=clamp(dx*1.18,-135,135),dist=Math.hypot(xShift,travel-300),score=clamp(Math.round(100-dist/135*100),0,100);state.records.curlingMob[p.id]=score;stone.style.setProperty("--curl-x",`${xShift}px`);stone.style.setProperty("--curl-y",`${-travel}px`);trail.style.setProperty("--trail-x",`${xShift}px`);trail.style.setProperty("--trail-y",`${-travel}px`);stage.classList.add("curl-action-v126");stone.classList.add("slide-v126");trail.classList.add("show-v126");beep(500,70,.02);setTimeout(()=>{stage.classList.add("curl-house-impact-v126");msg.textContent=score>=95?"BUTTON!!":score>=75?"NICE SHOT!":`${score} POINT`;beep(score>=90?1080:score>=65?760:450,180,.045);},900);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(72,p,humanIndex,`${score}<small>pt</small>`,"ハウス中心への精度");},1500);},{passive:false});
-  if(!(await countdown("CURLING",runId,{transparent:true})))return;active=true;
+  gameFit();
+  screen.innerHTML=`<div class="curling48-shell"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん氷上カーリング</h2></div>${playBadge(humanIndex)}</div><div class="curling48-hud"><b id="curlRound48">1 / 3投</b><strong id="curlScore48">0 PT</strong></div><div id="curlIce48" class="curling48-ice"><div class="curling48-house"><i></i></div><div id="curlStones48"></div><div id="curlGuide48" class="curling48-guide"></div></div><p id="curlCall48" class="curling48-call">方向を決め、パワーを合わせて3投！</p><label class="curling48-aim">方向 <input id="curlAim48" type="range" min="-30" max="30" value="0"></label><div class="curling48-power"><i id="curlPower48"></i><span>中央へ届く強さ</span></div><button id="curlThrow48" class="primary" disabled>この強さで投げる</button></div>`;
+  const ice=document.getElementById('curlIce48'),layer=document.getElementById('curlStones48'),aim=document.getElementById('curlAim48'),power=document.getElementById('curlPower48'),button=document.getElementById('curlThrow48'),call=document.getElementById('curlCall48'),round=document.getElementById('curlRound48'),total=document.getElementById('curlScore48'),guide=document.getElementById('curlGuide48');
+  let active=false,shot=0,phase='aim',sum=0,started=0,charge=0,raf=0,stones=[];
+  function newStone(){const el=document.createElement('div');el.className='curling48-stone';el.innerHTML=`<img src="${partyActorImage()}" alt="">`;layer.appendChild(el);const st={el,x:.5,y:.86};stones.push(st);paint(st);}
+  function paint(st){st.el.style.left=st.x*100+'%';st.el.style.top=st.y*100+'%';}
+  aim.addEventListener('input',()=>{guide.style.rotate=aim.value+'deg';});
+  button.addEventListener('click',()=>{
+    if(!active||phase==='slide'||phase==='done')return;
+    if(phase==='next'){phase='aim';aim.disabled=false;started=performance.now();newStone();button.textContent='この強さで投げる';call.textContent='狙いを調整して投げよう';return;}
+    phase='slide';button.disabled=true;aim.disabled=true;const st=stones[shot],angle=+aim.value*Math.PI/180,travel=.18+charge*.78,targetX=clamp(.5+Math.sin(angle)*travel,.06,.94),targetY=clamp(.86-Math.cos(angle)*travel,.08,.92),t0=performance.now();call.textContent='氷上を滑走中…';beep(520,80,.02);
+    function slide(now){if(!isGameRunValid(runId))return;const t=clamp((now-t0)/1700,0,1),ease=1-(1-t)**3;st.x=.5+(targetX-.5)*ease;st.y=.86+(targetY-.86)*ease;paint(st);if(t<1){requestAnimationFrame(slide);return;}const distance=Math.hypot((st.x-.5)*ice.clientWidth,(st.y-.25)*ice.clientHeight),radius=Math.min(ice.clientWidth*.29,ice.clientHeight*.22),pts=clamp(Math.round(100*(1-distance/radius)),0,100);sum+=pts;shot++;total.textContent=Math.round(sum/3)+' PT';round.textContent=shot+' / 3投';call.textContent=shot+'投目 '+pts+'点！ '+(pts>=95?'中心を捉えた！':'次の投球で調整しよう');button.disabled=false;if(shot===3){phase='done';active=false;cancelAnimationFrame(raf);const score=Math.round(sum/3);state.records.curlingMob[p.id]=score;button.textContent='結果を見る';button.addEventListener('click',()=>{if(isGameRunValid(runId))recordScreen(72,p,humanIndex,score+'<small>pt</small>','3投の平均 / '+stones.length+'投完了');},{once:true});}else{phase='next';button.textContent='次の投球へ';}beep(pts>=80?960:620,150,.025);}
+    requestAnimationFrame(slide);
+  });
+  newStone();if(!(await countdown('CURLING',runId)))return;active=true;button.disabled=false;started=performance.now();
+  function tick(now){if(!active||!isGameRunValid(runId))return;if(phase==='aim'){charge=(1-Math.cos((now-started)/900*Math.PI))/2;power.style.width=charge*100+'%';}raf=requestAnimationFrame(tick);}raf=requestAnimationFrame(tick);
 }
-
 
 // GAME 75 — モブくん巨大シャボン玉
 async function startBubbleMob(p,humanIndex,runId){
@@ -21133,11 +21138,11 @@ async function startBubbleMob(p,humanIndex,runId){
 
 // GAME 76 — モブくん何が変わった？
 async function startChangeMob(p,humanIndex,runId){
-  gameFit();const props=['lamp','plant','clock','book','chair','radio','cup','picture','sofa'];const changeIndex=randi(0,props.length-1);let active=false,changed=false,finished=false,startAnswer=0,answerSeconds=0;
+  gameFit();const props=['lamp','plant','clock','book','chair','radio','cup','picture','sofa'];const changeIndex=randi(0,props.length-1);let active=false,changed=false,finished=false,startAnswer=0,answerSeconds=0,mistakes=0;
   screen.innerHTML=`<div class="change-shell-v127"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん何が変わった？</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="change-note-v127" id="changeNote127">3秒で部屋を覚えて！</div><div id="room127" class="room-v127"><div class="room-wall-v127"><div class="room-window-v127"></div><div class="room-rug-v127"></div></div>${props.map((t,i)=>`<button type="button" data-i="${i}" class="room-prop-v127 p${i}"><i class="room-icon-v126 ${t}"></i></button>`).join('')}<div class="room-mob-v127" style="background-image:url('${partyActorImage()}')"></div><div id="roomWipe127" class="room-wipe-v127"></div></div></div>`;
   const room=document.getElementById('room127'),note=document.getElementById('changeNote127'),wipe=document.getElementById('roomWipe127');
-  room.addEventListener('pointerdown',e=>{if(!active||!changed||finished)return;const b=e.target.closest('button[data-i]');if(!b)return;e.preventDefault();finished=true;active=false;const chosen=Number(b.dataset.i);let sc=0;if(chosen===changeIndex){const t=performance.now()-startAnswer;answerSeconds=t/1000;sc=clamp(Math.floor(100-Math.max(0,t-1000)/100),10,100);b.classList.add('correct-v127');note.textContent=`正解！ ${sc} POINT`;beep(1030,160,.045);}else{b.classList.add('wrong-v127');room.querySelector(`[data-i="${changeIndex}"]`)?.classList.add('answer-v127');note.textContent='違う！ 正解はここ';beep(160,150,.04);}state.records.changeMob[p.id]=sc;setTimeout(()=>{if(isGameRunValid(runId))recordScreen(74,p,humanIndex,`${sc}<small>pt</small>`,chosen===changeIndex?`発見まで ${answerSeconds.toFixed(2)}秒`:'MISS');},850);},{passive:false});
-  if(!(await countdown('ROOM',runId,{transparent:true})))return;await wait(3000);if(!isGameRunValid(runId))return;wipe.classList.add('show-v127');await wait(330);if(!isGameRunValid(runId))return;const target=room.querySelector(`[data-i="${changeIndex}"] .room-icon-v126`);target.classList.add('alt-v127');changed=true;await wait(180);wipe.classList.remove('show-v127');note.textContent='何が変わった？';active=true;startAnswer=performance.now();function clock(now){if(!active||!isGameRunValid(runId))return;note.textContent=`何が変わった？ ${((now-startAnswer)/1000).toFixed(1)}秒`;requestAnimationFrame(clock);}requestAnimationFrame(clock);
+  room.addEventListener('pointerdown',e=>{if(!active||!changed||finished)return;const b=e.target.closest('button[data-i]');if(!b||b.disabled)return;e.preventDefault();const chosen=Number(b.dataset.i);if(chosen!==changeIndex){mistakes++;b.disabled=true;b.classList.add('wrong-v127');beep(160,100,.03);if(mistakes<=3){note.textContent='あと'+(3-mistakes)+'回間違えてもOK / 減点 '+(mistakes*15)+'点';return;}}finished=true;active=false;let sc=0;if(chosen===changeIndex){const t=performance.now()-startAnswer;answerSeconds=t/1000;sc=clamp(Math.floor(100-Math.max(0,t-1000)/100)-mistakes*15,5,100);b.classList.add('correct-v127');note.textContent=`正解！ ${sc} POINT`;beep(1030,160,.045);}else{b.classList.add('wrong-v127');room.querySelector(`[data-i="${changeIndex}"]`)?.classList.add('answer-v127');note.textContent='違う！ 正解はここ';beep(160,150,.04);}state.records.changeMob[p.id]=sc;setTimeout(()=>{if(isGameRunValid(runId))recordScreen(74,p,humanIndex,`${sc}<small>pt</small>`,chosen===changeIndex?`発見まで ${answerSeconds.toFixed(2)}秒`:'MISS');},850);},{passive:false});
+  if(!(await countdown('ROOM',runId,{transparent:true})))return;await wait(3000);if(!isGameRunValid(runId))return;wipe.classList.add('show-v127');await wait(330);if(!isGameRunValid(runId))return;const target=room.querySelector(`[data-i="${changeIndex}"] .room-icon-v126`);target.classList.add('alt-v127');changed=true;await wait(180);wipe.classList.remove('show-v127');note.textContent='何が変わった？';active=true;startAnswer=performance.now();function clock(now){if(!active||!isGameRunValid(runId))return;note.textContent=`${((now-startAnswer)/1000).toFixed(1)}秒 / ミス ${mistakes}/3 / −${mistakes*15}点`;requestAnimationFrame(clock);}requestAnimationFrame(clock);
 }
 
 
@@ -26748,7 +26753,7 @@ async function startBombPassMob(p,humanIndex,runId){
 async function startObstacleRaceMob(p,humanIndex,runId){
   gameFit();
   const gameIndex=GAMES.findIndex(g=>g.key==='obstacleRaceMob');
-  const VIEW_W=360,WORLD_W=2920,GROUND=355;
+  const VIEW_W=360,WORLD_W=2920;let GROUND=355;
   const types=shuffle(['trash','rock','cardboard','bike','trash','rock','cardboard','bike','trash','cardboard']);
   const obstacles=types.map((type,i)=>({type,x:430+i*235+(i%2)*18,broken:false,hit:false,el:null}));
   // Three vertical moving rock blocks, one random position in each course sector.
@@ -26770,6 +26775,7 @@ async function startObstacleRaceMob(p,humanIndex,runId){
       <div class="obsrace-controls-v202"><button id="obsJump202" type="button" disabled>JUMP</button><button id="obsPunch202" type="button" disabled>PUNCH</button></div>
     </div>`;
   const stage=document.getElementById('obsStage202'),world=document.getElementById('obsWorld202'),layer=document.getElementById('obsLayer202'),movingRockLayer=document.getElementById('obsMovingRockLayer206'),runner=document.getElementById('obsRunner202'),jumpBtn=document.getElementById('obsJump202'),punchBtn=document.getElementById('obsPunch202'),timeEl=document.getElementById('obsTime202'),countEl=document.getElementById('obsCount202'),hitEl=document.getElementById('obsHit202'),call=document.getElementById('obsCall202');
+  GROUND=Math.max(120,stage.clientHeight-30);world.querySelector('.obsrace-ground-v202').style.top=GROUND+'px';
   const labels={trash:'ゴミ箱',rock:'岩',cardboard:'段ボール',bike:'自転車'};
   obstacles.forEach(o=>{const el=document.createElement('div');el.className=`obsrace-obstacle-v202 ${o.type}`;el.style.left=`${o.x}px`;el.style.top=`${GROUND}px`;const punchable=o.type==='trash'||o.type==='cardboard';el.innerHTML=(punchable?'<em class="obsrace-punch-sign-v203">パンチ！</em>':'')+(o.type==='bike'?'<i></i><i></i><b></b><span class="bike-seat-v203"></span><span class="bike-handle-v203"></span>':o.type==='rock'?'<b></b><span class="rock-chip-v203"></span>':o.type==='trash'?'<b>MOB</b><span class="trash-lid-v203"></span><span class="trash-handle-v203"></span>':'<b>BOX</b><span class="box-tape-v203"></span><span class="box-mark-v203">↑</span>');layer.appendChild(el);o.el=el});
   movingRocks.forEach(o=>{const el=document.createElement('div');el.className='obsrace-moving-rock-v206';el.innerHTML='<b></b><i></i><span></span>';movingRockLayer.appendChild(el);o.el=el;const lift=72+70*Math.sin(o.phase);o.top=GROUND-66-lift;el.style.transform=`translate3d(${o.x-33}px,${o.top}px,0)`});
@@ -27798,18 +27804,19 @@ async function startElectricMaze2(p,humanIndex,runId){
   pts.push(goalPt);
   const byId=new Map(pts.map(q=>[q.id,q])),edges=new Map();pts.forEach(q=>edges.set(q.id,new Set()));
   function svgEl(tag,attrs){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e}
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('preserveAspectRatio','none');
   const startLine=svgEl('line',{x1:12,y1:startPt.y,x2:startPt.x,y2:startPt.y,class:'em2220-stick start'}),goalLine=svgEl('line',{x1:goalPt.x,y1:goalPt.y,x2:W-12,y2:goalPt.y,class:'em2220-stick goal'});svg.append(startLine,goalLine);
   pts.forEach(q=>{const c=svgEl('circle',{cx:q.x,cy:q.y,r:q.id==='s'||q.id==='g'?10:8,class:`em2220-dot ${q.id==='s'?'start':q.id==='g'?'goal':''}`,'data-id':q.id});svg.appendChild(c)});
   mob.style.left=`${startPt.x}px`;mob.style.top=`${startPt.y}px`;
   let active=false,finished=false,drawing=false,from=null,temp=null,started=0,raf=null,walking=false;
-  function stagePoint(e){const b=stage.getBoundingClientRect();return{x:e.clientX-b.left,y:e.clientY-b.top}}
-  function nearest(pt,onlyLayer=null){let best=null,bd=999;for(const q of pts){if(onlyLayer!==null&&q.layer!==onlyLayer)continue;const d=Math.hypot(pt.x-q.x,pt.y-q.y);if(d<bd){bd=d;best=q}}return bd<=24?best:null}
+  function stagePoint(e){const b=stage.getBoundingClientRect();return{x:(e.clientX-b.left)*W/b.width,y:(e.clientY-b.top)*H/b.height}}
+  function nearest(pt,onlyLayer=null){let best=null,bd=999;for(const q of pts){if(onlyLayer!==null&&q.layer!==onlyLayer)continue;const d=Math.hypot(pt.x-q.x,pt.y-q.y);if(d<bd){bd=d;best=q}}return bd<=36?best:null}
   function hasEdge(a,b){return edges.get(a)?.has(b)}
   function connect(a,b){if(hasEdge(a.id,b.id))return;edges.get(a.id).add(b.id);const line=svgEl('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,class:'em2220-route'});svg.insertBefore(line,svg.querySelector('.em2220-dot'));beep(720,35,.01)}
   function findPath(){const q=[[startPt.id,[startPt.id]]],seen=new Set([startPt.id]);while(q.length){const [id,path]=q.shift();if(id===goalPt.id)return path.map(x=>byId.get(x));for(const n of edges.get(id)||[]){if(!seen.has(n)){seen.add(n);q.push([n,[...path,n]])}}}return null}
-  stage.addEventListener('pointerdown',e=>{if(!active||finished||walking)return;const pt=stagePoint(e),q=nearest(pt);if(!q)return;e.preventDefault();drawing=true;from=q;temp=svgEl('line',{x1:q.x,y1:q.y,x2:q.x,y2:q.y,class:'em2220-temp'});svg.insertBefore(temp,svg.firstChild);stage.setPointerCapture?.(e.pointerId)},{passive:false});
-  stage.addEventListener('pointermove',e=>{if(!drawing||!temp)return;e.preventDefault();const pt=stagePoint(e);temp.setAttribute('x2',pt.x);temp.setAttribute('y2',pt.y)},{passive:false});
-  stage.addEventListener('pointerup',e=>{if(!drawing)return;e.preventDefault();drawing=false;temp?.remove();temp=null;const pt=stagePoint(e),to=nearest(pt,from.layer+1);if(!to||Math.abs(to.y-from.y)>105){call.textContent='隣の点へつないで！';beep(180,45,.01);from=null;return}connect(from,to);from=null;const path=findPath();if(path){active=false;walking=true;call.textContent='ROUTE COMPLETE! GO!!';walkPath(path)}},{passive:false});
+  stage.addEventListener('pointerdown',e=>{if(!active||finished||walking)return;const pt=stagePoint(e),q=nearest(pt);if(!q)return;e.preventDefault();if(from&&q.layer===from.layer+1){connect(from,q);from=q;const path=findPath();if(path){active=false;walking=true;call.textContent='つながった！ 出発！';walkPath(path);}return;}drawing=true;from=q;temp=svgEl('line',{x1:q.x,y1:q.y,x2:q.x,y2:q.y,class:'em2220-temp'});svg.insertBefore(temp,svg.firstChild);stage.setPointerCapture?.(e.pointerId)},{passive:false});
+  stage.addEventListener('pointermove',e=>{if(!drawing||!temp)return;e.preventDefault();const pt=stagePoint(e);temp.setAttribute('x2',pt.x);temp.setAttribute('y2',pt.y);const to=nearest(pt,from.layer+1);if(to){connect(from,to);from=to;temp.setAttribute('x1',to.x);temp.setAttribute('y1',to.y);const path=findPath();if(path){drawing=false;temp.remove();temp=null;active=false;walking=true;call.textContent='つながった！ 出発！';walkPath(path);}} },{passive:false});
+  stage.addEventListener('pointerup',e=>{if(!drawing)return;e.preventDefault();drawing=false;temp?.remove();temp=null;const pt=stagePoint(e),to=nearest(pt,from.layer+1);if(!to){call.textContent='選択中の点から右隣の点をタップ、またはドラッグ';return}connect(from,to);from=null;const path=findPath();if(path){active=false;walking=true;call.textContent='ROUTE COMPLETE! GO!!';walkPath(path)}},{passive:false});
   stage.addEventListener('pointercancel',()=>{drawing=false;temp?.remove();temp=null;from=null},{passive:true});
   async function walkPath(path){
     for(let i=1;i<path.length;i++){
@@ -28026,7 +28033,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===1)return clamp(Math.round(v*10),0,100);
   if(legacyIndex===2)return clamp(Math.round((6000-v)/3500*100),0,100);
   if(legacyIndex===3)return clamp(Math.round((v/10)/2000*100),0,100);
-  if(legacyIndex===4)return clamp(Math.round(v/30*100),0,100);
+  if(legacyIndex===4)return clamp(Math.round(v/20*100),0,100);
   if(legacyIndex===5)return clamp(Math.round(Math.pow(Math.max(0,(40-v)/39),.75)*100),0,100);
   if(legacyIndex===6)return clamp(Math.round(v/20*100),0,100);
   if(legacyIndex===7)return masteryPoints(v,18,.68);
@@ -30462,7 +30469,7 @@ async function startTamaireMob(p,humanIndex,runId){
   stage.addEventListener('pointerdown',e=>{if(!active||finished||timeUp||!canThrow)return;const pt=local(e);if(pt.y<stage.clientHeight*.58)return;e.preventDefault();drag={id:e.pointerId,x:pt.x,y:pt.y};stage.setPointerCapture?.(e.pointerId)},{passive:false});
   stage.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId||finished||timeUp)return;e.preventDefault();const pt=local(e),dx=pt.x-drag.x,dy=pt.y-drag.y;drag=null;if(dy>-30){call.textContent='上へフリック！';return}const w=stage.clientWidth,h=stage.clientHeight,el=document.createElement('div');el.className='tama-ball-v170';layer.appendChild(el);flights.push({el,x:w*.5,y:h*.82,prevY:h*.82,vx:clamp(dx*3.15,-300,300),vy:-clamp(-dy,35,175)*4.65,age:0,dead:false});launched++;beep(560,34,.01);canThrow=false;setTimeout(()=>{if(isGameRunValid(runId))canThrow=true},90)},{passive:false});
   if(!(await countdown('TAMAIRE',runId,{transparent:true})))return;active=true;startTime=last=performance.now();
-  function frame(now){if(finished||!isGameRunValid(runId))return;const dt=Math.min(.028,(now-last)/1000);last=now,w=stage.clientWidth,h=stage.clientHeight,elapsed=now-startTime,sec=elapsed/1000;timeEl.textContent=(Math.max(0,GAME_MS-elapsed)/1000).toFixed(1);basketX=w*.5+Math.sin(sec*2.7)*w*.29;basket.style.left=`${basketX}px`;
+  function frame(now){if(finished||!isGameRunValid(runId))return;const dt=Math.min(.028,(now-last)/1000);last=now;const w=stage.clientWidth,h=stage.clientHeight,elapsed=now-startTime,sec=elapsed/1000;timeEl.textContent=(Math.max(0,GAME_MS-elapsed)/1000).toFixed(1);basketX=w*.5+Math.sin(sec*2.7)*w*.29;basket.style.left=`${basketX}px`;
     for(const f of flights){if(f.dead)continue;f.age+=dt;f.prevY=f.y;f.vy+=950*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.el.style.left=`${f.x}px`;f.el.style.top=`${f.y}px`;f.el.style.transform=`translate(-50%,-50%) rotate(${f.age*500}deg)`;const mouthY=h*.25;if(f.prevY<mouthY&&f.y>=mouthY&&f.vy>0&&Math.abs(f.x-basketX)<=31){resolveFlight(f,true);continue}if(f.y>h+28||f.x<-30||f.x>w+30||f.age>2.3)resolveFlight(f,false)}
     if(!timeUp&&elapsed>=GAME_MS){timeUp=true;active=false;call.textContent='TIME UP / 最後の球を判定中';maybeFinish()}if(!finished)raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
 }
@@ -39066,9 +39073,9 @@ async function startCashierMob(p,humanIndex,runId){
   function scanItem(btn){if(!active||finished||phaseName!=='scan')return;const i=+btn.dataset.i;if(scanned.has(i)){errors++;call.textContent='二重スキャン！';reg.classList.add('error');setTimeout(()=>reg.classList.remove('error'),260);beep(160,60,.02);return}scanned.add(i);sum+=items[i].v;btn.classList.add('scanned');scanner.classList.remove('flash');void scanner.offsetWidth;scanner.classList.add('flash');stepEl.textContent=`SCAN ${scanned.size}/4`;display.textContent=totalEl.textContent=`¥${sum}`;call.textContent=`ピッ！ ${items[i].n}`;beep(860,36,.012);if(scanned.size===items.length)setTimeout(renderChange,260)}
   belt.addEventListener('click',e=>{const btn=e.target.closest('.ca227-item');if(btn)scanItem(btn)});
   function updateChangeView(){const give=enteredChange(),giveEl=document.getElementById('caGive227'),hist=document.getElementById('caCoinHistory228');if(giveEl)giveEl.textContent=`¥${give}`;if(hist)hist.textContent=`¥500×${coinCounts[500]}  ¥100×${coinCounts[100]}  ¥50×${coinCounts[50]}  ¥10×${coinCounts[10]}`}
-  function renderChange(){if(finished||phaseName==='change')return;phaseName='change';phaseStart=performance.now();call.textContent=`お客：¥${paid}　お釣りはいくら？`;stepEl.textContent='CHANGE';totalEl.textContent='お釣りを作る';bottom.textContent='コインを選ぶ → 金額を確認 →「決定！」';phase.innerHTML=`<div class="ca227-change"><div class="ca227-paid"><span>お会計</span><b>¥${total}</b><i>お客から ¥${paid}</i></div><div class="ca227-give"><span>あなたのお釣り</span><b id="caGive227">¥0</b><em>自分で計算して決めよう！</em></div><div class="ca227-coins">${[500,100,50,10].map(v=>`<button data-coin="${v}" type="button">¥${v}</button>`).join('')}</div><div id="caCoinHistory228" class="ca228-coin-history">¥500×0  ¥100×0  ¥50×0  ¥10×0</div><div class="ca227-change-actions"><button data-reset type="button">やり直す</button><button data-pay class="ca230-confirm" type="button">決定！</button></div></div>`;phase.addEventListener('click',changeClick,{once:false});requestAnimationFrame(()=>phase.querySelector('[data-pay]')?.scrollIntoView({block:'nearest'}));updateChangeView()}
+  function renderChange(){if(finished||phaseName==='change')return;phaseName='change';phaseStart=performance.now();call.textContent=`お客：¥${paid}　お釣りはいくら？`;stepEl.textContent='CHANGE';totalEl.textContent='お釣りを作る';bottom.textContent='コインを選ぶ → 金額を確認 →「決定！」';phase.innerHTML=`<div class="ca227-change"><div class="ca227-paid"><span>お会計</span><b>¥${total}</b><i>お客から ¥${paid}</i></div><div class="ca227-give"><span>あなたのお釣り</span><b id="caGive227">¥0</b><em>自分で計算して決めよう！</em></div><div class="ca227-coins">${[500,100,50,10].map(v=>`<button data-coin="${v}" type="button">¥${v}</button>`).join('')}</div><div id="caCoinHistory228" class="ca228-coin-history">¥500×0  ¥100×0  ¥50×0  ¥10×0</div><div class="ca227-change-actions"><button data-reset type="button">やり直す</button><button data-pay class="ca230-confirm" type="button">決定！</button></div></div>`;phase.addEventListener('click',changeClick,{once:false});window.MobPartyLayout?.repair(screen);updateChangeView()}
   function changeClick(e){if(!active||finished||phaseName!=='change')return;const coin=e.target.closest('[data-coin]');if(coin){const v=+coin.dataset.coin;coinCounts[v]++;updateChangeView();coin.classList.add('tap');setTimeout(()=>coin.classList.remove('tap'),120);beep(540,25,.007);return}if(e.target.closest('[data-reset]')){for(const v of [500,100,50,10])coinCounts[v]=0;updateChangeView();call.textContent='お釣りを0円に戻した！';return}if(e.target.closest('[data-pay]')){const entered=enteredChange();errors+=entered===change?0:1;finish(entered===change)}}
-  function finish(correct){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const sec=(performance.now()-wholeStart)/1000,scanPts=Math.round(scanned.size/items.length*40),safePts=errors===0?10:Math.max(0,10-errors*3),changePts=correct?30:0,speedPts=correct?clamp(Math.round((14-sec)/8*20),0,20):0,score=clamp(scanPts+safePts+changePts+speedPts,0,100);state.records.cashierMob[p.id]=score;reg.classList.add(correct?'success':'error');call.textContent=correct?'THANK YOU!! 正しいお釣り！':'お釣りが違う！';bottom.textContent=correct?`¥${change} 正解！ レジOPEN！`:`正解のお釣りは ¥${change}`;beep(correct?1120:160,correct?180:120,.035);setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`SCAN ${scanned.size}/4 / お釣り ${correct?'正解':'未完了'} / ${sec.toFixed(1)}秒`),900)}
+  function finish(correct){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);const sec=(performance.now()-wholeStart)/1000,scanPts=Math.round(scanned.size/items.length*40),safePts=errors===0?10:Math.max(0,10-errors*3),changePts=correct?30:0,speedPts=correct?clamp(Math.round((12-sec)/8*20),0,20):0,score=clamp(scanPts+safePts+changePts+speedPts,0,100);state.records.cashierMob[p.id]=score;reg.classList.add(correct?'success':'error');call.textContent=correct?'THANK YOU!! 正しいお釣り！':'お釣りが違う！';bottom.textContent=correct?`¥${change} 正解！ レジOPEN！`:`正解のお釣りは ¥${change}`;beep(correct?1120:160,correct?180:120,.035);setTimeout(()=>recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`SCAN ${scanned.size}/4 / お釣り ${correct?'正解':'未完了'} / ${sec.toFixed(1)}秒`),900)}
   if(!(await countdown('CASHIER!',runId,{transparent:true})))return;active=true;wholeStart=phaseStart=performance.now();function tick(now){const limit=phaseName==='scan'?6:8,elapsed=(now-phaseStart)/1000,rem=Math.max(0,limit-elapsed);timeEl.textContent=`${phaseName==='scan'?'SCAN':'CHANGE'} ${rem.toFixed(1)}`;if(rem<=0){if(phaseName==='scan'&&scanned.size===items.length){renderChange()}else{finish(false)}return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick);
 }
 

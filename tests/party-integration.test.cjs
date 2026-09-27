@@ -69,7 +69,7 @@ test('rank-based CPU record generation yields finite records and scores for ever
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,140);
+  assert.equal(e.activeGameIndices().length,136);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
   assert.equal(e.GAMES.find(g=>g.key==='treasureEscapeParty').legacy,181);
 });
@@ -85,10 +85,10 @@ test('mastery scoring preserves full marks but never rounds a near miss into 100
 });
 
 // Evaluate the actual scoring expressions used by each playable implementation.
-test('retired game numbers are excluded everywhere and 025 remains available',()=>{
+test('retired game numbers are excluded everywhere including newly removed 025 are unavailable',()=>{
   const e=engine(),numbers=e.activeGameIndices().map(i=>e.GAMES[i].no);
-  for(const n of [18,19,39,42,48,50,51,53,55,59,60,63,65,67,68,70,159,160])assert.ok(!numbers.includes(n),String(n));
-  assert.ok(numbers.includes(25));assert.ok(!e.league.pool().includes('treasureDuoParty'));
+  for(const n of [18,19,25,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,147,159,160])assert.ok(!numbers.includes(n),String(n));
+  assert.ok(numbers.includes(17));assert.ok(!e.league.pool().includes('treasureDuoParty'));
 });
 test('walking off a hopping platform releases grounded state; a platform below cannot hold a player in midair',()=>{
   const {hoppingHasSupport:support}=engine(),platforms=[{x:100,y:28,h:12,w:78}];
@@ -104,8 +104,8 @@ test('requested score boosts preserve zero and cap full marks',()=>{
 });
 test('catcher awards four points per figure and change detection rewards faster answers',()=>{
   for(const [gotCount,expected] of [[0,0],[1,4],[24,96],[25,100],[33,100]])assert.equal(gameScore('Catcher',/function scoreNow\(\)\s*\{\s*return ([^;]+);/,{gotCount}),expected);
-  const score=t=>gameScore('ChangeMob',/sc=(clamp\(Math\.floor[^;]+);/,{t});
-  assert.equal(score(1000),100);assert.equal(score(4000),70);assert.equal(score(7000),40);assert.equal(score(12000),10);
+  const score=t=>gameScore('ChangeMob',/sc=(clamp\(Math\.floor[^;]+);/,{t,mistakes:0});
+  assert.equal(score(1000),100);assert.equal(score(4000),70);assert.equal(score(7000),40);assert.equal(score(12000),5);
 });
 test('brake rewards close stops while keeping crashes and distant stops at zero',()=>{
   const e=engine(),index=e.GAMES.findIndex(g=>g.key==='brake');
@@ -133,4 +133,11 @@ test('shot-put perfect distance is reachable at multiple frame rates but not wit
     const best=Math.max(...Array.from({length:25},(_,i)=>{const angle=43.4+i*.05;return gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(1,angle,dt),charge:1,angle});}));assert.equal(best,100);
     assert.ok(gameScore('ShotPut3DMob',/const score=([^;]+);/,{distance:distance(.8,44,dt),charge:.8,angle:44})<80);
   }
+});
+
+test('stack awards 75 points for 15 dolls and full marks for 20',()=>{const e=engine(),i=e.GAMES.findIndex(g=>g.key==='stack');assert.equal(e.performancePoints(i,15),75);assert.equal(e.performancePoints(i,20),100);});
+
+test('change detection deducts fifteen points per mistake while allowing recovery',()=>{
+  const score=mistakes=>gameScore('ChangeMob',/sc=(clamp\(Math\.floor[^;]+);/,{t:1000,mistakes});
+  assert.equal(score(0),100);assert.equal(score(1),85);assert.equal(score(2),70);assert.equal(score(3),55);
 });

@@ -8,7 +8,7 @@
     const any=()=>pick(pool,random);
     return {
       qualifier:['reaction',any(),pick(TAG,random),pick(['ohajikiMob','toyOnOff'],random),pick(['catcher','plushCatcher'],random),'individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
-      repechage:[pick(['longJumpMob','bungeeMob','overlapMaster'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
+      repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
       final:['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge'],pool:[...pool]
     };
   }
