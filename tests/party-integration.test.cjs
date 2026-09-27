@@ -10,7 +10,7 @@ function engine(){
   const window={MobPartyCore:core,MobPartyLeague:require('../party-league.js'),MobPartyLeagueUI:{create(api){window.leagueAdapter=api;return {stop(){}};}},MobPartyUI:{create(){return {};}},MobPartyGames:{create(){return {};}},addEventListener(){}};
   const context=vm.createContext({window,document,console,Math,performance:{now:()=>0},setTimeout:fn=>{pending.push(fn);return pending.length;},clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,cancelAnimationFrame(){},Image:class{},URL,localStorage:{getItem(){return null;},setItem(){}}});
   let source=fs.readFileSync(require.resolve('../game.js'),'utf8');
-  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,hoppingHasSupport,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
+  source=source.replace(/renderHome\(\);\r?\n\}\)\(\);/,`window.__test={GAMES,MODES,PLAYERS,show1990Final,startTestRecord(i){activeGameIndex=i;gameSessionActive=true;},getHTML(){return screen.innerHTML;},hoppingHasSupport,masteryPoints,scoreRuleForGame,activeGameIndices,performancePoints,rankRecords,applyPoints,applyConfiguredBattle,participants,freshState,simulateOneCpu,teamTotals,setState(s){state=s},getState(){return state}};})();`);
   vm.runInContext(source,context);return {...window.__test,league:window.leagueAdapter,flush(){while(pending.length)pending.shift()();}};
 }
 
@@ -140,4 +140,15 @@ test('stack awards 75 points for 15 dolls and full marks for 20',()=>{const e=en
 test('change detection deducts fifteen points per mistake while allowing recovery',()=>{
   const score=mistakes=>gameScore('ChangeMob',/sc=(clamp\(Math\.floor[^;]+);/,{t:1000,mistakes});
   assert.equal(score(0),100);assert.equal(score(1),85);assert.equal(score(2),70);assert.equal(score(3),55);
+});
+
+test('1990 world final uses the shared 100-point score and replay/other-game navigation',()=>{
+  for(const rank of [1,10,40]){
+    const e=engine(),state=e.freshState(),p={id:'p1',name:'Test',img:'icon/01.png'},index=e.GAMES.findIndex(g=>g.key==='breakdance');
+    state.freePlay=true;state.records.breakdance[p.id]=rank;e.setState(state);e.startTestRecord(index);
+    e.show1990Final(p,0,12,rank);
+    const html=e.getHTML();assert.ok(html.includes('record-score100-v204">'+e.performancePoints(index,rank)+'<small>/100 pt</small>'));
+    assert.ok(html.includes('1990を12周'));assert.ok(html.includes('世界順位 '+rank+'位'));
+    for(const id of ['soloReplay','soloOther','soloHome'])assert.ok(html.includes('id="'+id+'"'));
+  }
 });

@@ -4526,10 +4526,9 @@ function show1990WorldRanking(p,humanIndex,data){
 }
 
 function show1990Final(p,humanIndex,laps,rank){
-  clearGameFit();
-  const tail=state.freePlay?`<button id="gAgain" class="primary">同じゲームをもう一度</button><div style="height:8px"></div><button id="gHome" class="secondary">メインメニューへ</button>`:`<button id="gNext" class="primary">${humanIndex+1<humans().length?"次のプレイヤー":cpus().length?"CPU高速処理へ":"GAME 6 RESULT"}</button>`;
-  screen.innerHTML=`<div class="ganbare-final"><span class="kicker">FINAL MESSAGE</span><div class="ganbare-final-rank">${rank}<small>位</small></div><h2>モブくんは世界大会で1990を<strong>${laps}周</strong>披露し、<br><strong>${rank}位</strong>という成績を収めた。</h2>${tail}</div>`;gameTop();
-  if(state.freePlay){document.getElementById("gAgain").addEventListener("click",()=>startFreeGame(5));document.getElementById("gHome").addEventListener("click",renderHome)}else document.getElementById("gNext").addEventListener("click",()=>humanReady(5,humanIndex+1));
+  // Preserve the world tournament presentation, then use the shared score/handoff flow.
+  const gameIndex=GAMES.findIndex(g=>g.key==='breakdance');
+  recordScreen(gameIndex,p,humanIndex,`${rank}<small>位</small>`,`世界大会で1990を${laps}周披露 / 世界順位 ${rank}位`);
 }
 
 // GAME 7 -------------------------------------------------
