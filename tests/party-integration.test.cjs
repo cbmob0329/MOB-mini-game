@@ -157,3 +157,12 @@ test('earned point games keep 69 earned points as 69 score and cap at 100',()=>{
   const e=engine();for(const key of ['cardShop','breakdance']){const i=e.GAMES.findIndex(g=>g.key===key);for(let n=0;n<=100;n++)assert.equal(e.performancePoints(i,n),n,key);assert.equal(e.performancePoints(i,180),100);}
   for(const [laps,points] of [[0,0],[1,6],[8,50],[12,75],[15,94],[16,100],[20,100]])assert.equal(e.points1990(laps),points);
 });
+
+test('shooting and mole scores receive a modest reduction with reachable caps',()=>{
+  const e=engine();
+  for(const [key,raw,expected] of [['littleMobShot',170,94],['littleMobShot',180,100],['dontHitMob',12,92],['dontHitMob',13,100]]){
+    const i=e.GAMES.findIndex(g=>g.key===key);
+    assert.equal(e.performancePoints(i,raw),expected,key);
+    assert.equal(e.performancePoints(i,0),0,key);
+  }
+});

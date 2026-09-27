@@ -348,7 +348,7 @@ const GAMES=[
   {no:73,key:"atafutaSurvival",title:"モブくんあたふたサバイバル",sub:"崩れる浮遊岩で9人の偽モブくんと最後の1人を目指す",legacy:84},
   {no:74,key:"waveMaster",title:"モブくん波動を極める",sub:"魂ゲージと円型ゲージを極めて偽モブくんと波動を撃ち合う",legacy:85},
   {no:75,key:"battleRoyaleMob",title:"モブくんFPSアリーナに挑戦",sub:"3対3のアリーナでスキルを使い敵チームを全滅させる",legacy:86},
-  {no:76,key:"littleMobShot",title:"Little MOB SHOT",sub:"レコードに乗って10秒間スライムを撃ちまくる縦シューティング。170 KOで100点",legacy:87},
+  {no:76,key:"littleMobShot",title:"Little MOB SHOT",sub:"レコードに乗って10秒間スライムを撃ちまくる縦シューティング。180 KOで100点",legacy:87},
   {no:77,key:"monsterBoxMob",title:"モブくんモンスターボックスに挑む",sub:"ロイター板を踏んで15段から20段の跳び箱を越える",legacy:88},
   {no:78,key:"alienBattleMob",title:"モブくんエイリアンと戦う",sub:"小型ロボ2機で地上の巨大エイリアンHP100を撃破する",legacy:89},
   {no:79,key:"mobMusou",title:"モブくん無双",sub:"7秒で巨大武器を描き、10秒オートで大量スライムを無双する",legacy:90},
@@ -3006,7 +3006,7 @@ function scoreRuleForGame(index){
     "3回のカット精度を0〜100点化",
     "700m以上=100点 / 0m=0点",
     "残金0円=100点 / 残金10円=90点 / 残金100円以上=0点",
-    "モグラ12体以上=100点 / 0体=0点",
+    "モグラ13体以上=100点 / 0体=0点",
     "棒の端に近いほど高得点 / 落下=0点",
     "一致率100%=100点 / 0%=0点",
     "頂点誤差0秒=100点 / 0.150秒以上=0点",
@@ -3075,7 +3075,7 @@ function scoreRuleForGame(index){
     "10人中の生存順位で0〜100点 / 最初に落下=0点 / 最後の1人=100点",
     "魂ゲージ55% + Z型ゲージ1回のなぞり45%で波動威力0〜100点",
     "3対3を全滅させるまでの時間 / 速いほど高評価",
-    "10秒間のスライムKO数 / 170体KO=100点",
+    "10秒間のスライムKO数 / 180体KO=100点",
     "15段→20段を順番に突破 / 20段クリア=100点",
     "巨大エイリアンHP100を倒すまでの時間 / 速いほど高評価",
     "10秒オート無双 / 150体KO=100点 / 巨大スライム・ロボも出現",
@@ -3150,7 +3150,7 @@ function showGameIntro(index){
   }else if(legacyIndex===10){
     rules=`<li>3・2・1で長いスロープを滑走。</li><li>黄色いJUMPリップ付近だけジャンプ可能。</li><li>押さない・遅すぎると0mで落下。</li><li>最大1000m。</li>`;
   }else if(legacyIndex===11){
-    rules=`<li>1000コイン開始 / 1回100コイン / 10秒。</li><li>記憶力ゲームの10キャラクターがリールに登場。</li><li>最初の2リールはかなり揃いやすく、3つ目が勝負。</li><li>同じキャラクター3つで配当。</li>`;
+    rules=`<li>1000コイン開始 / 1回100コイン / 10秒。</li><li>レバーを下に引いて回転開始。絵柄の下の左・中央・右ボタンで、それぞれのリールを止めよう。</li><li>止める順番は自由。左と中央は揃いやすく、右が勝負。</li><li>同じキャラクター3つで配当。</li>`;
   }else if(legacyIndex===12){
     rules=`<li>3・2・1後、左右どちらからも様々なモブくんが走ってきます。</li><li>ジャンプ中の連打は無効。着地してから次のジャンプが可能。</li><li>相手と重なる瞬間に十分な高さまで跳べていないと接触終了。</li><li>基本はどんどん高速化。たまに遅いモブくんも混ざります。</li><li>30体回避で100点。</li>`;
   }else if(legacyIndex===13){
@@ -3162,7 +3162,7 @@ function showGameIntro(index){
   }else if(legacyIndex===17){
     rules=`<li>1000円を持って3・2・1スタート。</li><li>食材・お菓子など100種類から毎回30商品。</li><li>3円〜250円の商品をタップ購入。</li><li>10秒で1000円ぴったり使い切れば100点。</li>`;
   }else if(legacyIndex===18){
-    rules=`<li>3・2・1後、9個の穴からモグラが出現。</li><li>1〜6体が一気に出ることがあります。</li><li>モグラをタップすると+1。</li><li>モグラと一緒にモブくんが混ざって出ることもあります。</li><li>モブくんを1回でも叩いたらその場で終了。</li><li>10秒。モグラ12体以上で100点。</li>`;
+    rules=`<li>3・2・1後、9個の穴からモグラが出現。</li><li>1〜6体が一気に出ることがあります。</li><li>モグラをタップすると+1。</li><li>モグラと一緒にモブくんが混ざって出ることもあります。</li><li>モブくんを1回でも叩いたらその場で終了。</li><li>10秒。モグラ13体以上で100点。</li>`;
   }else if(legacyIndex===19){
     rules=`<li>横長の棒の左端にモブくん。</li><li>モブくんを左へ引っ張り、離すと発射。</li><li>引っ張る距離が長いほど遠くへ進みます。</li><li>右端ギリギリで止めるほど高得点。</li><li>棒から落ちたら0点。</li>`;
   }else if(legacyIndex===20){
@@ -3294,7 +3294,7 @@ function showGameIntro(index){
   }else if(legacyIndex===86){
     rules=`<li>3対3。中央ラインを越えず、敵3人を全滅させます。</li><li>移動・ジャンプ・射撃・リロード・グレネード・回復を使います。</li>`;
   }else if(legacyIndex===87){
-    rules=`<li>10秒間の縦シューティング。弾は自動発射です。</li><li>左右移動・ボム・3秒レーザーでスライムを倒し、170 KOで100点です。</li>`;
+    rules=`<li>10秒間の縦シューティング。弾は自動発射です。</li><li>左右移動・ボム・3秒レーザーでスライムを倒し、180 KOで100点です。</li>`;
   }else if(legacyIndex===88){
     rules=`<li>自動で走り、JUMPでロイター板を踏みます。</li><li>15段から20段までの跳び箱を順番に越えます。</li>`;
   }else if(legacyIndex===89){
@@ -3868,7 +3868,7 @@ async function startLaunch(p,humanIndex,runId){
   let linear=0,circle=0,phase="linear",start=performance.now();
   const linearPeriod=rand(350,430);
 
-  screen.innerHTML=`<div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん人形空を飛ぶ</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+  screen.innerHTML=`<div class="launch-shell"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん人形空を飛ぶ</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
   <div class="gauge-wrap">
     <section id="linearCard" class="gauge-card">
       <div class="gauge-title">1. 高速 横長ゲージ <span id="linearScore">タップでSTOP</span></div>
@@ -3890,7 +3890,7 @@ async function startLaunch(p,humanIndex,runId){
       </div>
     </section>
     <p class="hint">横は見えない両端、円は上のMAXを狙う。最大2000m。</p><div class="launch-float-mob-v152"><img src="${partyActorImage()}" draggable="false" alt=""></div>
-  </div>`;
+  </div></div>`;
 
   const lg=document.getElementById("linearGauge"),lm=document.getElementById("linearMarker"),
         lc=document.getElementById("linearCard"),ls=document.getElementById("linearScore"),
@@ -3963,19 +3963,19 @@ async function launchAnimation(p,humanIndex,power,linear,circle){
   const targetX=128+target*pxPerM;
   const worldWidth=128+maxMeters*pxPerM+420;
 
-  screen.innerHTML=`<div class="game-head"><div><span class="kicker">POWER ${power.toFixed(1)}%</span><h2>FLY!</h2><p class="lead">横 ${linear}% / 円 ${circle}%</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
+  screen.innerHTML=`<div class="launch-shell"><div class="game-head"><div><span class="kicker">POWER ${power.toFixed(1)}%</span><h2>FLY!</h2><p class="lead">横 ${linear}% / 円 ${circle}%</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
   <div class="flight-card"><div class="flight-hud"><div><span>REALTIME DISTANCE</span><b id="distance">0.0 m</b></div><div><span>MAX</span><b>2000m</b></div></div>
     <div id="viewport" class="flight-viewport"><div id="world" class="flight-world" style="width:${worldWidth}px"><div class="ground-line"></div>
       ${Array.from({length:11},(_,i)=>`<div class="meter-mark" style="left:${128+i*200*pxPerM}px"><span>${i*200}m</span></div>`).join("")}
       <div class="power-orb"></div><div id="stick" class="power-stick"></div><img draggable="false" id="figure" class="figure" src="${partyActorImage()}" alt="figure" onerror="this.style.visibility='hidden'">
-    </div></div></div>`;
+    </div></div></div></div>`;
 
   const viewport=document.getElementById("viewport"),world=document.getElementById("world"),figure=document.getElementById("figure"),stick=document.getElementById("stick"),distance=document.getElementById("distance");
   stick.classList.add("strike");beep(140,120,.035);await wait(420);beep(860,90,.03);
   const duration=3000+power*9,start=performance.now();
   function easeOutCubic(t){return 1-Math.pow(1-t,3)}
   function flight(now){
-    const raw=clamp((now-start)/duration,0,1),e=easeOutCubic(raw),x=128+(targetX-128)*e,meters=(x-128)/pxPerM,arc=Math.sin(raw*Math.PI)*Math.min(150,40+power*1.12);
+    const raw=clamp((now-start)/duration,0,1),e=easeOutCubic(raw),x=128+(targetX-128)*e,meters=(x-128)/pxPerM,arc=Math.sin(raw*Math.PI)*Math.min(150,40+power*1.12,Math.max(0,viewport.clientHeight-156));
     figure.style.left=`${x}px`;figure.style.bottom=`${76+arc}px`;figure.style.transform=`rotate(${raw*1900}deg)`;distance.textContent=`${Math.min(target,meters).toFixed(1)} m`;
     const vw=viewport.clientWidth,cam=Math.max(0,x-vw*.42);world.style.transform=`translateX(${-cam}px)`;
     if(raw<1)activeAnimation=requestAnimationFrame(flight);else{activeAnimation=null;state.records.launch[p.id]=Math.round(target*10);setTimeout(()=>recordScreen(3,p,humanIndex,`${target.toFixed(1)}<small>m</small>`,`POWER ${power.toFixed(1)}% / MAX 2000m`),400)}
@@ -6333,8 +6333,9 @@ async function startMobSlot(p,humanIndex,runId){
           </div>`).join("")}
       </div>
 
+      <div class="slot-stop-row">${['左','中央','右'].map((label,i)=>`<button type="button" data-slot-stop="${i}" aria-label="${label}のリールを止める" disabled>${label}<small>STOP</small></button>`).join('')}</div>
       <div id="slotResult" class="slot-result">READY</div><div id="slotCoinBurst152" class="slot-coin-burst-v152"></div>
-      <button id="slotMainBtn" class="slot-main-button" type="button">SPIN</button>
+      <button id="slotMainBtn" class="slot-lever" type="button" aria-label="レバーを下へ引いて回す" disabled><i aria-hidden="true"></i><span>レバーを下へ引く ↓</span></button>
     </div>
 
     <div class="slot-paytable character-paytable">
@@ -6351,6 +6352,7 @@ async function startMobSlot(p,humanIndex,runId){
   const coinBurst=document.getElementById('slotCoinBurst152');
   const slotMachine=screen.querySelector('.slot-machine');
   const mainBtn=document.getElementById("slotMainBtn");
+  const stopBtns=[...screen.querySelectorAll('[data-slot-stop]')];
   const symbolEls=[0,1,2].map(i=>document.getElementById(`slotSymbol${i}`));
   const prevEls=[0,1,2].map(i=>document.getElementById(`slotPrev${i}`));
   const nextEls=[0,1,2].map(i=>document.getElementById(`slotNext${i}`));
@@ -6394,7 +6396,8 @@ async function startMobSlot(p,humanIndex,runId){
 
     const elapsed=now-reelStart;
 
-    for(let i=stopIndex;i<3;i++){
+    for(let i=0;i<3;i++){
+      if(stopped[i]!==null)continue;
       const speed=72+i*10;
       const raw=elapsed/speed+i*1.7;
       const base=Math.floor(raw);
@@ -6417,7 +6420,8 @@ async function startMobSlot(p,humanIndex,runId){
     targetIndex=chooseTargetIndex();
     resultEl.textContent="-";
     resultEl.className="slot-result";
-    mainBtn.textContent="STOP 1";
+    mainBtn.disabled=true;stopBtns.forEach(btn=>btn.disabled=false);
+    mainBtn.querySelector("span").textContent="回転中";
     mainBtn.classList.add("stopping");
 
     reelStart=performance.now();
@@ -6441,13 +6445,12 @@ async function startMobSlot(p,humanIndex,runId){
     setTimeout(()=>{if(slotMachine)slotMachine.className='slot-machine';},720);
   }
 
-  async function stopCurrent(){
+  async function stopCurrent(reelIndex){
     if(!running||finished)return;
 
-    if(!spinActive){
-      beginSpin();
-      return;
-    }
+    if(!spinActive||stopped[reelIndex]!==null)return;
+    stopIndex=reelIndex;
+    stopBtns[reelIndex].disabled=true;
 
     let idx=visible[stopIndex];
 
@@ -6465,12 +6468,7 @@ async function startMobSlot(p,humanIndex,runId){
     renderReel(stopIndex,idx,.5);
     beep(620+stopIndex*90,45,.018);
 
-    stopIndex++;
-
-    if(stopIndex<3){
-      mainBtn.textContent=`STOP ${stopIndex+1}`;
-      return;
-    }
+    if(stopped.some(value=>value===null))return;
 
     spinActive=false;
     if(reelRAF)cancelAnimationFrame(reelRAF);
@@ -6493,14 +6491,18 @@ async function startMobSlot(p,humanIndex,runId){
     }
 
     mainBtn.classList.remove("stopping");
-    mainBtn.textContent="SPIN";
+    mainBtn.querySelector("span").textContent="レバーを下へ引く ↓";
+    mainBtn.disabled=false;
     await wait(70);
   }
 
-  mainBtn.addEventListener("pointerdown",e=>{
-    e.preventDefault();
-    stopCurrent();
-  },{passive:false});
+  let leverDrag=null;
+  mainBtn.addEventListener('pointerdown',e=>{if(!running||finished||spinActive)return;e.preventDefault();leverDrag={id:e.pointerId,y:e.clientY};mainBtn.setPointerCapture(e.pointerId);});
+  mainBtn.addEventListener('pointermove',e=>{if(leverDrag?.id!==e.pointerId)return;mainBtn.style.setProperty('--lever-pull',Math.min(24,Math.max(0,e.clientY-leverDrag.y))+'px');});
+  mainBtn.addEventListener('pointerup',e=>{if(leverDrag?.id!==e.pointerId)return;const pulled=e.clientY-leverDrag.y>=18;leverDrag=null;mainBtn.style.setProperty('--lever-pull','0px');if(pulled)beginSpin();});
+  for(const type of ['pointercancel','lostpointercapture'])mainBtn.addEventListener(type,()=>{leverDrag=null;mainBtn.style.setProperty('--lever-pull','0px');});
+  mainBtn.addEventListener('click',e=>{if(e.detail===0)beginSpin();});
+  stopBtns.forEach((btn,i)=>btn.addEventListener('click',()=>stopCurrent(i)));
 
   function finishSlot(){
     if(finished)return;
@@ -6510,7 +6512,7 @@ async function startMobSlot(p,humanIndex,runId){
     if(timerRAF)cancelAnimationFrame(timerRAF);
     if(reelRAF)cancelAnimationFrame(reelRAF);
 
-    mainBtn.disabled=true;
+    mainBtn.disabled=true;stopBtns.forEach(btn=>btn.disabled=true);
     state.records.slot[p.id]=coins;
 
     setTimeout(()=>recordScreen(
@@ -6527,7 +6529,7 @@ async function startMobSlot(p,humanIndex,runId){
   if(!(await countdown("SLOT",runId)))return;
   if(!document.body.contains(mainBtn))return;
 
-  running=true;
+  running=true;mainBtn.disabled=false;
   endAt=performance.now()+10000;
 
   const timer=now=>{
@@ -24163,7 +24165,7 @@ async function startMonsterBoxMob(p,humanIndex,runId){
   </div>`;
 
   const stage=document.getElementById('mbStage138'),board=document.getElementById('mbBoard138'),box=document.getElementById('mbBox138'),mob=document.getElementById('mbMob138'),fx=document.getElementById('mbFx138'),levelEl=document.getElementById('mbLevel138'),scoreEl=document.getElementById('mbScore138'),jumpBtn=document.getElementById('mbJump138');
-  const W=Math.max(300,stage.clientWidth||340),H=Math.max(300,stage.clientHeight||390),groundY=H-50,mobX=54;y=groundY-44;
+  const W=stage.clientWidth,H=stage.clientHeight,groundY=H-50,mobX=54;y=groundY-44;
   const boxHeight=()=>82+(level-15)*12;
 
   function resetCycle(){
@@ -24172,7 +24174,7 @@ async function startMonsterBoxMob(p,humanIndex,runId){
     passedBoard=false;
     launched=false;
     board.style.left=`${boardX}px`;
-    board.style.top=`${groundY-13}px`;
+    board.style.top=`${groundY-19}px`;
     box.style.left=`${boxX}px`;
     box.style.height=`${boxHeight()}px`;
     box.style.top=`${groundY-boxHeight()}px`;
@@ -24200,7 +24202,7 @@ async function startMonsterBoxMob(p,humanIndex,runId){
 
     const footX=mobX+24,boardCenter=boardX+35;
     if(!passedBoard&&footX>=boardX&&footX<=boardX+70){
-      passedBoard=true;const feet=y+44,boardY=groundY-13;
+      passedBoard=true;const feet=y+44,boardY=groundY-19;
       if(Math.abs(feet-boardY)<22&&vy>=0){
         const err=Math.abs(footX-boardCenter),quality=clamp(1-err/35,0,1),launchHeight=120+quality*145;
         vy=-Math.sqrt(2*470*Math.max(80,launchHeight));launched=true;jumping=true;board.classList.add('hit-v138');pop(quality>.82?'PERFECT!':quality>.52?'GOOD!':'WEAK',boardCenter,groundY-45,quality>.82?'good-v138':'');mob.dataset.quality=String(quality);beep(quality>.82?940:650,90,.025);
@@ -28047,7 +28049,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===15)return clamp(Math.round(v),0,100);
   if(legacyIndex===16)return clamp(Math.round((v/10)/700*100),0,100);
   if(legacyIndex===17)return clamp(Math.round(v-900),0,100);
-  if(legacyIndex===18)return clamp(Math.round(v/12*100),0,100);
+  if(legacyIndex===18)return clamp(Math.round(v/13*100),0,100);
   if(legacyIndex===19)return clamp(Math.round(v),0,100);
   if(legacyIndex===20)return clamp(Math.round(v),0,100);
   if(legacyIndex===21)return clamp(Math.round(100-v/150*100),0,100);
@@ -28156,7 +28158,7 @@ function performancePoints(gameIndex,v){
     if(v>=40000)return 0;
     return clamp(Math.round((40000-v)/31500*100),0,100);
   }
-  if(legacyIndex===87)return clamp(Math.round(v/170*100),0,100);
+  if(legacyIndex===87)return clamp(Math.round(v/180*100),0,100);
   if(legacyIndex===88)return clamp(Math.round(v),0,100);
   if(legacyIndex===89){
     if(v<=12000)return 100;
