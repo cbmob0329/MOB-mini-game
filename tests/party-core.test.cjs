@@ -3,11 +3,11 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const core=require('../party-core.js');
-function seeded(seed=7){return ()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};}
-test('39 unique characters with exact-case existing assets and private ranks',()=>{
-  assert.equal(core.roster.length,39);
-  assert.equal(new Set(core.roster.map(c=>c.id)).size,39);
-  for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S|A|B|C|D|E|F)$/);}
+function seeded(seed=7){return ()=>{seed=(seed*1664525+1014704223)>>>0;return seed/4294967296;};}
+test('47 unique characters with exact-case existing assets and private ranks',()=>{
+  assert.equal(core.roster.length,47);
+  assert.equal(new Set(core.roster.map(c=>c.id)).size,47);
+  for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S|A|B|C|D|E|F)(-(SS|S|A|B|C|D|E|F))?$/);}
 });
 test('8 teams of 4 are unique and exclude all human selections, including collaboration selections',()=>{
   for(let seed=1;seed<=100;seed++){
@@ -36,4 +36,22 @@ test('raw-record conversion handles descending, ascending and discrete scoring',
 });
 test('new games and death game use representative genre',()=>{
   for(const key of ['deathGameChallenge','colorBridgeParty','treasureEscapeParty'])assert.equal(core.genre({key,title:'',sub:''}),'代表バトル');
+});
+
+test('new CPU profiles respect base ranges and genre-specific strengths',()=>{
+  const rank=(id,title,key='',r=.5)=>core.characterRank(core.roster.find(c=>c.id===id),{title,key},()=>r);
+  assert.equal(rank(24,'算数'),'S');assert.equal(rank(24,'アクション'),'A');
+  assert.equal(rank(25,'アクション','',0),'C');assert.equal(rank(25,'アクション','',.99),'A');
+  assert.equal(rank(26,'3Dボウリング','',.99),'S');assert.equal(rank(26,'アクション','',0),'C');
+  assert.equal(rank(27,'記憶ゲーム','',.99),'S');assert.equal(rank(27,'アクション','',0),'B');
+  assert.equal(rank(30,'モブくん人形空を飛ぶ','launch',.99),'SS');assert.equal(rank(30,'アクション','',0),'C');
+  assert.equal(rank(31,'アクション','',.1),'S');assert.equal(rank(31,'アクション','',.9),'B');
+  for(const id of [101,102,103,104]){assert.equal(rank(id,'アクション','',0),'E');assert.equal(rank(id,'アクション','',.99),'D');}
+});
+
+test('league partner uses closest rank when the whole collaboration is already selected',()=>{
+  const story=core.roster.filter(c=>c.group==='MOB STORY'),teams=story.map(c=>[c]);
+  const pairs=core.leagueCpuPairs(teams,()=>0),remaining=core.roster.filter(c=>c.group!=='MOB STORY');
+  for(const [human,cpu] of pairs){const distance=Math.abs(core.rankValue(human.rank)-core.rankValue(cpu.rank));assert.equal(distance,Math.min(...remaining.map(c=>Math.abs(core.rankValue(human.rank)-core.rankValue(c.rank)))));remaining.splice(remaining.indexOf(cpu),1);}
+  for(let seed=1;seed<=50;seed++){const random=seeded(seed),pairs=core.leagueCpuPairs(Array.from({length:20},()=>[]),random);assert.ok(pairs.every(t=>t[0].group===t[1].group));assert.equal(new Set(pairs.flat().map(c=>c.id)).size,40);}
 });

@@ -6,10 +6,10 @@ const points=(s,fn)=>Object.fromEntries(s.active.flatMap(id=>s.teams.find(t=>t.i
 const play=(s,fn)=>L.submit(s,points(s,fn),L.next(s,()=>0));
 function qualified(){const s=fresh();for(let i=0;i<10;i++)play(s,t=>100-t*3);return s;}
 function finals(){const s=qualified();for(let i=0;i<3;i++)play(s,t=>100-t*3);return s;}
-test('schedule matches fixed games, tag-only third round and four bonus rounds',()=>{
-  const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','reaction','mobSpeedRacer','ohajikiMob','catcher','individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob']);
+test('schedule matches fixed games, minority third round and four bonus rounds',()=>{
+  const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','reaction','minorityMob','ohajikiMob','catcher','individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob']);
   assert.deepEqual(s.schedule.repechage,['longJumpMob','cardShop','bowling3DMob']);
-  assert.deepEqual(s.schedule.final,['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge']);
+  assert.deepEqual(s.schedule.final,['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge','focusBombMob']);
   for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,4,6,9].includes(i)?2:1);play(s,t=>100-t);}
 });
 test('40 independent entrants, direct eight and reset twelve-team repechage',()=>{

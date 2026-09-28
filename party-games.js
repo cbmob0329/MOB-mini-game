@@ -37,7 +37,7 @@
         if(timeout)timer=setTimeout(()=>{if(api.valid(choiceRun))finish(-1);else{settled=true;resolve(-1);}},timeout);
       });
     }
-    function standings(slots){return `<div class="party-event-roster">${slots.map(s=>`<div class="${s.out?'out':''}">${portrait(s)}<span>${esc(s.team)}<b>${esc(s.name)}</b><em>${s.score} pt${s.out?' · FINISH':''}</em></span></div>`).join('')}</div>`;}
+    function standings(slots){return `<div class="party-event-roster">${slots.map(s=>`<div class="${s.out?'out':''} ${s.out&&!s.cpu?'human-eliminated':''}">${portrait(s)}<span>${esc(s.team)}<b>${esc(s.name)}</b><em>${s.score} pt${s.out?' · FINISH':''}</em></span></div>`).join('')}</div>`;}
     async function handoff(s,title){
       shell(title,`<p class="party-event-call">${esc(s.team)} · ${esc(s.name)} の番です</p><div class="party-event-actor">${portrait(s)}</div><p>端末を受け取ったら準備OKを押してください。</p><div id="eventChoices"></div>`);
       await choice(['準備OK']);
@@ -62,7 +62,7 @@
         const guests=core.roster.filter(c=>!used.has(c.img)).slice(0,3);
         slots.push(...guests.map((c,i)=>({...c,id:`guest${i}`,cpu:true,guest:true,team:`CPU ${i+1}`})));
       }
-      slots=slots.map(s=>({...s,score:0,lives:2,out:false,bank:0,scouts:1}));
+      slots=slots.map(s=>({...s,rank:core.characterRank?core.characterRank(s,api.games[index]):s.rank,score:0,lives:2,out:false,bank:0,scouts:1}));
       api.representatives(slots.filter(s=>!s.guest).map(s=>s.id));
       shell(api.games[index].title,`${standings(slots)}<p class="party-event-call">${slots.length}人がエントリー！ スマホを順番に渡して挑戦しよう。</p><div id="eventChoices"></div>`);
       await choice(['全員準備OK · スタート']);if(!api.valid(ownRun))return;

@@ -4,23 +4,31 @@
   window.MobPartyLeagueUI={create(api){
     const {screen,esc}=api;let league=null,players=[],ticket=0,count=1,selections=[];
     const labels={qualifier:'予選',repechage:'敗者復活3ゲームマッチ',final:'決勝',cutoff:'通過決定・延長戦',championship:'優勝決定戦'};
-    const gameTitle=key=>key==='individualChoice'?'3種目から選ぶ個人チャレンジ':key==='teamChoice'?'サイコロ or スロット · タッグ選択':api.title(key);
-    const on=(id,fn)=>{const button=screen.querySelector('#'+id);let used=false;button.onclick=()=>{if(used)return;used=true;button.disabled=true;fn();};};
+    const gameTitle=key=>key==='minorityMob'?'モブくんは少数派':key==='focusBombMob'?'モブくん集中大爆弾！':key==='individualChoice'?'3種目から選ぶ個人チャレンジ':key==='teamChoice'?'サイコロ or スロット · タッグ選択':api.title(key);
+    const on=(id,fn)=>{const button=screen.querySelector('#'+id);let used=false;button.onclick=()=>{if(used)return;used=true;button.disabled=true;if(fn()===false){used=false;button.disabled=false;}};};
     const picture=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     const team=id=>league.teams.find(t=>t.id===id);
     const member=id=>players.find(p=>p.id===id);
     const portraits=id=>team(id).members.map(p=>picture(member(p))).join('');
     function draw(title,body){api.clear();screen.innerHTML=`<section class="tag-league"><header><small>TAG BATTLE LEAGUE · 20 TEAMS</small><h1>${title}</h1></header>${body}</section>`;api.top();}
     function stop(){ticket++;league=null;}
-    function setup(){stop();count=1;selections=[];draw('タッグバトルリーグ',`<p>20チーム・40名。予選10ゲーム → 敗者復活3ゲーム → 決勝！</p><p>決勝は600点で点灯。その次のゲーム以降に1位を取れば優勝です。10ゲームを超えても決着まで続きます。</p><label>参加するプレイヤー数<select id="leagueCount">${Array.from({length:9},(_,i)=>`<option value="${i}" ${i===1?'selected':''}>${i}人${i===0?'（CPU観戦）':''}</option>`).join('')}</select></label><button id="leagueSelect" class="primary">キャラクター・タッグを決める</button><button id="leagueBack" class="secondary">戻る</button>`);on('leagueSelect',()=>{count=Number(screen.querySelector('#leagueCount').value);choosePlayers();});on('leagueBack',api.home);}
+    function setup(){stop();count=1;selections=[];draw('タッグバトルリーグ',`<p>20チーム・40名。予選10ゲーム → 敗者復活3ゲーム → 決勝！</p><p>決勝は600点で点灯。その次のゲーム以降に1位を取れば優勝です。10ゲームを超えても決着まで続きます。</p><label>参加するプレイヤー数<select id="leagueCount">${Array.from({length:9},(_,i)=>`<option value="${i}" ${i===1?'selected':''}>${i}人${i===0?'（CPU観戦）':''}</option>`).join('')}</select></label><button id="leagueSelect" class="primary">キャラクター・タッグを決める</button><button id="leagueBack" class="secondary">戻る</button>`);on('leagueSelect',()=>{count=Number(screen.querySelector('#leagueCount').value);selectLeagueCharacter(0);});on('leagueBack',api.home);}
+    function selectLeagueCharacter(index,editing=false){
+      if(index>=count){choosePlayers();return;}
+      window.MobCharacterSelect.show({screen,esc,count,index,slots:selections.map(s=>s.character),top:api.top,beep:api.beep,
+        back:()=>{if(editing)choosePlayers();else if(index>0)selectLeagueCharacter(index-1);else setup();},
+        confirm:c=>{selections[index]={character:c.id,team:selections[index]?.team??Math.floor(index/2)};if(selections.length<count)selectLeagueCharacter(index+1);else choosePlayers();}
+      });
+    }
     function choosePlayers(){
       selections=Array.from({length:count},(_,i)=>selections[i]||{character:core.roster[i].id,team:Math.floor(i/2)});
-      draw('自由にタッグを組もう',`<p>同じチーム番号を選んだ2人がタッグになります。空いた枠にはCPUが入ります。各チーム2名まで。</p><div class="league-setup">${selections.map((s,i)=>`<section><h2>P${i+1}</h2><label>キャラクター<select data-char="${i}">${core.roster.map(c=>`<option value="${c.id}" ${c.id===s.character?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label><label>所属チーム<select data-team="${i}">${Array.from({length:20},(_,t)=>`<option value="${t}" ${t===s.team?'selected':''}>TEAM ${t+1}</option>`).join('')}</select></label></section>`).join('')}</div><p id="leagueSetupError" role="alert"></p><p>CPUの外見は一部重複しますが、全40名が独立した選手です。</p><button id="leagueStart" class="primary">このタッグで大会へ</button><button id="leagueBack" class="secondary">人数を変更</button>`);
-      screen.querySelectorAll('[data-char]').forEach(el=>el.onchange=()=>selections[Number(el.dataset.char)].character=Number(el.value));
+      draw('自由にタッグを組もう',`<p>同じチーム番号を選んだ2人がタッグになります。空いた枠にはCPUが入ります。各チーム2名まで。</p><div class="league-setup">${selections.map((s,i)=>`<section><h2>P${i+1}</h2><button class="league-character-change" data-char="${i}"><img src="${core.roster.find(c=>c.id===s.character).img}" alt=""><b>${esc(core.roster.find(c=>c.id===s.character).name)}</b><small>キャラクターを変更</small></button><label>所属チーム<select data-team="${i}">${Array.from({length:20},(_,t)=>`<option value="${t}" ${t===s.team?'selected':''}>TEAM ${t+1}</option>`).join('')}</select></label></section>`).join('')}</div><p id="leagueSetupError" role="alert"></p><p>CPUは同じコラボを優先してタッグを組みます。組めない場合は近いランク同士。全40名のキャラクターは重複しません。</p><button id="leagueStart" class="primary">このタッグで大会へ</button><button id="leagueBack" class="secondary">人数を変更</button>`);
+      const setupPanel=screen.querySelector('.tag-league');setupPanel.classList.add('league-setup-screen');setupPanel.style.setProperty('--setup-top',Math.ceil(setupPanel.getBoundingClientRect?.().top||screen.getBoundingClientRect().top)+'px');
+      screen.querySelectorAll('[data-char]').forEach(el=>el.onclick=()=>selectLeagueCharacter(Number(el.dataset.char),true));
       screen.querySelectorAll('[data-team]').forEach(el=>el.onchange=()=>selections[Number(el.dataset.team)].team=Number(el.value));
       on('leagueBack',setup);on('leagueStart',()=>{
-        if(new Set(selections.map(s=>s.character)).size!==count){screen.querySelector('#leagueSetupError').textContent='プレイヤーのキャラクターは重複せず選んでください。';return;}
-        if(selections.some(s=>selections.filter(x=>x.team===s.team).length>2)){screen.querySelector('#leagueSetupError').textContent='1チームは2名までです。所属チームを変更してください。';return;}
+        if(new Set(selections.map(s=>s.character)).size!==count){screen.querySelector('#leagueSetupError').textContent='プレイヤーのキャラクターは重複せず選んでください。';return false;}
+        if(selections.some(s=>selections.filter(x=>x.team===s.team).length>2)){screen.querySelector('#leagueSetupError').textContent='1チームは2名までです。所属チームを変更してください。';return false;}
         begin();
       });
     }
@@ -54,21 +62,29 @@
           const spare=league.teams.find(t=>!ids.includes(t.id)&&t.members.every(p=>member(p).cpu));
           if(!spare)throw Error('Missing exhibition team');rows.push(spare);
         }
-        const run=()=>api.run(descriptor.key,rows,descriptor,score=>{
+        const run=()=>runRound(descriptor.key,rows,descriptor,score=>{
           if(ticket!==ownTicket||!league)return;
           for(const id of actual)for(const p of team(id).members)points[p]=score[p];
           startHeat();
         });
         if(rows.every(t=>t.members.every(p=>member(p).cpu))){run();return;}
-        if(rules.TAG.includes(descriptor.key))announce(`${rows[0].name} VS ${rows[1].name}`,`${api.title(descriptor.key)} · 第${heat}試合<br>この2組が激突！ 相棒と力を合わせて勝利をつかめ！`,rows.map(t=>t.id),run,'versus');
-        else announce(`${labels[descriptor.phase]} · GAME ${descriptor.round}`,`${api.title(descriptor.key)}<br>さあ、次の勝負へ！`,[],run);
+        if(rules.TAG.includes(descriptor.key))announce(`${rows[0].name} VS ${rows[1].name}`,`${gameTitle(descriptor.key)} · 第${heat}試合<br>この2組が激突！ 相棒と力を合わせて勝利をつかめ！`,rows.map(t=>t.id),run,'versus');
+        else announce(`${labels[descriptor.phase]} · GAME ${descriptor.round}`,`${gameTitle(descriptor.key)}<br>さあ、次の勝負へ！`,[],run);
       };
       const launchHeat=()=>{if(rules.TAG.includes(descriptor.key)){
         announce('タッグ対戦、開幕！',`全${batches.length}試合の対戦カードが決定！<br>相棒と力を合わせて、ライバルを打ち破れ！`,[],startHeat,'matchups');
         screen.querySelector('.league-show-body').insertAdjacentHTML('beforeend',`<div class="league-matchup-board">${batches.map((pair,i)=>`<div><small>MATCH ${i+1}</small><b>${team(pair[0]).name} <em>VS</em> ${pair[1]?team(pair[1]).name:'CPU招待チーム'}</b></div>`).join('')}</div>`);
       }else startHeat();};
-      const launch=()=>announce('NEXT GAME · '+descriptor.round,`<strong class="league-game-name">${esc(api.title(descriptor.key))}</strong><br>${labels[descriptor.phase]}の次の勝負はこちら！<br>${descriptor.phase==='final'?'点灯済みのタッグは1位で優勝。ライバルは全力で阻止しよう！':'一つの記録が順位を動かす。準備ができたら、次の舞台へ！'}`,league.lit.length?league.lit:[],launchHeat,'next-game');
-      if(descriptor.multiplier===2)announce('POINTS ×2',`ここが勝負の分かれ目！<br>${api.title(descriptor.key)}は全員の獲得ポイントが2倍！`,[],launch,'bonus');else if(descriptor.winnerBonus)announce('生存者だけが POINTS ×2','今回のデスゲームは個人1位だけが2倍！<br>最後の1人が200点を獲得。ほかの選手は通常点です。',[],launch,'bonus');else launch();
+      const launch=()=>announce('NEXT GAME · '+descriptor.round,`<strong class="league-game-name">${esc(gameTitle(descriptor.key))}</strong><br>${labels[descriptor.phase]}の次の勝負はこちら！<br>${descriptor.phase==='final'?'点灯済みのタッグは1位で優勝。ライバルは全力で阻止しよう！':'一つの記録が順位を動かす。準備ができたら、次の舞台へ！'}`,league.lit.length?league.lit:[],launchHeat,'next-game');
+      if(descriptor.multiplier===2)announce('POINTS ×2',`ここが勝負の分かれ目！<br>${gameTitle(descriptor.key)}は全員の獲得ポイントが2倍！`,[],launch,'bonus');else if(descriptor.winnerBonus)announce('生存者だけが POINTS ×2','今回のデスゲームは個人1位だけが2倍！<br>最後の1人が200点を獲得。ほかの選手は通常点です。',[],launch,'bonus');else launch();
+    }
+    function runRound(key,rows,descriptor,done){
+      if(!['minorityMob','focusBombMob'].includes(key)){api.run(key,rows,descriptor,done);return;}
+      const own=ticket;
+      window.MobLeagueEvents.run({key,screen,esc,beep:api.beep,clear:api.clear,top:api.top,
+        valid:()=>ticket===own&&!!league,
+        entrants:rows.flatMap(t=>t.members.map(id=>({...member(id),team:t.name,teamId:t.id}))),
+        done:scores=>{if(ticket===own&&league)done(scores);}});
     }
     function choiceRound(descriptor){
       const own=ticket,points={},assignments={},rows=descriptor.active.map(team),tasks=descriptor.key==='teamChoice'?rows.map(t=>({team:t,members:t.members})):rows.flatMap(t=>t.members.map(p=>({team:t,members:[p]})));let choosing=0,playing=0;
@@ -87,8 +103,22 @@
       }
       announce(`GAME ${descriptor.round} · ${descriptor.multiplier===2?'POINTS ×2':'CHOICE CHALLENGE'}`,`${gameTitle(descriptor.key)}<br>${descriptor.choices.map(k=>esc(gameTitle(k))).join(' ／ ')}<br>${descriptor.key==='individualChoice'?'今回は各プレイヤーが好きな種目を選べます。相棒との重複はできません！':'チームで選ぶ運命の勝負。2倍ポイントで順位を動かせ！'}`,[],chooseNext,descriptor.multiplier===2?'bonus':'next-game');
     }
-    function results({event,record},championShown=false){
-      if(event.type==='champion'&&!championShown){announce('CHAMPION!!',`優勝決定！ ${team(event.ids[0]).name}が点灯後の首位を獲得！<br>これで全試合終了です。王者の結果を振り返りましょう！`,event.ids,()=>results({event,record},true),'champions');return;}
+    function results({event,record},openingShown=false){
+      if(!openingShown){
+        const resume=()=>results({event,record},true);
+        if(event.type==='qualified'){reveal(event.ids,'予選突破・8チーム発表！','総合順位の前に、決勝への切符を手にしたタッグを発表します！',resume);return;}
+        if(event.type==='finalists'){reveal(event.wildcards,'敗者復活・2チーム決定！','最後の切符をつかんだのは、この2組！',resume);return;}
+        if(event.type==='cutoff'){
+          const overtime=()=>announce('ボーダー同点！ 延長戦！',`残る${event.slots}枠は、反射神経勝負で決定！<br>同点が続けば再戦。延長戦の得点だけで決着をつけます！`,event.ids,resume,'suspense');
+          if(record.phase!=='cutoff'&&league.cut.kept.length)reveal(league.cut.kept,'進出確定チーム発表！','まずは通過を決めたタッグを発表！ 最後の枠はまだ決まっていません。',overtime);else overtime();return;
+        }
+        if(['final','championship'].includes(record.phase)&&(record.litBefore.length||record.phase==='championship')){
+          announce('さあ、これで決まるのか！？','王座をつかむタッグは現れたのか。<br>運命の結果はこちらー！！',[],()=>{
+            if(event.type==='champion')announce('CHAMPION!!','優勝決定！ '+team(event.ids[0]).name+'！<br>これで全試合終了です。王者に大きな拍手を！',event.ids,resume,'champions');
+            else announce('勝負はまだ続きます！！',event.type==='championship'?'点灯チームが同点首位！<br>このタッグだけで優勝決定戦へ！':'今回は優勝決定ならず！<br>次の勝負で王座をつかむのは誰だ！？',event.type==='championship'?event.ids:[],resume,'continuing');
+          },'suspense');return;
+        }
+      }
       const ids=record.active,cut=record.phase==='qualifier'?8:record.phase==='repechage'?2:0;
       const teamRows=total=>[...ids].sort((a,b)=>(total[b]||0)-(total[a]||0));
       const rows=(total,round)=>teamRows(total).map((id,i)=>{
@@ -102,9 +132,9 @@
       const show=()=>{const [title,body]=pages[page];draw(title,`<p>${labels[record.phase]} · GAME ${record.round} / ${gameTitle(record.key)}${record.multiplier===2?' / 2倍ポイント':record.winnerBonus?' / 個人1位のみ2倍':''}</p>${page===1?`<p class="league-live">${record.phase==='final'?'600点で点灯。その次のゲーム以降の1位で優勝！':cut?`上位${cut}チームが通過！ ボーダー同点は延長戦。`:''}</p><aside class="league-cutline">${borderText}</aside>`:''}<div class="league-ranks">${body}</div><button id="leagueNext" class="primary league-continue">${page+1} / 2 · タップして次へ →</button>`);on('leagueNext',()=>{if(++page<pages.length){if(page===1)announce('現在の総合順位はこちら！','現在のチーム総合順位を発表！<br>今回の得点で順位はどう動いたのか。相棒と積み重ねた合計点に注目です！',[],show,'standings');else show();}else after(event);});};show();
     }
     function after(event){
-      if(event.type==='qualified')reveal(event.ids,'予選突破・8チーム発表！','長い予選を勝ち抜いたタッグを、1組ずつ発表します！',()=>announce('残る切符は、あと2枚！','ここからは敗者復活3ゲームマッチ！ 予選ポイントはゼロに戻ります。残る12組、逆転のチャンスをつかめ！',league.active,play));
-      else if(event.type==='finalists')reveal(event.wildcards,'敗者復活・2チーム決定！','最後の2枠を勝ち取ったタッグが合流！',()=>announce('決勝ゲーム！！','10チームの最終決戦！ 全ポイントをリセット。600点で点灯し、その後のゲームで1位を取ったタッグが優勝！ 点灯チームが同点1位なら、そのタッグだけで優勝決定戦です。',event.ids,play));
-      else if(event.type==='cutoff')announce('ボーダー同点！ 延長戦！',`あと${event.slots}枠をかけて反射神経勝負！ 同点が続けば再戦。ここまでの成績を持ち越さず、この延長戦で決めます！`,event.ids,play);
+      if(event.type==='qualified')announce('残る切符は、あと2枚！','ここからは敗者復活3ゲームマッチ！ 予選ポイントはゼロに戻ります。残る12組、逆転のチャンスをつかめ！',league.active,play);
+      else if(event.type==='finalists')announce('決勝ゲーム！！','10チームの最終決戦！ 全ポイントをリセット。600点で点灯し、その後のゲームで1位を取ったタッグが優勝！ 点灯チームが同点1位なら、そのタッグだけで優勝決定戦です。',event.ids,play);
+      else if(event.type==='cutoff')play();
       else if(event.type==='championship')announce('同点1位！ 優勝決定戦！','点灯済みの同点首位だけが残った！ ランダムゲームで単独1位が決まるまで決戦を続けます！',event.ids,play);
       else if(event.type==='champion')champion(event.ids[0]);
       else if(event.ids.length)announce('MATCH POINT · 点灯！','600点突破！ 優勝へのランプが点灯！<br>次のゲームから1位を取れば優勝。ほかのタッグは全力で阻止せよ！',event.ids,play,'ignition');

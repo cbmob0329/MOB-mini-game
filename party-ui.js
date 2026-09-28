@@ -9,7 +9,7 @@
   window.MobPartyUI={settings,create(api){
     const {screen,esc}=api;
     const originals=api.players.map(p=>({...p}));
-    let count=1,selected=[],category=2,preview=null;
+    let count=1,selected=[];
     const image=(c,cls='')=>`<img class="${cls}" src="${c.img}" alt="${esc(c.name)}" draggable="false">`;
     const on=(id,fn)=>screen.querySelector(`#${id}`).addEventListener('click',fn);
     function draw(html){screen.innerHTML=`<div class="party-page">${html}</div>`;api.gameTop();}
@@ -40,19 +40,10 @@
       back(api.home);screen.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{count=Number(b.dataset.count);selected=[];selectCharacter();});
     }
     function selectCharacter(){
-      preview=roster.find(c=>!selected.includes(c.id)&&(category===2||((category===0)===(c.group===groups[0][0]))))||roster.find(c=>!selected.includes(c.id));
-      draw(`<section class="party-fighter-select">${backButton}${heading('02 / CHARACTER SELECT','キミの相棒を選ぼう',`PLAYER ${selected.length+1} / ${count} · 決定後、次のプレイヤーに交代します。`)}
-        <div class="party-player-slots">${Array.from({length:count},(_,i)=>`<span class="${i===selected.length?'current':''}">${selected[i]?image(roster.find(c=>c.id===selected[i])):''}P${i+1}${selected[i]?' ✓':''}</span>`).join('')}</div>
-        <div class="party-tabs" role="group" aria-label="キャラクターの種類"><button data-category="2" aria-pressed="${category===2}">全キャラクター</button><button data-category="0" aria-pressed="${category===0}">メインキャラクター</button><button data-category="1" aria-pressed="${category===1}">コラボキャラクター</button></div>
-        <div class="party-roster">${(category===2?groups:category===0?groups.slice(0,1):groups.slice(1)).map(([name])=>`<section><h2>${name}</h2><div class="party-character-grid">${roster.filter(c=>c.group===name).map(c=>`<button data-character="${c.id}" aria-label="${c.name}${selected.includes(c.id)?' 選択済み':''}" ${selected.includes(c.id)?'disabled':''}>${image(c)}<span>${c.name.replace('モブパティ','')}</span>${selected.includes(c.id)?'<b class="party-taken">選択済み</b>':''}</button>`).join('')}${name===groups[0][0]?'<button data-character="random" aria-label="ランダム選択"><strong class="party-random">?</strong><span>ランダム</span></button>':''}</div></section>`).join('')}</div>
-        <div class="party-fighter-dock"><section class="party-spotlight" aria-live="polite"><b class="party-fighter-player">P${selected.length+1}</b><div id="partyPreview"></div><div><small id="partyGroup"></small><h2 id="partyName"></h2><p>READY TO FIGHT</p></div></section>
-        <button id="partyConfirm" class="party-primary">このキャラクターに決定 →</button></div></section>`);
-      function refresh(){screen.querySelector('#partyPreview').innerHTML=image(preview,[11,12,13].includes(preview.id)?'party-small':'');screen.querySelector('#partyName').textContent=preview.name;screen.querySelector('#partyGroup').textContent=preview.group;screen.querySelectorAll('[data-character]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.character)===preview.id)));}
-      refresh();
-      back(()=>{if(selected.length){selected.pop();selectCharacter();}else if(count>1)chooseCount();else api.home();});
-      screen.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>{category=Number(b.dataset.category);selectCharacter();});
-      screen.querySelectorAll('[data-character]').forEach(b=>b.onclick=()=>{const available=roster.filter(c=>!selected.includes(c.id));preview=b.dataset.character==='random'?available[Math.floor(Math.random()*available.length)]:roster.find(c=>c.id===Number(b.dataset.character));refresh();api.beep(640,45,.012);});
-      on('partyConfirm',()=>{selected.push(preview.id);const p=api.players.find(p=>p.id===`p${selected.length}`);p.img=preview.img;p.name=preview.name;p.characterRank=preview.rank;api.beep(900,70,.018);if(selected.length<count)selectCharacter();else chooseStyle();});
+      window.MobCharacterSelect.show({screen,esc,count,index:selected.length,slots:selected,top:api.gameTop,beep:api.beep,
+        back:()=>{if(selected.length){selected.pop();selectCharacter();}else if(count>1)chooseCount();else api.home();},
+        confirm:c=>{selected.push(c.id);const p=api.players.find(p=>p.id==='p'+selected.length);p.img=c.img;p.name=c.name;p.characterRank=c.rank;if(selected.length<count)selectCharacter();else chooseStyle();}
+      });
     }
     function chooseStyle(){
       draw(`${backButton}${heading('03 / LET’S PLAY','どんなパーティーにする？','好きなゲームをひとつ。あるいは、チームでカップに挑戦。')}<div class="party-team">${selected.map(id=>image(roster.find(c=>c.id===id))).join('')}</div><div class="party-style-grid"><button id="partySingle"><small>ONE GAME</small><b>ゲームを選んで1プレイ</b><span>好きな種目を見つけて、すぐにスタート ↗</span></button><button id="partyCup"><small>TEAM CHALLENGE</small><b>MOB PARTY CUP</b><span>8チームで競う、合計スコアの大会 ↗</span></button></div><button id="partyAdvanced" class="party-back">その他の対戦ルール →</button>`);

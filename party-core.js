@@ -3,16 +3,35 @@
   'use strict';
   const groups=[
     ['MAIN CHARACTERS',[[1,'モブパティレッド','B'],[2,'モブパティブルー','C'],[3,'モブパティゴールド','A'],[4,'モブパティシルバー','B'],[5,'モブパティトレーナー','C'],[6,'モブパティDJ','C'],[7,'モブパティロボ','B']]],
-    ['MOB STORY',[[9,'モブ勇者','SS'],[11,'モブデンデン','S'],[12,'モブピンク','A'],[13,'モブマニー','S']]],
+    ['MOB STORY',[[9,'モブ勇者','SS'],[11,'モブデンデン','S'],[12,'モブピンク','A'],[13,'モブマニー','S'],[24,'モブイルカエル(酒場)','A'],[25,'モブコーチ','C-A'],[26,'モブゴンゾー','C-A'],[27,'モブマテリア','B-A']]],
     ['MOB MONSTERS',[[14,'モブスライム','B'],[15,'モブミイラ','B'],[16,'モブサバンナ','A'],[17,'モブロック','C']]],
     ['MOB SHOT',[[18,'モブコドラ','B'],[19,'モブイルカエル','B'],[20,'モブウルフ','C']]],
     ['MOB BR',[[21,'モブテツBR','SS'],[22,'マルモブBR','S'],[23,'モブポヨBR','A']]],
-    ['MOB mini game',[[101,'モブドットレッド','E','play/01.png'],[102,'モブドットブルー','E','play/02.png'],[103,'モブドットイエロー','E','play/03.png'],[104,'モブドットグリーン','E','play/04.png'],[105,'モブイタリアン','C','play/05.PNG'],[106,'モブ中華店主','C','play/06.PNG'],[107,'モブみかんティラ','B','play/07.PNG'],[108,'モブスーパーマン','SS','play/08.PNG']]],
+    ['Wonder UNITY',[[28,'モブラプトル','B-A'],[29,'モブティラノ','B-A'],[30,'モブプテラ','C-A'],[31,'モブペンギン','B']]],
+    ['MOB mini game',[[101,'モブドットレッド','E-D','play/01.png'],[102,'モブドットブルー','E-D','play/02.png'],[103,'モブドットイエロー','E-D','play/03.png'],[104,'モブドットグリーン','E-D','play/04.png'],[105,'モブイタリアン','C-B','play/05.PNG'],[106,'モブ中華店主','C-B','play/06.PNG'],[107,'モブみかんティラ','B-A','play/07.PNG'],[108,'モブスーパーマン','SS','play/08.PNG']]],
     ['ぷにモブ', ['グリーン','イエロー','バイオレット','ピンク','カモフラ','紳士','ブルー','レッド','ライトピンク','ハロウィン'].map((name,i)=>[201+i,`ぷにモブ${name}`,'D',`icon/${String(i+1).padStart(2,'0')}.png`])]
   ];
   const roster=groups.flatMap(([group,rows])=>rows.map(([id,name,rank,img])=>({id,name,rank,group,img:img||`main/${String(id).padStart(3,'0')}.png`})));
+  const rankOrder=['F','E','D','C','B','A','S','SS'];
+  const rankBounds=rank=>String(rank).split('-').map(r=>rankOrder.indexOf(r));
+  function rankValue(rank){const [lo,hi=lo]=rankBounds(rank);return (lo+hi)/2;}
+  function resolveRank(rank,random=Math.random){const [lo,hi=lo]=rankBounds(rank);return rankOrder[lo+Math.floor(random()*(hi-lo+1))]||'C';}
+  function characterRank(player,game={},random=Math.random){
+    const c=roster.find(c=>c.img===player.img)||player,title=game.title||'',key=game.key||'';
+    const brain=genre({...game,title})==='頭脳・記憶'||/ブラックジャック|カード|スカウト|集中大爆弾|少数派/.test(title);
+    const sport=genre({...game,title})==='スポーツ'||/ボウリング|フリースロー|ハンマー|砲丸|パンチング|カーリング|ホッケー|ホームラン|ビリヤード/.test(title);
+    const flying=['launch','bikeJump','ski','parachute','flyingCarpet','skiJump3DMob','mobRocket','rocketPunch'].includes(key)||/空を飛|バイクで飛|スキージャンプ|パラシュート|じゅうたん|ロケット/.test(title);
+    let rank=c.rank||player.characterRank||'C';
+    if(c.id===24&&brain)rank='S';
+    if(c.id===26&&sport)rank='A-S';
+    if(c.id===27&&brain)rank='A-S';
+    if(c.id===30&&flying)rank='S-SS';
+    if(c.id===31&&random()<.2)rank='S';
+    return resolveRank(rank,random);
+  }
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function cpuScore(rank='C',random=Math.random){
+    rank=resolveRank(rank,random);
     const average={SS:91,S:81,A:71,B:61,C:50,D:39,E:29,F:19}[rank]??50;
     const luck=random();
     if(luck<.05)return Math.round(45+random()*15); // Occasional upset, including an SS slump.
@@ -54,13 +73,23 @@
   function leagueCpuPairs(humanTeams,random=Math.random){
     const used=new Set(humanTeams.flat().map(c=>c.id)),pool=roster.filter(c=>!used.has(c.id));
     const result=humanTeams.map(t=>[...t]);
-    const take=group=>{const candidates=pool.filter(c=>!group||c.group===group),fallback=roster.filter(c=>!used.has(c.id)),matching=fallback.filter(c=>c.group===group),source=candidates.length?candidates:pool.length?pool:matching.length?matching:fallback;const c=source[Math.floor(random()*source.length)];const i=pool.indexOf(c);if(i>=0)pool.splice(i,1);return c;};
-    // Fill human partners first, then keep full CPU pairs within one collaboration.
-    result.filter(t=>t.length===1).forEach(t=>t.push(take(t[0].group)));
-    result.filter(t=>!t.length).forEach(t=>{const groups=[...new Set(pool.map(c=>c.group))].filter(g=>pool.filter(c=>c.group===g).length>=2);const g=groups[Math.floor(random()*groups.length)];t.push(take(g));t.push(take(t[0].group));});
+    const take=anchor=>{
+      if(!pool.length)throw Error('Not enough unique characters');
+      const same=anchor?pool.filter(c=>c.group===anchor.group):pool;
+      const nearest=anchor?Math.min(...pool.map(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank)))):0;
+      const candidates=same.length?same:pool.filter(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank))===nearest);
+      const c=candidates[Math.floor(random()*candidates.length)];pool.splice(pool.indexOf(c),1);return c;
+    };
+    result.filter(t=>t.length===1).forEach(t=>t.push(take(t[0])));
+    result.filter(t=>!t.length).forEach(t=>{
+      const fullGroups=[...new Set(pool.map(c=>c.group))].filter(g=>pool.filter(c=>c.group===g).length>=2);
+      const g=fullGroups[Math.floor(random()*fullGroups.length)];
+      const candidates=g?pool.filter(c=>c.group===g):pool;
+      const first=candidates[Math.floor(random()*candidates.length)];pool.splice(pool.indexOf(first),1);t.push(first,take(first));
+    });
     return result;
   }
-  const core={groups,roster,cpuScore,cpuRaw,allocateTeams,leagueCpuPairs,representativeKeys,genre,bridgeScore};
+  const core={groups,roster,characterRank,rankValue,resolveRank,cpuScore,cpuRaw,allocateTeams,leagueCpuPairs,representativeKeys,genre,bridgeScore};
   if(typeof module!=='undefined'&&module.exports)module.exports=core;
   root.MobPartyCore=core;
 })(typeof window!=='undefined'?window:globalThis);

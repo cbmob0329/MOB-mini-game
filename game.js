@@ -27239,7 +27239,7 @@ function normalizeCpuRecordV152(gameIndex,p){
 }
 
 function simulateOneCpu(gameIndex,p){
-  if(p.characterRank){const score=window.MobPartyCore.cpuScore(p.characterRank);state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuRaw(score,v=>performancePoints(gameIndex,v));return false;}
+  if(p.characterRank){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuRaw(score,v=>performancePoints(gameIndex,v));return false;}
   const legacyIndex=legacyGameIndex(gameIndex);
   const ultra=cpuUltraDraw(gameIndex);
   state.cpuTier[`${state.roundIndex}:${p.id}`]=ultra?"SUPER":"STRONG";

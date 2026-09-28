@@ -7,9 +7,9 @@
     if(!pool.length)throw Error('League needs a game pool');
     const any=()=>pick(pool,random);
     return {
-      qualifier:['reaction',any(),pick(TAG,random),pick(['ohajikiMob','toyOnOff'],random),pick(['catcher','plushCatcher'],random),'individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
+      qualifier:['reaction',any(),'minorityMob',pick(['ohajikiMob','toyOnOff'],random),pick(['catcher','plushCatcher'],random),'individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
       repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
-      final:['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge'],pool:[...pool]
+      final:['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge','focusBombMob'],pool:[...pool]
     };
   }
   function create(teams,schedule){
@@ -60,7 +60,10 @@
     else if(s.phase==='repechage'&&s.round===3)event=cut(s,s.active,s.scores,2,[],'repechage');
     else if(s.phase==='cutoff')event=cut(s,s.active,round,s.cut.slots,s.cut.kept,s.cut.stage);
     else if(s.phase==='final'||s.phase==='championship'){
-      const best=Math.max(...Object.values(round)),leaders=s.active.filter(id=>round[id]===best);
+      // Focus bomb crowns the individual winner's team, even if another pair totals more.
+      const best=Math.max(...Object.values(round)),leaders=descriptor.key==='focusBombMob'
+        ?s.active.filter(id=>s.teams.find(t=>t.id===id).members.some(p=>points[p]===100))
+        :s.active.filter(id=>round[id]===best);
       const contenders=s.phase==='championship'?leaders:leaders.filter(id=>beforeLit.includes(id));
       if(s.phase==='final')s.lit=s.active.filter(id=>(s.scores[id]||0)>=600);
       if(contenders.length===1){s.champion=contenders[0];event={type:'champion',ids:contenders};}
