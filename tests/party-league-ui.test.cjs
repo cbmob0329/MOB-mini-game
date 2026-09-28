@@ -42,3 +42,13 @@ test('CPU league still presents minority round, bonus round, advancement, igniti
   f.until('POINTS ×2');f.until('進出発表 1 / 8');f.until('MATCH POINT');f.until('CHAMPIONS');f.until('ハイアベレージ賞');f.until('決勝の主役賞');
   f.until('相棒サポート賞');f.until('最終結果');
 });
+
+test('best play ceremony caps perfect scorers at two and presents specialty awards',()=>{
+  const f=fixture(false,0,['3D巨大ハンマー']);
+  f.until('CHAMPIONS');f.until('ベストプレイ賞');
+  assert.match(f.screen.innerHTML,/100点達成者から最大2名/);
+  const winners=f.screen.innerHTML.split('class="league-award-winners"')[1];
+  assert.ok(winners);assert.ok((winners.match(/<img /g)||[]).length<=2);
+  f.until('頭脳王');f.until('スポーツ王');f.until('怪力王');
+  assert.match(f.screen.innerHTML,/基礎得点合計/);
+});

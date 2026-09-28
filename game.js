@@ -31,8 +31,10 @@ function partyCommentary(gameIndex,ranked){
 function partyAwards(){
   if(!state.partyCup)return '';
   const entries=participants().map(p=>({p,total:state.total[p.id]||0,perfect:state.roundPoints.filter(r=>r?.[p.id]===100).length,best:Math.max(0,...state.roundPoints.map(r=>r?.[p.id]||0))}));
-  const award=(label,field,suffix)=>{const best=Math.max(...entries.map(x=>x[field]));const winners=entries.filter(x=>x[field]===best);return `<section><small>${label}</small><div>${winners.map(x=>`<div>${imgTag(x.p)}<b>${esc(x.p.name)}</b></div>`).join('')}</div><strong>${best}${suffix}</strong></section>`;};
-  return `<div class="party-awards"><h2>PARTY AWARDS</h2>${award('MVP / 個人総合','total',' pt')}${award('ベストプレイ賞','best',' pt')}${entries.some(x=>x.perfect)?award('パーフェクト賞','perfect',' 回'):''}</div>`;
+  const core=window.MobPartyCore,profiles=core.awardStats(participants(),state.roundPoints.map((points,i)=>({points,key:GAMES[state.playlist[i]]?.key})),key=>GAMES.find(g=>g.key===key)||{key});
+  entries.forEach(s=>Object.assign(s,profiles.find(p=>p.p.id===s.p.id)));
+  const award=(label,field,suffix)=>{const best=field==='best'?100:Math.max(...entries.map(x=>x[field]));const winners=field==='best'?core.bestPlayWinners(entries):entries.filter(x=>x[field]===best);if(!best||!winners.length)return '';return `<section><small>${label}</small>${field==='best'?'<p>100点から最大2名 · 満点の希少性、他選手との差、満点回数、基礎平均点の順で選出</p>':''}<div>${winners.map(x=>`<div>${imgTag(x.p)}<b>${esc(x.p.name)}</b></div>`).join('')}</div><strong>${best}${suffix}</strong></section>`;};
+  return `<div class="party-awards"><h2>PARTY AWARDS</h2>${award('MVP / 個人総合','total',' pt')}${award('ベストプレイ賞','best',' pt')}${award('頭脳王','brain',' pt')}${award('スポーツ王','sport',' pt')}${award('怪力王','power',' pt')}${entries.some(x=>x.perfect)?award('パーフェクト賞','perfect',' 回'):''}</div>`;
 }
 
 
