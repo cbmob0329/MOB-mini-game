@@ -27681,7 +27681,7 @@ async function startOhajikiMob(p,humanIndex,runId){
   const W=table.clientWidth,H=table.clientHeight,R=15,SELF_R=18;
   let active=false,finished=false,raf=null,last=performance.now(),started=0,drag=null,out=0;
   const pieces=[];
-  function addPiece(x,y,self=false,i=0){const el=document.createElement('div');el.className=`ohj219-piece ${self?'self':'enemy e'+(i%4)}`;if(self)el.innerHTML='<img src="${partyActorImage()}" alt="">';table.appendChild(el);const q={x,y,vx:0,vy:0,r:self?SELF_R:R,self,dead:false,el};pieces.push(q);return q}
+  function addPiece(x,y,self=false,i=0){const el=document.createElement('div');el.className=`ohj219-piece ${self?'self':'enemy e'+(i%4)}`;if(self)el.innerHTML=`<img src="${partyActorImage()}" alt="" draggable="false">`;table.appendChild(el);const q={x,y,vx:0,vy:0,r:self?SELF_R:R,self,dead:false,el};pieces.push(q);return q}
   const self=addPiece(W*.5,H*.82,true);
   const slots=[];for(let row=0;row<2;row++)for(let col=0;col<5;col++)slots.push([W*(.18+col*.16)+rand(-7,7),H*(.28+row*.18)+rand(-8,8)]);
   shuffle(slots).forEach((slt,i)=>addPiece(slt[0],slt[1],false,i));

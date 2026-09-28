@@ -97,3 +97,29 @@ test('league partner uses closest rank when the whole collaboration is already s
   for(const [human,cpu] of pairs){const distance=Math.abs(core.rankValue(human.rank)-core.rankValue(cpu.rank));assert.equal(distance,Math.min(...remaining.map(c=>Math.abs(core.rankValue(human.rank)-core.rankValue(c.rank)))));remaining.splice(remaining.indexOf(cpu),1);}
   for(let seed=1;seed<=50;seed++){const random=seeded(seed),pairs=core.leagueCpuPairs(Array.from({length:20},()=>[]),random);assert.ok(pairs.every(t=>t[0].group===t[1].group));assert.equal(new Set(pairs.flat().map(c=>c.id)).size,40);}
 });
+
+test('CPU tags honor requested pairs in both cup and league without duplicate Marumob',()=>{
+  const fixed=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[32,33],[35,36]];
+  const has=(teams,a,b)=>teams.some(t=>t.some(c=>c.id===a)&&t.some(c=>c.id===b));
+  const variants=new Set();
+  for(let seed=1;seed<=50;seed++)for(const teams of [core.allocateTeams(core.roster,2,20,seeded(seed)),core.leagueCpuPairs(Array.from({length:20},()=>[]),seeded(seed))]){
+    for(const [a,b] of fixed)assert.ok(has(teams,a,b),`${a} & ${b}`);
+    assert.ok(has(teams,21,22)||has(teams,22,23));
+    variants.add(has(teams,21,22)?21:23);
+    assert.equal(new Set(teams.flat().map(c=>c.id)).size,40);
+  }
+  assert.equal(variants.size,2);
+});
+
+test('unavailable preferred tags fall back to collaboration, then nearest rank',()=>{
+  const chars=ids=>ids.map(id=>core.roster.find(c=>c.id===id));
+  assert.deepEqual(core.allocateTeams(chars([9,11,18]),2,1,()=>0)[0].map(c=>c.id),[9,11]);
+  assert.deepEqual(core.allocateTeams(chars([9,22,201]),2,1,()=>0)[0].map(c=>c.id),[9,22]);
+  assert.deepEqual(core.allocateTeams(chars([22,23,34]),2,1,()=>0)[0].map(c=>c.id),[22,23]);
+  const human=chars([12]),pairs=core.leagueCpuPairs([human,...Array.from({length:19},()=>[])],()=>0);
+  assert.equal(pairs[0][0],human[0]);assert.equal(pairs[0][1].id,9);
+  assert.equal(human.length,1);assert.equal(new Set(pairs.flat().map(c=>c.id)).size,40);
+  const selected=chars([9,11]),humans=[selected,...Array.from({length:19},()=>[])];
+  const result=core.leagueCpuPairs(humans,()=>0);
+  assert.deepEqual(result[0],selected);assert.equal(new Set(result.flat().map(c=>c.id)).size,40);
+});

@@ -391,4 +391,5 @@ body.countdown-active-v140 #screen{visibility:hidden!important}
 .shared-character-select .character-tile .party-random{height:47px;line-height:47px;font-size:40px;color:#293555}
 .tag-league.league-setup-screen{height:calc(100dvh - var(--setup-top,70px) - 20px);box-sizing:border-box;display:flex;flex-direction:column;gap:6px;overflow:hidden;padding:10px}
 .league-setup-screen>header,.league-setup-screen>p,.league-setup-screen>button{flex:none;margin:0}.league-setup-screen>header h1{font-size:23px;margin:4px 0}.league-setup-screen>p{font-size:11px;line-height:1.4}.league-setup-screen>.league-setup{flex:1;min-height:0;overflow-y:auto;grid-template-columns:1fr;margin:0;overscroll-behavior:contain}.league-setup-screen>button{min-height:44px;padding:8px}.league-setup-screen #leagueSetupError:empty{display:none}
-#screen img:is([src="main/011.png"],[src="main/012.png"],[src="main/013.png"]){scale:.72}
+#screen img:is([src="main/011.png"],[src="main/013.png"]){scale:.84}
+#screen img[src="main/012.png"]{scale:.72}

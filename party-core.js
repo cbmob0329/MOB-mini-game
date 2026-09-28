@@ -12,6 +12,26 @@
     ['ぷにモブ', ['グリーン','イエロー','バイオレット','ピンク','カモフラ','紳士','ブルー','レッド','ライトピンク','ハロウィン'].map((name,i)=>[201+i,`ぷにモブ${name}`,'D',`icon/${String(i+1).padStart(2,'0')}.png`])]
   ];
   const roster=groups.flatMap(([group,rows])=>rows.map(([id,name,rank,img])=>({id,name,rank,group,img:img||`main/${String(id).padStart(3,'0')}.png`})));
+  // The tavern Ilukaeru belongs to STORY; SHOT's namesake is a different character.
+  const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36]];
+  const pick=(items,random)=>items[Math.floor(random()*items.length)];
+  function preferredPartners(anchor,pool){return pool.filter(c=>preferredCpuTags.some(pair=>pair.includes(anchor.id)&&pair.includes(c.id)));}
+  function takeCpuPartner(anchor,pool,random){
+    if(!pool.length)throw Error('Not enough unique characters');
+    const preferred=preferredPartners(anchor,pool),same=pool.filter(c=>c.group===anchor.group);
+    const nearest=Math.min(...pool.map(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank))));
+    const candidates=preferred.length?preferred:same.length?same:pool.filter(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank))===nearest);
+    const c=pick(candidates,random);pool.splice(pool.indexOf(c),1);return c;
+  }
+  function takeCpuPair(pool,random){
+    if(pool.length<2)throw Error('Not enough unique characters');
+    const preferred=preferredCpuTags.filter(pair=>pair.every(id=>pool.some(c=>c.id===id)));
+    if(preferred.length){const pair=pick(preferred,random).map(id=>pool.find(c=>c.id===id));pair.forEach(c=>pool.splice(pool.indexOf(c),1));return pair;}
+    const fullGroups=[...new Set(pool.map(c=>c.group))].filter(g=>pool.filter(c=>c.group===g).length>=2);
+    const group=fullGroups.length?pick(fullGroups,random):null;
+    const first=pick(group?pool.filter(c=>c.group===group):pool,random);pool.splice(pool.indexOf(first),1);
+    return [first,takeCpuPartner(first,pool,random)];
+  }
   const rankOrder=['F','E','D','C','B','B+','A','A+','S','SS'];
   const rankBounds=rank=>String(rank).split('-').map(r=>rankOrder.indexOf(r));
   function rankValue(rank){const values={F:0,E:1,D:2,C:3,B:4,'B+':4.5,A:5,'A+':5.5,S:6,SS:7},[lo,hi=lo]=String(rank).split('-');return (values[lo]+values[hi])/2;}
@@ -51,6 +71,7 @@
   function allocateTeams(available,size,teamCount,random=Math.random){
     const pool=[...available],teams=[];
     for(let t=0;t<teamCount;t++){
+      if(size===2){teams.push(takeCpuPair(pool,random));continue;}
       const buckets=groups.map(([name])=>pool.filter(c=>c.group===name));
       const full=buckets.filter(b=>b.length>=size);
       const chosen=full.length?full[Math.floor(random()*full.length)].slice(0,size):[];
@@ -74,20 +95,11 @@
   function leagueCpuPairs(humanTeams,random=Math.random){
     const used=new Set(humanTeams.flat().map(c=>c.id)),pool=roster.filter(c=>!used.has(c.id));
     const result=humanTeams.map(t=>[...t]);
-    const take=anchor=>{
-      if(!pool.length)throw Error('Not enough unique characters');
-      const same=anchor?pool.filter(c=>c.group===anchor.group):pool;
-      const nearest=anchor?Math.min(...pool.map(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank)))):0;
-      const candidates=same.length?same:pool.filter(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank))===nearest);
-      const c=candidates[Math.floor(random()*candidates.length)];pool.splice(pool.indexOf(c),1);return c;
-    };
-    result.filter(t=>t.length===1).forEach(t=>t.push(take(t[0])));
-    result.filter(t=>!t.length).forEach(t=>{
-      const fullGroups=[...new Set(pool.map(c=>c.group))].filter(g=>pool.filter(c=>c.group===g).length>=2);
-      const g=fullGroups[Math.floor(random()*fullGroups.length)];
-      const candidates=g?pool.filter(c=>c.group===g):pool;
-      const first=candidates[Math.floor(random()*candidates.length)];pool.splice(pool.indexOf(first),1);t.push(first,take(first));
-    });
+    // Fill requested partners before a fallback can consume another player's partner.
+    const singles=result.filter(t=>t.length===1);
+    singles.filter(t=>preferredPartners(t[0],pool).length).forEach(t=>t.push(takeCpuPartner(t[0],pool,random)));
+    singles.filter(t=>t.length===1).forEach(t=>t.push(takeCpuPartner(t[0],pool,random)));
+    result.filter(t=>!t.length).forEach(t=>t.push(...takeCpuPair(pool,random)));
     return result;
   }
   function gameTraits(game={}){
