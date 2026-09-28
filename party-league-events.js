@@ -31,9 +31,9 @@
     function roster(list,out=false){return `<div class="event-roster ${out&&list.length>20?'event-roster-crowded':''}" style="--roster-rows:${Math.ceil(list.length/5)}">${list.map(p=>`<article class="${out&&!p.cpu?'human-eliminated':''}">${image(p)}<b>${esc(p.name)}</b><small>${esc(p.team)} · ${p.cpu?'CPU':'P'+p.no}${out?' · 脱落':''}</small></article>`).join('')}</div>`;}
     async function handoff(p,title,detail){draw(title,`<p class="event-call">プレイヤー ${esc(p.name)}！</p><div class="event-portrait">${image(p)}</div><p>${esc(p.team)} · P${p.no}</p><p>${detail}</p><div id="eventActions"></div>`);return next('準備OK');}
     if(api.key==='minorityMob'){
-      draw('モブくんは少数派',`<div class="food-preview" aria-hidden="true">🍕 VS 🍣</div><p>2つの食べ物から、選ぶ人が少ないと思う方へ投票！</p><p>多数派は脱落。同数・全員同じなら別のお題で再投票。最後の1〜2人が100点、脱落者は0点です。</p><p>選ぶ時はスマホをほかの人に見られないように！</p><div id="eventActions"></div>`);
+      draw('モブくんは少数派',`<div class="food-preview" aria-hidden="true">🍕 VS 🍣</div><p>2つの食べ物から、選ぶ人が少ないと思う方へ投票！</p><p>多数派は脱落。最後の1〜2人は100点。脱落者も勝ち残った段階に応じて20・40・60・80点（上限80点）を獲得！同数・全員同じなら再投票し、得点段階は進みません。</p><p>選ぶ時はスマホをほかの人に見られないように！</p><div id="eventActions"></div>`);
       if(!(await next('全員準備OK · 投票開始')))return;
-      let alive=[...entrants],round=0,lastFood=-1;
+      let alive=[...entrants],round=0,lastFood=-1,eliminationStage=0;
       while(alive.length>2&&valid()){
         round++;let fi=Math.floor(random()*(FOODS.length-1));if(fi>=lastFood&&lastFood>=0)fi++;lastFood=fi;const f=FOODS[fi],votes=[];
         for(const p of alive){
@@ -56,7 +56,8 @@
         beep(result.retry?480:180,200,.03);if(!(await next(result.retry?'次のお題へ →':'脱落者を発表 →')))return;
         if(result.retry)continue;
         const losers=alive.filter(p=>result.out.includes(p.id));alive=alive.filter(p=>result.survivors.includes(p.id));
-        draw('ELIMINATED · 脱落者発表',`<p>ROUND ${round} · ${losers.length}人脱落 / 残り${alive.length}人</p>${roster(losers,true)}<p class="event-note">人間プレイヤーの枠は点滅表示</p><div id="eventActions"></div>`,'event-eliminated');
+        const earned=Math.min(80,++eliminationStage*20);losers.forEach(p=>score[p.id]=earned);
+        draw('ELIMINATED · 脱落者発表',`<p>ROUND ${round} · ${losers.length}人脱落 / 残り${alive.length}人 · 脱落者は${earned}ポイント獲得</p>${roster(losers,true)}<p class="event-note">人間プレイヤーの枠は点滅表示</p><div id="eventActions"></div>`,'event-eliminated');
         if(!(await next()))return;
       }
       if(!valid())return;alive.forEach(p=>score[p.id]=100);
