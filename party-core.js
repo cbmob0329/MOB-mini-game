@@ -25,6 +25,8 @@
   }
   function takeCpuPair(pool,random){
     if(pool.length<2)throw Error('Not enough unique characters');
+    const hero=pool.find(c=>c.id===9);
+    if(hero){pool.splice(pool.indexOf(hero),1);return [hero,takeCpuPartner(hero,pool,random)];}
     const preferred=preferredCpuTags.filter(pair=>pair.every(id=>pool.some(c=>c.id===id)));
     if(preferred.length){const pair=pick(preferred,random).map(id=>pool.find(c=>c.id===id));pair.forEach(c=>pool.splice(pool.indexOf(c),1));return pair;}
     const fullGroups=[...new Set(pool.map(c=>c.group))].filter(g=>pool.filter(c=>c.group===g).length>=2);
@@ -74,7 +76,8 @@
       if(size===2){teams.push(takeCpuPair(pool,random));continue;}
       const buckets=groups.map(([name])=>pool.filter(c=>c.group===name));
       const full=buckets.filter(b=>b.length>=size);
-      const chosen=full.length?full[Math.floor(random()*full.length)].slice(0,size):[];
+      const hero=pool.find(c=>c.id===9),heroGroup=hero?pool.filter(c=>c.group===hero.group):[];
+      const chosen=hero?[hero,...heroGroup.filter(c=>c!==hero).sort((a,b)=>(b.id===12)-(a.id===12)).slice(0,size-1)]:full.length?full[Math.floor(random()*full.length)].slice(0,size):[];
       if(!chosen.length){const largest=Math.max(...buckets.map(b=>b.length)),seeds=buckets.filter(b=>b.length===largest&&b.length);if(seeds.length)chosen.push(...seeds[Math.floor(random()*seeds.length)].slice(0,size));}
       while(chosen.length<size){const remaining=pool.filter(c=>!chosen.includes(c));if(!remaining.length)throw new Error('Not enough unique characters');const anchor=chosen.reduce((n,c)=>n+rankValue(c.rank),0)/chosen.length,nearest=Math.min(...remaining.map(c=>Math.abs(rankValue(c.rank)-anchor))),candidates=remaining.filter(c=>Math.abs(rankValue(c.rank)-anchor)===nearest);chosen.push(candidates[Math.floor(random()*candidates.length)]);}
       chosen.forEach(c=>pool.splice(pool.indexOf(c),1));teams.push(chosen);
@@ -95,6 +98,8 @@
   function leagueCpuPairs(humanTeams,random=Math.random){
     const used=new Set(humanTeams.flat().map(c=>c.id)),pool=roster.filter(c=>!used.has(c.id));
     const result=humanTeams.map(t=>[...t]);
+    const firstEmpty=result.find(t=>!t.length);
+    if(firstEmpty&&pool.some(c=>c.id===9)&&!result.some(t=>t.length===1&&t[0].id===12))firstEmpty.push(...takeCpuPair(pool,random));
     // Fill requested partners before a fallback can consume another player's partner.
     const singles=result.filter(t=>t.length===1);
     singles.filter(t=>preferredPartners(t[0],pool).length).forEach(t=>t.push(takeCpuPartner(t[0],pool,random)));

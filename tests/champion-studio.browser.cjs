@@ -1,0 +1,23 @@
+// Run with Node and Playwright available through NODE_PATH. No live tournament is needed.
+const {chromium}=require('playwright');
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),os=require('node:os'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),output=fs.mkdtempSync(path.join(os.tmpdir(),'mob-studio-'));
+const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}fs.readFile(file,(e,data)=>{if(e){res.writeHead(404).end();return;}res.setHeader('Content-Type',({'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png'})[path.extname(file).toLowerCase()]||'application/octet-stream');res.end(data);});});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,...(process.env.MOB_BROWSER_CHANNEL?{channel:process.env.MOB_BROWSER_CHANNEL}:{})});try{
+  for(const [width,height] of [[360,640],[390,600],[1280,900]]){
+    const page=await browser.newPage({viewport:{width,height},acceptDownloads:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.goto(`http://127.0.0.1:${server.address().port}/tests/collectibles-preview.html`);await page.evaluate(()=>{document.body.style.margin='0';document.querySelector('#preview').style.paddingTop='80px';});await page.locator('#wall').click();await page.waitForFunction(()=>!document.querySelector('#studioSaveCard').disabled);
+    for(const tab of ['design','effects','stamp','draw']){await page.locator(`[data-tab="${tab}"]`).click();const bad=await page.evaluate(()=>Array.from(document.querySelectorAll('.champion-studio button,.champion-studio input,.champion-studio select')).filter(el=>el.getClientRects().length).filter(el=>{const r=el.getBoundingClientRect();return r.x<0||r.y<0||r.right>innerWidth+1||r.bottom>innerHeight+1||r.width<43||r.height<43;}).map(el=>el.id||el.textContent));assert.deepEqual(bad,[],`${width}×${height} ${tab}`);}
+    const small=(await page.locator('#studioCanvas').boundingBox()).height;await page.locator('#studioZoom').click();const enlarged=(await page.locator('#studioCanvas').boundingBox()).height;assert.ok(width<600?enlarged>small:enlarged>=small);await page.locator('#studioZoom').click();
+    const hash=()=>page.locator('#studioCanvas').evaluate(c=>c.toDataURL());const baseline=await hash(),box=await page.locator('#studioCanvas').boundingBox();
+    await page.mouse.move(box.x+box.width*.25,box.y+box.height*.4);await page.mouse.down();await page.mouse.move(box.x+box.width*.7,box.y+box.height*.5,{steps:8});await page.mouse.up();assert.notEqual(await hash(),baseline);
+    await page.locator('#studioUndo').click();assert.equal(await hash(),baseline);await page.locator('#studioRedo').click();assert.notEqual(await hash(),baseline);
+    await page.locator('[data-tab="stamp"]').click();await page.locator('#studioShape').selectOption('silhouette');await page.locator('#studioCanvas').click({position:{x:box.width*.7,y:box.height*.3}});
+    const decorated=await hash();await page.locator('[data-format="card"]').click();await page.locator('[data-format="wallpaper"]').click();assert.equal(await hash(),decorated);
+    await page.locator('[data-tab="effects"]').click();for(const effect of ['stars','rays','confetti','halo','comets','fireworks','bubbles','lightning','petals','holo','diamonds','speed','none'])await page.locator('[data-setting="effect"]').selectOption(effect);await page.locator('[data-setting="effect"]').selectOption('holo');
+    await page.screenshot({path:path.join(output,`studio-${width}.png`)});
+    for(const [target,w,h] of [['Wallpaper',1440,2560],['Card',1260,1760]]){const download=page.waitForEvent('download');await page.locator('#studioSave'+target).click();const saved=await download,file=path.join(output,`${width}-${target}.png`);await saved.saveAs(file);const bytes=fs.readFileSync(file);assert.equal(bytes.readUInt32BE(16),w);assert.equal(bytes.readUInt32BE(20),h);if(target==='Card'){const i=bytes.indexOf(Buffer.from('pHYs'));assert.ok(i>0);assert.equal(bytes.readUInt32BE(i+4),20000);assert.equal(bytes.readUInt32BE(i+8),20000);}}
+    assert.deepEqual(errors,[]);await page.close();
+  }
+  console.log('Studio interactions, undo/redo, both exports, card print size and viewport bounds passed.');console.log(output);
+}finally{await browser.close();server.close();}})().catch(e=>{console.error(e);server.close();process.exitCode=1;});

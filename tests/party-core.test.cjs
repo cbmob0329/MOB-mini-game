@@ -123,3 +123,15 @@ test('unavailable preferred tags fall back to collaboration, then nearest rank',
   const result=core.leagueCpuPairs(humans,()=>0);
   assert.deepEqual(result[0],selected);assert.equal(new Set(result.flat().map(c=>c.id)).size,40);
 });
+
+test('hero takes even the last CPU team slot, preferring Pink while respecting human selections',()=>{
+  const character=id=>core.roster.find(c=>c.id===id);
+  for(const random of [()=>0,()=>.999]){
+    for(const size of [1,2,4]){const [team]=core.allocateTeams(core.roster,size,1,random);assert.ok(team.some(c=>c.id===9));if(size>=2)assert.ok(team.some(c=>c.id===12));}
+    assert.deepEqual(core.leagueCpuPairs([[]],random)[0].map(c=>c.id),[9,12]);
+    const teams=core.leagueCpuPairs([[character(25)],[character(12),character(13)],[]],random);
+    assert.ok(teams[2].some(c=>c.id===9));assert.equal(new Set(teams.flat().map(c=>c.id)).size,6);
+    const noPink=core.allocateTeams(core.roster.filter(c=>c.id!==12),2,1,random)[0];assert.equal(noPink[0].id,9);assert.equal(noPink[1].group,'MOB STORY');
+    const heroHuman=core.leagueCpuPairs([[character(9),character(11)],[]],random);assert.equal(heroHuman.flat().filter(c=>c.id===9).length,1);
+  }
+});
