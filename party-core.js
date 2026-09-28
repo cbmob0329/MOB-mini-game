@@ -5,7 +5,7 @@
     ['MAIN CHARACTERS',[[1,'モブパティレッド','B'],[2,'モブパティブルー','C'],[3,'モブパティゴールド','A'],[4,'モブパティシルバー','B'],[5,'モブパティトレーナー','C'],[6,'モブパティDJ','C'],[7,'モブパティロボ','B']]],
     ['MOB STORY',[[9,'モブ勇者','SS'],[11,'モブデンデン','S'],[12,'モブピンク','A'],[13,'モブマニー','S'],[24,'モブイルカエル(酒場)','A'],[25,'モブコーチ','C-A'],[26,'モブゴンゾー','C-A'],[27,'モブマテリア','B-A']]],
     ['MOB MONSTERS',[[14,'モブスライム','B'],[15,'モブミイラ','B'],[16,'モブサバンナ','A'],[17,'モブロック','C-B+']]],
-    ['MOB SHOT',[[18,'モブコドラ','B+'],[19,'モブイルカエル','B+'],[20,'モブウルフ','C']]],
+    ['MOB SHOT',[[18,'モブコドラ','B+'],[19,'モブイルカエル','B+'],[20,'モブウルフ','C'],[38,'モブフワパーカー','C-B+','main/38.png'],[39,'モブシブパーカー','C-B+','main/39.png'],[40,'モブ探偵','B','main/40.png'],[41,'モブトイプー','B-A-','main/41.png'],[42,'モブカエル忍者','B-A-','main/42.png'],[43,'モブテツMS','A+','main/43.png'],[44,'モブウィザード','A','main/44.png'],[45,'あのヒーローMS','SS','main/45.png']]],
     ['MOB BR',[[21,'モブテツBR','SS'],[22,'マルモブBR','S'],[23,'モブポヨBR','A'],[32,'モブマックスBR','S'],[33,'モブジョーダンBR','A'],[34,'モブレオンBR','A'],[35,'モブティラBR','B-A+'],[36,'モブラプBR','B-A'],[37,'モブサウルスBR','B-A']]],
     ['Wonder UNITY',[[28,'モブラプトル','B-A'],[29,'モブティラノ','B-A'],[30,'モブプテラ','C-A'],[31,'モブペンギン','B']]],
     ['MOB mini game',[[101,'モブドットレッド','E-D','play/01.png'],[102,'モブドットブルー','E-D','play/02.png'],[103,'モブドットイエロー','E-D','play/03.png'],[104,'モブドットグリーン','E-D','play/04.png'],[105,'モブイタリアン','C-B','play/05.PNG'],[106,'モブ中華店主','C-B','play/06.PNG'],[107,'モブみかんティラ','B-A','play/07.PNG'],[108,'モブスーパーマン','SS','play/08.PNG']]],
@@ -13,7 +13,7 @@
   ];
   const roster=groups.flatMap(([group,rows])=>rows.map(([id,name,rank,img])=>({id,name,rank,group,img:img||`main/${String(id).padStart(3,'0')}.png`})));
   // The tavern Ilukaeru belongs to STORY; SHOT's namesake is a different character.
-  const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36]];
+  const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36],[18,19],[18,20],[38,39],[40,41],[42,44],[45,43]];
   const pick=(items,random)=>items[Math.floor(random()*items.length)];
   function preferredPartners(anchor,pool){return pool.filter(c=>preferredCpuTags.some(pair=>pair.includes(anchor.id)&&pair.includes(c.id)));}
   function takeCpuPartner(anchor,pool,random){
@@ -34,9 +34,10 @@
     const first=pick(group?pool.filter(c=>c.group===group):pool,random);pool.splice(pool.indexOf(first),1);
     return [first,takeCpuPartner(first,pool,random)];
   }
-  const rankOrder=['F','E','D','C','B','B+','A','A+','S','SS'];
-  const rankBounds=rank=>String(rank).split('-').map(r=>rankOrder.indexOf(r));
-  function rankValue(rank){const values={F:0,E:1,D:2,C:3,B:4,'B+':4.5,A:5,'A+':5.5,S:6,SS:7},[lo,hi=lo]=String(rank).split('-');return (values[lo]+values[hi])/2;}
+  const rankOrder=['F','E','D','C','B','B+','A-','A','A+','S','SS'];
+  function rankParts(rank){const match=String(rank).match(/^(SS|S|A[+-]?|B\+?|C|D|E|F)(?:-(SS|S|A[+-]?|B\+?|C|D|E|F))?$/);return match?[match[1],match[2]||match[1]]:['C','C'];}
+  const rankBounds=rank=>rankParts(rank).map(r=>rankOrder.indexOf(r));
+  function rankValue(rank){const values={F:0,E:1,D:2,C:3,B:4,'B+':4.5,'A-':4.75,A:5,'A+':5.5,S:6,SS:7},[lo,hi]=rankParts(rank);return (values[lo]+values[hi])/2;}
   function resolveRank(rank,random=Math.random){const [lo,hi=lo]=rankBounds(rank);return rankOrder[lo+Math.floor(random()*(hi-lo+1))]||'C';}
   function characterRank(player,game={},random=Math.random){
     const c=roster.find(c=>c.img===player.img)||player;
@@ -46,6 +47,8 @@
     if(c.id===26&&sport)rank='A-S';
     if(c.id===27&&brain)rank='A-S';
     if(c.id===20&&running)rank='A+';
+    if(c.id===40&&brain)rank='S-SS';
+    if(c.id===42&&running)rank='S';
     if(c.id===33&&flying)rank='S';
     if(c.id===30&&flying)rank='S-SS';
     if(c.id===31&&random()<.2)rank='S';
@@ -54,7 +57,7 @@
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function cpuScore(rank='C',random=Math.random){
     rank=resolveRank(rank,random);
-    const average={SS:91,S:81,'A+':76,A:71,'B+':66,B:61,C:50,D:39,E:29,F:19}[rank]??50;
+    const average={SS:91,S:81,'A+':76,A:71,'A-':68,'B+':66,B:61,C:50,D:39,E:29,F:19}[rank]??50;
     const luck=random();
     if(luck<.05)return Math.round(45+random()*15); // Occasional upset, including an SS slump.
     if(luck>.94)return Math.round(70+random()*30); // Even F can have a great round.
