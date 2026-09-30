@@ -46,8 +46,8 @@ test('CPU tag heats return four finite scores and team-shared results',()=>{
     if(key==='summonMaster')assert.equal(Object.values(result).reduce((a,b)=>a+b,0),200);
   }
 });
-test('158 games have records; new games score directly on a 100-point scale',()=>{
-  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,158);
+test('160 games have records; new games score directly on a 100-point scale',()=>{
+  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,160);
   for(const g of e.GAMES)assert.ok(state.records[g.key],g.key);
   for(const key of ['colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty']){const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(i>=0);assert.equal(e.performancePoints(i,80),80);}
 });
@@ -79,7 +79,7 @@ test('rank-based CPU record generation yields finite records and scores for ever
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,133);
+  assert.equal(e.activeGameIndices().length,135);
   const active=e.activeGameIndices().map(i=>e.GAMES[i].key);
   for(const key of ['killLeaderMob','mobSpeedRacer','mineCartMob'])assert.ok(!active.includes(key),key);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
@@ -183,4 +183,11 @@ test('open electric course uses the reduced time scale consistently with its gui
   const e=engine(),i=e.GAMES.findIndex(g=>g.key==='electricMaze');
   for(const [ms,score] of [[3000,100],[4000,100],[8000,75],[12000,50],[20000,0],[25000,0]])assert.equal(e.performancePoints(i,ms),score);
   assert.match(e.scoreRuleForGame(i),/4秒以下=100点・20秒以上=0点/);
+});
+
+test('league event practice games are in the active solo catalog but not random league draws',()=>{
+  const e=engine();for(const key of ['minorityMob','focusBombMob']){
+    const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(e.activeGameIndices().includes(i));assert.ok(!e.league.pool().includes(key));
+    assert.equal(e.performancePoints(i,80),80);assert.equal(e.performancePoints(i,0),0);
+  }
 });

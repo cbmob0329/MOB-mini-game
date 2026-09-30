@@ -33,7 +33,8 @@ test('minority awards every elimination stage, ignores retries and submits all p
 test('bomb has five four-player heats with each entrant once and teammates separated',()=>{
   for(const r of [0,.25,.99]){const heats=E.groups(entrants.slice(0,20),()=>r);assert.equal(heats.length,5);assert.ok(heats.every(g=>g.length===4&&new Set(g.map(p=>p.teamId)).size===4));assert.equal(new Set(heats.flat().map(p=>p.id)).size,20);}
   assert.throws(()=>E.groups(entrants));
-  assert.equal(E.errorAt(0,1000,0),0);assert.equal(E.errorAt(250,1000,0),50000);assert.equal(E.errorAt(500,1000,0),0);
+  assert.equal(E.errorAt(1000),0);assert.equal(E.errorAt(999),1);assert.equal(E.errorAt(1001),1);
+  assert.equal(E.errorAt(750),250);assert.equal(E.errorAt(1250),250);assert.equal(E.errorAt(3000),2000);
 });
 test('bomb individual winner crowns their already lit team despite a different team-total leader',()=>{
   const teams=Array.from({length:20},(_,i)=>({id:'L'+i,members:['p'+i*2,'p'+(i*2+1)]}));

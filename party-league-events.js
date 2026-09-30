@@ -14,7 +14,7 @@
     const ordered=shuffle(teams,random),heats=Array.from({length:5},()=>[]);
     ordered.forEach((t,i)=>{shuffle(entrants.filter(p=>p.teamId===t),random).forEach((p,j)=>heats[(i+j*2)%5].push(p));});return heats;
   }
-  const errorAt=(elapsed,period,phase)=>Math.round(Math.abs(Math.sin(elapsed/period*Math.PI*2+phase))*50000);
+  const errorAt=elapsed=>Math.abs(Math.round(elapsed)-1000);
   const FOODS=[['🍕','ピザ','🍣','お寿司'],['🍔','ハンバーガー','🍜','ラーメン'],['🍓','いちご','🍇','ぶどう'],['🍩','ドーナツ','🍰','ケーキ'],['🍛','カレー','🍝','パスタ'],['🍦','アイス','🍮','プリン'],['🍙','おにぎり','🥪','サンドイッチ'],['🥟','ぎょうざ','🍤','エビフライ']];
   async function run(api){
     const {screen,esc,entrants,valid,beep}=api,random=api.random||Math.random,score=Object.fromEntries(entrants.map(p=>[p.id,0]));
@@ -22,7 +22,7 @@
     const image=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     function draw(title,body,kind=''){
       if(!valid())return;api.clear();
-      screen.innerHTML=`<section class="league-event ${kind}"><header><small>${api.mode==='crew'?'CREW LEAGUE':api.mode==='king'?'MOB KING LEAGUE':'TAG BATTLE LEAGUE'}</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
+      screen.innerHTML=`<section class="league-event ${kind}"><header><small>${api.mode==='solo'?'SOLO PLAY · CPU対戦':api.mode==='crew'?'CREW LEAGUE':api.mode==='king'?'MOB KING LEAGUE':'TAG BATTLE LEAGUE'}</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
       api.top();screen.querySelector('.league-event').style.setProperty('--event-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
     }
     function preview(){if(!root?.MobPresentation||root.MobGamePreviewActive)return;screen.querySelector('.league-event-body').insertAdjacentHTML('afterbegin',root.MobPresentation.preview(api.key,entrants[0],api.key==='minorityMob'?'モブくんは少数派':'モブくん集中大爆弾！',esc));root.MobPresentation.mount(screen);}
@@ -71,18 +71,23 @@
       if(await next('大会リザルトへ →'))api.done(score);return;
     }
     const heats=groups(entrants,random,api.mode),finalists=[];
-    draw('モブくん集中大爆弾！',`<div class="bomb-logo">MOB PARTY<br><b>GAME</b></div><p>${heats[0].length}人×5グループ。ゲージを中央で止め、一番近い1人が勝ち上がり！</p><p>予選敗退は0点。勝ち上がった5人の決戦は、1位から100・80・60・50・40点。</p><p>誤差は0.001単位。同じ誤差なら該当者だけ再挑戦。点灯済みチームの選手が1位なら、そのチームが優勝！</p><div id="eventActions"></div>`,'event-bomb');
+    if(root?.MobGamePreviewActive){await attempt(entrants.find(p=>!p.cpu)||entrants[0],'1 SECOND STOPWATCH');return;}
+    draw('モブくん集中大爆弾！',`<div class="bomb-logo">1.000<br><b>SECOND</b></div><p>${heats[0].length}人×5グループ。爆弾型ストップウォッチを1秒ちょうどで止め、一番近い1人が勝ち上がり！</p><p>STARTで計測開始、STOPで停止。3秒で爆発・自動停止。予選敗退は0点。決戦は1位から100・80・60・50・40点。</p><p>1.000秒との差を0.001秒単位で判定。同じ誤差なら再挑戦。${api.mode==='solo'?'CPU相手に1位を目指そう！':'点灯済みチームの選手が1位なら優勝！'}</p><div id="eventActions"></div>`,'event-bomb');
     preview();if(!(await next('5グループの勝負へ →')))return;
     async function attempt(p,label){
-      if(p.cpu){const core=root?.MobPartyCore;return core?Math.round((100-core.cpuScore(core.characterRank(p,{key:'focusBombMob',title:'モブくん集中大爆弾！'},random),random)+random())/101*50000):Math.floor(random()*50001);}
-      if(!(await handoff(p,label,'準備OKでゲージが動きます。中央の線を狙い、STOPを1回押してください。')))return null;
-      draw(label,`<p class="event-call">${esc(p.name)} · 中央を狙え！</p><div class="bomb-logo">MOB PARTY<br><b>GAME</b></div><div class="bomb-gauge" role="img" aria-label="中央の線を狙う移動ゲージ"><i class="bomb-center"></i><i id="bombNeedle"></i><b>CENTER</b></div><p id="bombMeasure">誤差 0.001 単位で判定</p><div id="eventActions"></div>`,'event-bomb');
-      const needle=screen.querySelector('#bombNeedle'),start=performance.now(),period=850+random()*200,phase=random()*Math.PI*2;
-      let raf,stopped=false;
-      const frame=now=>{if(!valid()||stopped)return;needle.style.left=(50+50*Math.sin((now-start)/period*Math.PI*2+phase))+'%';raf=requestAnimationFrame(frame);};raf=requestAnimationFrame(frame);
-      await buttons(['STOP']);stopped=true;cancelAnimationFrame(raf);if(!valid())return null;
-      const elapsed=performance.now()-start,error=errorAt(elapsed,period,phase);needle.style.left=(50+50*Math.sin(elapsed/period*Math.PI*2+phase))+'%';
-      screen.querySelector('#bombMeasure').textContent='中央からの誤差 '+(error/1000).toFixed(3);beep(error<2000?1100:450,150,.03);
+      if(p.cpu){const core=root?.MobPartyCore;return core?Math.round((100-core.cpuScore(core.characterRank(p,{key:'focusBombMob',title:'モブくん集中大爆弾！'},random),random)+random())/101*550):Math.floor(random()*551);}
+      if(!(await handoff(p,label,'STARTを押してから1秒ちょうどでSTOP！ 1.000秒との差が小さいほど有利です。')))return null;
+      draw(label,`<p class="event-call">${esc(p.name)} · 1.000秒を狙え！</p><div class="bomb-stopwatch"><i class="bomb-fuse"></i><span>TARGET 1.000 s</span><output id="bombTime">0.000</output><small>SECONDS</small></div><p id="bombMeasure">STARTで計測開始</p><div id="eventActions"></div>`,'event-bomb');
+      await buttons(['START']);if(!valid())return null;
+      const clock=screen.querySelector('#bombTime'),bomb=screen.querySelector('.bomb-stopwatch'),start=performance.now();
+      let raf,stopped=false,timeout;
+      bomb.classList.add('ticking');screen.querySelector('#bombMeasure').textContent='1秒ちょうどでSTOP！';
+      const frame=now=>{if(!valid()||stopped)return;clock.textContent=(Math.min(3000,now-start)/1000).toFixed(3);raf=requestAnimationFrame(frame);};raf=requestAnimationFrame(frame);
+      const timedOut=await Promise.race([buttons(['STOP']).then(()=>false),new Promise(resolve=>{timeout=setTimeout(()=>resolve(true),3000);})]);
+      stopped=true;clearTimeout(timeout);cancelAnimationFrame(raf);if(!valid())return null;
+      const elapsed=timedOut?3000:Math.min(3000,Math.round(performance.now()-start)),error=errorAt(elapsed);
+      clock.textContent=(elapsed/1000).toFixed(3);bomb.classList.remove('ticking');bomb.classList.add(timedOut?'exploded':error<=30?'defused':'stopped');
+      screen.querySelector('#bombMeasure').textContent=(timedOut?'爆発！ 自動停止 / ':'')+'1.000秒との差 '+(error/1000).toFixed(3)+'秒';beep(error<=30?1100:timedOut?120:450,150,.03);
       if(!(await next('記録を確認 · 次へ →')))return null;return error;
     }
     async function contest(list,label){
@@ -91,7 +96,7 @@
       records.sort((a,b)=>a.error-b.error);const ordered=[];
       for(let i=0;i<records.length;){let j=i+1;while(j<records.length&&records[j].error===records[i].error)j++;
         if(j-i===1)ordered.push(records[i]);else{
-          draw('0.001まで同点！',`<p>該当する${j-i}人だけで再挑戦。中央への集中力で決着をつけよう！</p>${roster(records.slice(i,j).map(r=>r.p))}<div id="eventActions"></div>`,'event-suspense');
+          draw('0.001秒まで同点！',`<p>該当する${j-i}人だけで再挑戦。1.000秒への集中力で決着をつけよう！</p>${roster(records.slice(i,j).map(r=>r.p))}<div id="eventActions"></div>`,'event-suspense');
           if(!(await next('同点決着戦へ →')))return [];ordered.push(...await contest(records.slice(i,j).map(r=>r.p),label+' · 同点決着戦'));
         }i=j;
       }return ordered;
@@ -101,7 +106,7 @@
       const ranked=await contest(heats[i],'GROUP '+(i+1));if(!valid()||!ranked.length)return;finalists.push(ranked[0].p);
       draw('決戦進出！',`<p class="event-call">${esc(ranked[0].p.name)}が勝ち上がり！</p>${roster([ranked[0].p])}<p>ほかの${heats[i].length-1}人は0ポイント。挑戦に拍手を！</p><div id="eventActions"></div>`,'event-reveal');if(!(await next()))return;
     }
-    draw('5人の優勝決定戦！',`<p>最後の一撃。最も中央に近いのは誰だ！？</p>${roster(finalists)}<div id="eventActions"></div>`,'event-bomb');if(!(await next('最終決戦へ →')))return;
+    draw('5人の優勝決定戦！',`<p>最後の一撃。最も1.000秒に近いのは誰だ！？</p>${roster(finalists)}<div id="eventActions"></div>`,'event-bomb');if(!(await next('最終決戦へ →')))return;
     const ranked=await contest(finalists,'FINAL · 集中大爆弾');if(!valid()||ranked.length!==5)return;
     ranked.forEach((r,i)=>score[r.p.id]=[100,80,60,50,40][i]);api.done(score);
   }

@@ -353,7 +353,7 @@ const GAMES=[
   {no:74,key:"waveMaster",title:"モブくん波動を極める",sub:"魂ゲージと6秒のZなぞりを極めて偽モブくんと波動を撃ち合う",legacy:85},
   {no:75,key:"battleRoyaleMob",title:"モブくんFPSアリーナに挑戦",sub:"3対3のアリーナでスキルを使い敵チームを全滅させる",legacy:86},
   {no:76,key:"littleMobShot",title:"Little MOB SHOT",sub:"レコードに乗って10秒間スライムを撃ちまくる縦シューティング。180 KOで100点",legacy:87},
-  {no:77,key:"monsterBoxMob",title:"モブくんモンスターボックスに挑む",sub:"ロイター板の中央が足元に来たら踏切ボタン！ 15段から20段を越える",legacy:88},
+  {no:77,key:"monsterBoxMob",title:"モブくんモンスターボックスに挑む",sub:"ロイター板を踏んで15段から20段の跳び箱を越える",legacy:88},
   {no:78,key:"alienBattleMob",title:"モブくんエイリアンと戦う",sub:"小型ロボ2機で地上の巨大エイリアンHP100を撃破する",legacy:89},
   {no:79,key:"mobMusou",title:"モブくん無双",sub:"7秒で巨大武器を描き、10秒オートで大量スライムを無双する",legacy:90},
   {no:80,key:"iaidoMaster",title:"モブくんは居合切りの達人",sub:"夜の草原でCPUと居合勝負。勝負！の瞬間を見抜く",legacy:91},
@@ -438,9 +438,13 @@ GAMES.push(
   {no:158,key:'treasureEscapeParty',title:'モブくんお宝エスケープ',sub:'各チーム最大2人。慎重な箱か豪華な箱か、偵察か脱出か。5部屋を進むほど報酬と危険度UP！罠は半減・最大100点。',legacy:181}
 );
 GAMES.push({no:159,key:'treasureRuneParty',title:'モブくんお宝ルーン迷宮',sub:'封印の記号を記憶して6部屋の遺跡へ。呪いでお宝を失う前に帰還！',legacy:182},{no:160,key:'treasureDuoParty',title:'モブくんお宝ツイン強奪',sub:'2VS2タッグ専用。偵察と回収を交代し、相棒の合図でお宝を持ち帰れ！',legacy:183});
+GAMES.push(
+  {no:161,key:'minorityMob',title:'モブくんは少数派',sub:'CPUと秘密の投票。少数派に残って100点を目指すリーグ種目',legacy:184,leagueOnly:true},
+  {no:162,key:'focusBombMob',title:'モブくん集中大爆弾！',sub:'爆弾型ストップウォッチを1.000秒で止めろ！ CPUと5組の予選・決戦',legacy:185,leagueOnly:true}
+);
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,25,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,81,82,92,147,159,160].includes(g.no)).map(g=>g.key));
-const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob']);
+const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob','minorityMob','focusBombMob']);
 const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob','mergeMob','parkingEscapeMob','elevatorMob','cashierMob','coinPusherMob','survivorMob','ringToss3DMob','bowling3DMob','homeRun3DMob','puttGolf3DMob','freeThrow3DMob','curling3DMob','punchMachine3DMob','coinPusher3DMob','blackjack3DMob','skiJump3DMob','craneGame3DMob','giantHammer3DMob','shotPut3DMob','rescueHeli3DMob','submarine3DMob','foodCatch3DMob','buildingClimb3DMob','mazeBall3DMob','deathGameChallenge']);
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
 function activeGameIndices(){return GAMES.map((_,i)=>i).filter(i=>!isRetiredGameIndex(i))}
@@ -486,6 +490,7 @@ function isDeathGameChallengeEligible(){return true}
 function isGameEligibleForCurrentMode(gameIndex){
   const g=GAMES[gameIndex];
   if(!g||RETIRED_GAME_KEYS.has(g.key))return false;
+  if(g.leagueOnly)return !!state.freePlay;
   // Late-series mini games are intentionally usable in every mode.
   if(UNIVERSAL_GAME_KEYS.has(g.key))return true;
   if(g.key==='mobSpeedRacer'||g.key==='summonMaster')return isTagDuoGameEligible();
@@ -498,6 +503,7 @@ function isGameEligibleForCurrentMode(gameIndex){
 function gameEligibilityReason(gameIndex){
   const g=GAMES[gameIndex];
   if(!g)return 'このモードでは遊べません';
+  if(g.leagueOnly)return 'リーグ・1人フリープレイ専用';
   if(UNIVERSAL_GAME_KEYS.has(g.key))return g.sub;
   if(g.key==='mobSpeedRacer'||g.key==='summonMaster'||g.key==='linkedCartBlast')return '2対2タッグ専用 / 1人フリーでは全役を自分で操作';
   if(g.key==='billiardsBattleRoyale')return '4人専用 / 個人4人 または 2対2タッグ';
@@ -566,7 +572,7 @@ function freshState(){
     playlist:[],
     roundIndex:0,
     records:{
-      colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
+      minorityMob:{},focusBombMob:{},colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
       factory:{},catcher:{},tidy:{},ski:{},slot:{},rope:{},pk:{},cut:{},climb:{},errand:{},dontHitMob:{},mobStop:{},overlap:{},shutter:{},darts:{},parachute:{},mobCount:{},brake:{},feint:{},bomb:{},overlapMaster:{},jumpingMob:{},heroMaybe:{},popularGame:{},planetEnergy:{},painter:{},bikeJump:{},trampoline:{},mobTrain:{},giantMob:{},wizardMob:{},brawlerMob:{},summonerMob:{},blackjackMob:{},mobIssen:{},crowEscape:{},dancingMob:{},guardianMob:{},mob50m:{},sniperMob:{},mobRacePredict:{},mobRocket:{},bossDuel:{},plushCatcher:{},toyOnOff:{},dodgeballMob:{},amidakujiMob:{},katanaSmith:{},homeRunMob:{},mobMisfortune:{},aimMob:{},mobDice:{},mobCombo:{},electricMaze:{},cardShop:{},
         bungeeMob:{},waterSlide:{},
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
@@ -2940,6 +2946,8 @@ function renderModeLobby(){
 }
 
 function scoreRuleForGame(index){
+  if(GAMES[index]?.key==='minorityMob')return '脱落した段階に応じ20・40・60・80点 / 最後の1〜2人は100点';
+  if(GAMES[index]?.key==='focusBombMob')return '1.000秒からの誤差が小さい順 / 予選敗退0点・決戦100/80/60/50/40点';
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[index]?.key))return '持ち帰ったお宝が得点 / 1人最大100点';
   if(GAMES[index]?.key==='colorBridgeParty')return 'ルートを最後まで渡るごとに16点＋残りライフ1つにつき10点 / 間違い・時間切れでライフ−1 / 1人最大100点';
   if(GAMES[index]?.key==='treasureEscapeParty')return '慎重な箱10〜18点・豪華な箱25〜37点 / 偵察1回でその部屋の罠確率半減 / 脱出で確定・罠で半減 / 最大100点';
@@ -3302,7 +3310,7 @@ function showGameIntro(index){
   }else if(legacyIndex===87){
     rules=`<li>10秒間の縦シューティング。弾は自動発射です。</li><li>左右移動・ボム・3秒レーザーでスライムを倒し、180 KOで100点です。</li>`;
   }else if(legacyIndex===88){
-    rules=`<li>自動で走ります。台の中央が足元に来た瞬間に踏切ボタンを押すと大ジャンプ。台が光る間がチャンス！</li><li>15段から20段までの跳び箱を順番に越えます。</li>`;
+    rules=`<li>自動で走り、JUMPでロイター板を踏みます。</li><li>15段から20段までの跳び箱を順番に越えます。</li>`;
   }else if(legacyIndex===89){
     rules=`<li>← / JUMP / 射撃 / 砲撃 / →で画面いっぱいの巨大エイリアンHP100と戦います。</li><li>5秒後に超巨大化。3秒間だけ砲撃が手動パンチに変わり無敵になります。</li>`;
   }else if(legacyIndex===90){
@@ -3441,6 +3449,13 @@ function humanReady(gameIndex,humanIndex){
   }
 
   const p=list[humanIndex],g=GAMES[gameIndex];
+  if(g.leagueOnly&&state.freePlay){
+    const runId=beginGameRun(gameIndex),cast=shuffle(window.MobPartyCore.roster.filter(c=>c.img!==p.img)).slice(0,19);
+    const entrants=[{...p,cpu:false},...cast.map((c,i)=>({...c,id:'soloEventCpu'+i,cpu:true,no:i+2,characterRank:c.rank}))].map((x,i)=>({...x,teamId:'soloTeam'+Math.floor(i/2),team:i===0?'PLAYER':'CPU'}));
+    window.MobLeagueEvents.run({key:g.key,mode:'solo',screen,esc,entrants,valid:()=>isGameRunValid(runId),clear:clearGameFit,top:gameTop,beep,done(scores){
+      if(!isGameRunValid(runId))return;state.records[g.key][p.id]=scores[p.id];recordScreen(gameIndex,p,0,`${scores[p.id]}<small>/100 pt</small>`,'CPU対戦 FINISH');
+    }});return;
+  }
   if(humanIndex===0&&window.MobPartyCore.representativeKeys.has(g.key)){partyEvents.start(gameIndex);return;}
   const legacyIndex=legacyGameIndex(gameIndex),isMcs=!!state.mobCupSpecial?.active;
 
@@ -24194,12 +24209,12 @@ async function startLittleMobShot(p,humanIndex,runId){
 async function startMonsterBoxMob(p,humanIndex,runId){
   gameFit();
 
-  let active=false,finished=false,raf=null,last=0,level=15,score=0,jumping=false,vy=0,y=0,boardX=0,boxX=0,passedBoard=false,launched=false,jumpQueuedUntil=0;
+  let active=false,finished=false,raf=null,last=0,level=15,score=0,jumping=false,vy=0,y=0,boardX=0,boxX=0,passedBoard=false,launched=false;
   screen.innerHTML=`<div class="mbox-shell-v138">
     <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんモンスターボックスに挑む</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
     <div class="v125-hud"><div><span>LEVEL</span><b id="mbLevel138">15段</b></div><div><span>SCORE</span><b id="mbScore138">0</b></div></div>
     <div id="mbStage138" class="mb-stage-v138"><div class="mb-audience-simple-v153">${Array.from({length:14},(_,i)=>`<i class="a${i%4}"><b></b></i>`).join('')}</div><div class="mb-run-lines-v138"></div><div class="mb-ground-v138"></div><div id="mbBoard138" class="mb-board-v138"></div><div id="mbBox138" class="mb-box-v138"></div><div id="mbMob138" class="mb-mob-v138" style="background-image:url('${partyActorImage()}')"></div><div id="mbFx138" class="mb-fx-v138"></div></div>
-    <button id="mbJump138" class="primary mb-jump-v138">台の中央で踏み切る！</button>
+    <button id="mbJump138" class="primary mb-jump-v138">JUMP</button>
   </div>`;
 
   const stage=document.getElementById('mbStage138'),board=document.getElementById('mbBoard138'),box=document.getElementById('mbBox138'),mob=document.getElementById('mbMob138'),fx=document.getElementById('mbFx138'),levelEl=document.getElementById('mbLevel138'),scoreEl=document.getElementById('mbScore138'),jumpBtn=document.getElementById('mbJump138');
@@ -24208,7 +24223,7 @@ async function startMonsterBoxMob(p,humanIndex,runId){
 
   function resetCycle(){
     boardX=W+70;
-    boxX=boardX+205;
+    boxX=boardX+115;
     passedBoard=false;
     launched=false;
     board.style.left=`${boardX}px`;
@@ -24216,16 +24231,14 @@ async function startMonsterBoxMob(p,humanIndex,runId){
     box.style.left=`${boxX}px`;
     box.style.height=`${boxHeight()}px`;
     box.style.top=`${groundY-boxHeight()}px`;
-    board.classList.remove('hit-v138','ready-board');
-    board.innerHTML='<b>踏切</b>';jumpQueuedUntil=0;
+    board.classList.remove('hit-v138');
   }
   function pop(text,xp,yp,cls=''){const e=document.createElement('div');e.className=`mb-pop-v138 ${cls}`;e.textContent=text;e.style.left=`${xp}px`;e.style.top=`${yp}px`;fx.appendChild(e);setTimeout(()=>e.remove(),650)}
-  function jump(){if(!active||finished||launched)return;jumpQueuedUntil=performance.now()+180;}
-
+  function jump(){if(!active||finished||jumping||launched)return;jumping=true;vy=-205;beep(500,45,.012)}
   jumpBtn.addEventListener('pointerdown',e=>{e.preventDefault();jump()},{passive:false});
 
   async function fail(reason){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.monsterBoxMob[p.id]=score;mob.classList.add('fail-v138');pop(reason,mobX+30,y,'fail-v138');beep(120,180,.04);await wait(850);if(isGameRunValid(runId))recordScreen(88,p,humanIndex,`${score}<small>pt</small>`,`${level}段で終了`)}
-  async function clearAll(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);score=100;state.records.monsterBoxMob[p.id]=100;stage.classList.add('clear-v138');fx.replaceChildren();pop('20段 CLEAR!!',W/2,H*.34,'clear-v138');beep(1120,220,.055);await wait(1050);if(isGameRunValid(runId))recordScreen(88,p,humanIndex,`100<small>pt</small>`,'20段 CLEAR')}
+  async function clearAll(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);score=100;state.records.monsterBoxMob[p.id]=100;stage.classList.add('clear-v138');pop('20段 CLEAR!!',W/2,H*.34,'clear-v138');beep(1120,220,.055);await wait(1050);if(isGameRunValid(runId))recordScreen(88,p,humanIndex,`100<small>pt</small>`,'20段 CLEAR')}
 
   mob.style.top=`${y}px`;
   resetCycle();
@@ -24241,15 +24254,12 @@ async function startMonsterBoxMob(p,humanIndex,runId){
     if(jumping||launched){vy+=470*dt;y+=vy*dt;if(!launched&&y>=groundY-44){y=groundY-44;vy=0;jumping=false}}
 
     const footX=mobX+24,boardCenter=boardX+35;
-    const onBoard=footX>=boardX&&footX<=boardX+70;
-    board.classList.toggle('ready-board',onBoard&&!launched);
-    jumpBtn.textContent=launched?'JUMP!':onBoard?'今！ 踏み切る！':'台の中央で踏み切る！';
-    if(!passedBoard&&onBoard&&now<=jumpQueuedUntil){
-      passedBoard=true;
-      const quality=clamp(1-Math.abs(footX-boardCenter)/35,0,1);
-      const launchHeight=115+quality*100;
-      vy=-Math.sqrt(2*470*launchHeight);launched=true;jumping=true;
-      board.classList.add('hit-v138');pop(quality>.82?'PERFECT!':quality>.52?'GOOD!':'WEAK',boardCenter,groundY-45,quality>.82?'good-v138':'');mob.dataset.quality=String(quality);beep(quality>.82?940:650,90,.025);
+    if(!passedBoard&&footX>=boardX&&footX<=boardX+70){
+      passedBoard=true;const feet=y+44,boardY=groundY-19;
+      if(Math.abs(feet-boardY)<22&&vy>=0){
+        const err=Math.abs(footX-boardCenter),quality=clamp(1-err/35,0,1),launchHeight=120+quality*145;
+        vy=-Math.sqrt(2*470*Math.max(80,launchHeight));launched=true;jumping=true;board.classList.add('hit-v138');pop(quality>.82?'PERFECT!':quality>.52?'GOOD!':'WEAK',boardCenter,groundY-45,quality>.82?'good-v138':'');mob.dataset.quality=String(quality);beep(quality>.82?940:650,90,.025);
+      }
     }
 
     const bh=boxHeight(),boxTop=groundY-bh;
@@ -28060,6 +28070,7 @@ async function startReverseJankenMob(p,humanIndex,runId){
 
 
 function performancePoints(gameIndex,v){
+  if(GAMES[gameIndex]?.leagueOnly)return clamp(Math.round(v),0,100);
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
   const legacyIndex=legacyGameIndex(gameIndex);
   if(legacyIndex===0){
@@ -39530,7 +39541,7 @@ const leagueHost={
   screen,esc,beep,top:gameTop,home:renderHome,
   clear(){clearGameFit();cancelActiveAnimation();invalidateGameRun();},
   title:key=>GAMES.find(g=>g.key===key)?.title||key,
-  pool(){const blocked=new Set(['billiardsBattleRoyale','soloCartBlast','battleRoyaleMob','killLeaderMob','alienBattleMob']);return GAMES.filter(g=>!blocked.has(g.key)&&!RETIRED_GAME_KEYS.has(g.key)).map(g=>g.key);},
+  pool(){const blocked=new Set(['billiardsBattleRoyale','soloCartBlast','battleRoyaleMob','killLeaderMob','alienBattleMob']);return GAMES.filter(g=>!g.leagueOnly&&!blocked.has(g.key)&&!RETIRED_GAME_KEYS.has(g.key)).map(g=>g.key);},
   configure(players,teams,options={}){
     state=freshState();state.modeKey='configured';state.partyCup=true;state.tagLeague=true;state.leagueMode=options.mode||'tag';state.competitionStarted=true;
     for(const p of players){const existing=pById(p.id);if(existing)Object.assign(existing,p);else PLAYERS.push({...p});}
@@ -39607,7 +39618,7 @@ function startLivePreview(){
   const index=GAMES.findIndex(g=>g.key===previewKey);
   if(index>=0){state=freshState();state.modeKey='free';state.freePlay=true;state.freeGameIndex=index;state.gameIndex=index;initTotals();humanReady(index,0);document.getElementById('readyBtn')?.click();}
   else if(['minorityMob','focusBombMob'].includes(previewKey)){window.MobLeagueEvents.run({key:previewKey,screen,esc,entrants:window.MobPartyCore.roster.slice(0,20).map((c,i)=>({...c,id:'preview'+i,no:i+1,team:'PREVIEW',teamId:'T'+Math.floor(i/2),cpu:i!==0})),valid:()=>true,clear:clearGameFit,top:gameTop,beep(){},done(){}});}
-  if(index<0||window.MobPartyCore.representativeKeys.has(previewKey)){let steps=0;window.setInterval(()=>{const buttons=screen.querySelectorAll('#eventActions button,#eventChoices button');if(buttons.length===1&&steps++<8&&!/STOP/.test(buttons[0].textContent))buttons[0].click();},180);}
+  if(index<0||GAMES[index]?.leagueOnly||window.MobPartyCore.representativeKeys.has(previewKey)){let steps=0;window.setInterval(()=>{const buttons=screen.querySelectorAll('#eventActions button,#eventChoices button');if(buttons.length===1&&steps++<8&&!/STOP/.test(buttons[0].textContent))buttons[0].click();},180);}
 }
 if(previewKey)startLivePreview();else renderHome();
 })();
