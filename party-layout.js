@@ -15,7 +15,12 @@
       if(!bg)continue;const color=readable(fg,bg);if(color){el.style.setProperty('color',color,'important');el.style.setProperty('text-shadow','none','important');}
     }
   }
-  root.MobPartyLayout={repair,readable,ratio};
+  // Fixed-coordinate worlds use the same scale for rendering and camera limits.
+  function worldCamera({worldWidth,worldHeight,viewportWidth,viewportHeight,focusY,anchor=.42}){
+    const scale=Math.max(.01,viewportWidth/worldWidth),viewHeight=viewportHeight/scale;
+    return {scale,viewHeight,y:Math.max(0,Math.min(Math.max(0,worldHeight-viewHeight),focusY-viewHeight*anchor))};
+  }
+  root.MobPartyLayout={repair,readable,ratio,worldCamera};
   if(typeof module!=='undefined')module.exports=root.MobPartyLayout;
   if(typeof document==='undefined')return;
   const screen=document.getElementById('screen');let pending=false;

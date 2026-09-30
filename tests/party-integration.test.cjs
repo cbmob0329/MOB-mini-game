@@ -79,7 +79,9 @@ test('rank-based CPU record generation yields finite records and scores for ever
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,136);
+  assert.equal(e.activeGameIndices().length,133);
+  const active=e.activeGameIndices().map(i=>e.GAMES[i].key);
+  for(const key of ['killLeaderMob','mobSpeedRacer','mineCartMob'])assert.ok(!active.includes(key),key);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
   assert.equal(e.GAMES.find(g=>g.key==='treasureEscapeParty').legacy,181);
 });
@@ -175,4 +177,10 @@ test('shooting and mole scores receive a modest reduction with reachable caps',(
     assert.equal(e.performancePoints(i,raw),expected,key);
     assert.equal(e.performancePoints(i,0),0,key);
   }
+});
+
+test('open electric course uses the reduced time scale consistently with its guide',()=>{
+  const e=engine(),i=e.GAMES.findIndex(g=>g.key==='electricMaze');
+  for(const [ms,score] of [[3000,100],[4000,100],[8000,75],[12000,50],[20000,0],[25000,0]])assert.equal(e.performancePoints(i,ms),score);
+  assert.match(e.scoreRuleForGame(i),/4秒以下=100点・20秒以上=0点/);
 });
