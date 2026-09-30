@@ -380,6 +380,7 @@ body.countdown-active-v140 #screen{visibility:hidden!important}
 @media(max-height:650px){.league-event{gap:4px;padding:8px 10px 12px}.league-event-body{gap:6px}.league-event header small{display:none}.league-event p{font-size:12px}.event-eliminated .event-roster article{padding:2px}.event-eliminated .event-roster img{width:23px;height:23px}.event-eliminated .human-eliminated:after{font-size:7px;padding:1px}.bomb-logo{margin:8px 0}}
 @media(prefers-reduced-motion:reduce){.human-eliminated,.event-reveal,.league-suspense .league-show-body:before{animation:none!important}}
 .league-event-body>p{flex-shrink:0}
+.bomb-result{display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff}.bomb-result-rank{font-size:30px;color:#ffe497}.bomb-result img{width:min(100px,19dvh);height:min(100px,19dvh);object-fit:contain}.bomb-result h3{font-size:20px;margin:0}.bomb-result output{font:900 clamp(26px,8vw,38px)/1.2 monospace;color:#143620;background:#e9ffe3;border-radius:9px;padding:6px 12px}.bomb-result output small{font-size:14px}.bomb-result>strong{font-size:22px;color:#ffe497}
 .event-eliminated .event-roster{grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(var(--roster-rows),minmax(0,1fr));align-content:stretch}
 .event-eliminated .event-roster article{position:relative;min-height:0;justify-content:center;gap:0;padding:1px}
 .event-eliminated .event-roster img{width:16px;height:16px;flex-shrink:0}

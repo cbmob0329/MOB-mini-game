@@ -24257,7 +24257,8 @@ async function startMonsterBoxMob(p,humanIndex,runId){
     if(!passedBoard&&footX>=boardX&&footX<=boardX+70){
       passedBoard=true;const feet=y+44,boardY=groundY-19;
       if(Math.abs(feet-boardY)<22&&vy>=0){
-        const err=Math.abs(footX-boardCenter),quality=clamp(1-err/35,0,1),launchHeight=120+quality*145;
+        // A small final-stage lift keeps 20 reachable even with a near-edge landing at high refresh rates.
+        const err=Math.abs(footX-boardCenter),quality=clamp(1-err/35,0,1),launchHeight=120+quality*145+(level===20?8:0);
         vy=-Math.sqrt(2*470*Math.max(80,launchHeight));launched=true;jumping=true;board.classList.add('hit-v138');pop(quality>.82?'PERFECT!':quality>.52?'GOOD!':'WEAK',boardCenter,groundY-45,quality>.82?'good-v138':'');mob.dataset.quality=String(quality);beep(quality>.82?940:650,90,.025);
       }
     }

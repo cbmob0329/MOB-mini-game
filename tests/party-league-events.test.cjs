@@ -1,6 +1,26 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const E=require('../party-league-events.js'),L=require('../party-league.js');
 const entrants=Array.from({length:40},(_,i)=>({id:'p'+i,teamId:'L'+Math.floor(i/2),team:'TEAM '+Math.floor(i/2),name:'Player '+i,img:'icon/01.png',cpu:i>0,no:i+1}));
+test('bomb records retain five decimal seconds and exact ties always get unique places',()=>{
+  assert.deepEqual(E.bombRecord(1000.014),{elapsed:1000.01,error:.01});
+  assert.equal(E.errorAt(999.99),.01);
+  const records=[1000.02,999.99,1000.01,1000,3000].map((time,i)=>({p:{id:i},...E.bombRecord(time)}));
+  const ranked=E.rankBombRecords(records,()=>0);
+  assert.deepEqual(ranked.map(r=>r.error),[0,.01,.01,.02,2000]);
+  assert.equal(new Set(ranked.map(r=>r.p.id)).size,5);
+  assert.equal(ranked.filter(r=>r.tiebreak).length,2);
+  assert.equal(E.rankBombRecords(records.map(r=>({...r,...E.bombRecord(3000)})),()=>0).length,5);
+});
+test('bomb final announces fifth to first even when every CPU has the same record',async()=>{
+  const pages=[],button={dataset:{answer:'0'},set onclick(fn){queueMicrotask(fn);}},host={innerHTML:'',querySelectorAll:()=>[button]};
+  const screen={set innerHTML(value){pages.push(value);},getBoundingClientRect:()=>({top:0}),querySelector:sel=>sel==='#eventActions'?host:{style:{setProperty(){}},textContent:''}};
+  const window={};vm.runInNewContext(fs.readFileSync(require.resolve('../party-league-events.js'),'utf8'),{window,setTimeout:fn=>queueMicrotask(fn)});
+  let scores;
+  await window.MobLeagueEvents.run({key:'focusBombMob',mode:'tag',screen,entrants:entrants.slice(0,20).map(p=>({...p,cpu:true})),esc:String,valid:()=>true,beep(){},clear(){},top(){},random:()=>.5,done:value=>{scores=value;}});
+  assert.deepEqual(pages.filter(p=>p.includes('data-bomb-rank')).map(p=>Number(p.match(/data-bomb-rank="(\d)"/)[1])),[5,4,3,2,1]);
+  assert.deepEqual(Object.values(scores).filter(v=>v>0).sort((a,b)=>b-a),[100,80,60,50,40]);
+  assert.ok(pages.some(p=>p.includes('同じ誤差の選手間は抽選')));
+});
 test('minority keeps the smaller side, and never eliminates on equal or unanimous votes',()=>{
   const votes=n=>Array.from({length:40},(_,i)=>({id:'p'+i,side:i<n?0:1}));
   for(const n of [0,20,40]){const r=E.minority(votes(n));assert.equal(r.retry,true);assert.equal(r.survivors.length,40);assert.equal(r.out.length,0);}
