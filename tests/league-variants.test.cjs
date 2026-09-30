@@ -59,3 +59,22 @@ test('CREW paired events divide all eighty entrants into valid two-versus-two he
   const f=fixture('crew',0,false,['treasureDuoParty']);f.until('優勝記念コレクション');const heats=f.runs.filter(r=>r.key==='treasureDuoParty'&&r.d.phase==='qualifier'&&r.d.round===2);
   assert.equal(heats.length,20);assert.ok(heats.every(r=>r.rows.length===2&&r.rows.every(t=>t.members.length===2)));assert.equal(new Set(heats.flatMap(r=>r.rows.flatMap(t=>t.members))).size,80);
 });
+
+test('CPU-only stages skip presentation but retain every game, bonus, qualifier and minority score',()=>{
+  let seed=42;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+  for(const mode of ['crew','king']){
+    const s=fresh(mode),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true}))),score=()=>Math.floor(random()*101);
+    const result=L.fastForward(s,players,score,random,core.representativeKeys);
+    assert.equal(result.record.summary,true);assert.equal(result.record.active.length,20);assert.equal(result.record.round,10);assert.ok(result.record.simulatedRounds>=10);
+    const minority=s.history.find(r=>r.key==='minorityMob');assert.ok(Object.values(minority.rawPoints).every(v=>[20,40,60,80,100].includes(v)));assert.ok(Object.values(minority.rawPoints).includes(20));
+    const death=s.history.find(r=>r.key==='deathGameChallenge');assert.equal(Object.values(death.points).filter(v=>v===200).length,1);
+    const doubled=s.history.find(r=>r.round===4);for(const id in doubled.rawPoints)assert.equal(doubled.points[id],doubled.rawPoints[id]*2);
+    assert.equal(result.event.type,mode==='king'?'divisionQualified':'qualified');
+    if(mode==='crew'){const recovery=L.fastForward(s,players,score,random);assert.equal(recovery.event.wildcards.length,2);assert.equal(s.phase,'final');assert.equal(s.active.length,10);}
+    else{for(let i=1;i<4;i++)L.fastForward(s,players,score,random);assert.equal(s.active.length,20);assert.equal(s.phase,'final');assert.equal(Object.keys(s.origins).length,20);}
+  }
+});
+test('a human in the active stage prevents automatic simulation; a human in another league does not',()=>{
+  const s=fresh('king'),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true})));players[25].cpu=false;
+  assert.equal(L.canFastForward(s,players),true);players[0].cpu=false;assert.equal(L.canFastForward(s,players),false);assert.throws(()=>L.fastForward(s,players,()=>50),/CPU-only/);
+});

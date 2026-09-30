@@ -14,7 +14,7 @@
     function on(id,fn){const b=screen.querySelector('#'+id);let used=false;b.onclick=()=>{if(used)return;used=true;if(fn()===false)used=false;};}
     function draw(heading,body,kind=''){api.clear();screen.innerHTML=`<section class="tag-league variant-league variant-${mode} ${kind}"><header><small>${title()} · ${level}</small><h1>${heading}</h1></header>${body}</section>`;api.top();const el=screen.querySelector('.variant-league');el.style.setProperty('--variant-top',Math.max(0,screen.getBoundingClientRect().top)+'px');}
     function button(label='次へ →',id='variantNext'){return `<button id="${id}" class="primary variant-next">${label}</button>`;}
-    function rows(ids,scores={}){return `<div class="variant-rows">${ids.map(id=>{const t=team(id),origin=mode==='king'?player(t.members[0]).origin:null;return `<article class="variant-row"><div class="variant-portraits">${t.members.map(p=>picture(player(p))).join('')}</div><div><b>${esc(mode==='king'?player(t.members[0]).baseName:t.name)}</b>${origin?`<em>${esc(origin.league)} ${origin.place}位</em>`:''}${league?.lit.includes(id)&&!league.champion?'<em>MATCH POINT · 点灯済み</em>':''}<small>${mode==='crew'?t.members.map(p=>esc(player(p).baseName)).join(' / '):player(t.members[0]).cpu?'CPU':'PLAYER '+player(t.members[0]).no}</small></div>${scores[id]!==undefined?`<strong>${scores[id]}<small>pt</small></strong>`:''}</article>`;}).join('')}</div>`;}
+    function rows(ids,scores={},qualified=[]){return `<div class="variant-rows">${ids.map(id=>{const t=team(id),origin=mode==='king'?player(t.members[0]).origin:null;return `<article class="variant-row"><div class="variant-portraits">${t.members.map(p=>picture(player(p))).join('')}</div><div><b>${esc(mode==='king'?player(t.members[0]).baseName:t.name)}</b>${qualified.includes(id)?'<em class="summary-qualified">✓ 決勝進出</em>':''}${origin?`<em>${esc(origin.league)} ${origin.place}位</em>`:''}${league?.lit.includes(id)&&!league.champion?'<em>MATCH POINT · 点灯済み</em>':''}<small>${mode==='crew'?t.members.map(p=>esc(player(p).baseName)).join(' / '):player(t.members[0]).cpu?'CPU':'PLAYER '+player(t.members[0]).no}</small></div>${scores[id]!==undefined?`<strong>${scores[id]}<small>pt</small></strong>`:''}</article>`;}).join('')}</div>`;}
     function announce(heading,message,ids,next,kind=''){let page=0;const per=mode==='crew'?2:4;
       function show(){draw(heading,`<div class="league-narrator"><p>${message}</p></div>${rows(ids.slice(page*per,(page+1)*per))}<small class="variant-page">${ids.length?`${page+1} / ${Math.ceil(ids.length/per)}`:''}</small>${button(page*per+per<ids.length?'次の出場者 →':'確認して次へ →')}`,'variant-show '+kind);api.beep(kind==='league-ignition'?1250:900,90,.02);on('variantNext',()=>{if(++page*per<ids.length)show();else next();});}show();
     }
@@ -41,10 +41,12 @@
       }
       const poolKeys=api.pool().filter(key=>mode!=='king'||!pairedGames.includes(key)),schedule=L.program(poolKeys);
       league=L.create(teams,schedule,{mode});api.configure(players,teams,{mode,title:title()});
+      if(fast()){play();return;}
       announce('開幕！ '+title(),mode==='crew'?'4人の合計得点で挑む20組の大会。代表種目は各クルー2人。タッグ専用種目は2組のペアに分かれ、全員が出場します。':'各予選リーグは同じ10種目。全4リーグの上位5名、合計20名が頂点を争います。',league.active,play);
     }
     function phaseName(record=league){return record.phase==='qualifier'?(mode==='king'?L.DIVISIONS[record.division]+' 予選':'予選'):record.phase==='repechage'?'敗者復活':record.phase==='cutoff'?'進出決定・延長戦':record.phase==='championship'?'優勝決定戦':'決勝';}
-    function play(){if(!league)return;const descriptor=L.next(league);if(!descriptor)return;
+    function fast(){return api.fastStage&&L.canFastForward(league,players);}
+    function play(){if(!league)return;if(fast()){const result=api.fastStage(league,players);syncOrigins();rankings(result.record,result.event);return;}const descriptor=L.next(league);if(!descriptor)return;
       announce(`${phaseName()} · GAME ${descriptor.round}`,`${esc(gameTitle(descriptor.key))}<br>${descriptor.multiplier===2?'POINTS ×2 · 全員2倍！':descriptor.winnerBonus?'個人1位だけ POINTS ×2！':'1人最大100点'}${league.phase==='final'?`<br>${league.threshold}点で点灯 → 次戦以降の1位で優勝`:''}`,[],()=>descriptor.choices?choiceRound(descriptor):execute(descriptor));
     }
     function runGame(key,rows,descriptor,done){
@@ -80,12 +82,13 @@
       if(event.type==='cutoff'){announce('進出ボーダー同点！',`残り${event.slots}枠。該当者だけの延長戦で決めます。`,event.ids,resume);return;}
       if(event.type==='championship'){announce('優勝決定戦へ！','点灯済みの同点首位だけで、単独1位が決まるまで続けます。',event.ids,resume);return;}resume();
     }
-    function rankings(record,event){let scope=0;
+    function rankings(record,event){let scope=record.summary?1:0;
+      const transition=()=>window.MobPresentation?window.MobPresentation.reveal({screen,title:scope?'総合順位はこちら！':`GAME ${record.round}の結果はこちら！`,subtitle:record.summary?'プレイヤー不在のため全試合を自動集計しました':phaseName(record),done:show}):show();
       function show(){const scores=scope?record.totals:record.teamPoints,ordered=[...record.active].sort((a,b)=>(scores[b]||0)-(scores[a]||0)),decider=['cutoff','championship'].includes(record.phase),visible=ordered;
-        draw(scope?'総合順位':'このゲームの順位',`<div class="ranking-scope ${scope?'overall':'round'}"><small>${scope?'STAGE TOTAL':'THIS GAME'}</small><strong>${phaseName(record)}</strong><span>${scope?(decider?'この決着戦だけの得点':'このステージの累計得点'):'今回の獲得ポイントだけ'}</span></div><div class="variant-standing result-scroll-list" tabindex="0" aria-label="全出場者の順位">${visible.map(id=>`<div><b class="variant-place">#${1+ordered.filter(other=>(scores[other]||0)>(scores[id]||0)).length}</b>${rows([id],scores)}</div>`).join('')}</div><small class="variant-page">全${ordered.length}${mode==='crew'?'組':'名'} · 一覧をスクロールして確認</small>${button(scope?'大会を進める →':'総合順位を見る →')}`,'variant-show variant-results');
-        on('variantNext',()=>{if(!scope){scope=1;show();}else after(event);});}show();
+        draw(scope?'総合順位':'このゲームの順位',`<div class="ranking-scope ${scope?'overall':'round'}"><small>${scope?'STAGE TOTAL':'THIS GAME'}</small><strong>${phaseName(record)}</strong><span>${scope?(decider?'この決着戦だけの得点':(record.summary?'CPU自動集計 · 全'+record.simulatedRounds+'戦 / 進出者は下記に表示':'このステージの累計得点')):'今回の獲得ポイントだけ'}</span></div><div class="variant-standing result-scroll-list" tabindex="0" aria-label="全出場者の順位">${visible.map(id=>`<div><b class="variant-place">#${1+ordered.filter(other=>(scores[other]||0)>(scores[id]||0)).length}</b>${rows([id],scores,record.summary?(event.qualified||event.wildcards||event.ids):[])}</div>`).join('')}</div><small class="variant-page">全${ordered.length}${mode==='crew'?'組':'名'} · 一覧をスクロールして確認</small>${button(scope?'大会を進める →':'総合順位を見る →')}`,'variant-show variant-results');
+        on('variantNext',()=>{if(!scope){scope=1;transition();}else after(event);});}transition();
     }
-    function after(event){if(event.type==='champion'){finale(event.ids[0]);return;}
+    function after(event){if(fast()){play();return;}if(event.type==='champion'){finale(event.ids[0]);return;}
       if(event.type==='divisionQualified'){announce('次の予選リーグへ',L.DIVISIONS[league.division]+'の予選が始まります。得点はリーグごとに集計します。',league.active,play);return;}
       if(event.type==='kingFinalists'||event.type==='finalists'){announce('FINAL · 決勝開幕！',`${mode==='king'?'4リーグの代表20名':'10クルー'}が集結！<br>得点をリセット。${league.threshold}点で点灯し、その次のゲーム以降の1位で優勝！`,league.active,play);return;}
       if(event.type==='qualified'){announce('敗者復活戦！','残る12組から上位2組が決勝へ。ここからの3戦で勝負！',league.active,play);return;}play();

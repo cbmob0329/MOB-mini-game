@@ -2,6 +2,8 @@
 (()=>{
 "use strict";
 
+const previewKey=window.location?.search?new URLSearchParams(window.location.search).get('previewGame'):null;
+window.MobGamePreviewActive=!!previewKey;
 let partyActivePlayer=null;
 let leagueRoundDone=null;
 let kingRoundDone=null;
@@ -610,7 +612,7 @@ function randi(min,max){return Math.floor(rand(min,max+1))}
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function beep(freq=480,ms=65,vol=.025){if(window.MobPartyUI?.settings.sound===false)return;try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(audioCtx.destination);o.start();setTimeout(()=>o.stop(),ms)}catch(e){}}
+function beep(freq=480,ms=65,vol=.025){if(previewKey||window.MobPartyUI?.settings.sound===false)return;try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(audioCtx.destination);o.start();setTimeout(()=>o.stop(),ms)}catch(e){}}
 function cancelActiveAnimation(){if(activeAnimation){cancelAnimationFrame(activeAnimation);activeAnimation=null}}
 function cancelCountdown(){
   countdownSerial++;
@@ -652,6 +654,7 @@ function updatePartyViewport(){
 window.addEventListener('resize',updatePartyViewport);
 window.visualViewport?.addEventListener('resize',updatePartyViewport);
 function clearGameFit(){
+  screen.classList.remove("illustrated-intro");window.MobPresentation?.cancel();
   screen.classList.remove("gameplay-fit");
 }
 function imgTag(p,cls="avatar"){return `<img draggable="false" class="${cls}" src="${p.img}" alt="${esc(p.name)}" onerror="this.style.visibility='hidden'">`}
@@ -3008,7 +3011,7 @@ function scoreRuleForGame(index){
     "3回のカット精度を0〜100点化",
     "700m以上=100点 / 0m=0点",
     "残金0円=100点 / 残金10円=90点 / 残金100円以上=0点",
-    "モグラ13体以上=100点 / 0体=0点",
+    "モグラ28体以上=100点 / 0体=0点",
     "棒の端に近いほど高得点 / 落下=0点",
     "一致率100%=100点 / 0%=0点",
     "頂点誤差0秒=100点 / 0.150秒以上=0点",
@@ -3164,7 +3167,7 @@ function showGameIntro(index){
   }else if(legacyIndex===17){
     rules=`<li>1000円を持って3・2・1スタート。</li><li>食材・お菓子など100種類から毎回30商品。</li><li>3円〜250円の商品をタップ購入。</li><li>10秒で1000円ぴったり使い切れば100点。</li>`;
   }else if(legacyIndex===18){
-    rules=`<li>3・2・1後、9個の穴からモグラが出現。</li><li>1〜6体が一気に出ることがあります。</li><li>モグラをタップすると+1。</li><li>モグラと一緒にモブくんが混ざって出ることもあります。</li><li>モブくんを1回でも叩いたらその場で終了。</li><li>10秒。モグラ13体以上で100点。</li>`;
+    rules=`<li>3・2・1後、9個の穴からモグラが出現。</li><li>1〜6体が一気に出ることがあります。</li><li>モグラをタップすると+1。</li><li>モグラと一緒にモブくんが混ざって出ることもあります。</li><li>モブくんを1回でも叩いたらその場で終了。</li><li>10秒。モグラ28体以上で100点。</li>`;
   }else if(legacyIndex===19){
     rules=`<li>横長の棒の左端にモブくん。</li><li>モブくんを左へ引っ張り、離すと発射。</li><li>引っ張る距離が長いほど遠くへ進みます。</li><li>右端ギリギリで止めるほど高得点。</li><li>棒から落ちたら0点。</li>`;
   }else if(legacyIndex===20){
@@ -3415,6 +3418,7 @@ function showGameIntro(index){
       <div><span class="kicker">${currentRoundLabel()}</span><h2>${g.title}</h2><p class="lead">${g.sub}</p></div>
       <div class="game-badge">G${g.no}</div>
     </div>
+    ${window.MobPresentation?.preview(g.key,humans()[0]||participants()[0],g.title,esc)||''}
     <section class="panel"><h3>RULE</h3><ul class="rules">${rules}</ul></section>
     ${state.freePlay
       ? `<section class="panel flat free-play-note"><h3>1 PLAYER FREE PLAY</h3><p class="lead">このゲームだけ遊びます。</p></section>`
@@ -3424,6 +3428,7 @@ function showGameIntro(index){
     <button id="introStart" class="primary">${state.freePlay?"READY? へ":state.mobCup?.active?"TEAM A / P1へスマホを渡す":"プレイヤー1 READY? へ"}</button>
   `;
   gameTop();
+  screen.classList.add("illustrated-intro");screen.style.setProperty("--intro-top",Math.max(0,screen.getBoundingClientRect().top+(window.scrollY||0))+"px");window.MobPresentation?.mount(screen);
   document.getElementById("introStart").addEventListener("click",()=>humanReady(index,0));
 }
 
@@ -3625,6 +3630,7 @@ function humanReady(gameIndex,humanIndex){
 }
 
 async function partyNextGate(title,runId,label='NEXT · 準備OK'){
+  if(previewKey)return true;
   if(!isGameRunValid(runId))return false;
   const panel=document.createElement('div');panel.className='party-next-gate';panel.innerHTML=`<div><h2>${esc(title)}</h2><p>端末を受け取ってから進めてください。押すまで制限時間は始まりません。</p><button class="primary">${esc(label)}</button></div>`;screen.appendChild(panel);
   return new Promise(resolve=>{let settled=false;const done=ok=>{if(settled)return;settled=true;panel.remove();resolve(ok);};partyCleanups.push(()=>done(false));panel.querySelector('button').onclick=()=>done(isGameRunValid(runId));});
@@ -3636,6 +3642,7 @@ async function countdown(
   options={}
 ){
   if(!isGameRunValid(runId))return false;
+  if(previewKey)return true;
   const drawingGame=GAMES[activeGameIndex];
   if(drawingGame&&window.MobPartyCore?.genre(drawingGame)==='お絵かき'&&!(await partyNextGate('描く準備 · '+drawingGame.title,runId)))return false;
 
@@ -27076,6 +27083,7 @@ function sceneResultGate(gameIndex,p,humanIndex,main,sub=""){
 }
 
 function recordScreen(gameIndex,p,humanIndex,main,sub=""){
+  if(previewKey)return;
   if(activeGameIndex>=0&&legacyGameIndex(activeGameIndex)===gameIndex)gameIndex=activeGameIndex;
   if(
     !gameSessionActive||
@@ -27286,7 +27294,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===17){
     state.records.errand[p.id]=ultra?randi(970,1000):randi(730,985);
   }else if(legacyIndex===18){
-    state.records.dontHitMob[p.id]=ultra?randi(11,14):randi(5,11);
+    state.records.dontHitMob[p.id]=ultra?randi(25,30):randi(11,24);
   }else if(legacyIndex===19){
     state.records.mobStop[p.id]=ultra?randi(86,96):randi(42,88);
   }else if(legacyIndex===20){
@@ -28051,7 +28059,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===15)return clamp(Math.round(v),0,100);
   if(legacyIndex===16)return clamp(Math.round((v/10)/700*100),0,100);
   if(legacyIndex===17)return clamp(Math.round(v-900),0,100);
-  if(legacyIndex===18)return clamp(Math.round(v/13*100),0,100);
+  if(legacyIndex===18)return clamp(Math.round(v/28*100),0,100);
   if(legacyIndex===19)return clamp(Math.round(v),0,100);
   if(legacyIndex===20)return clamp(Math.round(v),0,100);
   if(legacyIndex===21)return clamp(Math.round(100-v/150*100),0,100);
@@ -28402,6 +28410,7 @@ function teamTotals(){
   return out;
 }
 function finishGame(gameIndex){
+  if(previewKey)return;
   if(leagueRoundDone){
     clearGameFit();cancelActiveAnimation();
     const done=leagueRoundDone;leagueRoundDone=null;
@@ -39489,6 +39498,7 @@ const leagueHost={
     for(const p of players){const existing=pById(p.id);if(existing)Object.assign(existing,p);else PLAYERS.push({...p});}
     MODES.configured={name:options.title||'タッグバトルリーグ',short:teams.length+'組・'+players.length+'名',performance:true,team:true,points:[],participants:players.map(p=>p.id),teams:Object.fromEntries(teams.map(t=>[t.id,t.members])),teamNames:Object.fromEntries(teams.map(t=>[t.id,t.name]))};initTotals();
   },
+  fastStage(league,players){return window.MobPartyLeague.fastForward(league,players,(key,p,random)=>window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES.find(g=>g.key===key)||{key,title:key==='minorityMob'?'少数派':key},random),random),Math.random,window.MobPartyCore.representativeKeys);},
   updatePlayers(players){for(const p of players){const existing=pById(p.id);if(existing)Object.assign(existing,p);}},
   run(key,teams,descriptor,done){
     const index=GAMES.findIndex(g=>g.key===key);if(index<0)throw Error('Missing league game: '+key);
@@ -39546,7 +39556,22 @@ const partyEvents=window.MobPartyGames.create({
   }
 });
 
-renderHome();
+
+
+function startLivePreview(){
+  document.documentElement.classList.add('live-game-preview');
+  const query=new URLSearchParams(window.location.search),selected=query.get('previewCharacter'),character=window.MobPartyCore.roster.find(c=>String(c.id)===selected||c.img===selected)||window.MobPartyCore.roster[0];
+  Object.assign(pById('p1'),{name:character.name,img:character.img,cpu:false});
+  const until=performance.now()+5000,raf=window.requestAnimationFrame.bind(window),timeout=window.setTimeout.bind(window),interval=window.setInterval.bind(window);
+  window.requestAnimationFrame=fn=>raf(t=>{if(performance.now()<until)fn(t);});
+  window.setTimeout=(fn,ms,...args)=>timeout(()=>{if(performance.now()<until)fn(...args);},ms);
+  window.setInterval=(fn,ms,...args)=>{const id=interval(()=>{if(performance.now()<until)fn(...args);else clearInterval(id);},ms);return id;};
+  const index=GAMES.findIndex(g=>g.key===previewKey);
+  if(index>=0){state=freshState();state.modeKey='free';state.freePlay=true;state.freeGameIndex=index;state.gameIndex=index;initTotals();humanReady(index,0);document.getElementById('readyBtn')?.click();}
+  else if(['minorityMob','focusBombMob'].includes(previewKey)){window.MobLeagueEvents.run({key:previewKey,screen,esc,entrants:window.MobPartyCore.roster.slice(0,20).map((c,i)=>({...c,id:'preview'+i,no:i+1,team:'PREVIEW',teamId:'T'+Math.floor(i/2),cpu:i!==0})),valid:()=>true,clear:clearGameFit,top:gameTop,beep(){},done(){}});}
+  if(index<0||window.MobPartyCore.representativeKeys.has(previewKey)){let steps=0;window.setInterval(()=>{const buttons=screen.querySelectorAll('#eventActions button,#eventChoices button');if(buttons.length===1&&steps++<8&&!/STOP/.test(buttons[0].textContent))buttons[0].click();},180);}
+}
+if(previewKey)startLivePreview();else renderHome();
 })();
 
 

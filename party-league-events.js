@@ -25,6 +25,7 @@
       screen.innerHTML=`<section class="league-event ${kind}"><header><small>${api.mode==='crew'?'CREW LEAGUE':api.mode==='king'?'MOB KING LEAGUE':'TAG BATTLE LEAGUE'}</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
       api.top();screen.querySelector('.league-event').style.setProperty('--event-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
     }
+    function preview(){if(!root?.MobPresentation||root.MobGamePreviewActive)return;screen.querySelector('.league-event-body').insertAdjacentHTML('afterbegin',root.MobPresentation.preview(api.key,entrants[0],api.key==='minorityMob'?'モブくんは少数派':'モブくん集中大爆弾！',esc));root.MobPresentation.mount(screen);}
     function buttons(options){
       return new Promise(resolve=>{if(!valid()){resolve(-1);return;}const host=screen.querySelector('#eventActions');host.innerHTML=options.map((v,i)=>`<button type="button" data-answer="${i}">${v}</button>`).join('');let used=false;host.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(used||!valid())return;used=true;host.querySelectorAll('button').forEach(x=>x.disabled=true);resolve(Number(b.dataset.answer));});});
     }
@@ -33,7 +34,7 @@
     async function handoff(p,title,detail){draw(title,`<p class="event-call">プレイヤー ${esc(p.name)}！</p><div class="event-portrait">${image(p)}</div><p>${esc(p.team)} · P${p.no}</p><p>${detail}</p><div id="eventActions"></div>`);return next('準備OK');}
     if(api.key==='minorityMob'){
       draw('モブくんは少数派',`<div class="food-preview" aria-hidden="true">🍕 VS 🍣</div><p>2つの食べ物から、選ぶ人が少ないと思う方へ投票！</p><p>多数派は脱落。最後の1〜2人は100点。脱落者も勝ち残った段階に応じて20・40・60・80点（上限80点）を獲得！同数・全員同じなら再投票し、得点段階は進みません。</p><p>選ぶ時はスマホをほかの人に見られないように！</p><div id="eventActions"></div>`);
-      if(!(await next('全員準備OK · 投票開始')))return;
+      preview();if(!(await next('全員準備OK · 投票開始')))return;
       let alive=[...entrants],round=0,lastFood=-1,eliminationStage=0;
       while(alive.length>2&&valid()){
         round++;let fi=Math.floor(random()*(FOODS.length-1));if(fi>=lastFood&&lastFood>=0)fi++;lastFood=fi;const f=FOODS[fi],votes=[];
@@ -71,7 +72,7 @@
     }
     const heats=groups(entrants,random,api.mode),finalists=[];
     draw('モブくん集中大爆弾！',`<div class="bomb-logo">MOB PARTY<br><b>GAME</b></div><p>${heats[0].length}人×5グループ。ゲージを中央で止め、一番近い1人が勝ち上がり！</p><p>予選敗退は0点。勝ち上がった5人の決戦は、1位から100・80・60・50・40点。</p><p>誤差は0.001単位。同じ誤差なら該当者だけ再挑戦。点灯済みチームの選手が1位なら、そのチームが優勝！</p><div id="eventActions"></div>`,'event-bomb');
-    if(!(await next('5グループの勝負へ →')))return;
+    preview();if(!(await next('5グループの勝負へ →')))return;
     async function attempt(p,label){
       if(p.cpu){const core=root?.MobPartyCore;return core?Math.round((100-core.cpuScore(core.characterRank(p,{key:'focusBombMob',title:'モブくん集中大爆弾！'},random),random)+random())/101*50000):Math.floor(random()*50001);}
       if(!(await handoff(p,label,'準備OKでゲージが動きます。中央の線を狙い、STOPを1回押してください。')))return null;
