@@ -4,10 +4,10 @@ const fs=require('node:fs');
 const path=require('node:path');
 const core=require('../party-core.js');
 function seeded(seed=7){return ()=>{seed=(seed*1664525+1014704223)>>>0;return seed/4294967296;};}
-test('61 unique characters with exact-case existing assets and private ranks',()=>{
-  assert.equal(core.roster.length,61);
-  assert.equal(new Set(core.roster.map(c=>c.id)).size,61);
-  for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S|A[+-]?|B\+?|C|D|E|F)(-(SS|S|A[+-]?|B\+?|C|D|E|F))?$/);}
+test('90 unique characters with exact-case existing assets and private ranks',()=>{
+  assert.equal(core.roster.length,90);
+  assert.equal(new Set(core.roster.map(c=>c.id)).size,90);
+  for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S-?|[ABCD][+-]?|E|F)(-(SS|S-?|[ABCD][+-]?|E|F))?$/);}
 });
 test('8 teams of 4 are unique and exclude all human selections, including collaboration selections',()=>{
   for(let seed=1;seed<=100;seed++){
@@ -21,7 +21,7 @@ test('8 teams of 4 are unique and exclude all human selections, including collab
 });
 test('CPU averages follow rank, with both F upsets and SS slumps',()=>{
   let previous=Infinity;
-  for(const rank of ['SS','S','A+','A','A-','B+','B','C','D','E','F']){
+  for(const rank of ['SS','S','S-','A+','A','A-','B+','B','B-','C+','C','D+','D','D-','E','F']){
     const random=seeded(51),scores=Array.from({length:10000},()=>core.cpuScore(rank,random));
     assert.ok(scores.every(n=>Number.isInteger(n)&&n>=0&&n<=100));
     const average=scores.reduce((a,b)=>a+b,0)/scores.length;
@@ -148,6 +148,17 @@ test('MOB SHOT additions preserve A-minus ranges and detective/ninja specialties
   assert.equal(core.resolveRank('A-',()=>.999),'A-');
   assert.equal(core.resolveRank('A-S',()=>0),'A');assert.equal(core.resolveRank('A-S',()=>.999),'S');
   assert.equal(core.rankValue('B-A-'),4.375);assert.equal(core.rankValue('A-'),4.75);
+});
+
+test('46–74 additions honor modified rank bounds and racer running strengths',()=>{
+  const rank=(id,game={},r=0)=>core.characterRank(core.roster.find(c=>c.id===id),game,()=>r);
+  const ranges=[[46,48,'D-','C+'],[49,55,'D+','B-'],[56,56,'C+','B+'],[57,58,'B+','A-'],[59,59,'C+','A+'],[60,60,'A','S-'],[61,63,'D+','B-'],[64,64,'C+','A+'],[65,74,'D','C+']];
+  for(const [first,last,lo,hi] of ranges)for(let id=first;id<=last;id++){assert.equal(rank(id),lo,`id ${id} lower`);assert.equal(rank(id,{},.999),hi,`id ${id} upper`);assert.equal(core.roster.find(c=>c.id===id).img,`main/${id}.png`);}
+  for(let id=65;id<=74;id++){assert.equal(rank(id,{key:'mob50m',title:'50m走'}),'B-');assert.equal(rank(id,{key:'hurdleRun'},.999),'A+');assert.equal(rank(id,{title:'トロッコ大爆走'},.999),'C+');}
+  assert.equal(rank(2),'C+');assert.equal(rank(210),'D+');
+  for(const value of ['D-','D+','C+','B-','S-']){assert.equal(core.resolveRank(value),value);assert.ok(Number.isFinite(core.rankValue(value)));}
+  assert.equal(core.rankValue('D--C+'),2.625);assert.equal(core.rankValue('B--A+'),4.625);
+  for(const [group,count] of [['MAIN CHARACTERS',18],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
 });
 
 test('MOB SHOT CPU tags are preferred in cup and league, with either available Kodra partner',()=>{

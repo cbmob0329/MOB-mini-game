@@ -2,14 +2,17 @@
 (function(root){
   'use strict';
   const groups=[
-    ['MAIN CHARACTERS',[[1,'モブパティレッド','B'],[2,'モブパティブルー','C'],[3,'モブパティゴールド','A'],[4,'モブパティシルバー','B'],[5,'モブパティトレーナー','C'],[6,'モブパティDJ','C'],[7,'モブパティロボ','B']]],
+    ['MAIN CHARACTERS',[[1,'モブパティレッド','B'],[2,'モブパティブルー','C+'],[3,'モブパティゴールド','A'],[4,'モブパティシルバー','B'],[5,'モブパティトレーナー','C'],[6,'モブパティDJ','C'],[7,'モブパティロボ','B'],[46,'モブボタン','D--C+','main/46.png'],[47,'モブスティック','D--C+','main/47.png'],[48,'モブキー','D--C+','main/48.png'],[49,'モブカード','D+-B-','main/49.png'],[50,'モブハート','D+-B-','main/50.png'],[51,'モブチップ','D+-B-','main/51.png'],[52,'モブベッド','D+-B-','main/52.png'],[53,'モブ62モデル','D+-B-','main/53.png'],[54,'モブ63モデル','D+-B-','main/54.png'],[55,'モブ長浜カエル','D+-B-','main/55.png'],[56,'モブモンスターDJ','C+-B+','main/56.png']]],
     ['MOB STORY',[[9,'モブ勇者','SS'],[11,'モブデンデン','S'],[12,'モブピンク','A'],[13,'モブマニー','S'],[24,'モブイルカエル(酒場)','A'],[25,'モブコーチ','C-A'],[26,'モブゴンゾー','C-A'],[27,'モブマテリア','B-A']]],
     ['MOB MONSTERS',[[14,'モブスライム','B'],[15,'モブミイラ','B'],[16,'モブサバンナ','A'],[17,'モブロック','C-B+']]],
     ['MOB SHOT',[[18,'モブコドラ','B+'],[19,'モブイルカエル','B+'],[20,'モブウルフ','C'],[38,'モブフワパーカー','C-B+','main/38.png'],[39,'モブシブパーカー','C-B+','main/39.png'],[40,'モブ探偵','B','main/40.png'],[41,'モブトイプー','B-A-','main/41.png'],[42,'モブカエル忍者','B-A-','main/42.png'],[43,'モブテツMS','A+','main/43.png'],[44,'モブウィザード','A','main/44.png'],[45,'あのヒーローMS','SS','main/45.png']]],
     ['MOB BR',[[21,'モブテツBR','SS'],[22,'マルモブBR','S'],[23,'モブポヨBR','A'],[32,'モブマックスBR','S'],[33,'モブジョーダンBR','A'],[34,'モブレオンBR','A'],[35,'モブティラBR','B-A+'],[36,'モブラプBR','B-A'],[37,'モブサウルスBR','B-A']]],
     ['Wonder UNITY',[[28,'モブラプトル','B-A'],[29,'モブティラノ','B-A'],[30,'モブプテラ','C-A'],[31,'モブペンギン','B']]],
     ['MOB mini game',[[101,'モブドットレッド','E-D','play/01.png'],[102,'モブドットブルー','E-D','play/02.png'],[103,'モブドットイエロー','E-D','play/03.png'],[104,'モブドットグリーン','E-D','play/04.png'],[105,'モブイタリアン','C-B','play/05.PNG'],[106,'モブ中華店主','C-B','play/06.PNG'],[107,'モブみかんティラ','B-A','play/07.PNG'],[108,'モブスーパーマン','SS','play/08.PNG']]],
-    ['ぷにモブ', ['グリーン','イエロー','バイオレット','ピンク','カモフラ','紳士','ブルー','レッド','ライトピンク','ハロウィン'].map((name,i)=>[201+i,`ぷにモブ${name}`,'D',`icon/${String(i+1).padStart(2,'0')}.png`])]
+    ['ヒーローベル',[[61,'モブラプサンタ','D+-B-','main/61.png'],[62,'モブトナッチ','D+-B-','main/62.png'],[63,'モブポテイチゴ','D+-B-','main/63.png'],[64,'モブベルマージョ','C+-A+','main/64.png']]],
+    ['MOB ARTIST初代',[[57,'モブわたあめ','B+-A-','main/57.png'],[58,'モブネコクー(初代)','B+-A-','main/58.png'],[59,'モブシュガー','C+-A+','main/59.png'],[60,'モブくん(初代)','A-S-','main/60.png']]],
+    ['モブレーサーズ',['モブドリパープル','モブドリグリーン','モブドリブラウン','モブドリレッド','モブインカム','モブインコース','モブダート','モブアンカー','モブカワラノコ','モブツキクナイ'].map((name,i)=>[65+i,name,'D-C+',`main/${65+i}.png`])],
+    ['ぷにモブ', ['グリーン','イエロー','バイオレット','ピンク','カモフラ','紳士','ブルー','レッド','ライトピンク','ハロウィン'].map((name,i)=>[201+i,`ぷにモブ${name}`,i===9?'D+':'D',`icon/${String(i+1).padStart(2,'0')}.png`])]
   ];
   const roster=groups.flatMap(([group,rows])=>rows.map(([id,name,rank,img])=>({id,name,rank,group,img:img||`main/${String(id).padStart(3,'0')}.png`})));
   // The tavern Ilukaeru belongs to STORY; SHOT's namesake is a different character.
@@ -34,10 +37,10 @@
     const first=pick(group?pool.filter(c=>c.group===group):pool,random);pool.splice(pool.indexOf(first),1);
     return [first,takeCpuPartner(first,pool,random)];
   }
-  const rankOrder=['F','E','D','C','B','B+','A-','A','A+','S','SS'];
-  function rankParts(rank){const match=String(rank).match(/^(SS|S|A[+-]?|B\+?|C|D|E|F)(?:-(SS|S|A[+-]?|B\+?|C|D|E|F))?$/);return match?[match[1],match[2]||match[1]]:['C','C'];}
+  const rankOrder=['F','E','D-','D','D+','C','C+','B-','B','B+','A-','A','A+','S-','S','SS'];
+  function rankParts(rank){const match=String(rank).match(/^(SS|S-?|[ABCD][+-]?|E|F)(?:-(SS|S-?|[ABCD][+-]?|E|F))?$/);return match?[match[1],match[2]||match[1]]:['C','C'];}
   const rankBounds=rank=>rankParts(rank).map(r=>rankOrder.indexOf(r));
-  function rankValue(rank){const values={F:0,E:1,D:2,C:3,B:4,'B+':4.5,'A-':4.75,A:5,'A+':5.5,S:6,SS:7},[lo,hi]=rankParts(rank);return (values[lo]+values[hi])/2;}
+  function rankValue(rank){const values={F:0,E:1,'D-':1.75,D:2,'D+':2.5,C:3,'C+':3.5,'B-':3.75,B:4,'B+':4.5,'A-':4.75,A:5,'A+':5.5,'S-':5.75,S:6,SS:7},[lo,hi]=rankParts(rank);return (values[lo]+values[hi])/2;}
   function resolveRank(rank,random=Math.random){const [lo,hi=lo]=rankBounds(rank);return rankOrder[lo+Math.floor(random()*(hi-lo+1))]||'C';}
   function characterRank(player,game={},random=Math.random){
     const c=roster.find(c=>c.img===player.img)||player;
@@ -49,6 +52,7 @@
     if(c.id===20&&running)rank='A+';
     if(c.id===40&&brain)rank='S-SS';
     if(c.id===42&&running)rank='S';
+    if(c.group==='モブレーサーズ'&&running)rank='B--A+';
     if(c.id===33&&flying)rank='S';
     if(c.id===30&&flying)rank='S-SS';
     if(c.id===31&&random()<.2)rank='S';
@@ -57,7 +61,7 @@
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function cpuScore(rank='C',random=Math.random){
     rank=resolveRank(rank,random);
-    const average={SS:91,S:81,'A+':76,A:71,'A-':68,'B+':66,B:61,C:50,D:39,E:29,F:19}[rank]??50;
+    const average={SS:91,S:81,'S-':78,'A+':76,A:71,'A-':68,'B+':66,B:61,'B-':58,'C+':55,C:50,'D+':44,D:39,'D-':36,E:29,F:19}[rank]??50;
     const luck=random();
     if(luck<.05)return Math.round(45+random()*15); // Occasional upset, including an SS slump.
     if(luck>.94)return Math.round(70+random()*30); // Even F can have a great round.
