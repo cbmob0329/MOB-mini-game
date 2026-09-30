@@ -76,10 +76,8 @@
       if(!api.valid(ownRun))return;
       const ordered=[...slots].sort((a,b)=>b.score-a.score);
       api.beep(940,120,.025);
-      for(let page=0;page<ordered.length;page+=4){
-        shell('RESULT',`<p class="party-event-call">${esc(ordered[0].name)} がトップ！ ${ordered[0].score} pt<br>${page+1}〜${Math.min(page+4,ordered.length)} / ${ordered.length}人</p>${standings(ordered.slice(page,page+4),true,false)}<div id="eventChoices"></div>`);
-        await choice([page+4<ordered.length?'次の結果を見る →':'この結果で進む →']);if(!api.valid(ownRun))return;
-      }
+      shell('RESULT',`<p class="party-event-call">${esc(ordered[0].name)} がトップ！ ${ordered[0].score} pt<br>全${ordered.length}人 · 一覧をスクロールして確認</p><div class="result-scroll-list" tabindex="0" aria-label="全出場者の結果">${standings(ordered,true,false)}</div><div id="eventChoices"></div>`);
+      await choice(['この結果で進む →']);if(!api.valid(ownRun))return;
       api.finish(index,slots.filter(s=>!s.guest));
     }
     async function doors(slots,ownRun){

@@ -80,10 +80,10 @@
       if(event.type==='cutoff'){announce('進出ボーダー同点！',`残り${event.slots}枠。該当者だけの延長戦で決めます。`,event.ids,resume);return;}
       if(event.type==='championship'){announce('優勝決定戦へ！','点灯済みの同点首位だけで、単独1位が決まるまで続けます。',event.ids,resume);return;}resume();
     }
-    function rankings(record,event){let scope=0,page=0;const per=mode==='crew'?2:4;
-      function show(){const scores=scope?record.totals:record.teamPoints,ordered=[...record.active].sort((a,b)=>(scores[b]||0)-(scores[a]||0)),decider=['cutoff','championship'].includes(record.phase),visible=ordered.slice(page*per,(page+1)*per);
-        draw(scope?'総合順位':'このゲームの順位',`<div class="ranking-scope ${scope?'overall':'round'}"><small>${scope?'STAGE TOTAL':'THIS GAME'}</small><strong>${phaseName(record)}</strong><span>${scope?(decider?'この決着戦だけの得点':'このステージの累計得点'):'今回の獲得ポイントだけ'}</span></div><div class="variant-standing">${visible.map(id=>`<div><b class="variant-place">#${1+ordered.filter(other=>(scores[other]||0)>(scores[id]||0)).length}</b>${rows([id],scores)}</div>`).join('')}</div><small class="variant-page">${page+1} / ${Math.ceil(ordered.length/per)}</small>${button(page*per+per<ordered.length?'次の順位 →':scope?'大会を進める →':'総合順位を見る →')}`,'variant-show');
-        on('variantNext',()=>{if(++page*per<ordered.length)show();else if(!scope){scope=1;page=0;show();}else after(event);});}show();
+    function rankings(record,event){let scope=0;
+      function show(){const scores=scope?record.totals:record.teamPoints,ordered=[...record.active].sort((a,b)=>(scores[b]||0)-(scores[a]||0)),decider=['cutoff','championship'].includes(record.phase),visible=ordered;
+        draw(scope?'総合順位':'このゲームの順位',`<div class="ranking-scope ${scope?'overall':'round'}"><small>${scope?'STAGE TOTAL':'THIS GAME'}</small><strong>${phaseName(record)}</strong><span>${scope?(decider?'この決着戦だけの得点':'このステージの累計得点'):'今回の獲得ポイントだけ'}</span></div><div class="variant-standing result-scroll-list" tabindex="0" aria-label="全出場者の順位">${visible.map(id=>`<div><b class="variant-place">#${1+ordered.filter(other=>(scores[other]||0)>(scores[id]||0)).length}</b>${rows([id],scores)}</div>`).join('')}</div><small class="variant-page">全${ordered.length}${mode==='crew'?'組':'名'} · 一覧をスクロールして確認</small>${button(scope?'大会を進める →':'総合順位を見る →')}`,'variant-show variant-results');
+        on('variantNext',()=>{if(!scope){scope=1;show();}else after(event);});}show();
     }
     function after(event){if(event.type==='champion'){finale(event.ids[0]);return;}
       if(event.type==='divisionQualified'){announce('次の予選リーグへ',L.DIVISIONS[league.division]+'の予選が始まります。得点はリーグごとに集計します。',league.active,play);return;}

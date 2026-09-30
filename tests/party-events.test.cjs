@@ -36,7 +36,7 @@ test('40-player death game eliminates exactly 10, 15, 10, 2, 2 players and one s
 test('eighty-player crew events page entrances and results without false human elimination labels',async()=>{
   const teams=Array.from({length:40},(_,i)=>({name:'CREW PAIR '+i,members:[0,1].map(j=>({id:i+'-'+j,name:'Member '+i+'-'+j,img:'c',cpu:i!==0}))}));
   const h=setup('deathGameChallenge',.7,teams);await h.settle();assert.equal((h.html.match(/<article /g)||[]).length,4);assert.doesNotMatch(h.html,/human-eliminated/);
-  for(let i=0;i<260&&!h.finished;i++){if(h.html.includes('<h2>RESULT</h2>')){assert.ok((h.html.match(/<article /g)||[]).length<=4);assert.doesNotMatch(h.html,/human-eliminated/);}if(h.buttons.some(b=>b.onclick))await h.click();else assert.ok(await h.tick());}
+  for(let i=0;i<260&&!h.finished;i++){if(h.html.includes('<h2>RESULT</h2>')){assert.equal((h.html.match(/<article /g)||[]).length,80);assert.doesNotMatch(h.html,/human-eliminated/);}if(h.buttons.some(b=>b.onclick))await h.click();else assert.ok(await h.tick());}
   assert.equal(h.finished.length,80);assert.equal(h.finished.filter(s=>s.score===100).length,1);
 });
 test('bridge wrong route loses lives and eliminates after two mistakes',async()=>{
