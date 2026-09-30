@@ -7,7 +7,7 @@
     const valid=()=>api.valid(run);
     const portrait=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-    function shell(title,body){screen.innerHTML=`<section class="party-event"><header><small>TEAM REPRESENTATIVES</small><h2>${title}</h2><p>各チーム最大2人 · 1人最大100点</p></header>${body}</section>`;api.top();}
+    function shell(title,body){screen.innerHTML=`<section class="party-event ${body.includes('elimination-results')?'elimination-screen':''}" style="--elimination-top:${Math.max(0,(screen.getBoundingClientRect?.().top??95)+(window.scrollY||0))}px"><header><small>TEAM REPRESENTATIVES</small><h2>${title}</h2><p>各チーム最大2人 · 1人最大100点</p></header>${body}</section>`;api.top();}
     async function chooseRepresentatives(teams){
       const entrants=[];
       for(const team of teams){
@@ -37,7 +37,7 @@
         if(timeout)timer=setTimeout(()=>{if(api.valid(choiceRun))finish(-1);else{settled=true;resolve(-1);}},timeout);
       });
     }
-    function standings(slots){return `<div class="party-event-roster">${slots.map(s=>`<div class="${s.out?'out':''} ${s.out&&!s.cpu?'human-eliminated':''}">${portrait(s)}<span>${esc(s.team)}<b>${esc(s.name)}</b><em>${s.score} pt${s.out?' · FINISH':''}</em></span></div>`).join('')}</div>`;}
+    function standings(slots,eliminated=false){if(eliminated)return `<div class="elimination-results">${slots.map(s=>`<article class="${s.cpu?'':'human-eliminated'}">${portrait(s)}<span><b>${esc(s.name)}</b><small>${esc(s.team)} · ${s.cpu?'CPU':'PLAYER'}</small></span><strong>${s.score}<small> pt</small></strong></article>`).join('')}</div>`;return `<div class="party-event-roster">${slots.map(s=>`<div class="${s.out?'out':''} ${s.out&&!s.cpu?'human-eliminated':''}">${portrait(s)}<span>${esc(s.team)}<b>${esc(s.name)}</b><em>${s.score} pt${s.out?' · FINISH':''}</em></span></div>`).join('')}</div>`;}
     async function handoff(s,title){
       shell(title,`<p class="party-event-call">${esc(s.team)} · ${esc(s.name)} の番です</p><div class="party-event-actor">${portrait(s)}</div><p>端末を受け取ったら準備OKを押してください。</p><div id="eventChoices"></div>`);
       await choice(['準備OK']);
@@ -98,7 +98,7 @@
         const losers=choices.filter(x=>dangerous.has(x.door));
         for(const {s} of losers){s.out=true;s.score=alive.length===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80;}
         shell('運命の扉、崩壊！',`<div class="party-death-count">${alive.length}<span>→</span>${target}</div><p class="party-event-call">${losers.length}人が脱落。残る席は${target}つ！</p><div class="party-door-reveal">🚪 ⚡</div>`);api.beep(140,240,.025);await pause(1100);if(!api.valid(ownRun))return;
-        let page=0;while(page<losers.length){const batch=losers.slice(page,page+6);shell('ELIMINATED / 脱落',`<p class="party-event-call">ROUND ${round} · 生存者は残り${target}人</p>${standings(batch.map(x=>x.s))}<p>扉が崩壊… この選手たちの挑戦はここで終了！</p><div id="eventChoices"></div>`);await choice(['脱落者を確認して次へ →']);if(!api.valid(ownRun))return;page+=6;}
+        let page=0;while(page<losers.length){const batch=losers.slice(page,page+4);shell('ELIMINATED / 脱落',`<p class="party-event-call">ROUND ${round} · 生存者は残り${target}人</p>${standings(batch.map(x=>x.s),true)}<p>扉が崩壊… この選手たちの挑戦はここで終了！</p><div id="eventChoices"></div>`);await choice(['脱落者を確認して次へ →']);if(!api.valid(ownRun))return;page+=4;}
       }
       const winner=slots.find(s=>!s.out);if(winner)winner.score=100;
     }

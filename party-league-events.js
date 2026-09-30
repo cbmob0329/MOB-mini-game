@@ -49,7 +49,9 @@
           if(!p.cpu)draw('投票を受け付けました',`<p class="event-call">選択は秘密です。</p><p>次のプレイヤーへ端末を渡してください。</p>`);
         }
         if(!valid())return;const result=minority(votes);
-        draw('全ての票が揃いました！',`<p class="event-call">結果発表！</p><strong id="voteCountdown" class="event-countdown">3</strong>`,'event-suspense');
+        draw('全ての票が揃いました！',`<p class="event-call">端末をみんなに見せて、結果を確認しよう！</p><div id="eventActions"></div>`,'event-suspense');
+        if(!(await next('みんなで結果を見る')))return;
+        draw('結果発表！',`<p class="event-call">どちらが少数派？</p><strong id="voteCountdown" class="event-countdown">3</strong>`,'event-suspense');
         for(const n of [3,2,1]){if(!valid())return;screen.querySelector('#voteCountdown').textContent=n;beep(380+n*140,100,.025);await sleep(human?850:180);}
         if(!valid())return;
         draw('投票結果！',`<div class="vote-totals"><div><span>${f[0]}</span><b>${f[1]}</b><strong>${result.counts[0]}票</strong></div><div><span>${f[2]}</span><b>${f[3]}</b><strong>${result.counts[1]}票</strong></div></div><p class="event-call">${result.retry?'脱落なし！ 別のお題でもう一度！':'多数派は脱落！ 少数派の'+result.survivors.length+'人が勝ち残り！'}</p><div id="eventActions"></div>`,'event-reveal');
@@ -57,8 +59,10 @@
         if(result.retry)continue;
         const losers=alive.filter(p=>result.out.includes(p.id));alive=alive.filter(p=>result.survivors.includes(p.id));
         const earned=Math.min(80,++eliminationStage*20);losers.forEach(p=>score[p.id]=earned);
-        draw('ELIMINATED · 脱落者発表',`<p>ROUND ${round} · ${losers.length}人脱落 / 残り${alive.length}人 · 脱落者は${earned}ポイント獲得</p>${roster(losers,true)}<p class="event-note">人間プレイヤーの枠は点滅表示</p><div id="eventActions"></div>`,'event-eliminated');
-        if(!(await next()))return;
+        for(let page=0;page<losers.length;page+=4){
+          draw('ELIMINATED · 脱落者発表',`<p>ROUND ${round} · 残り${alive.length}人 · 脱落者は${earned}ポイント獲得</p><div class="elimination-results">${losers.slice(page,page+4).map(p=>`<article class="${p.cpu?'':'human-eliminated'}">${image(p)}<span><b>${esc(p.name)}</b><small>${esc(p.team)} · ${p.cpu?'CPU':'P'+p.no}</small></span><strong>${earned}<small> pt</small></strong></article>`).join('')}</div><p class="event-note">${page+1}〜${Math.min(page+4,losers.length)} / ${losers.length}人</p><div id="eventActions"></div>`,'event-eliminated');
+          if(!(await next(page+4<losers.length?'次の脱落者を見る →':'確認して次へ →')))return;
+        }
       }
       if(!valid())return;alive.forEach(p=>score[p.id]=100);
       draw('少数派の勝者！',`<p class="event-call">${alive.length===2?'2人が同率1位！':'最後の1人！'} 100ポイント獲得！</p>${roster(alive)}<div id="eventActions"></div>`,'event-reveal');

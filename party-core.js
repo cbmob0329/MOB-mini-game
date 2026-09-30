@@ -77,8 +77,21 @@
     for(let step=Math.max(1,best/10);step>=.001;step/=10){const center=best;for(let n=-10;n<=10;n++)inspect(Math.max(0,center+n*step));}
     return best;
   }
-  function allocateTeams(available,size,teamCount,random=Math.random){
-    const pool=[...available],teams=[];
+  const tournamentLevels=['ALL','NORMAL','HARD','INFERNO'];
+  function tournamentPool(available,count,level,random=Math.random){
+    if(count>available.length)throw Error('Not enough unique characters');
+    const shuffled=[...available];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+    if(level==='ALL'||!tournamentLevels.includes(level))return shuffled.slice(0,count);
+    if(level==='NORMAL')return shuffled.sort((a,b)=>rankValue(a.rank)-rankValue(b.rank)).slice(0,count);
+    const priority=c=>c.id===9?100:c.id===12?99:rankValue(c.rank);
+    if(level==='INFERNO')return shuffled.sort((a,b)=>priority(b)-priority(a)).slice(0,count);
+    const high=shuffled.filter(c=>rankValue(c.rank)>=4.5),low=shuffled.filter(c=>rankValue(c.rank)<4.5);
+    high.sort((a,b)=>(b.id===9||b.id===12)-(a.id===9||a.id===12));
+    const selected=[...high.slice(0,Math.ceil(count/2)),...low.slice(0,Math.floor(count/2))];
+    return selected.concat(shuffled.filter(c=>!selected.includes(c))).slice(0,count);
+  }
+  function allocateTeams(available,size,teamCount,random=Math.random,level=null){
+    const pool=level?tournamentPool(available,size*teamCount,level,random):[...available],teams=[];
     for(let t=0;t<teamCount;t++){
       if(size===2){teams.push(takeCpuPair(pool,random));continue;}
       const buckets=groups.map(([name])=>pool.filter(c=>c.group===name));
@@ -102,8 +115,9 @@
     return 'アクション';
   }
   function bridgeScore(step,lives){return clamp(step*10+Math.max(0,lives)*10,0,100);}
-  function leagueCpuPairs(humanTeams,random=Math.random){
-    const used=new Set(humanTeams.flat().map(c=>c.id)),pool=roster.filter(c=>!used.has(c.id));
+  function leagueCpuPairs(humanTeams,random=Math.random,level=null){
+    const used=new Set(humanTeams.flat().map(c=>c.id)),available=roster.filter(c=>!used.has(c.id));
+    const pool=level?tournamentPool(available,humanTeams.length*2-used.size,level,random):available;
     const result=humanTeams.map(t=>[...t]);
     const firstEmpty=result.find(t=>!t.length);
     if(firstEmpty&&pool.some(c=>c.id===9)&&!result.some(t=>t.length===1&&t[0].id===12))firstEmpty.push(...takeCpuPair(pool,random));
@@ -145,7 +159,7 @@
   function bestPlayWinners(stats){
     return stats.filter(s=>s.highlight).sort((a,b)=>b.highlight.rarity-a.highlight.rarity||b.highlight.margin-a.highlight.margin||b.perfect-a.perfect||b.baseTotal/Math.max(1,b.played)-a.baseTotal/Math.max(1,a.played)||String(a.p.id).localeCompare(String(b.p.id))).slice(0,2);
   }
-  const core={groups,roster,characterRank,rankValue,resolveRank,cpuScore,cpuRaw,allocateTeams,leagueCpuPairs,representativeKeys,genre,bridgeScore,gameTraits,awardStats,bestPlayWinners};
+  const core={groups,roster,characterRank,rankValue,resolveRank,cpuScore,cpuRaw,allocateTeams,leagueCpuPairs,tournamentLevels,tournamentPool,representativeKeys,genre,bridgeScore,gameTraits,awardStats,bestPlayWinners};
   if(typeof module!=='undefined'&&module.exports)module.exports=core;
   root.MobPartyCore=core;
 })(typeof window!=='undefined'?window:globalThis);

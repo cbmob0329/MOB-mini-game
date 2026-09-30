@@ -9,7 +9,7 @@
   window.MobPartyUI={settings,create(api){
     const {screen,esc}=api;
     const originals=api.players.map(p=>({...p}));
-    let count=1,selected=[];
+    let count=1,selected=[],level='ALL';
     const image=(c,cls='')=>`<img class="${cls}" src="${c.img}" alt="${esc(c.name)}" draggable="false">`;
     const on=(id,fn)=>screen.querySelector(`#${id}`).addEventListener('click',fn);
     function draw(html){screen.innerHTML=`<div class="party-page">${html}</div>`;api.gameTop();}
@@ -50,12 +50,12 @@
       back(()=>{selected.pop();selectCharacter();});on('partySingle',()=>{api.configure(count,false);library(1);});on('partyCup',cupLength);on('partyAdvanced',api.advanced);
     }
     function cupLength(){
-      draw(`${backButton}${heading('MOB PARTY CUP','目指せ、パーティーの頂点。',`自チーム＋CPU7チーム。1ゲーム最大${count*100}点を積み重ねよう。`)}<div class="party-counts">${[10,20].map(n=>`<button data-rounds="${n}"><span>${n}</span><b>ゲーム</b></button>`).join('')}<button data-rounds="0"><span>＋</span><b>カスタム</b></button></div><p class="party-note">次の画面でプレイするゲームと順番を選びます。</p>`);
-      back(chooseStyle);screen.querySelectorAll('[data-rounds]').forEach(b=>b.onclick=()=>{
-        const entrants=api.configure(count,true);
+      draw(`${backButton}${heading('MOB PARTY CUP','目指せ、パーティーの頂点。',`自チーム＋CPU7チーム。1ゲーム最大${count*100}点を積み重ねよう。`)}<label class="tournament-level">TOURNAMENT LEVEL<select id="cupLevel">${window.MobPartyCore.tournamentLevels.map(v=>`<option ${v===level?'selected':''}>${v}</option>`).join('')}</select></label><p>ALL：完全抽選 / NORMAL：低ランク優先 / HARD：高低半々 / INFERNO：高ランク優先</p><div class="party-counts">${[10,20].map(n=>`<button data-rounds="${n}"><span>${n}</span><b>ゲーム</b></button>`).join('')}<button data-rounds="0"><span>＋</span><b>カスタム</b></button></div><p class="party-note">次の画面でプレイするゲームと順番を選びます。</p>`);
+      screen.querySelector('.party-page').classList.add('party-cup-setup');back(chooseStyle);screen.querySelectorAll('[data-rounds]').forEach(b=>b.onclick=()=>{
+        level=screen.querySelector('#cupLevel').value;const entrants=api.configure(count,true);
         let available=roster.filter(c=>!selected.includes(c.id));
         const cpu=entrants.filter(p=>p.cpu);
-        const teams=allocateTeams(available,count,cpu.length/count);
+        const teams=allocateTeams(available,count,cpu.length/count,Math.random,level);
         teams.flat().forEach((c,i)=>{cpu[i].name=c.name;cpu[i].img=c.img;cpu[i].characterRank=c.rank;});
         library(Number(b.dataset.rounds),true);
       });

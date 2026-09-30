@@ -161,6 +161,28 @@ test('46–74 additions honor modified rank bounds and racer running strengths',
   for(const [group,count] of [['MAIN CHARACTERS',18],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
 });
 
+test('tournament levels choose unique participants before pairing and preserve human picks',()=>{
+  const seen=new Set();
+  for(let seed=1;seed<=80;seed++){
+    const pools=Object.fromEntries(core.tournamentLevels.map(level=>[level,core.tournamentPool(core.roster,40,level,seeded(seed))]));
+    for(const pool of Object.values(pools))assert.equal(new Set(pool.map(c=>c.id)).size,40);
+    pools.ALL.forEach(c=>seen.add(c.id));
+    assert.ok(pools.NORMAL.every(c=>core.rankValue(c.rank)<6));
+    assert.equal(pools.HARD.filter(c=>core.rankValue(c.rank)>=4.5).length,20);
+    assert.ok(pools.INFERNO.filter(c=>core.rankValue(c.rank)>=4.5).length>=pools.HARD.filter(c=>core.rankValue(c.rank)>=4.5).length);
+    assert.ok(!pools.NORMAL.some(c=>c.id===9));
+    for(const level of core.tournamentLevels){
+      const hero=core.roster.find(c=>c.id===9),teams=core.leagueCpuPairs([[hero],...Array.from({length:19},()=>[])],seeded(seed),level);
+      assert.equal(teams[0][0],hero);assert.equal(new Set(teams.flat().map(c=>c.id)).size,40);
+      const available=core.roster.filter(c=>c.id!==9),chosen=core.tournamentPool(available,28,level,seeded(seed));
+      const cup=core.allocateTeams(available,4,7,seeded(seed),level).flat();
+      assert.deepEqual(cup.map(c=>c.id).sort((a,b)=>a-b),chosen.map(c=>c.id).sort((a,b)=>a-b));
+    }
+  }
+  assert.equal(seen.size,core.roster.length);
+  assert.ok(Array.from({length:40},(_,i)=>core.tournamentPool(core.roster,40,'ALL',seeded(i))).some(pool=>!pool.some(c=>c.id===9)));
+});
+
 test('MOB SHOT CPU tags are preferred in cup and league, with either available Kodra partner',()=>{
   const pairs=[[38,39],[40,41],[42,44],[45,43]],has=(teams,a,b)=>teams.some(t=>t.some(c=>c.id===a)&&t.some(c=>c.id===b));
   const variants=new Set();

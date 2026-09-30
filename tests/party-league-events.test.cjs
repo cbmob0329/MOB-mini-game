@@ -78,3 +78,30 @@ test('secured teams and overtime are announced before cutoff standings',()=>{
   const h=uiHarness();h.state.cut={kept:['L0','L1'],slots:6};h.ui.results({event:{type:'cutoff',ids:['L2','L3'],slots:6},record:h.record});
   assert.match(h.html(),/進出確定チーム発表/);h.next();h.next();assert.match(h.html(),/ボーダー同点！ 延長戦！/);h.next();assert.match(h.html(),/現在の総合順位|今回のチーム順位/);
 });
+
+test('new ignition precedes results; championship takes priority with no ignition',()=>{
+  const h=uiHarness();h.record.phase='final';h.record.litBefore=[];
+  h.ui.results({event:{type:'round',ids:['L2']},record:h.record});
+  assert.match(h.html(),/MATCH POINT · 点灯/);assert.doesNotMatch(h.html(),/class="league-rank /);
+  h.next();assert.match(h.html(),/このゲームだけの順位/);assert.match(h.html(),/今回獲得したポイントのみ/);
+  h.next();h.next();assert.match(h.html(),/決勝の総合順位/);
+  const winner=uiHarness();winner.record.phase='final';winner.record.litBefore=['L0'];
+  winner.ui.results({event:{type:'champion',ids:['L0']},record:winner.record});
+  winner.next();assert.match(winner.html(),/CHAMPION!!/);assert.doesNotMatch(winner.html(),/MATCH POINT/);
+  winner.next();assert.match(winner.html(),/このゲームだけの順位/);
+});
+
+test('minority waits for shared-result button before any countdown or result disclosure',async()=>{
+  let html='',handler,timers=0,randomCalls=0,valid=true;
+  const button={dataset:{answer:'0'},set onclick(fn){handler=fn;}},host={innerHTML:'',querySelectorAll:()=>[button]};
+  const screen={set innerHTML(value){html=value;},getBoundingClientRect:()=>({top:0}),querySelector:sel=>sel==='#eventActions'?host:{style:{setProperty(){}},textContent:''}};
+  const window={};vm.runInNewContext(fs.readFileSync(require.resolve('../party-league-events.js'),'utf8'),{window,setTimeout:fn=>{timers++;queueMicrotask(fn);}});
+  const run=window.MobLeagueEvents.run({key:'minorityMob',screen,entrants:entrants.map(p=>({...p,cpu:true})),esc:String,valid:()=>valid,beep(){},clear(){},top(){},random:()=>++randomCalls===2?.1:.9,done(){}});
+  handler();for(let i=0;i<10;i++)await Promise.resolve();
+  assert.match(html,/全ての票が揃いました/);assert.match(host.innerHTML,/みんなで結果を見る/);assert.equal(timers,0);assert.doesNotMatch(html,/voteCountdown|票<\/strong>/);
+  handler();for(let i=0;i<12;i++)await Promise.resolve();
+  assert.match(html,/投票結果/);assert.equal(timers,3);
+  handler();for(let i=0;i<8;i++)await Promise.resolve();
+  assert.match(html,/elimination-results/);assert.equal((html.match(/<article /g)||[]).length,4);
+  handler();valid=false;await run;
+});
