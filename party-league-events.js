@@ -7,11 +7,12 @@
     const retry=counts[0]===counts[1]||counts.includes(0),side=counts[0]<counts[1]?0:1;
     return {counts,retry,survivors:votes.filter(v=>retry||v.side===side).map(v=>v.id),out:votes.filter(v=>!retry&&v.side!==side).map(v=>v.id)};
   }
-  function groups(entrants,random=Math.random){
+  function groups(entrants,random=Math.random,mode='tag'){
     const teams=[...new Set(entrants.map(p=>p.teamId))];
-    if(teams.length!==10||entrants.length!==20||teams.some(t=>entrants.filter(p=>p.teamId===t).length!==2))throw Error('Focus bomb needs ten pairs');
+    const size=mode==='crew'?4:mode==='king'?1:2,count=mode==='king'?20:10;
+    if(teams.length!==count||entrants.length!==count*size||teams.some(t=>entrants.filter(p=>p.teamId===t).length!==size))throw Error('Invalid focus bomb roster');
     const ordered=shuffle(teams,random),heats=Array.from({length:5},()=>[]);
-    ordered.forEach((t,i)=>{const pair=shuffle(entrants.filter(p=>p.teamId===t),random);heats[i%5].push(pair[0]);heats[(i+2)%5].push(pair[1]);});return heats;
+    ordered.forEach((t,i)=>{shuffle(entrants.filter(p=>p.teamId===t),random).forEach((p,j)=>heats[(i+j*2)%5].push(p));});return heats;
   }
   const errorAt=(elapsed,period,phase)=>Math.round(Math.abs(Math.sin(elapsed/period*Math.PI*2+phase))*50000);
   const FOODS=[['🍕','ピザ','🍣','お寿司'],['🍔','ハンバーガー','🍜','ラーメン'],['🍓','いちご','🍇','ぶどう'],['🍩','ドーナツ','🍰','ケーキ'],['🍛','カレー','🍝','パスタ'],['🍦','アイス','🍮','プリン'],['🍙','おにぎり','🥪','サンドイッチ'],['🥟','ぎょうざ','🍤','エビフライ']];
@@ -21,7 +22,7 @@
     const image=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     function draw(title,body,kind=''){
       if(!valid())return;api.clear();
-      screen.innerHTML=`<section class="league-event ${kind}"><header><small>TAG BATTLE LEAGUE</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
+      screen.innerHTML=`<section class="league-event ${kind}"><header><small>${api.mode==='crew'?'CREW LEAGUE':api.mode==='king'?'MOB KING LEAGUE':'TAG BATTLE LEAGUE'}</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
       api.top();screen.querySelector('.league-event').style.setProperty('--event-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
     }
     function buttons(options){
@@ -68,8 +69,8 @@
       draw('少数派の勝者！',`<p class="event-call">${alive.length===2?'2人が同率1位！':'最後の1人！'} 100ポイント獲得！</p>${roster(alive)}<div id="eventActions"></div>`,'event-reveal');
       if(await next('大会リザルトへ →'))api.done(score);return;
     }
-    const heats=groups(entrants,random),finalists=[];
-    draw('モブくん集中大爆弾！',`<div class="bomb-logo">MOB PARTY<br><b>GAME</b></div><p>4人×5グループ。ゲージを中央で止め、一番近い1人が勝ち上がり！</p><p>予選敗退は0点。勝ち上がった5人の決戦は、1位から100・80・60・50・40点。</p><p>誤差は0.001単位。同じ誤差なら該当者だけ再挑戦。点灯済みチームの選手が1位なら、そのチームが優勝！</p><div id="eventActions"></div>`,'event-bomb');
+    const heats=groups(entrants,random,api.mode),finalists=[];
+    draw('モブくん集中大爆弾！',`<div class="bomb-logo">MOB PARTY<br><b>GAME</b></div><p>${heats[0].length}人×5グループ。ゲージを中央で止め、一番近い1人が勝ち上がり！</p><p>予選敗退は0点。勝ち上がった5人の決戦は、1位から100・80・60・50・40点。</p><p>誤差は0.001単位。同じ誤差なら該当者だけ再挑戦。点灯済みチームの選手が1位なら、そのチームが優勝！</p><div id="eventActions"></div>`,'event-bomb');
     if(!(await next('5グループの勝負へ →')))return;
     async function attempt(p,label){
       if(p.cpu){const core=root?.MobPartyCore;return core?Math.round((100-core.cpuScore(core.characterRank(p,{key:'focusBombMob',title:'モブくん集中大爆弾！'},random),random)+random())/101*50000):Math.floor(random()*50001);}
@@ -95,9 +96,9 @@
       }return ordered;
     }
     for(let i=0;i<heats.length;i++){
-      if(!valid())return;draw('GROUP '+(i+1)+' / 5',`<p>この4人から1人だけが決戦へ！</p>${roster(heats[i])}<div id="eventActions"></div>`,'event-bomb');if(!(await next('グループ開始 →')))return;
+      if(!valid())return;draw('GROUP '+(i+1)+' / 5',`<p>この${heats[i].length}人から1人だけが決戦へ！</p>${roster(heats[i])}<div id="eventActions"></div>`,'event-bomb');if(!(await next('グループ開始 →')))return;
       const ranked=await contest(heats[i],'GROUP '+(i+1));if(!valid()||!ranked.length)return;finalists.push(ranked[0].p);
-      draw('決戦進出！',`<p class="event-call">${esc(ranked[0].p.name)}が勝ち上がり！</p>${roster([ranked[0].p])}<p>ほかの3人は0ポイント。挑戦に拍手を！</p><div id="eventActions"></div>`,'event-reveal');if(!(await next()))return;
+      draw('決戦進出！',`<p class="event-call">${esc(ranked[0].p.name)}が勝ち上がり！</p>${roster([ranked[0].p])}<p>ほかの${heats[i].length-1}人は0ポイント。挑戦に拍手を！</p><div id="eventActions"></div>`,'event-reveal');if(!(await next()))return;
     }
     draw('5人の優勝決定戦！',`<p>最後の一撃。最も中央に近いのは誰だ！？</p>${roster(finalists)}<div id="eventActions"></div>`,'event-bomb');if(!(await next('最終決戦へ →')))return;
     const ranked=await contest(finalists,'FINAL · 集中大爆弾');if(!valid()||ranked.length!==5)return;

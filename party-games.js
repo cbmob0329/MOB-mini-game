@@ -37,7 +37,7 @@
         if(timeout)timer=setTimeout(()=>{if(api.valid(choiceRun))finish(-1);else{settled=true;resolve(-1);}},timeout);
       });
     }
-    function standings(slots,eliminated=false){if(eliminated)return `<div class="elimination-results">${slots.map(s=>`<article class="${s.cpu?'':'human-eliminated'}">${portrait(s)}<span><b>${esc(s.name)}</b><small>${esc(s.team)} · ${s.cpu?'CPU':'PLAYER'}</small></span><strong>${s.score}<small> pt</small></strong></article>`).join('')}</div>`;return `<div class="party-event-roster">${slots.map(s=>`<div class="${s.out?'out':''} ${s.out&&!s.cpu?'human-eliminated':''}">${portrait(s)}<span>${esc(s.team)}<b>${esc(s.name)}</b><em>${s.score} pt${s.out?' · FINISH':''}</em></span></div>`).join('')}</div>`;}
+    function standings(slots,eliminated=false,markEliminated=eliminated){if(eliminated)return `<div class="elimination-results">${slots.map(s=>`<article class="${!s.cpu&&markEliminated?'human-eliminated':''}">${portrait(s)}<span><b>${esc(s.name)}</b><small>${esc(s.team)} · ${s.cpu?'CPU':'PLAYER'}</small></span><strong>${s.score}<small> pt</small></strong></article>`).join('')}</div>`;return `<div class="party-event-roster">${slots.map(s=>`<div class="${s.out?'out':''} ${s.out&&!s.cpu?'human-eliminated':''}">${portrait(s)}<span>${esc(s.team)}<b>${esc(s.name)}</b><em>${s.score} pt${s.out?' · FINISH':''}</em></span></div>`).join('')}</div>`;}
     async function handoff(s,title){
       shell(title,`<p class="party-event-call">${esc(s.team)} · ${esc(s.name)} の番です</p><div class="party-event-actor">${portrait(s)}</div><p>端末を受け取ったら準備OKを押してください。</p><div id="eventChoices"></div>`);
       await choice(['準備OK']);
@@ -64,8 +64,10 @@
       }
       slots=slots.map(s=>({...s,rank:core.characterRank?core.characterRank(s,api.games[index]):s.rank,score:0,lives:2,out:false,bank:0,scouts:1}));
       api.representatives(slots.filter(s=>!s.guest).map(s=>s.id));
-      shell(api.games[index].title,`${standings(slots)}<p class="party-event-call">${slots.length}人がエントリー！ スマホを順番に渡して挑戦しよう。</p><div id="eventChoices"></div>`);
-      await choice(['全員準備OK · スタート']);if(!api.valid(ownRun))return;
+      for(let page=0;page<slots.length;page+=4){
+        shell(api.games[index].title,`${standings(slots.slice(page,page+4),true,false)}<p class="party-event-call">${slots.length}人がエントリー！ ${page+1}〜${Math.min(page+4,slots.length)}人目<br>スマホを順番に渡して挑戦しよう。</p><div id="eventChoices"></div>`);
+        await choice([page+4<slots.length?'次の出場者を見る →':'全員準備OK · スタート']);if(!api.valid(ownRun))return;
+      }
       if(key==='deathGameChallenge')await doors(slots,ownRun);
       else if(key==='colorBridgeParty')await bridge(slots,ownRun);
       else if(key==='treasureRuneParty')await runeVault(slots,ownRun);
@@ -73,9 +75,11 @@
       else await treasure(slots,ownRun);
       if(!api.valid(ownRun))return;
       const ordered=[...slots].sort((a,b)=>b.score-a.score);
-      shell('RESULT',`<p class="party-event-call">${esc(ordered[0].name)} がトップ！ ${ordered[0].score} pt</p>${standings(ordered)}<div id="eventChoices"></div>`);
       api.beep(940,120,.025);
-      await choice(['この結果で進む →']);if(!api.valid(ownRun))return;
+      for(let page=0;page<ordered.length;page+=4){
+        shell('RESULT',`<p class="party-event-call">${esc(ordered[0].name)} がトップ！ ${ordered[0].score} pt<br>${page+1}〜${Math.min(page+4,ordered.length)} / ${ordered.length}人</p>${standings(ordered.slice(page,page+4),true,false)}<div id="eventChoices"></div>`);
+        await choice([page+4<ordered.length?'次の結果を見る →':'この結果で進む →']);if(!api.valid(ownRun))return;
+      }
       api.finish(index,slots.filter(s=>!s.guest));
     }
     async function doors(slots,ownRun){

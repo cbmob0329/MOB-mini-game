@@ -4,9 +4,9 @@ const fs=require('node:fs');
 const path=require('node:path');
 const core=require('../party-core.js');
 function seeded(seed=7){return ()=>{seed=(seed*1664525+1014704223)>>>0;return seed/4294967296;};}
-test('90 unique characters with exact-case existing assets and private ranks',()=>{
-  assert.equal(core.roster.length,90);
-  assert.equal(new Set(core.roster.map(c=>c.id)).size,90);
+test('98 unique characters with exact-case existing assets and private ranks',()=>{
+  assert.equal(core.roster.length,98);
+  assert.equal(new Set(core.roster.map(c=>c.id)).size,98);
   for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S-?|[ABCD][+-]?|E|F)(-(SS|S-?|[ABCD][+-]?|E|F))?$/);}
 });
 test('8 teams of 4 are unique and exclude all human selections, including collaboration selections',()=>{
@@ -158,7 +158,7 @@ test('46–74 additions honor modified rank bounds and racer running strengths',
   assert.equal(rank(2),'C+');assert.equal(rank(210),'D+');
   for(const value of ['D-','D+','C+','B-','S-']){assert.equal(core.resolveRank(value),value);assert.ok(Number.isFinite(core.rankValue(value)));}
   assert.equal(core.rankValue('D--C+'),2.625);assert.equal(core.rankValue('B--A+'),4.625);
-  for(const [group,count] of [['MAIN CHARACTERS',18],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
+  for(const [group,count] of [['MAIN CHARACTERS',20],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
 });
 
 test('tournament levels choose unique participants before pairing and preserve human picks',()=>{

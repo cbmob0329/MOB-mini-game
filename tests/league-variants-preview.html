@@ -1,0 +1,9 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="party-ui.css"><title>New league presentation preview</title><body><div id="app"><header class="topbar" style="height:95px;box-sizing:border-box"><div class="title-wrap"><strong>MOB PARTY GAMES</strong></div></header><main id="screen" class="screen"></main></div>
+<script src="party-core.js"></script><script src="party-character-select.js"></script><script src="party-league.js"></script><script src="party-league-variants.js"></script><script src="party-champion-studio.js"></script><script src="party-collectibles.js"></script><script>
+const screen=document.querySelector('#screen'),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Only game results are simulated here; setup, progression and rendering use production code.
+window.MobLeagueEvents={run:o=>o.done(Object.fromEntries(o.entrants.map(p=>[p.id,100-parseInt(p.teamId.slice(1))])))};
+const league=MobLeagueVariants.create({screen,esc,top(){scrollTo(0,0)},clear(){},beep(){},home(){league.setup('crew')},title:k=>k,pool:()=>['reaction','longJumpMob','brake','golf','summonMaster'],configure(p,t){window.previewPlayers=p;window.previewTeams=t;},run(key,rows,d,done){done(Object.fromEntries(rows.flatMap(t=>t.members.map(p=>[p,100-parseInt(t.id.slice(1))]))));}});
+window.startPreview=mode=>league.setup(mode);startPreview('crew');
+window.advancePreview=text=>{for(let i=0;i<1800&&!screen.textContent.includes(text);i++){const b=screen.querySelector('#variantChoice0')||screen.querySelector('#variantNext');if(!b)throw Error('No next button: '+screen.textContent);b.click();}if(!screen.textContent.includes(text))throw Error('Unreached: '+text);};
+</script></body></html>

@@ -25,6 +25,16 @@ test('league adapter supports 40 entrants and freely assigned eight humans',()=>
   assert.equal(e.getState().competitionStarted,true);
 });
 
+test('new league adapter supports eighty entrants, twenty humans and twenty solo finalists',()=>{
+  const e=engine(),players=Array.from({length:80},(_,i)=>({id:i<20?'p'+(i+1):'variantCpu'+i,name:'Player '+i,cpu:i>=20,characterRank:'A'}));
+  const crews=Array.from({length:20},(_,i)=>({id:'C'+i,name:'CREW '+i,members:players.slice(i*4,i*4+4).map(p=>p.id)}));
+  e.league.configure(players,crews,{mode:'crew',title:'Crew League'});assert.equal(e.participants().length,80);assert.equal(e.participants().filter(p=>!p.cpu).length,20);
+  players.forEach(p=>p.cpu=true);e.league.configure(players,crews,{mode:'crew',title:'Crew League'});
+  let result;e.league.run('reaction',crews,{round:1,phase:'qualifier'},points=>result=points);e.flush();assert.equal(Object.keys(result).length,80);assert.ok(Object.values(result).every(n=>Number.isFinite(n)&&n>=0&&n<=100));
+  const singles=players.map((p,i)=>({id:'K'+i,name:p.name,members:[p.id]}));e.league.configure(players,singles,{mode:'king',title:'MOB KING League'});
+  players[0].name+='（PB2リーグ 1位）';e.league.updatePlayers(players);e.league.run('reaction',singles.slice(0,20),{round:1,phase:'final'},points=>result=points);e.flush();assert.equal(Object.keys(result).length,20);assert.match(e.participants()[0].name,/PB2リーグ 1位/);
+});
+
 test('CPU tag heats return four finite scores and team-shared results',()=>{
   const e=engine(),players=Array.from({length:40},(_,i)=>({id:'leagueCpu'+i,name:'CPU '+i,cpu:true,characterRank:'A'}));
   const teams=Array.from({length:20},(_,i)=>({id:'L'+i,name:'Team '+i,members:players.slice(i*2,i*2+2).map(p=>p.id)}));

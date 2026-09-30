@@ -48,17 +48,17 @@
     if(s.frame!=='none'){c.strokeStyle=s.frame==='silver'?'#cddcec':s.frame==='neon'?assets.colors[0][0]:accent;c.lineWidth=9;c.strokeRect(27,27,W-54,H-54);c.globalAlpha=.5;c.lineWidth=1.5;c.strokeRect(42,42,W-84,H-84);c.globalAlpha=1;
       for(const [x,y,dx,dy] of [[60,60,1,1],[940,60,-1,1],[60,H-60,1,-1],[940,H-60,-1,-1]]){c.lineWidth=4;c.beginPath();c.moveTo(x,y+dy*64);c.lineTo(x,y);c.lineTo(x+dx*64,y);c.stroke();stamp(c,'diamond',x+dx*12,y+dy*12,9,accent);}}
     const titleY=isCard?155:270,figureTop=isCard?310:555,figureH=isCard?600:665,base=figureTop+figureH;
-    fitText(c,'MOB  /  TAG BATTLE LEAGUE',500,titleY-70,820,22,ink);
-    fitText(c,'CHAMPIONS',500,titleY,840,isCard?89:91,ink);
+    fitText(c,'MOB  /  '+(s.competition||'TAG BATTLE LEAGUE').toUpperCase(),500,titleY-70,820,22,ink);
+    fitText(c,members.length===1?'CHAMPION':'CHAMPIONS',500,titleY,840,isCard?89:91,ink);
     fitText(c,teamName,500,titleY+61,790,39,accent);
     c.strokeStyle=accent;c.globalAlpha=.4;c.lineWidth=1;c.beginPath();c.moveTo(155,titleY+90);c.lineTo(845,titleY+90);c.stroke();c.globalAlpha=1;
     stamp(c,'crown',500,isCard?275:470,isCard?68:90,accent);
     c.fillStyle=light?'#15314c22':'#00000030';c.beginPath();c.ellipse(500,base+12,365,27,0,0,Math.PI*2);c.fill();
-    const n=members.length,cell=Math.min(770/n,540),left=(1000-cell*n)/2;
-    assets.images.forEach((img,i)=>{c.save();c.shadowColor=assets.colors[i][0];c.shadowBlur=25;portrait(c,img,left+i*cell+5,figureTop,cell-10,figureH);c.restore();});
+    const n=members.length,cols=n>2?2:n,lines=Math.ceil(n/cols),cell=Math.min(770/cols,540),left=(1000-cell*cols)/2;
+    assets.images.forEach((img,i)=>{c.save();c.shadowColor=assets.colors[i][0];c.shadowBlur=25;portrait(c,img,left+(i%cols)*cell+5,figureTop+Math.floor(i/cols)*figureH/lines,cell-10,figureH/lines);c.restore();});
     c.fillStyle=light?'#ffffffa8':'#071122ac';c.fillRect(83,base+48,834,isCard?214:238);
     fitText(c,day+'  /  CHAMPION EDITION',500,base+93,790,23,accent);
-    members.forEach((p,i)=>fitText(c,p.name,500,base+141+i*40,790,28,ink));
+    members.forEach((p,i)=>fitText(c,p.baseName||p.name,n>2?300+(i%2)*400:500,base+141+(n>2?Math.floor(i/2):i)*40,n>2?380:790,28,ink));
     fitText(c,s.caption,500,isCard?H-140:H-192,805,27,ink);
     fitText(c,'MOB PARTY GAMES  ·  VICTORY COLLECTION',500,H-75,820,18,accent);
     const edits=model.edits[format];
@@ -68,8 +68,8 @@
   }
   function createModel(){return {settings:{theme:'gold',frame:'gold',effect:'stars',silhouette:'soft',caption:'TOGETHER, WE ARE THE CHAMPIONS.'},edits:{wallpaper:[],card:[]}};}
   function history(initial){let current=copy(initial),undo=[],redo=[];return {get:()=>current,commit(next){undo.push(copy(current));if(undo.length>60)undo.shift();current=copy(next);redo=[];},undo(){if(!undo.length)return;redo.push(copy(current));current=undo.pop();},redo(){if(!redo.length)return;undo.push(copy(current));current=redo.pop();},canUndo:()=>!!undo.length,canRedo:()=>!!redo.length};}
-  function open({screen,esc,members,teamName,done}){
-    const day=new Date().toLocaleDateString('ja-JP'),store=history(createModel());let format='wallpaper',tool='view',tab='design',active=true,assets=null,gesture=null,drawRequest=0,exporting=false;
+  function open({screen,esc,members,teamName,competition,done}){
+    const initial=createModel();if(competition)initial.settings.competition=competition;if(competition==='MOB KING League')initial.settings.caption='I AM THE MOB KING.';const day=new Date().toLocaleDateString('ja-JP'),store=history(initial);let format='wallpaper',tool='view',tab='design',active=true,assets=null,gesture=null,drawRequest=0,exporting=false;
     const state={color:'#ffd66f',size:5,shape:'crown',member:0};
     const options=(values)=>Object.entries(values).map(([value,label])=>`<option value="${value}">${esc(label)}</option>`).join('');
     screen.innerHTML=`<section class="champion-studio"><header><div><small>VICTORY COLLECTION</small><h1>王者のアトリエ</h1></div><button id="studioDone" type="button">完了</button></header><nav class="studio-formats" aria-label="画像の種類"><button data-format="wallpaper" aria-pressed="true">壁紙 <small>9:16</small></button><button data-format="card" aria-pressed="false">カード <small>63×88mm</small></button><button id="studioUndo" aria-label="1操作戻す" disabled>↶ 戻す</button><button id="studioRedo" aria-label="やり直す" disabled>↷</button></nav><div class="studio-work"><div class="studio-preview"><button id="studioZoom" type="button" aria-pressed="false">拡大</button><canvas id="studioCanvas" role="img"></canvas><span id="studioHint">プレビュー</span></div><div class="studio-controls"><nav class="studio-tabs" aria-label="編集ツール"><button data-tab="design" aria-pressed="true">デザイン</button><button data-tab="effects">演出</button><button data-tab="stamp">スタンプ</button><button data-tab="draw">手書き</button></nav><div class="studio-panel" data-panel="design"><label>テーマ<select data-setting="theme">${options({gold:'王者の金',aurora:'ネオン・オーロラ',royal:'ロイヤル',sunset:'夕焼け',ice:'アイスブルー',rose:'ローズ'})}</select></label><label>フレーム<select data-setting="frame">${options({gold:'テーマカラー',silver:'シルバー',neon:'キャラクターカラー',none:'なし'})}</select></label><label class="studio-wide">メッセージ<input id="studioCaption" maxlength="40" value="TOGETHER, WE ARE THE CHAMPIONS."></label></div><div class="studio-panel" data-panel="effects" hidden><label>エフェクト<select data-setting="effect">${options(EFFECTS)}</select></label><label>背景シルエット<select data-setting="silhouette">${options({soft:'さりげなく',bold:'くっきり',none:'なし'})}</select></label><p class="studio-wide">背景に優勝キャラクターのシルエットを重ねます。</p></div><div class="studio-panel" data-panel="stamp" hidden><label>かたち<select id="studioShape">${options(SHAPES)}</select></label><label>キャラクター<select id="studioMember">${options(Object.fromEntries(members.map((p,i)=>[i,p.name])))}</select></label><label>スタンプの大きさ<input id="studioStampSize" type="range" min="5" max="28" value="12"></label><div id="studioPalette" class="studio-palette" aria-label="キャラクターの色"></div></div><div class="studio-panel" data-panel="draw" hidden><label>ペンの色<input id="studioColor" type="color" value="#ffd66f"></label><label>線の太さ<input id="studioPenSize" type="range" min="2" max="24" value="5"></label><button id="studioClear" class="studio-wide">この画像の手書き・スタンプを消す</button></div></div></div><footer><div class="studio-save"><button id="studioSaveWallpaper" disabled>壁紙を保存</button><button id="studioSaveCard" disabled>カードを保存</button></div><p id="studioStatus" role="status">画像を準備しています…</p></footer></section>`;
