@@ -78,3 +78,14 @@ test('a human in the active stage prevents automatic simulation; a human in anot
   const s=fresh('king'),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true})));players[25].cpu=false;
   assert.equal(L.canFastForward(s,players),true);players[0].cpu=false;assert.equal(L.canFastForward(s,players),false);assert.throws(()=>L.fastForward(s,players,()=>50),/CPU-only/);
 });
+
+test('CPU-only finals resolve a champion without per-game UI, preserving bomb awards',()=>{
+  let seed=733;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+  for(const mode of ['crew','king']){
+    const s=fresh(mode),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true}))),score=()=>Math.floor(random()*101);
+    while(s.phase!=='final')L.fastForward(s,players,score,random,core.representativeKeys);
+    const result=L.fastForward(s,players,score,random,core.representativeKeys);
+    assert.equal(result.event.type,'champion');assert.ok(s.champion);assert.equal(result.record.phase,'final');assert.equal(L.canFastForward(s,players),false);
+    const bomb=s.history.find(r=>r.key==='focusBombMob');if(bomb)assert.deepEqual(Object.values(bomb.rawPoints).filter(v=>v>0).sort((a,b)=>b-a),[100,80,60,50,40]);
+  }
+});

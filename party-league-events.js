@@ -59,8 +59,6 @@
         if(!valid())return;const result=minority(votes);
         draw('全ての票が揃いました！',`<p class="event-call">端末をみんなに見せて、結果を確認しよう！</p><div id="eventActions"></div>`,'event-suspense');
         if(!(await next('みんなで結果を見る')))return;
-        draw('結果発表！',`<p class="event-call">どちらが少数派？</p><strong id="voteCountdown" class="event-countdown">3</strong>`,'event-suspense');
-        for(const n of [3,2,1]){if(!valid())return;screen.querySelector('#voteCountdown').textContent=n;beep(380+n*140,100,.025);await sleep(human?850:180);}
         if(!valid())return;
         draw('投票結果！',`<div class="vote-totals"><div><span>${f[0]}</span><b>${f[1]}</b><strong>${result.counts[0]}票</strong></div><div><span>${f[2]}</span><b>${f[3]}</b><strong>${result.counts[1]}票</strong></div></div><p class="event-call">${result.retry?'脱落なし！ 別のお題でもう一度！':'多数派は脱落！ 少数派の'+result.survivors.length+'人が勝ち残り！'}</p><div id="eventActions"></div>`,'event-reveal');
         beep(result.retry?480:180,200,.03);if(!(await next(result.retry?'次のお題へ →':'脱落者を発表 →')))return;

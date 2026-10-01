@@ -367,7 +367,7 @@ const GAMES=[
   {no:88,key:"threePoint",title:"モブくん3ポイント",sub:"中央のモブくんを引っ張って離し、5球でリングを狙う",legacy:99},
   {no:89,key:"bowlingMob",title:"モブくんボウリング",sub:"モブくんが1投。上スワイプで20ピンを狙う。1本5点",legacy:100},
   {no:90,key:"waterSkip",title:"モブくん水切り",sub:"速度・角度・水面の状態で毎回変化する水切り回数を競う",legacy:101},
-  {no:91,key:"tamaireMob",title:"モブくん玉入れ",sub:"10秒間投げ放題。2つのカゴへ10個以上入れば100点",legacy:102},
+  {no:91,key:"tamaireMob",title:"モブくん玉入れ",sub:"10秒間投げ放題。2つのカゴへ15個以上入れば100点",legacy:102},
   {no:92,key:"mineCartMob",title:"モブくんトロッコ",sub:"長い鉱山コースを高速走行。毎回変わる穴・スロープ・トランポリン・マグマを2段ジャンプで突破",legacy:105},
   {no:93,key:"airHockeyMob",title:"モブくんエアホッケー",sub:"12秒間、2つのパックを同時にさばいて上ゴールを狙う",legacy:107},
   {no:94,key:"ropeSwingMob",title:"モブくんロープスイング",sub:"3本のロープをタイミングよく離して渡り、最後に飛んだ距離を競う",legacy:108},
@@ -3104,7 +3104,7 @@ function scoreRuleForGame(index){
     "3ポイント5球 / 入れば種類を問わず1本20点 / 左右移動ガードロボットが妨害 / 5本=100点",
     "20ピン / 1本5点 / 20本すべて倒せば100点",
     "水切り1回=10点 / 速度・角度・水面状態で回数が毎回変化 / 10回以上=100点",
-    "10秒投げ放題 / 1個IN=10点 / 10個以上=100点",
+    "10秒投げ放題 / 15個INで100点 / 得点は四捨五入",
     "",
     "",
     "長距離トロッコ完走タイム / 17.00秒以下=100点 / 27.00秒以上=0点 / 落下はタイム加算",
@@ -3338,7 +3338,7 @@ function showGameIntro(index){
   }else if(legacyIndex===101){
     rules=`<li>石を右へ少し上向きにフリック。速度・角度・毎回変わる水面状態で回数が変化します。</li><li>同じ6回に固定されません。10回以上で100点です。</li>`;
   }else if(legacyIndex===102){
-    rules=`<li>10秒間、画面下の投球エリアから上へフリックして何球でも投げられます。</li><li>1個INで10点。10個以上入れば100点。時間終了後は飛んでいる球の判定まで待ちます。</li>`;
+    rules=`<li>10秒間、画面下の投球エリアから上へフリックして何球でも投げられます。</li><li>15個INで100点。得点は個数に比例し、四捨五入します。時間終了後は飛んでいる球の判定まで待ちます。</li>`;
     }else if(legacyIndex===105){
     rules=`<li>高速トロッコをタップでJUMP、空中でもう一度タップでDOUBLE JUMP。長い鉱山を走り切ります。</li><li>穴は毎回ランダム配置。スロープ・トランポリン・マグマも利用しながら突破します。</li>`;
   }else if(legacyIndex===107){
@@ -28230,7 +28230,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===97){
     return clamp(Math.round(v/300*100),0,100);
   }
-  if(legacyIndex===102)return clamp(Math.round(v/10*100),0,100);
+  if(legacyIndex===102)return clamp(Math.round(v/15*100),0,100);
   if(legacyIndex>=98&&legacyIndex<=101){
     return clamp(Math.round(v),0,100);
   }
@@ -30521,9 +30521,9 @@ async function startTamaireMob(p,humanIndex,runId){
   function placeBaskets(sec){const w=stage.clientWidth;baskets.forEach((b,i)=>{b.x=w*(.3+i*.4+Math.sin(sec*1.6)*.06);b.el.style.left=`${b.x}px`;});}
   placeBaskets(0);
   const local=e=>{const r=stage.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
-  function finalFinish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.tamaireMob[p.id]=ins;call.textContent=ins>=10?'10 IN CLEAR!!':'TIME UP!';call.className='tama-call-v170 result-v170';beep(ins>=10?1120:760,150,.035);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${ins}<small> IN</small>`,`10秒投げ放題 / 10個以上=100点`)},650)}
+  function finalFinish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.tamaireMob[p.id]=ins;call.textContent=ins>=15?'15 IN CLEAR!!':'TIME UP!';call.className='tama-call-v170 result-v170';beep(ins>=15?1120:760,150,.035);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${ins}<small> IN</small>`,`10秒投げ放題 / 15個以上=100点`)},650)}
   function maybeFinish(){if(timeUp&&resolved>=launched)finalFinish()}
-  function resolveFlight(f,success){if(f.dead)return;f.dead=true;f.el.remove();resolved++;if(success){ins++;inEl.textContent=ins;scoreEl.textContent=Math.min(100,ins*10);call.textContent='IN!';beep(900,65,.02)}maybeFinish()}
+  function resolveFlight(f,success){if(f.dead)return;f.dead=true;f.el.remove();resolved++;if(success){ins++;inEl.textContent=ins;scoreEl.textContent=performancePoints(gameIndex,ins);call.textContent='IN!';beep(900,65,.02)}maybeFinish()}
   stage.addEventListener('pointerdown',e=>{if(!active||finished||timeUp||!canThrow)return;const pt=local(e);if(pt.y<stage.clientHeight*.58)return;e.preventDefault();drag={id:e.pointerId,x:pt.x,y:pt.y};stage.setPointerCapture?.(e.pointerId)},{passive:false});
   stage.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId||finished||timeUp)return;e.preventDefault();const pt=local(e),dx=pt.x-drag.x,dy=pt.y-drag.y;drag=null;if(dy>-30){call.textContent='上へフリック！';return}const w=stage.clientWidth,h=stage.clientHeight,el=document.createElement('div');el.className='tama-ball-v170';layer.appendChild(el);flights.push({el,x:w*.5,y:h*.82,prevY:h*.82,vx:clamp(dx*3.15,-300,300),vy:-Math.max(Math.sqrt(2*950*(h*.57+30)),clamp(-dy,35,175)*4.65),age:0,dead:false});launched++;beep(560,34,.01);canThrow=false;setTimeout(()=>{if(isGameRunValid(runId))canThrow=true},90)},{passive:false});
   if(!(await countdown('TAMAIRE',runId,{transparent:true})))return;active=true;startTime=last=performance.now();

@@ -121,7 +121,7 @@ test('minority waits for shared-result button before any countdown or result dis
   handler();for(let i=0;i<10;i++)await Promise.resolve();
   assert.match(html,/全ての票が揃いました/);assert.match(host.innerHTML,/みんなで結果を見る/);assert.equal(timers,0);assert.doesNotMatch(html,/voteCountdown|票<\/strong>/);
   handler();for(let i=0;i<12;i++)await Promise.resolve();
-  assert.match(html,/投票結果/);assert.equal(timers,3);
+  assert.match(html,/投票結果/);assert.equal(timers,0);
   handler();for(let i=0;i<8;i++)await Promise.resolve();
   assert.match(html,/elimination-results/);assert.equal((html.match(/<article /g)||[]).length,4);
   handler();valid=false;await run;

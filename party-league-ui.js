@@ -49,7 +49,7 @@
     function reveal(ids,title,text,done){let index=0;const step=()=>{if(index>=ids.length){done();return;}const id=ids[index++];announce(`${title}<small>進出発表 ${index} / ${ids.length}</small>`,`${text}<br><strong>QUALIFIED! ${team(id).name}</strong>`,[id],step,'qualified');};step();}
     function fast(){return api.fastStage&&rules.canFastForward(league,players);}
     function play(){
-      if(!league)return;if(fast()){results(api.fastStage(league,players),true);return;}const descriptor=rules.next(league);if(!descriptor)return;
+      if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':labels[league.phase])+'！','このステージはプレイヤー不在のため高速処理します。<br>各ゲームの操作・途中結果をスキップし、まとめて結果を発表！',[],()=>{const result=api.fastStage(league,players);results(result,result.event.type!=='champion');},'stage-entry');return;}const descriptor=rules.next(league);if(!descriptor)return;
       if(descriptor.choices){choiceRound(descriptor);return;}
       const ids=[...descriptor.active],ownTicket=ticket,points={};
       if(rules.TAG.includes(descriptor.key)){const shuffled=rules.sample(ids,ids.length);ids.splice(0,ids.length,...shuffled);}
@@ -137,8 +137,8 @@
     }
     function after(event){
       if(fast()){play();return;}
-      if(event.type==='qualified')announce('残る切符は、あと2枚！','ここからは敗者復活3ゲームマッチ！ 予選ポイントはゼロに戻ります。残る12組、逆転のチャンスをつかめ！',league.active,play);
-      else if(event.type==='finalists')announce('決勝ゲーム！！','10チームの最終決戦！ 全ポイントをリセット。600点で点灯し、その後のゲームで1位を取ったタッグが優勝！ 点灯チームが同点1位なら、そのタッグだけで優勝決定戦です。',event.ids,play);
+      if(event.type==='qualified')announce('敗者復活戦！ 残る切符は2枚' ,'ここからは敗者復活3ゲームマッチ！ 予選ポイントはゼロに戻ります。残る12組、逆転のチャンスをつかめ！',league.active,play);
+      else if(event.type==='finalists')announce('決勝リーグ！','10チームの最終決戦！ 全ポイントをリセット。600点で点灯し、その後のゲームで1位を取ったタッグが優勝！ 点灯チームが同点1位なら、そのタッグだけで優勝決定戦です。',event.ids,play);
       else if(event.type==='cutoff')play();
       else if(event.type==='championship')announce('同点1位！ 優勝決定戦！','点灯済みの同点首位だけが残った！ ランダムゲームで単独1位が決まるまで決戦を続けます！',event.ids,play);
       else if(event.type==='champion')champion(event.ids[0]);

@@ -83,12 +83,12 @@
     }
     return {event,record};
   }
-  function canFastForward(s,players){return ['qualifier','repechage'].includes(s.phase)&&s.active.every(id=>s.teams.find(t=>t.id===id).members.every(id=>players.find(p=>p.id===id)?.cpu));}
+  function canFastForward(s,players){return !s.champion&&['qualifier','repechage','final','championship'].includes(s.phase)&&s.active.every(id=>s.teams.find(t=>t.id===id).members.every(id=>players.find(p=>p.id===id)?.cpu));}
   function fastForward(s,players,score,random=Math.random,representativeKeys=new Set()){
-    if(!canFastForward(s,players))throw Error('Only a CPU-only qualifying stage can be summarized');
-    const phase=s.phase,division=s.division,active=[...s.active];let result,lastStage,rounds=0;
+    if(!canFastForward(s,players))throw Error('Only a CPU-only active stage can be summarized');
+    const phase=s.phase,division=s.division,finalStage=['final','championship'].includes(phase),active=[...s.active];let result,lastStage,rounds=0;
     do{
-      if(++rounds>200)throw Error('CPU qualification did not resolve');
+      if(++rounds>200)throw Error('CPU stage did not resolve');
       const d=next(s,random),points={},selections={},teams=d.active.map(id=>s.teams.find(t=>t.id===id));
       for(const t of teams){const used=[];for(const [i,id] of t.members.entries()){
         let key=d.key;if(d.choices){const options=d.choices.filter(k=>d.key!=='individualChoice'||!used.includes(k));key=d.key==='teamChoice'&&i?selections[t.members[0]]:pick(options.length?options:d.choices,random);used.push(key);selections[id]=key;}
@@ -105,11 +105,18 @@
         let alive=sample(teams.flatMap(t=>t.members.length>2?[0,1].map(i=>t.members[(d.round-1+i)%t.members.length]):t.members),999,random);Object.keys(points).forEach(id=>points[id]=0);
         while(alive.length>1){const before=alive.length,target=[30,15,5,3,1].find(n=>n<before)||1;alive.splice(0,before-target).forEach(id=>points[id]=before===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80);}points[alive[0]]=100;
       }
+      if(d.key==='focusBombMob'){
+        const heats=Array.from({length:5},()=>[]),order=sample(teams,teams.length,random);
+        order.forEach((t,i)=>sample(t.members,t.members.length,random).forEach((id,j)=>heats[(i+j*2)%5].push(id)));
+        const winners=heats.map(ids=>sample(ids,ids.length,random).sort((a,b)=>points[b]-points[a])[0]);
+        const ranked=sample(winners,5,random).sort((a,b)=>points[b]-points[a]);
+        Object.keys(points).forEach(id=>points[id]=0);ranked.forEach((id,i)=>points[id]=[100,80,60,50,40][i]);
+      }
       if(TAG.includes(d.key)||d.key==='treasureDuoParty'){
         const order=sample(teams,teams.length,random);for(let i=0;i<order.length;i+=2)for(let leg=0;leg<s.size;leg+=2){const pair=order.slice(i,i+2),averages=pair.map(t=>t.members.slice(leg,leg+2).reduce((n,id)=>n+points[id],0)/2);pair.forEach((t,j)=>{const shared=d.key==='summonMaster'?(j===(averages[0]>=averages[1]?0:1)?100:0):Math.round(averages[j]);t.members.slice(leg,leg+2).forEach(id=>points[id]=shared);});}
       }
       result=submit(s,points,{...d,...(d.choices?{selections}:{})});if(d.phase===phase)lastStage=result.record;
-    }while(s.phase==='cutoff'||s.phase===phase&&s.division===division);
+    }while(finalStage?!s.champion:(s.phase==='cutoff'||s.phase===phase&&s.division===division));
     return {event:result.event,record:{...lastStage,active,summary:true,simulatedRounds:rounds}};
   }
   const api={TAG,DIVISIONS,program,create,next,ordered,submit,sample,canFastForward,fastForward};

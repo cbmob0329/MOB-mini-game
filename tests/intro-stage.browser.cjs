@@ -1,0 +1,17 @@
+const {chromium}=require('playwright'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),os=require('node:os'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),output=fs.mkdtempSync(path.join(os.tmpdir(),'mob-balance-'));
+const hooks=`window.introTest={show(key){invalidateGameRun();state=freshState();state.freePlay=false;state.modeKey='score4';const i=GAMES.findIndex(g=>g.key===key);state.freeGameIndex=i;state.freePlayerId=PLAYERS[0].id;showGameIntro(i);},score(n){return performancePoints(GAMES.findIndex(g=>g.key==='tamaireMob'),n)}};`;
+const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}fs.readFile(file,(e,data)=>{if(e){res.writeHead(404).end();return;}res.setHeader('Content-Type',({'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png'})[path.extname(file)]||'application/octet-stream');if(path.basename(file)==='game.js')data=data.toString().replace(/if\(previewKey\)startLivePreview\(\);else renderHome\(\);/,hooks+'if(previewKey)startLivePreview();else renderHome();');res.end(data);});});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,channel:'msedge'});try{
+for(const [width,height] of [[360,640],[390,600]]){
+const page=await browser.newPage({viewport:{width,height}});await page.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());await page.goto('http://127.0.0.1:'+server.address().port+'/index.html');
+await page.click('#partyKingLeague');await page.selectOption('#variantCount','0');await page.click('#variantSelect');await page.click('#variantStart');
+for(const division of ['PB2','Realize','Portal','DENDEN']){assert.match(await page.locator('.variant-league h1').innerText(),new RegExp(division));assert.match(await page.locator('.variant-league').innerText(),/高速処理/);await page.click('#variantNext');await page.locator('.result-announcement button').click();assert.equal(await page.locator('.summary-qualified').count(),5);await page.click('#variantNext');}
+assert.match(await page.locator('.variant-league h1').innerText(),/決勝/);
+for(const key of ['tamaireMob','monsterBoxMob','summonMaster']){
+await page.evaluate(k=>window.introTest.show(k),key);await page.waitForTimeout(150);
+for(let i=0;i<3;i++){const visible=await page.locator('#introStart').isVisible();const rects=await page.locator('.illustrated-intro > :visible').evaluateAll(els=>els.map(e=>({tag:e.className,...e.getBoundingClientRect().toJSON()})));assert.ok(rects.every(r=>r.left>=0&&r.right<=width+1&&r.top>=0&&r.bottom<=height-5),JSON.stringify(rects));if(visible)break;await page.locator('.intro-nav button').last().click();}
+assert.equal(await page.locator('#introStart').isVisible(),true);await page.screenshot({path:path.join(output,key+'-'+width+'.png')});}
+assert.deepEqual(await page.evaluate(()=>[0,10,14,15,20].map(n=>window.introTest.score(n))),[0,67,93,100,100]);await page.close();}
+console.log('Intro bounds, CPU league transitions, and 15-basket scoring passed at 360x640 and 390x600.');console.log(output);
+}finally{await browser.close();server.close();}})().catch(e=>{console.error(e);server.close();process.exitCode=1;});

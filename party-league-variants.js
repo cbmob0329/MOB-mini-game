@@ -46,7 +46,7 @@
     }
     function phaseName(record=league){return record.phase==='qualifier'?(mode==='king'?L.DIVISIONS[record.division]+' 予選':'予選'):record.phase==='repechage'?'敗者復活':record.phase==='cutoff'?'進出決定・延長戦':record.phase==='championship'?'優勝決定戦':'決勝';}
     function fast(){return api.fastStage&&L.canFastForward(league,players);}
-    function play(){if(!league)return;if(fast()){const result=api.fastStage(league,players);syncOrigins();rankings(result.record,result.event);return;}const descriptor=L.next(league);if(!descriptor)return;
+    function play(){if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':phaseName())+'！','プレイヤー不在のため高速処理！<br>各試合の操作・途中結果をスキップし、このステージをまとめて集計します。',[],()=>{const result=api.fastStage(league,players);syncOrigins();if(result.event.type==='champion')results(result);else rankings(result.record,result.event);},'league-stage-entry');return;}const descriptor=L.next(league);if(!descriptor)return;
       announce(`${phaseName()} · GAME ${descriptor.round}`,`${esc(gameTitle(descriptor.key))}<br>${descriptor.multiplier===2?'POINTS ×2 · 全員2倍！':descriptor.winnerBonus?'個人1位だけ POINTS ×2！':'1人最大100点'}${league.phase==='final'?`<br>${league.threshold}点で点灯 → 次戦以降の1位で優勝`:''}`,[],()=>descriptor.choices?choiceRound(descriptor):execute(descriptor));
     }
     function runGame(key,rows,descriptor,done){
@@ -89,8 +89,8 @@
         on('variantNext',()=>{if(!scope){scope=1;transition();}else after(event);});}transition();
     }
     function after(event){if(fast()){play();return;}if(event.type==='champion'){finale(event.ids[0]);return;}
-      if(event.type==='divisionQualified'){announce('次の予選リーグへ',L.DIVISIONS[league.division]+'の予選が始まります。得点はリーグごとに集計します。',league.active,play);return;}
-      if(event.type==='kingFinalists'||event.type==='finalists'){announce('FINAL · 決勝開幕！',`${mode==='king'?'4リーグの代表20名':'10クルー'}が集結！<br>得点をリセット。${league.threshold}点で点灯し、その次のゲーム以降の1位で優勝！`,league.active,play);return;}
+      if(event.type==='divisionQualified'){announce(L.DIVISIONS[league.division]+'！',L.DIVISIONS[league.division]+'の予選が始まります。得点はリーグごとに集計します。',league.active,play);return;}
+      if(event.type==='kingFinalists'||event.type==='finalists'){announce('決勝リーグ！',`${mode==='king'?'4リーグの代表20名':'10クルー'}が集結！<br>得点をリセット。${league.threshold}点で点灯し、その次のゲーム以降の1位で優勝！`,league.active,play);return;}
       if(event.type==='qualified'){announce('敗者復活戦！','残る12組から上位2組が決勝へ。ここからの3戦で勝負！',league.active,play);return;}play();
     }
     function finale(winner){
