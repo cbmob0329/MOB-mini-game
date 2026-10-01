@@ -24523,20 +24523,21 @@ canvas{
    V10.60 — Monster Master circular ball design
    ========================================================= */
 .ball-pad-v135{
-  width:154px!important;
-  height:154px!important;
+  width:76px!important;
+  height:76px!important;
   border-radius:50%!important;
   background:#fffdf4!important;
 }
 .ball-pad-v135 svg{
-  left:7px!important;
-  top:7px!important;
-  width:140px!important;
-  height:140px!important;
+  left:4px!important;
+  top:4px!important;
+  width:calc(100% - 8px)!important;
+  height:calc(100% - 8px)!important;
   border-radius:50%!important;
 }
 .ball-pad-v135>b{
   left:50%!important;
+  display:none;
   top:8px!important;
   transform:translateX(-50%)!important;
   padding:2px 6px!important;
@@ -24546,6 +24547,7 @@ canvas{
 }
 .ball-pad-v135>span{
   bottom:8px!important;
+  display:none;
   padding:2px 6px!important;
   border-radius:999px!important;
   background:rgba(255,255,255,.9)!important;

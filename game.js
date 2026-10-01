@@ -367,7 +367,7 @@ const GAMES=[
   {no:88,key:"threePoint",title:"モブくん3ポイント",sub:"中央のモブくんを引っ張って離し、5球でリングを狙う",legacy:99},
   {no:89,key:"bowlingMob",title:"モブくんボウリング",sub:"モブくんが1投。上スワイプで20ピンを狙う。1本5点",legacy:100},
   {no:90,key:"waterSkip",title:"モブくん水切り",sub:"速度・角度・水面の状態で毎回変化する水切り回数を競う",legacy:101},
-  {no:91,key:"tamaireMob",title:"モブくん玉入れ",sub:"10秒間投げ放題。動くカゴへ10個以上入れば100点",legacy:102},
+  {no:91,key:"tamaireMob",title:"モブくん玉入れ",sub:"10秒間投げ放題。2つのカゴへ10個以上入れば100点",legacy:102},
   {no:92,key:"mineCartMob",title:"モブくんトロッコ",sub:"長い鉱山コースを高速走行。毎回変わる穴・スロープ・トランポリン・マグマを2段ジャンプで突破",legacy:105},
   {no:93,key:"airHockeyMob",title:"モブくんエアホッケー",sub:"12秒間、2つのパックを同時にさばいて上ゴールを狙う",legacy:107},
   {no:94,key:"ropeSwingMob",title:"モブくんロープスイング",sub:"3本のロープをタイミングよく離して渡り、最後に飛んだ距離を競う",legacy:108},
@@ -21912,7 +21912,7 @@ async function startMonsterMaster(p,humanIndex,runId){
       <div id="masterCaptureLayer135" class="master-capture-layer-v135"></div>
       <div id="masterFx135" class="master-fx-v135"></div>
 
-      <div id="ballPad135" class="ball-pad-v135">
+      <div id="ballPad135" class="ball-pad-v135" aria-label="描いたボールを上へフリックして投げる">
         <b>BALL DESIGN</b>
         <svg id="ballSvg135" viewBox="0 0 140 140" preserveAspectRatio="none"></svg>
         <span id="ballState135">DRAW</span>
@@ -22359,7 +22359,7 @@ async function startMonsterMaster(p,humanIndex,runId){
     phaseStart=now;
 
     phaseLabel.textContent='CATCH';
-    helpEl.textContent='10秒！ 同じボールを何個でもフリックできる！';
+    helpEl.textContent='10秒！ 下の小さいボールを上へフリック！';
     stateEl.textContent='FLICK TO THROW';
     pad.classList.add('ready-v135');
   }
@@ -24256,8 +24256,9 @@ async function startMonsterBoxMob(p,humanIndex,runId){
     const footX=mobX+24,boardCenter=boardX+35;
     if(!passedBoard&&footX>=boardX&&footX<=boardX+70){
       passedBoard=true;const feet=y+44,boardY=groundY-19;
-      if(Math.abs(feet-boardY)<22&&vy>=0){
-        // A small final-stage lift keeps 20 reachable even with a near-edge landing at high refresh rates.
+      const requiredLift=level>=20?38:level===19?32:0;
+      if(Math.abs(feet-boardY)<22&&vy>=0&&(requiredLift===0||feet<=groundY-requiredLift)){
+        // Stage 19 needs a deliberate landing; stage 20 demands a tighter landing while remaining reachable.
         const err=Math.abs(footX-boardCenter),quality=clamp(1-err/35,0,1),launchHeight=120+quality*145+(level===20?8:0);
         vy=-Math.sqrt(2*470*Math.max(80,launchHeight));launched=true;jumping=true;board.classList.add('hit-v138');pop(quality>.82?'PERFECT!':quality>.52?'GOOD!':'WEAK',boardCenter,groundY-45,quality>.82?'good-v138':'');mob.dataset.quality=String(quality);beep(quality>.82?940:650,90,.025);
       }
@@ -30514,18 +30515,20 @@ async function startTamaireMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='tamaireMob'),GAME_MS=10000;
   screen.innerHTML=`<div class="tama-shell-v170 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん玉入れ</h2><p class="lead">10 SEC / UNLIMITED THROW</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
   <div class="tama-hud-v170"><div><span>TIME</span><b id="tamaTime218">10.0</b></div><div><span>IN</span><b id="tamaIn170">0</b></div><div><span>SCORE</span><b id="tamaScore170">0</b></div></div>
-  <div id="tamaStage170" class="tama-stage-v170"><div class="tama-field-v170"></div><div id="tamaBasket170" class="tama-basket-v170"><b></b><i></i></div><div class="tama-mob-v170"><img src="${partyActorImage()}" draggable="false" alt=""></div><div id="tamaLayer170" class="tama-layer-v170"></div><div id="tamaCall170" class="tama-call-v170">10秒 投げ放題！</div><div class="tama-zone-v170">SWIPE UP / UNLIMITED</div></div></div>`;
-  const stage=document.getElementById('tamaStage170'),basket=document.getElementById('tamaBasket170'),layer=document.getElementById('tamaLayer170'),call=document.getElementById('tamaCall170'),timeEl=document.getElementById('tamaTime218'),inEl=document.getElementById('tamaIn170'),scoreEl=document.getElementById('tamaScore170');
-  let active=false,finished=false,timeUp=false,launched=0,resolved=0,ins=0,drag=null,flights=[],raf=null,last=performance.now(),startTime=0,canThrow=true,basketX=0;
+  <div id="tamaStage170" class="tama-stage-v170"><div class="tama-field-v170"></div><div id="tamaBasket170" class="tama-basket-v170"><b></b><i></i></div><div id="tamaBasketSecond170" class="tama-basket-v170"><b></b><i></i></div><div class="tama-mob-v170"><img src="${partyActorImage()}" draggable="false" alt=""></div><div id="tamaLayer170" class="tama-layer-v170"></div><div id="tamaCall170" class="tama-call-v170">10秒 投げ放題！</div><div class="tama-zone-v170">SWIPE UP / UNLIMITED</div></div></div>`;
+  const stage=document.getElementById('tamaStage170'),baskets=['tamaBasket170','tamaBasketSecond170'].map(id=>({el:document.getElementById(id),x:0})),layer=document.getElementById('tamaLayer170'),call=document.getElementById('tamaCall170'),timeEl=document.getElementById('tamaTime218'),inEl=document.getElementById('tamaIn170'),scoreEl=document.getElementById('tamaScore170');
+  let active=false,finished=false,timeUp=false,launched=0,resolved=0,ins=0,drag=null,flights=[],raf=null,last=performance.now(),startTime=0,canThrow=true;
+  function placeBaskets(sec){const w=stage.clientWidth;baskets.forEach((b,i)=>{b.x=w*(.3+i*.4+Math.sin(sec*1.6)*.06);b.el.style.left=`${b.x}px`;});}
+  placeBaskets(0);
   const local=e=>{const r=stage.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
   function finalFinish(){if(finished)return;finished=true;active=false;if(raf)cancelAnimationFrame(raf);state.records.tamaireMob[p.id]=ins;call.textContent=ins>=10?'10 IN CLEAR!!':'TIME UP!';call.className='tama-call-v170 result-v170';beep(ins>=10?1120:760,150,.035);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${ins}<small> IN</small>`,`10秒投げ放題 / 10個以上=100点`)},650)}
   function maybeFinish(){if(timeUp&&resolved>=launched)finalFinish()}
   function resolveFlight(f,success){if(f.dead)return;f.dead=true;f.el.remove();resolved++;if(success){ins++;inEl.textContent=ins;scoreEl.textContent=Math.min(100,ins*10);call.textContent='IN!';beep(900,65,.02)}maybeFinish()}
   stage.addEventListener('pointerdown',e=>{if(!active||finished||timeUp||!canThrow)return;const pt=local(e);if(pt.y<stage.clientHeight*.58)return;e.preventDefault();drag={id:e.pointerId,x:pt.x,y:pt.y};stage.setPointerCapture?.(e.pointerId)},{passive:false});
-  stage.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId||finished||timeUp)return;e.preventDefault();const pt=local(e),dx=pt.x-drag.x,dy=pt.y-drag.y;drag=null;if(dy>-30){call.textContent='上へフリック！';return}const w=stage.clientWidth,h=stage.clientHeight,el=document.createElement('div');el.className='tama-ball-v170';layer.appendChild(el);flights.push({el,x:w*.5,y:h*.82,prevY:h*.82,vx:clamp(dx*3.15,-300,300),vy:-clamp(-dy,35,175)*4.65,age:0,dead:false});launched++;beep(560,34,.01);canThrow=false;setTimeout(()=>{if(isGameRunValid(runId))canThrow=true},90)},{passive:false});
+  stage.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId||finished||timeUp)return;e.preventDefault();const pt=local(e),dx=pt.x-drag.x,dy=pt.y-drag.y;drag=null;if(dy>-30){call.textContent='上へフリック！';return}const w=stage.clientWidth,h=stage.clientHeight,el=document.createElement('div');el.className='tama-ball-v170';layer.appendChild(el);flights.push({el,x:w*.5,y:h*.82,prevY:h*.82,vx:clamp(dx*3.15,-300,300),vy:-Math.max(Math.sqrt(2*950*(h*.57+30)),clamp(-dy,35,175)*4.65),age:0,dead:false});launched++;beep(560,34,.01);canThrow=false;setTimeout(()=>{if(isGameRunValid(runId))canThrow=true},90)},{passive:false});
   if(!(await countdown('TAMAIRE',runId,{transparent:true})))return;active=true;startTime=last=performance.now();
-  function frame(now){if(finished||!isGameRunValid(runId))return;const dt=Math.min(.028,(now-last)/1000);last=now;const w=stage.clientWidth,h=stage.clientHeight,elapsed=now-startTime,sec=elapsed/1000;timeEl.textContent=(Math.max(0,GAME_MS-elapsed)/1000).toFixed(1);basketX=w*.5+Math.sin(sec*2.7)*w*.29;basket.style.left=`${basketX}px`;
-    for(const f of flights){if(f.dead)continue;f.age+=dt;f.prevY=f.y;f.vy+=950*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.el.style.left=`${f.x}px`;f.el.style.top=`${f.y}px`;f.el.style.transform=`translate(-50%,-50%) rotate(${f.age*500}deg)`;const mouthY=h*.25;if(f.prevY<mouthY&&f.y>=mouthY&&f.vy>0&&Math.abs(f.x-basketX)<=31){resolveFlight(f,true);continue}if(f.y>h+28||f.x<-30||f.x>w+30||f.age>2.3)resolveFlight(f,false)}
+  function frame(now){if(finished||!isGameRunValid(runId))return;const dt=Math.min(.028,(now-last)/1000);last=now;const w=stage.clientWidth,h=stage.clientHeight,elapsed=now-startTime,sec=elapsed/1000;timeEl.textContent=(Math.max(0,GAME_MS-elapsed)/1000).toFixed(1);placeBaskets(sec);
+    for(const f of flights){if(f.dead)continue;f.age+=dt;f.prevY=f.y;f.vy+=950*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.el.style.left=`${f.x}px`;f.el.style.top=`${f.y}px`;f.el.style.transform=`translate(-50%,-50%) rotate(${f.age*500}deg)`;const mouthY=h*.25+7.5;if(f.prevY<mouthY&&f.y>=mouthY&&f.vy>0&&baskets.some(b=>Math.abs(f.x-b.x)<=b.el.clientWidth/2-6)){resolveFlight(f,true);continue}if(f.y>h+28||f.x<-30||f.x>w+30||f.age>2.3)resolveFlight(f,false)}
     if(!timeUp&&elapsed>=GAME_MS){timeUp=true;active=false;call.textContent='TIME UP / 最後の球を判定中';maybeFinish()}if(!finished)raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame);
 }
 
