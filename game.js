@@ -443,7 +443,7 @@ GAMES.push(
   {no:162,key:'focusBombMob',title:'モブくん集中大爆弾！',sub:'爆弾型ストップウォッチを1.000秒で止めろ！ CPUと5組の予選・決戦',legacy:185,leagueOnly:true}
 );
 GAMES.push(
-  {no:163,key:'bananaBoatMob',title:'モブくんのそんなバナナ',sub:'海のバナナボートで30個をキャッチ。波と風を読もう！ 1個4点、25個で100点',legacy:186},
+  {no:163,key:'bananaBoatMob',title:'モブくんのそんなバナナ',sub:'下部スティックでバナナボートを操作。波と風を読んで30個をキャッチ！ 1個4点、25個で100点',legacy:186},
   {no:164,key:'warpedWallMob',title:'モブくんのそり立つ壁',sub:'白線でダッシュ力を決め、オレンジラインで踏み切る4段階の壁。1段最大25点',legacy:187},
   {no:165,key:'santaClausMob',title:'モブくんはサンタクロース',sub:'12秒でソリへプレゼントを運ぼう！ 大25点・中12点・小7点、最大100点',legacy:188}
 );
