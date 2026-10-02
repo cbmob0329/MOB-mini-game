@@ -13,7 +13,7 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+deco
     await page.evaluate(()=>{window.MobGamePreviewActive=true;window.MobLeagueEvents.run({key:'focusBombMob',mode:'king',screen:document.querySelector('#screen'),esc:String,entrants:window.MobPartyCore.roster.slice(0,20).map((c,i)=>({...c,id:'t'+i,no:i+1,teamId:'T'+i,team:'TEST',cpu:i!==0})),valid:()=>true,clear(){},top(){},beep(){},done(){}});});
     await page.getByRole('button',{name:'準備OK',exact:true}).click();await page.getByRole('button',{name:'START',exact:true}).click();await page.locator('.bomb-stopwatch.exploded').waitFor();assert.equal(await page.locator('#bombTime').innerText(),'3.00000');assert.match(await page.locator('#bombMeasure').innerText(),/2.00000秒/);assert.deepEqual(errors,[]);await page.close();continue;
   }
-  await page.click('#partySolo');await page.click('#partyConfirm');await page.click('#partySingle');assert.equal(await page.locator('[data-game]').count(),135);
+  await page.click('#partySolo');await page.click('#partyConfirm');await page.click('#partySingle');assert.equal(await page.locator('[data-game]').count(),138);
   await page.fill('#partySearch','集中大爆弾');await page.locator('[data-game]').click();await page.click('#introStart');
   let attempts=0;const ranks=[];
   for(let step=0;step<240;step++){

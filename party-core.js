@@ -60,6 +60,7 @@
     if(c.id===33&&flying)rank='S';
     if(c.id===30&&flying)rank='S-SS';
     if(c.id===31&&random()<.2)rank='S';
+    if(game.key==='santaClausMob'&&c.group==='ヒーローベル'){const base=rankOrder.indexOf(resolveRank(rank,random));return rankOrder[Math.min(rankOrder.length-1,base+1+(random()<.5?0:1))];}
     return resolveRank(rank,random);
   }
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));

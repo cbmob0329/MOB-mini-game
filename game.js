@@ -442,6 +442,11 @@ GAMES.push(
   {no:161,key:'minorityMob',title:'モブくんは少数派',sub:'CPUと秘密の投票。少数派に残って100点を目指すリーグ種目',legacy:184,leagueOnly:true},
   {no:162,key:'focusBombMob',title:'モブくん集中大爆弾！',sub:'爆弾型ストップウォッチを1.000秒で止めろ！ CPUと5組の予選・決戦',legacy:185,leagueOnly:true}
 );
+GAMES.push(
+  {no:163,key:'bananaBoatMob',title:'モブくんのそんなバナナ',sub:'海のバナナボートで30個をキャッチ。波と風を読もう！ 1個4点、25個で100点',legacy:186},
+  {no:164,key:'warpedWallMob',title:'モブくんのそり立つ壁',sub:'白線でダッシュ力を決め、オレンジラインで踏み切る4段階の壁。1段最大25点',legacy:187},
+  {no:165,key:'santaClausMob',title:'モブくんはサンタクロース',sub:'12秒でソリへプレゼントを運ぼう！ 大25点・中12点・小7点、最大100点',legacy:188}
+);
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,25,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,81,82,92,147,159,160].includes(g.no)).map(g=>g.key));
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob','minorityMob','focusBombMob']);
@@ -572,7 +577,7 @@ function freshState(){
     playlist:[],
     roundIndex:0,
     records:{
-      minorityMob:{},focusBombMob:{},colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
+      bananaBoatMob:{},warpedWallMob:{},santaClausMob:{},minorityMob:{},focusBombMob:{},colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
       factory:{},catcher:{},tidy:{},ski:{},slot:{},rope:{},pk:{},cut:{},climb:{},errand:{},dontHitMob:{},mobStop:{},overlap:{},shutter:{},darts:{},parachute:{},mobCount:{},brake:{},feint:{},bomb:{},overlapMaster:{},jumpingMob:{},heroMaybe:{},popularGame:{},planetEnergy:{},painter:{},bikeJump:{},trampoline:{},mobTrain:{},giantMob:{},wizardMob:{},brawlerMob:{},summonerMob:{},blackjackMob:{},mobIssen:{},crowEscape:{},dancingMob:{},guardianMob:{},mob50m:{},sniperMob:{},mobRacePredict:{},mobRocket:{},bossDuel:{},plushCatcher:{},toyOnOff:{},dodgeballMob:{},amidakujiMob:{},katanaSmith:{},homeRunMob:{},mobMisfortune:{},aimMob:{},mobDice:{},mobCombo:{},electricMaze:{},cardShop:{},
         bungeeMob:{},waterSlide:{},
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
@@ -2946,6 +2951,9 @@ function renderModeLobby(){
 }
 
 function scoreRuleForGame(index){
+  if(GAMES[index]?.key==='bananaBoatMob')return '30個中1個4点 / 25個で100点';
+  if(GAMES[index]?.key==='warpedWallMob')return '4段階・1段最大25点 / 登頂精度で加点、最大100点';
+  if(GAMES[index]?.key==='santaClausMob')return '12秒 / ソリに届けると大25・中12・小7点 / 最大100点';
   if(GAMES[index]?.key==='minorityMob')return '脱落した段階に応じ20・40・60・80点 / 最後の1〜2人は100点';
   if(GAMES[index]?.key==='focusBombMob')return '1.000秒からの誤差が小さい順 / 予選敗退0点・決戦100/80/60/50/40点';
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[index]?.key))return '持ち帰ったお宝が得点 / 1人最大100点';
@@ -3139,7 +3147,9 @@ function showGameIntro(index){
   const legacyIndex=legacyGameIndex(index);
   let rules="";
 
-  if(g.key==='mobSpeedRacer'){
+  if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key)){
+    rules=window.MobSeasonGames.rules[g.key].map(text=>'<li>'+esc(text)+'</li>').join('');
+  }else if(g.key==='mobSpeedRacer'){
     rules=`<li>タッグ2対2専用。1番手がタイヤ、2番手が車体を描きます。</li><li>描いた車で同時スタートし、横スクロール2km先のゴールを先に抜けたチームが勝利。</li>`;
   }else if(legacyIndex===0){
     rules=`<li>READY? → 3・2・1 → ランダム待機。</li><li>モブくんが大きく出た瞬間にタップ。</li><li>0.001秒単位で計測。</li>`;
@@ -3476,7 +3486,8 @@ function humanReady(gameIndex,humanIndex){
     const badge=document.getElementById('partyActivePlayer')||document.createElement('span');badge.id='partyActivePlayer';badge.innerHTML=imgTag(p)+'<b>'+esc(p.name)+'</b>';document.querySelector('.topbar').appendChild(badge);
     const runId=beginGameRun(gameIndex);
 
-    if(legacyIndex===0)startReaction(p,humanIndex,runId);
+    if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key))startSeasonGame(g.key,p,humanIndex,runId);
+    else if(legacyIndex===0)startReaction(p,humanIndex,runId);
     else if(legacyIndex===1)startMemory(p,humanIndex,runId);
     else if(legacyIndex===2)startPuzzle(p,humanIndex,runId);
     else if(legacyIndex===3)startLaunch(p,humanIndex,runId);
@@ -21868,6 +21879,14 @@ async function startRobotMarch(p,humanIndex,runId){
 // =========================================================
 // V10.34 GAME 83 — モブくんはモンスターマスター
 // =========================================================
+function startSeasonGame(key,p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key===key);
+  return window.MobSeasonGames.run({key,screen,player:p,title:GAMES[gameIndex].title,esc,beep,valid:()=>isGameRunValid(runId),countdown:()=>countdown('READY!',runId),done(score,note){if(!isGameRunValid(runId))return;state.records[key][p.id]=score;recordScreen(gameIndex,p,humanIndex,score+'<small>pt</small>',note);}});
+}
+const startBananaBoatMob=(p,h,r)=>startSeasonGame('bananaBoatMob',p,h,r);
+const startWarpedWallMob=(p,h,r)=>startSeasonGame('warpedWallMob',p,h,r);
+const startSantaClausMob=(p,h,r)=>startSeasonGame('santaClausMob',p,h,r);
+
 async function startMonsterMaster(p,humanIndex,runId){
   gameFit();
 
@@ -27286,6 +27305,7 @@ function normalizeCpuRecordV152(gameIndex,p){
 }
 
 function simulateOneCpu(gameIndex,p){
+  if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(GAMES[gameIndex]?.key)){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=GAMES[gameIndex].key==='bananaBoatMob'?Math.min(100,Math.round(score/4)*4):score;return false;}
   if(p.characterRank){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuRaw(score,v=>performancePoints(gameIndex,v));return false;}
   const legacyIndex=legacyGameIndex(gameIndex);
   const ultra=cpuUltraDraw(gameIndex);
@@ -28072,6 +28092,7 @@ async function startReverseJankenMob(p,humanIndex,runId){
 
 
 function performancePoints(gameIndex,v){
+  if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
   if(GAMES[gameIndex]?.leagueOnly)return clamp(Math.round(v),0,100);
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
   const legacyIndex=legacyGameIndex(gameIndex);
