@@ -6,10 +6,10 @@ test('input uses pointer timestamp, independent of frame or release latency',()=
   assert.equal(down,.45);assert.equal(games.inputSeconds({timeStamp:Date.now()},1450,1000),.45);
   for(const fps of [30,60,120]){const priorFrame=Math.floor(.45*fps)/fps;assert.equal(games.gaugeValue(down,2),games.gaugeValue(.45,2));assert.ok(priorFrame<=down);}
 });
-test('ascending and sliding avatars remain outside the wall surface at every stage',()=>{
+test('ascending and sliding contact points remain outside the wall surface at every stage',()=>{
   for(let level=0;level<4;level++)for(const clear of [true,false])for(let ms=0;ms<=1110;ms+=5){
     const p=games.climbPose(ms/1000,level,clear,.8,.49),edge=games.wallSurface(p.height,level);
-    assert.ok(p.x+.06<=edge.x+1e-8);assert.ok(Math.abs(p.y-edge.y)<1e-8);
+    assert.ok(p.x+.018<=edge.x+1e-8);assert.ok(Math.abs(p.y-edge.y)<1e-8);
   }
   assert.equal(games.climbPose(1.11,0,false,.8,.49).height<1e-8,true);
 });

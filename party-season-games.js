@@ -12,15 +12,15 @@
   const bananaPoints=count=>Math.min(100,Math.max(0,count)*4);
   const gaugeValue=(elapsed,level)=>(1-Math.cos(Math.max(0,elapsed)*(3.6+level*1.3)))/2;
   const runPosition=(elapsed,level)=>.12+Math.max(0,elapsed)*(.245+level*.045);
-  const wallSurface=(height,level)=>({x:.57+.29*(1-Math.pow(1-clamp(height),2.4)),y:.85-(.53+level*.027)*clamp(height)});
+  const wallSurface=(height,level)=>({x:.57+.29*(1-Math.pow(1-clamp(height),2.4)),y:.85-(.39+level*.027)*clamp(height)});
   // The whole avatar stays on the exposed side of the same curve used to paint the wall.
   function climbPose(elapsed,level,clear,quality,from){
-    if(elapsed<.16)return {x:from+(.51-from)*clamp(elapsed/.16),y:.85,height:0,angle:-.08};
+    if(elapsed<.16)return {x:from+(.552-from)*clamp(elapsed/.16),y:.85,height:0,angle:-.08};
     const u=clamp((elapsed-.16)/.95),height=clear?Math.sin(u*Math.PI/2):Math.sin(u*Math.PI)*clamp(quality*.78,.08,.77),surface=wallSurface(height,level);
-    return {x:surface.x-.06,y:surface.y,height,angle:clear||u<.5?-.10:.12};
+    return {x:surface.x-.018,y:surface.y,height,angle:clear||u<.5?-.22:-.10};
   }
   function inputSeconds(event,now,origin){const stamp=Number(event?.timeStamp);return Math.max(0,((Number.isFinite(stamp)&&Math.abs(stamp-now)<1000?stamp:now)-origin)/1000);}
-  const giftTypes=[{name:'大',points:25,speed:.27},{name:'中',points:12,speed:.35},{name:'小',points:7,speed:.47}];
+  const giftTypes=[{name:'大',points:25,speed:.28},{name:'中',points:12,speed:.35},{name:'小',points:7,speed:.47}];
   function giftLayout(random=Math.random){
     const list=[];
     for(let i=0;i<11;i++){
@@ -45,7 +45,8 @@
     const actor=new Image();let crop={x:0,y:0,w:1,h:1};
     const actorReady=new Promise(resolve=>{actor.onload=()=>{crop={x:0,y:0,w:actor.naturalWidth,h:actor.naturalHeight};try{const c=document.createElement('canvas');c.width=c.height=128;const cctx=c.getContext('2d',{willReadFrequently:true});cctx.drawImage(actor,0,0,128,128);const a=cctx.getImageData(0,0,128,128).data;let l=128,t=128,r=0,b=0;for(let y=0;y<128;y++)for(let x=0;x<128;x++)if(a[(y*128+x)*4+3]>24){l=Math.min(l,x);r=Math.max(r,x);t=Math.min(t,y);b=Math.max(b,y);}if(r>l&&b>t)crop={x:l/128*actor.naturalWidth,y:t/128*actor.naturalHeight,w:(r-l+1)/128*actor.naturalWidth,h:(b-t+1)/128*actor.naturalHeight};}catch(_){}resolve();};actor.onerror=resolve;actor.src=api.player.img;});
     const art=root.MobSeasonArt.create(ctx,actor,()=>crop);
-    const resize=()=>{const r=canvas.getBoundingClientRect();w=r.width;h=r.height;const d=Math.min(2,root.devicePixelRatio||1);canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);};
+    let redraw=()=>{};
+    const resize=()=>{const r=canvas.getBoundingClientRect();w=r.width;h=r.height;const d=Math.min(2,root.devicePixelRatio||1);canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);redraw();};
     resize();const observer=new ResizeObserver(resize);observer.observe(world);
     const held=new Set(),disposeStick=kind===0?root.MobPartyControls.stick(screen.querySelector('#seasonStick'),held,()=>active&&!ended):()=>{};
     const particles=[];
@@ -60,7 +61,7 @@
     const seaHeight=t=>.82+Math.sin(t*2.5)*.023;
     function bananaFrame(dt){
       const breeze=wind(time),axis=held.axisX||0,desired=axis*.94;
-      velocity+=clamp(desired-velocity,-dt*7,dt*7);boat=clamp(boat+(velocity+breeze*.018)*dt,.10,.90);
+      velocity+=clamp(desired-velocity,-dt*7,dt*7);boat=clamp(boat+(velocity+breeze*.018)*dt,.14,.86);
       while(spawned<30&&time>=plan[spawned].at)bananas.push({...plan[spawned++]});
       const catchY=seaHeight(time)-.125,previousCatch=seaHeight(Math.max(0,time-dt))-.125;
       for(const b of bananas){if(b.dead)continue;const old=b.y;b.vx=breeze*.042;b.y+=dt*b.speed;b.x=clamp(b.x+b.vx*dt,.08,.92);if(old<previousCatch&&b.y>=catchY){b.dead=true;if(Math.abs(b.x-boat)<=.078){caught++;combo++;points(bananaPoints(caught));burst(boat,catchY,'#fff49d',combo>=3?`${combo} COMBO`:'+4');api.beep(750+Math.min(combo,8)*45,35,.015);}else{missed++;combo=0;burst(b.x,seaHeight(time),'#b6f5ff','MISS');}}}
@@ -84,7 +85,7 @@
       if(phase==='gauge'){pose={x:.12,y:.85,height:0};hint.textContent='中央の白線でタップ！ 指が触れた瞬間にSTOP';if(t>8)finish('ゲージ時間切れ','TIME UP');}
       else if(phase==='run'){runner=runPosition(t,level);pose={x:Math.min(.51,runner),y:.85,height:0};hint.textContent=`ダッシュ力 ${Math.round(power*100)}% · オレンジ線で踏切！`;if(runner>.535){beginClimb(time,.51,{clear:false,quality:0,points:0});t=0;}}
       if(phase==='climb'){pose=climbPose(t,level,result.clear,result.quality,jumpX);hint.textContent=result.clear?'壁を駆け上がる！':'力が足りない… 壁を滑り落ちる！';if(t>=1.11){if(!result.clear){burst(.51,.85,'#f3b577','SLIP');finish(`${level}段クリア / 壁から滑落`,'TRY AGAIN');}else{points(score+result.points);phase='walk';phaseTime=time;burst(.83,wallSurface(1,level).y,'#ffe4a4','CLEAR!');api.beep(950,80,.02);}}}
-      else if(phase==='walk'){const surface=wallSurface(1,level);pose={x:.80+clamp(t/.55)*.15,y:surface.y,height:1};hint.textContent=`WALL ${level+1} CLEAR! +${result.points}点`;if(t>=.55){if(level===3)finish('4段すべて登頂！','ALL WALLS CLEAR!');else{level++;phase='gauge';phaseTime=time;runner=.12;action.disabled=false;action.innerHTML='白線でSTOP<span>触れた瞬間に確定</span>';pose={x:.12,y:.85,height:0};}}}
+      else if(phase==='walk'){const surface=wallSurface(1,level);pose={x:.842+clamp(t/.55)*.108,y:surface.y,height:1};hint.textContent=`WALL ${level+1} CLEAR! +${result.points}点`;if(t>=.55){if(level===3)finish('4段すべて登頂！','ALL WALLS CLEAR!');else{level++;phase='gauge';phaseTime=time;runner=.12;action.disabled=false;action.innerHTML='白線でSTOP<span>触れた瞬間に確定</span>';pose={x:.12,y:.85,height:0};}}}
       status.textContent=`WALL ${level+1} / 4`;
       art.wall({w,h,time,level,phase,gauge:phase==='gauge'?gaugeAt(time-phaseTime):lockedGauge,power,runner,pose,result,surface:u=>wallSurface(u,level)});
     }
@@ -106,6 +107,7 @@
     }
     canvas.onpointerdown=e=>{if(!active||ended)return;if(kind===1){wallTap(e);return;}if(kind!==2||mode==='carry'||mode==='unload'||nowTime(e)>=12)return;e.preventDefault();const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;const near=presents.filter(g=>g.available).sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0];if(near&&Math.abs(near.x-x)*w<=25&&Math.abs(near.y-y)*h<=25){selected=near;mode='walk';}};
     const render=dt=>{for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;if(!p.text)p.vy+=dt*.28;if(p.life<=0)particles.splice(i,1);}if(kind===0)bananaFrame(dt);else if(kind===1)wallFrame(dt);else santaFrame(dt);art.effects({w,h,particles,ended,endTitle,score});};
+    redraw=()=>{if(valid()&&!ended)render(0);};
     render(0);await actorReady;if(!valid()){observer.disconnect();disposeStick();return;}render(0);await api.countdown();if(!valid()){observer.disconnect();disposeStick();return;}active=true;origin=last=performance.now();
     function frame(now){if(!valid()){observer.disconnect();disposeStick();return;}if(ended)return;const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;time=(now-origin)/1000;render(dt);if(!ended)requestAnimationFrame(frame);}
     requestAnimationFrame(frame);

@@ -39,7 +39,12 @@
       const gx=bx+13,gy=by+31,gw=bw-26;round(gx,gy,gw,19,5,'#284860');round(gx+gw*.42,gy,gw*.16,19,0,'#347d86');line(gx+gw*.5,gy-5,gx+gw*.5,gy+24,'#fff',3);
       const marker=gx+gauge*gw;C.fillStyle='#ffbe49';C.beginPath();C.moveTo(marker,gy+3);C.lineTo(marker-6,gy-6);C.lineTo(marker+6,gy-6);C.fill();line(marker,gy,marker,gy+20,'#ffc452',3);text(phase==='gauge'?'白い線で止める':'押した瞬間の位置で確定',w*.5,by+66,10,'#c9e0ec');
       if(phase==='run'){for(let i=1;i<5;i++)line((runner-.045-i*.02)*w,ground-13-i*3,(runner-.02-i*.02)*w,ground-13-i*3,'#bfeaff66',2);}
-      mob(pose.x*w,pose.y*h,Math.min(w*.12,43),pose.angle||0);
+      C.save();
+      if(phase==='climb'){
+        // Clip against the actual solid wall: hands/feet touch its skin, never show through it.
+        C.beginPath();C.moveTo(0,0);C.lineTo(w,0);C.lineTo(w,top);for(let i=50;i>=0;i--){const p=surface(i/50);C.lineTo(p.x*w,p.y*h);}C.lineTo(0,ground);C.closePath();C.clip();
+      }
+      mob(pose.x*w,pose.y*h,Math.min(w*.12,43),pose.angle||0);C.restore();
       if(phase==='climb'&&result&&!result.clear&&pose.height>0){circle((pose.x+.045)*w,(pose.y-.045)*h,2,'#ffca6e');}
     }
     function gift(g,x,y,scale=1){const colors=[['#b63052','#ef6579'],['#2563a2','#60a6d0'],['#247766','#63b29b']],size=[37,29,23][g.type]*scale;

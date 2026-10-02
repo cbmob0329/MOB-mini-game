@@ -9,27 +9,40 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+deco
     const start=async key=>{await page.evaluate(k=>window.seasonHost.start(k),key);await page.waitForFunction(()=>window.seasonProbe?.().active);await page.clock.runFor(16);};
     const bounds=async()=>{const rs=await page.locator('.season-world,.season-actions').evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().toJSON()));assert.ok(rs.every(r=>r.width>0&&r.height>=44&&r.x>=0&&r.right<=width&&r.y>=0&&r.bottom<=height),JSON.stringify(rs));};
     const press=()=>page.locator('#seasonAction').dispatchEvent('pointerdown',{pointerId:8});
+    let s;
+    if(!process.env.WALL_ONLY){
     await start('bananaBoatMob');await bounds();const stick=await page.locator('#seasonStick').boundingBox(),sea=await page.locator('canvas').boundingBox();assert.ok(stick.y>=sea.y+sea.height,'stick never covers the sea');
-    await page.clock.runFor(18000);let s=await read();assert.equal(s.spawned,30);assert.equal(s.caught+s.missed,30);assert.ok(s.score<64,'standing still is not enough: '+s.score);
+    await page.clock.runFor(18000);s=await read();assert.equal(s.spawned,30);assert.equal(s.caught+s.missed,30);assert.ok(s.score<64,'standing still is not enough: '+s.score);
     await start('bananaBoatMob');await page.mouse.move(stick.x+stick.width/2,stick.y+stick.height/2);await page.mouse.down();
     for(let i=0;i<650;i++){s=await read();if(s.ended)break;const b=s.bananas.filter(b=>!b.dead).sort((a,b)=>(.69-a.y)/a.speed-(.69-b.y)/b.speed)[0];if(b){const target=b.x+b.vx*Math.max(0,(.69-b.y)/b.speed),axis=Math.max(-1,Math.min(1,(target-s.boat)*8/.94));await page.mouse.move(stick.x+stick.width/2+axis*stick.width*.32,stick.y+stick.height/2);}await page.clock.runFor(32);if(i===140)await page.screenshot({path:path.join(output,`banana-${width}.png`)});}
     await page.mouse.up();s=await read();assert.equal(s.caught+s.missed,30);assert.ok(s.caught>=25,'25 remain attainable using the actual stick: '+s.caught);await page.clock.runFor(1200);await page.locator('#soloReplay').waitFor();
-    await start('warpedWallMob');await bounds();let checkedLock=false;
+    }
+    await start('warpedWallMob');await bounds();let checkedLock=false,capturedTop=false;
     for(let i=0;i<1700;i++){s=await read();if(s.ended)break;
       if(s.phase==='gauge'&&Math.abs(s.gauge-.5)<.023){await press();const locked=await read();assert.equal(locked.phase,'run');if(!checkedLock){await page.clock.runFor(120);assert.equal((await read()).lockedGauge,locked.lockedGauge);await page.locator('#seasonAction').dispatchEvent('pointerup',{pointerId:8});assert.equal((await read()).phase,'run');checkedLock=true;}}
       else if(s.phase==='run'&&Math.abs(s.runner-.49)<.006)await press();
+      if(s.level===3&&s.phase==='climb'&&s.pose.height>.9&&!capturedTop){await page.screenshot({path:path.join(output,`wall-top-${width}.png`)});capturedTop=true;}
       await page.clock.runFor(16);if(i===90)await page.screenshot({path:path.join(output,`wall-${width}.png`)});
     }
     s=await read();assert.equal(s.level,3);assert.equal(s.ended,true);assert.ok(s.score>=95,s.score);await page.clock.runFor(1200);await page.locator('#soloReplay').waitFor();
     await start('warpedWallMob');await press();
-    for(let i=0;i<230;i++){s=await read();if(s.ended)break;if(s.phase==='run'&&Math.abs(s.runner-.49)<.006)await press();if(s.phase==='climb'){const edge=await page.evaluate(u=>window.MobSeasonGames.wallSurface(u,0),s.pose.height);assert.ok(s.pose.x+.06<=edge.x+.00001,'failed climb never enters wall');if(s.pose.height>.03)await page.screenshot({path:path.join(output,`wall-slip-${width}.png`)});}await page.clock.runFor(16);}
+    for(let i=0;i<230;i++){s=await read();if(s.ended)break;if(s.phase==='run'&&Math.abs(s.runner-.49)<.006)await press();if(s.phase==='climb'){const edge=await page.evaluate(u=>window.MobSeasonGames.wallSurface(u,0),s.pose.height);assert.ok(s.pose.x+.018<=edge.x+.00001,'failed climb never enters wall');if(s.pose.height>.03)await page.screenshot({path:path.join(output,`wall-slip-${width}.png`)});}await page.clock.runFor(16);}
     s=await read();assert.equal(s.ended,true);assert.equal(s.score,0);
+    if(process.env.WALL_ONLY){assert.deepEqual(errors,[]);await page.close();continue;}
     await start('santaClausMob');await bounds();const box=await page.locator('canvas').boundingBox();assert.ok(Math.abs(box.width-box.height)<=1,JSON.stringify(box));
     await page.locator('canvas').evaluate(c=>{const g=window.seasonProbe().presents.find(g=>g.type===0),r=c.getBoundingClientRect();c.dispatchEvent(new PointerEvent('pointerdown',{clientX:r.x+g.x*r.width,clientY:r.y+g.y*r.height}));});
     await page.clock.runFor(1200);s=await read();assert.equal(s.mode,'carry');assert.equal(s.score,0);const before={x:s.px,y:s.py};
-    await page.evaluate(()=>{for(let i=0;i<100;i++)document.querySelector('[data-hand="'+i%2+'"]').dispatchEvent(new PointerEvent('pointerdown'));});await page.clock.runFor(160);s=await read();assert.equal(s.score,0);assert.ok(Math.hypot(s.px-before.x,s.py-before.y)<=.27*.161,'burst taps cannot teleport a heavy gift');
+    await page.evaluate(()=>{for(let i=0;i<100;i++)document.querySelector('[data-hand="'+i%2+'"]').dispatchEvent(new PointerEvent('pointerdown'));});await page.clock.runFor(160);s=await read();assert.equal(s.score,0);assert.ok(Math.hypot(s.px-before.x,s.py-before.y)<=.28*.161,'burst taps cannot teleport a heavy gift');
     for(let i=0;i<60;i++){s=await read();if(s.mode==='choose'||s.ended)break;await page.locator('[data-hand="'+(i%2)+'"]').dispatchEvent('pointerdown');await page.clock.runFor(130);}
     s=await read();assert.equal(s.score,25);assert.equal(s.presents.filter(g=>g.available).length,10,'delivered gifts never respawn');await page.screenshot({path:path.join(output,`santa-${width}.png`)});await page.clock.runFor(13000);s=await read();assert.equal(s.ended,true);assert.equal(s.score,25);await page.locator('#soloReplay').waitFor();
+    // Skilled alternating input can still finish four large deliveries within 12 seconds.
+    await start('santaClausMob');let lastHandAt=-1,nextHand=0;
+    for(let i=0;i<780;i++){s=await read();if(s.ended)break;
+      if(s.mode==='choose'){await page.locator('canvas').evaluate(c=>{const s=window.seasonProbe(),g=s.presents.filter(g=>g.available&&g.type===0).sort((a,b)=>Math.hypot(a.x-.49,a.y-.24)-Math.hypot(b.x-.49,b.y-.24))[0];if(!g)return;const r=c.getBoundingClientRect();c.dispatchEvent(new PointerEvent('pointerdown',{clientX:r.x+g.x*r.width,clientY:r.y+g.y*r.height}));});nextHand=0;lastHandAt=-1;}
+      if(s.mode==='carry'&&s.time-lastHandAt>=.096){await page.locator('[data-hand="'+nextHand+'"]').dispatchEvent('pointerdown');nextHand=1-nextHand;lastHandAt=s.time;}
+      await page.clock.runFor(16);
+    }
+    s=await read();assert.equal(s.score,100,'skilled route and alternating taps still permit full marks');assert.equal(s.delivered,4);await page.clock.runFor(1200);await page.locator('#soloReplay').waitFor();
     assert.deepEqual(errors,[]);await page.close();
   }
   console.log('Three games completed with scoring, controls and mobile layout verified.');console.log(output);
