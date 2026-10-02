@@ -4,7 +4,7 @@
   window.MobPartyLeagueUI={create(api){
     const {screen,esc}=api;let league=null,players=[],ticket=0,count=1,selections=[],level='ALL';
     const labels={qualifier:'予選',repechage:'敗者復活3ゲームマッチ',final:'決勝',cutoff:'通過決定・延長戦',championship:'優勝決定戦'};
-    const gameTitle=key=>key==='minorityMob'?'モブくんは少数派':key==='focusBombMob'?'モブくん集中大爆弾！':key==='individualChoice'?'3種目から選ぶ個人チャレンジ':key==='teamChoice'?'サイコロ or スロット · タッグ選択':api.title(key);
+    const gameTitle=key=>key==='minorityMob'?'モブくんは少数派':key==='focusBombMob'?'モブくん集中大爆弾！':key==='individualChoice'?'3種目から選ぶ個人チャレンジ':key==='teamChoice'?'4種目から選ぶタッグチャレンジ':api.title(key);
     const on=(id,fn)=>{const button=screen.querySelector('#'+id);let used=false;button.onclick=()=>{if(used)return;used=true;button.disabled=true;if(fn()===false){used=false;button.disabled=false;}};};
     const picture=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     const team=id=>league.teams.find(t=>t.id===id);
@@ -39,7 +39,7 @@
       for(const [i,t] of teams.entries())while(t.members.length<2){const c=pairs[i][t.members.length],p={id:'leagueCpu'+n,no:n+1,name:c.name,img:c.img,cpu:true,characterRank:c.rank};players.push(p);t.members.push(p.id);n++;}
       api.configure(players,teams);league=rules.create(teams,rules.program(api.pool()));
       if(fast()){play();return;}
-      announce('20組のタッグ、開幕！','予選の上位8組が決勝直行。4・5・7・10戦目はポイント2倍！ 6戦目は個人で種目選択、9戦目はデスゲームの1位だけ2倍！ 残る12組にも敗者復活のチャンスがあります。',teams.map(t=>t.id),play,'opening');
+      announce('20組のタッグ、開幕！','予選の上位8組が決勝直行。4・5・7・10戦目はポイント2倍！ 6・8戦目は個人で種目選択、9戦目はデスゲームの1位だけ2倍！ 残る12組にも敗者復活のチャンスがあります。',teams.map(t=>t.id),play,'opening');
     }
     function cards(ids){return `<div class="league-team-grid">${ids.map(id=>`<div class="league-team-card ${league.lit.includes(id)?'league-lit':''}">${league.lit.includes(id)?'<span class="league-lit-label">● 点灯 · 1位で優勝</span>':''}${portraits(id)}<b>${team(id).name}</b><small>${team(id).members.map(p=>`${member(p).cpu?'CPU':'P'+member(p).no} ${esc(member(p).name)}`).join(' / ')}</small></div>`).join('')}</div>`;}
     function announce(title,text,ids,done,kind='broadcast'){
@@ -48,8 +48,9 @@
     }
     function reveal(ids,title,text,done){let index=0;const step=()=>{if(index>=ids.length){done();return;}const id=ids[index++];announce(`${title}<small>進出発表 ${index} / ${ids.length}</small>`,`${text}<br><strong>QUALIFIED! ${team(id).name}</strong>`,[id],step,'qualified');};step();}
     function fast(){return api.fastStage&&rules.canFastForward(league,players);}
-    function play(){
-      if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':labels[league.phase])+'！','このステージはプレイヤー不在のため高速処理します。<br>各ゲームの操作・途中結果をスキップし、まとめて結果を発表！',[],()=>{const result=api.fastStage(league,players);results(result,result.event.type!=='champion');},'stage-entry');return;}const descriptor=rules.next(league);if(!descriptor)return;
+    function play(prepared=null){
+      if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':labels[league.phase])+'！','このステージはプレイヤー不在のため高速処理します。<br>各ゲームの操作・途中結果をスキップし、まとめて結果を発表！',[],()=>{const result=api.fastStage(league,players);results(result,result.event.type!=='champion');},'stage-entry');return;}const descriptor=prepared||rules.next(league);if(!descriptor)return;
+      if(descriptor.roulette&&!descriptor.rouletteShown){roulette(descriptor,()=>play({...descriptor,rouletteShown:true}));return;}
       if(descriptor.choices){choiceRound(descriptor);return;}
       const ids=[...descriptor.active],ownTicket=ticket,points={};
       if(rules.TAG.includes(descriptor.key)){const shuffled=rules.sample(ids,ids.length);ids.splice(0,ids.length,...shuffled);}
@@ -80,6 +81,18 @@
       const launch=()=>announce('NEXT GAME · '+descriptor.round,`<strong class="league-game-name">${esc(gameTitle(descriptor.key))}</strong><br>${labels[descriptor.phase]}の次の勝負はこちら！<br>${descriptor.phase==='final'?'点灯済みのタッグは1位で優勝。ライバルは全力で阻止しよう！':'一つの記録が順位を動かす。準備ができたら、次の舞台へ！'}`,league.lit.length?league.lit:[],launchHeat,'next-game');
       if(descriptor.multiplier===2)announce('POINTS ×2',`ここが勝負の分かれ目！<br>${gameTitle(descriptor.key)}は全員の獲得ポイントが2倍！`,[],launch,'bonus');else if(descriptor.winnerBonus)announce('生存者だけが POINTS ×2','今回のデスゲームは個人1位だけが2倍！<br>最後の1人が200点を獲得。ほかの選手は通常点です。',[],launch,'bonus');else launch();
     }
+    function roulette(descriptor,done){
+      const own=ticket,options=descriptor.roulette,winner=options.indexOf(descriptor.key);
+      draw('予選 GAME 4 · ルーレット',`<p class="roulette-commentary" id="rouletteCall" aria-live="polite">全員共通の種目をここで決定！<br>この勝負はポイント2倍！</p><div class="roulette-stage"><div class="roulette-pointer">▼</div><div id="leagueWheel" class="league-wheel">${options.map((_,i)=>`<span style="--angle:${i*72+36}deg">${i+1}</span>`).join('')}<b>MOB<br>×2</b></div></div><ol class="roulette-options">${options.map((k,i)=>`<li data-roulette-option="${i}"><b>${i+1}</b>${esc(gameTitle(k))}</li>`).join('')}</ol><button id="leagueNext" class="primary">ルーレットを回す！</button>`);
+      const panel=screen.querySelector('.tag-league');panel.classList.add('league-show','league-roulette');panel.style.setProperty('--league-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
+      on('leagueNext',()=>{
+        const button=screen.querySelector('#leagueNext'),wheel=screen.querySelector('#leagueWheel'),rotation=1800-winner*72-36;
+        button.textContent='抽選中…';api.beep(700,160,.025);
+        const reveal=()=>{if(own!==ticket||!league)return;wheel.style.transform=`rotate(${rotation}deg)`;screen.querySelectorAll('[data-roulette-option]').forEach((el,i)=>el.classList.toggle('selected',i===winner));screen.querySelector('#rouletteCall').textContent='決定！ '+gameTitle(descriptor.key)+' · 全員ポイント2倍！';button.disabled=false;button.textContent='このゲームで勝負！ →';api.beep(1250,240,.03);on('leagueNext',done);};
+        const animation=wheel.animate?.([{transform:'rotate(0deg)'},{transform:`rotate(${rotation}deg)`}],{duration:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?100:2800,easing:'cubic-bezier(.12,.65,.16,1)',fill:'forwards'});
+        if(animation)animation.finished.then(reveal,()=>{});else reveal();
+      });
+    }
     function runRound(key,rows,descriptor,done){
       if(!['minorityMob','focusBombMob'].includes(key)){api.run(key,rows,descriptor,done);return;}
       const own=ticket;
@@ -101,6 +114,7 @@
         const pick=key=>{task.members.forEach(p=>assignments[p]=key);chooseNext();};
         if(task.members.every(p=>member(p).cpu)){pick(options[Math.floor(Math.random()*options.length)]);return;}
         draw(`GAME ${descriptor.round} · 種目を選ぼう`,`${cards([task.team.id])}<h2>${task.members.map(p=>esc(member(p).name)).join(' ＆ ')}</h2><p>${descriptor.key==='individualChoice'?'プレイヤーごとに1種目選択。同じチームの相棒が選んだ種目は選べません。':'チームの2人が同じ種目に挑戦。獲得点は2倍です。'}</p><div class="league-choice-games">${descriptor.choices.map((k,i)=>`<button id="leagueChoice${i}" class="primary" ${used.includes(k)?'disabled':''}>${esc(gameTitle(k))}${used.includes(k)?'（相棒が選択済み）':''}</button>`).join('')}</div>`);
+        const panel=screen.querySelector('.tag-league');panel.classList.add('league-selection');panel.style.setProperty('--league-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
         descriptor.choices.forEach((k,i)=>{if(!used.includes(k))on('leagueChoice'+i,()=>pick(k));});
       }
       announce(`GAME ${descriptor.round} · ${descriptor.multiplier===2?'POINTS ×2':'CHOICE CHALLENGE'}`,`${gameTitle(descriptor.key)}<br>${descriptor.choices.map(k=>esc(gameTitle(k))).join(' ／ ')}<br>${descriptor.key==='individualChoice'?'今回は各プレイヤーが好きな種目を選べます。相棒との重複はできません！':'チームで選ぶ運命の勝負。2倍ポイントで順位を動かせ！'}`,[],chooseNext,descriptor.multiplier===2?'bonus':'next-game');

@@ -33,9 +33,9 @@ test('40-player death game eliminates exactly 10, 15, 10, 2, 2 players and one s
   assert.deepEqual(buckets,{10:10,30:15,50:10,65:2,80:2,100:1});
 });
 
-test('eighty-player crew events page entrances and results without false human elimination labels',async()=>{
+test('death game skips introductions and keeps all eighty final results',async()=>{
   const teams=Array.from({length:40},(_,i)=>({name:'CREW PAIR '+i,members:[0,1].map(j=>({id:i+'-'+j,name:'Member '+i+'-'+j,img:'c',cpu:i!==0}))}));
-  const h=setup('deathGameChallenge',.7,teams);await h.settle();assert.equal((h.html.match(/<article /g)||[]).length,4);assert.doesNotMatch(h.html,/human-eliminated/);
+  const h=setup('deathGameChallenge',.7,teams);await h.settle();assert.doesNotMatch(h.html,/人がエントリー|次の出場者|human-eliminated/);
   for(let i=0;i<260&&!h.finished;i++){if(h.html.includes('<h2>RESULT</h2>')){assert.equal((h.html.match(/<article /g)||[]).length,80);assert.doesNotMatch(h.html,/human-eliminated/);}if(h.buttons.some(b=>b.onclick))await h.click();else assert.ok(await h.tick());}
   assert.equal(h.finished.length,80);assert.equal(h.finished.filter(s=>s.score===100).length,1);
 });

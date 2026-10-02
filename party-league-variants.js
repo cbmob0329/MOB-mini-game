@@ -39,7 +39,7 @@
         selections.forEach((s,i)=>{const c=core.roster.find(c=>c.id===s.character);teams.push({id:'K'+teams.length,name:c.name,division:s.group,members:[make(c,true,i+1)]});});
         const shuffled=L.sample(pool,pool.length);for(let division=0;division<4;division++)while(teams.filter(t=>t.division===division).length<20){const c=shuffled.pop();teams.push({id:'K'+teams.length,name:c.name,division,members:[make(c)]});}
       }
-      const poolKeys=api.pool().filter(key=>mode!=='king'||!pairedGames.includes(key)),schedule=L.program(poolKeys);
+      const poolKeys=api.pool().filter(key=>mode!=='king'||!pairedGames.includes(key)),schedule=L.program(poolKeys,Math.random,mode);
       league=L.create(teams,schedule,{mode});api.configure(players,teams,{mode,title:title()});
       if(fast()){play();return;}
       announce('開幕！ '+title(),mode==='crew'?'4人の合計得点で挑む20組の大会。代表種目は各クルー2人。タッグ専用種目は2組のペアに分かれ、全員が出場します。':'各予選リーグは同じ10種目。全4リーグの上位5名、合計20名が頂点を争います。',league.active,play);

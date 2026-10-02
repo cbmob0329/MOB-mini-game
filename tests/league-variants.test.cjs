@@ -1,6 +1,6 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const L=require('../party-league.js'),core=require('../party-core.js'),events=require('../party-league-events.js');
-function fresh(mode){const size=mode==='crew'?4:1;return L.create(Array.from({length:mode==='crew'?20:80},(_,i)=>({id:'T'+i,division:Math.floor(i/20),members:Array.from({length:size},(_,j)=>'p'+(i*size+j))})),L.program(['reaction','longJumpMob','brake','golf'],()=>0),{mode});}
+function fresh(mode){const size=mode==='crew'?4:1;return L.create(Array.from({length:mode==='crew'?20:80},(_,i)=>({id:'T'+i,division:Math.floor(i/20),members:Array.from({length:size},(_,j)=>'p'+(i*size+j))})),L.program(['reaction','longJumpMob','brake','golf'],()=>0,mode),{mode});}
 function play(s,score=i=>100-i%20*3){const d=L.next(s,()=>0);return L.submit(s,Object.fromEntries(s.active.flatMap(id=>s.teams.find(t=>t.id===id).members.map(p=>[p,score(Number(id.slice(1)))]))),d);}
 test('KING: four independent ten-game qualifiers, top five each, origins and reset final without repechage',()=>{
   const s=fresh('king');for(let division=0;division<4;division++){

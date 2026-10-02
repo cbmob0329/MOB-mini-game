@@ -4,9 +4,18 @@
   const TAG=['mobSpeedRacer','summonMaster','linkedCartBlast'];
   const DIVISIONS=['PB2リーグ','Realizeリーグ','Portalリーグ','DENDENリーグ'];
   const pick=(a,r)=>a[Math.floor(r()*a.length)];
-  function program(pool,random=Math.random){
+  const TAG_ROULETTE=['ohajikiMob','toyOnOff','errand','mobIssen','ropeSwingMob'];
+  const TAG_TEAM_CHOICES=['cardShop','mobPinball','mobDice','zeroOrHundredMob'];
+  const TAG_EIGHTH_CHOICES=['warpedWallMob','santaClausMob','monsterBoxMob'];
+  function program(pool,random=Math.random,mode='tag'){
     if(!pool.length)throw Error('League needs a game pool');
     const any=()=>pick(pool,random);
+    if(mode==='tag')return {
+      profile:'tag',rouletteCandidates:[...TAG_ROULETTE],
+      qualifier:[pick(['reaction','mergeMob','brake'],random),any(),'minorityMob','rouletteChoice',pick(['catcher','plushCatcher','cleaningMob','tableclothPull'],random),'individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob'],
+      repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
+      final:[pick(['monsterBoxMob','warpedWallMob','fruitCatchMob'],random),pick(['launch','ski','frontFlipMob'],random),'bikeJump',pick(['waterSkip','tableclothPull'],random),'deathGameChallenge','focusBombMob'],pool:[...pool]
+    };
     return {
       qualifier:['reaction',any(),'minorityMob',pick(['ohajikiMob','toyOnOff'],random),pick(['catcher','plushCatcher'],random),'individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
       repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
@@ -22,11 +31,13 @@
   function ordered(s,ids=s.active,scores=s.scores){return ids.map(id=>({id,points:scores[id]||0})).sort((a,b)=>b.points-a.points);}
   function next(s,random=Math.random){
     if(s.champion)return null;
+    const tag=s.mode==='tag'&&s.schedule.profile==='tag';
+    if(tag&&s.phase==='qualifier'&&s.round===3&&s.schedule.qualifier[3]==='rouletteChoice')s.schedule.qualifier[3]=pick(s.schedule.rouletteCandidates,random);
     const tiePool=s.mode==='tag'?s.schedule.pool:s.schedule.pool.filter(k=>!TAG.includes(k)&&k!=='treasureDuoParty');
     const key=s.phase==='cutoff'?'reaction':s.phase==='championship'?(pick(tiePool,random)||'reaction'):(s.schedule[s.phase][s.round]||pick(s.schedule.pool,random));
-    const choices=key==='teamChoice'?['mobDice','slot']:key==='individualChoice'?sample([...s.schedule.pool,'reaction','longJumpMob','brake'].filter(k=>!TAG.includes(k)&&!['deathGameChallenge','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),3,random):null;
+    const choices=key==='teamChoice'?(tag?[...TAG_TEAM_CHOICES]:['mobDice','slot']):key==='individualChoice'?(tag&&s.round===7?[...TAG_EIGHTH_CHOICES]:sample([...s.schedule.pool,'reaction','longJumpMob','brake'].filter(k=>!TAG.includes(k)&&!['deathGameChallenge','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),3,random)):null;
     if(choices&&key==='individualChoice'&&s.size===4){const extra=sample(s.schedule.pool.filter(k=>!TAG.includes(k)&&!choices.includes(k)&&!['deathGameChallenge','minorityMob','focusBombMob','individualChoice','teamChoice','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),1,random);choices.push(...extra);}
-    return {key,choices,multiplier:s.phase==='qualifier'&&[3,4,6,9].includes(s.round)?2:1,winnerBonus:s.phase==='qualifier'&&s.round===8,phase:s.phase,division:s.division,round:s.round+1,active:[...s.active]};
+    return {key,choices,roulette:tag&&s.phase==='qualifier'&&s.round===3?[...s.schedule.rouletteCandidates]:null,multiplier:s.phase==='qualifier'&&[3,4,6,9].includes(s.round)?2:1,winnerBonus:s.phase==='qualifier'&&s.round===8,phase:s.phase,division:s.division,round:s.round+1,active:[...s.active]};
   }
   function sample(items,count,random=Math.random){const a=[...new Set(items)];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a.slice(0,count);}
   function reset(s,phase,ids){s.phase=phase;s.round=0;s.active=[...ids];s.scores={};s.personal={};}

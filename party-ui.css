@@ -468,3 +468,14 @@ body.countdown-active-v140 #screen{visibility:hidden!important}
 .illustrated-intro [hidden]{display:none!important}
 .league-stage-entry header h1,.league-stage-entry .league-narrator,.league-stage-entry .variant-next,.league-stage-entry .primary{animation:party-enter .45s ease both}
 @media(prefers-reduced-motion:reduce){.league-stage-entry *{animation:none!important}}
+
+/* Tag league round 4 only: bounded roulette and player choices. */
+.league-roulette .roulette-commentary{margin:4px 0;color:#fff2bc;font-size:14px;line-height:1.4;text-align:center;min-height:40px}
+.league-roulette .roulette-stage{position:relative;flex:1;min-height:140px;max-height:160px;display:grid;place-items:center}
+.league-wheel{width:130px;height:130px;aspect-ratio:1;border-radius:50%;background:conic-gradient(#ffdc77 0deg 72deg,#85dce9 72deg 144deg,#edb7dd 144deg 216deg,#b8e895 216deg 288deg,#b9c7fa 288deg);border:5px solid #fff;position:relative;box-shadow:0 0 18px #ffdc7766;color:#172238}
+.league-wheel>span{position:absolute;left:calc(50% - 12px);top:calc(50% - 12px);width:24px;height:24px;display:grid;place-items:center;font-weight:1000;transform:rotate(var(--angle)) translateY(-42px) rotate(calc(-1 * var(--angle)))}
+.league-wheel>b{position:absolute;inset:32%;border-radius:50%;background:#18283f;color:#fff;text-align:center;display:grid;place-content:center;font-size:14px;line-height:1.1}
+.roulette-pointer{position:absolute;top:-6px;left:calc(50% - 12px);font-size:26px;z-index:2;color:#fff;text-shadow:0 2px #172238}
+.roulette-options{display:grid;gap:4px;padding:0;margin:8px 0 0;list-style:none;flex:none}.roulette-options li{display:flex;align-items:center;gap:8px;background:#eff4ff;color:#172238;border:2px solid transparent;padding:5px 8px;border-radius:8px;font-size:12px;line-height:1.2}.roulette-options li>b{font-size:14px}.roulette-options li.selected{background:#ffdf7c;color:#172238;border-color:#e28b13;box-shadow:0 0 12px #ffd57766}
+.tag-league.league-selection{height:calc(100dvh - var(--league-top,70px) - 20px);display:flex;flex-direction:column;gap:6px;padding:8px 12px max(16px,env(safe-area-inset-bottom));box-sizing:border-box}
+.league-selection>header h1{font-size:21px;margin:4px 0}.league-selection>header{padding:0}.league-selection>header small{display:none}.league-selection>.league-team-grid{margin:0}.league-selection .league-team-card{padding:5px}.league-selection .league-team-card img{height:36px}.league-selection .league-team-card small{font-size:10px}.league-selection>h2{font-size:15px;margin:0}.league-selection>p{font-size:12px;line-height:1.35;margin:0}.league-selection .league-choice-games{display:grid;gap:6px;margin:4px 0;flex:1;min-height:0;align-content:start}.league-selection .league-choice-games button{min-height:48px;font-size:14px;padding:7px 10px;margin:0}.league-selection .league-choice-games button:disabled{background:#d8deeb;color:#3b4255;opacity:1}

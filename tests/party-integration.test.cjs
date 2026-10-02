@@ -79,9 +79,9 @@ test('rank-based CPU record generation yields finite records and scores for ever
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,138);
+  assert.equal(e.activeGameIndices().length,135);
   const active=e.activeGameIndices().map(i=>e.GAMES[i].key);
-  for(const key of ['killLeaderMob','mobSpeedRacer','mineCartMob'])assert.ok(!active.includes(key),key);
+  for(const key of ['killLeaderMob','mobSpeedRacer','mineCartMob','mobCount','feint','giantHammer3DMob'])assert.ok(!active.includes(key),key);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
   assert.equal(e.GAMES.find(g=>g.key==='treasureEscapeParty').legacy,181);
 });

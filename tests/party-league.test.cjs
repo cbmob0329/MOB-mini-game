@@ -7,7 +7,7 @@ const play=(s,fn)=>L.submit(s,points(s,fn),L.next(s,()=>0));
 function qualified(){const s=fresh();for(let i=0;i<10;i++)play(s,t=>100-t*3);return s;}
 function finals(){const s=qualified();for(let i=0;i<3;i++)play(s,t=>100-t*3);return s;}
 test('schedule matches fixed games, minority third round and four bonus rounds',()=>{
-  const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','reaction','minorityMob','ohajikiMob','catcher','individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob']);
+  const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','reaction','minorityMob','rouletteChoice','catcher','individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob']);
   assert.deepEqual(s.schedule.repechage,['longJumpMob','cardShop','bowling3DMob']);
   assert.deepEqual(s.schedule.final,['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge','focusBombMob']);
   for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,4,6,9].includes(i)?2:1);play(s,t=>100-t);}
@@ -47,4 +47,17 @@ test('only already lit tied leaders enter a random championship; ties repeat',()
 test('final continues after game ten; invalid results cannot mutate points',()=>{
   const s=finals();for(let i=0;i<12;i++)play(s,()=>10);assert.equal(s.phase,'final');assert.equal(L.next(s).round,13);assert.equal(s.champion,null);
   const saved=JSON.stringify(s);assert.throws(()=>L.submit(s,{},L.next(s)));assert.equal(JSON.stringify(s),saved);
+});
+
+test('edited tag pools, round-four roulette and eighth individual choices stay scoped to tag',()=>{
+  const seen={first:new Set(),fifth:new Set(),final1:new Set(),final2:new Set(),final4:new Set()};
+  for(let i=0;i<100;i++){const p=L.program(['reaction'],()=>i/100);seen.first.add(p.qualifier[0]);seen.fifth.add(p.qualifier[4]);seen.final1.add(p.final[0]);seen.final2.add(p.final[1]);seen.final4.add(p.final[3]);assert.equal(p.qualifier[3],'rouletteChoice');}
+  assert.equal(seen.first.size,3);assert.equal(seen.fifth.size,4);assert.equal(seen.final1.size,3);assert.equal(seen.final2.size,3);assert.equal(seen.final4.size,2);
+  const s=fresh();s.round=3;const d=L.next(s,()=>.99);assert.equal(d.key,'ropeSwingMob');assert.equal(d.roulette.length,5);assert.equal(L.next(s,()=>0).key,d.key);assert.equal(d.multiplier,2);
+  s.round=4;assert.equal(L.next(s).roulette,null);s.round=6;assert.deepEqual(L.next(s).choices,['cardShop','mobPinball','mobDice','zeroOrHundredMob']);
+  s.round=7;const eighth=L.next(s);assert.equal(eighth.key,'individualChoice');assert.deepEqual(eighth.choices,['warpedWallMob','santaClausMob','monsterBoxMob']);assert.equal(eighth.multiplier,1);
+  for(const mode of ['crew','king']){const p=L.program(['reaction'],()=>0,mode);assert.equal(p.qualifier[3],'ohajikiMob');assert.equal(p.qualifier[7],'dontHitMob');assert.equal(p.profile,undefined);}
+});
+test('CPU summary keeps eighth-round teammates in different fixed games',()=>{
+ const s=fresh(),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true})));let seed=11;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};L.fastForward(s,players,()=>Math.floor(random()*100),random);const r=s.history.find(r=>r.phase==='qualifier'&&r.round===8);for(const t of s.teams){assert.notEqual(r.selections[t.members[0]],r.selections[t.members[1]]);assert.ok(t.members.every(id=>['warpedWallMob','santaClausMob','monsterBoxMob'].includes(r.selections[id])));}
 });

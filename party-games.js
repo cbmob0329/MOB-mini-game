@@ -64,7 +64,7 @@
       }
       slots=slots.map(s=>({...s,rank:core.characterRank?core.characterRank(s,api.games[index]):s.rank,score:0,lives:2,out:false,bank:0,scouts:1}));
       api.representatives(slots.filter(s=>!s.guest).map(s=>s.id));
-      for(let page=0;page<slots.length;page+=4){
+      for(let page=0;key!=='deathGameChallenge'&&page<slots.length;page+=4){
         shell(api.games[index].title,`${standings(slots.slice(page,page+4),true,false)}<p class="party-event-call">${slots.length}人がエントリー！ ${page+1}〜${Math.min(page+4,slots.length)}人目<br>スマホを順番に渡して挑戦しよう。</p><div id="eventChoices"></div>`);
         await choice([page+4<slots.length?'次の出場者を見る →':'全員準備OK · スタート']);if(!api.valid(ownRun))return;
       }

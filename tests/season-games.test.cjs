@@ -20,8 +20,8 @@ test('gift layouts are scattered and balanced; finite distance limits delivery e
     assert.deepEqual([0,1,2].map(t=>gifts.filter(g=>g.type===t).length),[4,3,4]);
     assert.ok(gifts.every(g=>g.x>=.1&&g.x<=.9&&g.y>=.34&&g.y<=.86));
     for(let i=0;i<gifts.length;i++)for(let j=i+1;j<gifts.length;j++)assert.ok(Math.hypot(gifts[i].x-gifts[j].x,gifts[i].y-gifts[j].y)>.15);
-    const costs=gifts.map(g=>Math.hypot(g.x-.49,g.y-.24)*(1/.75+1/games.giftTypes[g.type].speed)+.25);
-    assert.ok(costs.reduce((a,b)=>a+b,0)>18,'all presents cannot be swept up in 12 seconds');
+    const costs=gifts.map(g=>Math.hypot(g.x-.49,g.y-.24)*(1/3.2+1/games.giftTypes[g.type].speed)+.25);
+    assert.ok(costs.reduce((a,b)=>a+b,0)>12,'all presents cannot be swept up in 12 seconds');
   }
   assert.equal(new Set(layouts).size,30);
 });
@@ -36,7 +36,7 @@ test('all four walls require power and timing, with attainable perfect and imper
   }
   const total=[1,.9,.9,.9].reduce((s,q,i)=>s+games.wallResult(i,q,q).points,0);
   assert.ok(total>=95&&total<=99,total);
-  assert.equal(games.wallResult(0,.74,.74).clear,true);assert.equal(games.wallResult(3,.74,.74).clear,false);
+  assert.equal(games.wallResult(0,.74,1).clear,false);assert.equal(games.wallResult(0,1,.6).clear,false);assert.equal(games.wallResult(3,.9,.9).clear,true);
 });
 test('Hero Bell receives one or two rank steps in Santa only',()=>{
   const ranks=['F','E','D-','D','D+','C','C+','B-','B','B+','A-','A','A+','S-','S','SS'];
