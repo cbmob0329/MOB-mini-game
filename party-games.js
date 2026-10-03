@@ -7,7 +7,7 @@
     const valid=()=>api.valid(run);
     const portrait=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-    function shell(title,body){screen.innerHTML=`<section class="party-event ${body.includes('elimination-results')?'elimination-screen':''}" style="--elimination-top:${Math.max(0,(screen.getBoundingClientRect?.().top??95)+(window.scrollY||0))}px"><header><small>TEAM REPRESENTATIVES</small><h2>${title}</h2><p>各チーム最大2人 · 1人最大100点</p></header>${body}</section>`;api.top();}
+    function shell(title,body){screen.innerHTML=`<section class="party-event ${body.includes('elimination-results')?'elimination-screen':body.includes('id="finalDoors"')?'final-three-screen':''}" style="--elimination-top:${Math.max(0,(screen.getBoundingClientRect?.().top??95)+(window.scrollY||0))}px"><header><small>TEAM REPRESENTATIVES</small><h2>${title}</h2><p>各チーム最大2人 · 1人最大100点</p></header>${body}</section>`;api.top();}
     async function chooseRepresentatives(teams){
       const entrants=[];
       for(const team of teams){
@@ -80,6 +80,13 @@
       await choice(['この結果で進む →']);if(!api.valid(ownRun))return;
       api.finish(index,slots.filter(s=>!s.guest));
     }
+    async function finalDoorReveal(choices,dangerous,ownRun){
+      const winner=choices.find(x=>!dangerous.has(x.door));if(!winner||!api.valid(ownRun))return;
+      shell('FINAL THREE · 最後の扉',`<p class="party-event-call">残り3人。優勝者が扉から登場！</p><div id="finalDoors" class="party-final-doors">${[0,1,2].map(i=>`<div class="party-final-door ${i===winner.door?'is-winner':''}"><b>${i+1}</b><div class="door-inside">${i===winner.door?portrait(winner.s):''}</div><i class="door-leaf"></i></div>`).join('')}</div><p class="final-winner-name">${esc(winner.s.team)} · ${esc(winner.s.name)}</p><div id="eventChoices"></div>`);
+      const stage=screen.querySelector('#finalDoors'),advance=choice(['結果へ進む →'],3200);
+      const revealTimer=setTimeout(()=>{if(api.valid(ownRun)&&screen.querySelector('#finalDoors')===stage){stage.classList.add('winner-revealed');api.beep(1060,180,.025);}},450);
+      await advance;clearTimeout(revealTimer);
+    }
     async function doors(slots,ownRun){
       let round=0;
       while(slots.filter(s=>!s.out).length>1&&api.valid(ownRun)){
@@ -99,6 +106,7 @@
         if(!api.valid(ownRun))return;
         const losers=choices.filter(x=>dangerous.has(x.door));
         for(const {s} of losers){s.out=true;s.score=alive.length===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80;}
+        if(alive.length===3&&target===1){await finalDoorReveal(choices,dangerous,ownRun);if(!api.valid(ownRun))return;break;}
         shell('運命の扉、崩壊！',`<div class="party-death-count">${alive.length}<span>→</span>${target}</div><p class="party-event-call">${losers.length}人が脱落。残る席は${target}つ！</p><div class="party-door-reveal">🚪 ⚡</div>`);api.beep(140,240,.025);await pause(1100);if(!api.valid(ownRun))return;
         let page=0;while(page<losers.length){const batch=losers.slice(page,page+4);shell('ELIMINATED / 脱落',`<p class="party-event-call">ROUND ${round} · 生存者は残り${target}人</p>${standings(batch.map(x=>x.s),true)}<p>扉が崩壊… この選手たちの挑戦はここで終了！</p><div id="eventChoices"></div>`);await choice(['脱落者を確認して次へ →']);if(!api.valid(ownRun))return;page+=4;}
       }

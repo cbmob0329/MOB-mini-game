@@ -59,7 +59,7 @@ test('bomb has five four-player heats with each entrant once and teammates separ
 test('bomb individual winner crowns their already lit team despite a different team-total leader',()=>{
   const teams=Array.from({length:20},(_,i)=>({id:'L'+i,members:['p'+i*2,'p'+(i*2+1)]}));
   for(const previouslyLit of [true,false]){
-    const s=L.create(teams,L.program(['reaction']));s.phase='final';s.round=5;s.active=teams.slice(0,10).map(t=>t.id);s.scores={L0:590,L1:700};s.lit=previouslyLit?['L0','L1']:['L1'];
+    const s=L.create(teams,L.program(['reaction']));s.phase='final';s.round=s.schedule.final.indexOf('focusBombMob');s.active=teams.slice(0,10).map(t=>t.id);s.scores={L0:590,L1:700};s.lit=previouslyLit?['L0','L1']:['L1'];
     const points=Object.fromEntries(entrants.slice(0,20).map(p=>[p.id,0]));Object.assign(points,{p0:100,p2:80,p3:60,p4:50,p6:40});
     const result=L.submit(s,points,L.next(s));assert.equal(result.record.teamPoints.L1,140);assert.equal(result.record.teamPoints.L0,100);
     assert.equal(s.champion,previouslyLit?'L0':null);assert.ok(s.lit.includes('L0'));
@@ -88,7 +88,7 @@ test('lit finals reveal suspense then champion or continuation before scores',()
   for(const type of ['champion','round','championship']){const h=uiHarness();h.record.phase='final';h.record.litBefore=['L0','L1'];h.ui.results({event:{type,ids:type==='round'?[]:['L0']},record:h.record});assert.match(h.html(),/さあ、これで決まるのか/);assert.doesNotMatch(h.html(),/class="league-rank/);h.next();assert.match(h.html(),type==='champion'?/CHAMPION!!/:/勝負はまだ続きます/);h.next();assert.match(h.html(),/今回のチーム順位/);}
 });
 test('league launches the shared event for all active entrants and rejects a stopped callback',()=>{
-  for(const [phase,round,key,count] of [['qualifier',2,'minorityMob',40],['final',5,'focusBombMob',20]]){
+  for(const [phase,round,key,count] of [['qualifier',2,'minorityMob',40],['final',4,'focusBombMob',20]]){
     const h=uiHarness();h.state.phase=phase;h.state.round=round;if(phase==='final')h.state.active=h.state.active.slice(0,10);
     h.ui.play();h.next();h.next();assert.equal(h.runs.length,1);const event=h.runs[0];assert.equal(event.key,key);assert.equal(event.entrants.length,count);assert.equal(event.valid(),true);
     const points=Object.fromEntries(event.entrants.map((p,i)=>[p.id,key==='minorityMob'?i===0?100:0:[100,80,60,50,40][i]||0]));event.done(points);assert.equal(h.state.history.length,1);

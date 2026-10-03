@@ -14,12 +14,12 @@
       profile:'tag',rouletteCandidates:[...TAG_ROULETTE],
       qualifier:[pick(['reaction','mergeMob','brake'],random),any(),'minorityMob','rouletteChoice',pick(['catcher','plushCatcher','cleaningMob','tableclothPull'],random),'individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob'],
       repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
-      final:[pick(['monsterBoxMob','warpedWallMob','fruitCatchMob'],random),pick(['launch','ski','frontFlipMob'],random),'bikeJump',pick(['waterSkip','tableclothPull'],random),'deathGameChallenge','focusBombMob'],pool:[...pool]
+      final:[pick(['monsterBoxMob','warpedWallMob','fruitCatchMob'],random),pick(['launch','ski','frontFlipMob'],random),'bikeJump',pick(['waterSkip','tableclothPull'],random),'focusBombMob','deathGameChallenge'],pool:[...pool]
     };
     return {
       qualifier:['reaction',any(),'minorityMob',pick(['ohajikiMob','toyOnOff'],random),pick(['catcher','plushCatcher'],random),'individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
       repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
-      final:['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge','focusBombMob'],pool:[...pool]
+      final:['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge'],pool:[...pool]
     };
   }
   function create(teams,schedule,options={}){

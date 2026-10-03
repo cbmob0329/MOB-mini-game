@@ -3,19 +3,19 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 function setup(key,random=.9,teamsOverride=null){
-  let html='',buttons=[],tiles=[],nodes={},clock=0,id=0,finished=null;
+  let html='',buttons=[],tiles=[],nodes={},clock=0,id=0,finished=null,valid=true,randomCalls=0;
   const timers=new Map();
-  const element=()=>({textContent:'',classList:{toggle(){},remove(){}},disabled:false});
+  const element=()=>({textContent:'',classList:{toggle(){},remove(){},add(){}},disabled:false});
   const choices={set innerHTML(value){buttons=[...value.matchAll(/data-choice="(\d+)"[^>]*>(.*?)<\/button>/g)].map(m=>({...element(),label:m[2],dataset:{choice:m[1]}}));}};
   const screen={set innerHTML(value){html=value;buttons=[];nodes={};for(const m of value.matchAll(/id="([^"]+)"/g))nodes[m[1]]=element();nodes.eventChoices=choices;nodes.call=element();tiles=value.includes('party-bridge')?[element(),element(),element()]:[];},querySelector(q){return q==='.party-event-call'?nodes.call:nodes[q.slice(1)];},querySelectorAll(q){return q==='[data-choice]'?buttons:q==='.party-bridge div'?tiles:[];}};
-  const api={screen,esc:s=>s,valid:()=>true,begin:()=>1,top(){},beep(){},round:()=>0,solo:()=>false,games:[{key,title:key}],teams:()=>[{name:'A',members:[{id:'p',name:'Player',img:'p',cpu:false,rank:'B'}]},{name:'B',members:[{id:'c',name:'CPU',img:'c',cpu:true,rank:'B'}]}],representatives(){},finish(i,slots){finished=slots;}};
+  const api={screen,esc:s=>s,valid:()=>valid,begin:()=>1,top(){},beep(){},round:()=>0,solo:()=>false,games:[{key,title:key}],teams:()=>[{name:'A',members:[{id:'p',name:'Player',img:'p',cpu:false,rank:'B'}]},{name:'B',members:[{id:'c',name:'CPU',img:'c',cpu:true,rank:'B'}]}],representatives(){},finish(i,slots){finished=slots;}};
   if(teamsOverride)api.teams=()=>teamsOverride;
   const window={MobPartyCore:{cpuScore:()=>50}};
-  const math=Object.create(Math);math.random=()=>random;
+  const math=Object.create(Math);math.random=()=>{randomCalls++;return random};
   vm.runInNewContext(fs.readFileSync(require.resolve('../party-games.js'),'utf8'),{window,Math:math,setTimeout(fn,ms){timers.set(++id,{fn,time:clock+ms});return id},clearTimeout(i){timers.delete(i)}});
   window.MobPartyGames.create(api).start(0);
   const settle=async()=>{for(let i=0;i<15;i++)await Promise.resolve();};
-  return {settle,get html(){return html},get buttons(){return buttons},get tiles(){return tiles},get finished(){return finished},async click(i=0){assert.ok(buttons[i]?.onclick,html);buttons[i].onclick();await settle();},async tick(){const next=[...timers].sort((a,b)=>a[1].time-b[1].time)[0];if(!next)return false;clock=next[1].time;timers.delete(next[0]);next[1].fn();await settle();return true;}};
+  return {settle,abort(){valid=false},get randomCalls(){return randomCalls},get html(){return html},get buttons(){return buttons},get tiles(){return tiles},get finished(){return finished},async click(i=0){assert.ok(buttons[i]?.onclick,html);buttons[i].onclick();await settle();},async tick(){const next=[...timers].sort((a,b)=>a[1].time-b[1].time)[0];if(!next)return false;clock=next[1].time;timers.delete(next[0]);next[1].fn();await settle();return true;}};
 }
 test('death-game elimination waits for explicit acknowledgement and scores once',async()=>{
   const h=setup('deathGameChallenge');await h.settle();await h.click();
@@ -64,4 +64,15 @@ for(const key of ['treasureRuneParty','treasureDuoParty'])test(key+' completes a
   for(let i=0;i<200&&!h.finished;i++){if(h.buttons.some(b=>b.onclick))await h.click();else assert.ok(await h.tick());}
   assert.equal(h.finished.length,4);assert.ok(h.finished.every(s=>Number.isFinite(s.score)&&s.score>=0&&s.score<=100));
   if(key==='treasureDuoParty'){assert.equal(h.finished[0].score,h.finished[1].score);assert.equal(h.finished[2].score,h.finished[3].score);}
+});
+
+for(const outcome of ['skip','auto','abort'])test('final three doors preserve winner, RNG and lifecycle: '+outcome,async()=>{
+ const teams=Array.from({length:3},(_,i)=>({name:'Team '+i,members:[{id:'p'+i,name:'Player '+i,img:'p'+i+'.png',cpu:true}]}));
+ const h=setup('deathGameChallenge',.7,teams);await h.settle();
+ for(let i=0;i<30&&!h.html.includes('id="finalDoors"');i++){if(h.buttons.some(b=>b.onclick))await h.click();else await h.tick()}
+ assert.match(h.html,/id="finalDoors"/);assert.equal((h.html.match(/class="party-final-door /g)||[]).length,3);assert.equal((h.html.match(/<img /g)||[]).length,1);
+ const winner=h.html.match(/<img src="(p\d)\.png"/)[1],calls=h.randomCalls;
+ if(outcome==='abort'){h.abort();while(await h.tick()){}assert.equal(h.finished,null);return}
+ if(outcome==='skip'){const click=h.buttons[0].onclick;click();click();await h.settle()}else{await h.tick();await h.tick()}
+ assert.equal(h.randomCalls,calls);assert.match(h.html,/RESULT/);await h.click();assert.equal(h.finished.filter(s=>s.score===100).length,1);assert.equal(h.finished.find(s=>s.score===100).id,winner);
 });

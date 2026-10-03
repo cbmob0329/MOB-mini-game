@@ -23,3 +23,5 @@ test('repechage can select the renamed two-circle overlap, never the removed mas
   assert.equal(program.repechage[0],'overlap');
   assert.ok(!program.repechage.includes('overlapMaster'));
 });
+
+test('front flip world frame includes ground and rotated apex at mobile and desktop sizes',()=>{for(const [w,h] of [[320,170],[350,210],[900,560]]){const low=Math.min(0,338-h*.45-100),c=L.fitWorldFrame({worldWidth:1860,viewportWidth:w,viewportHeight:h,minY:low,maxY:372,focusX:72});assert.ok(low*c.scale+c.offsetY>=0);assert.ok(372*c.scale+c.offsetY<=h);assert.ok(c.cameraX>=0);}});

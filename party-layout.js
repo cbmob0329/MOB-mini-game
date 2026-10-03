@@ -20,7 +20,8 @@
     const scale=Math.max(.01,viewportWidth/worldWidth),viewHeight=viewportHeight/scale;
     return {scale,viewHeight,y:Math.max(0,Math.min(Math.max(0,worldHeight-viewHeight),focusY-viewHeight*anchor))};
   }
-  root.MobPartyLayout={repair,readable,ratio,worldCamera};
+  function fitWorldFrame({worldWidth,viewportWidth,viewportHeight,minY=0,maxY,focusX}){const scale=Math.max(.01,Math.min(1,(viewportHeight-12)/(maxY-minY)));const viewWidth=viewportWidth/scale;return {scale,offsetY:(viewportHeight-(maxY-minY)*scale)/2-minY*scale,cameraX:Math.max(0,Math.min(Math.max(0,worldWidth-viewWidth),focusX-120/scale))};}
+  root.MobPartyLayout={repair,readable,ratio,worldCamera,fitWorldFrame};
   if(typeof module!=='undefined')module.exports=root.MobPartyLayout;
   if(typeof document==='undefined')return;
   const screen=document.getElementById('screen');let pending=false;

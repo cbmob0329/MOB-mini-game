@@ -9,7 +9,7 @@ function finals(){const s=qualified();for(let i=0;i<3;i++)play(s,t=>100-t*3);ret
 test('schedule matches fixed games, minority third round and four bonus rounds',()=>{
   const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','reaction','minorityMob','rouletteChoice','catcher','individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob']);
   assert.deepEqual(s.schedule.repechage,['longJumpMob','cardShop','bowling3DMob']);
-  assert.deepEqual(s.schedule.final,['monsterBoxMob','launch','bikeJump','waterSkip','deathGameChallenge','focusBombMob']);
+  assert.deepEqual(s.schedule.final,['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge']);
   for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,4,6,9].includes(i)?2:1);play(s,t=>100-t);}
 });
 test('40 independent entrants, direct eight and reset twelve-team repechage',()=>{

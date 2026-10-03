@@ -452,6 +452,17 @@ GAMES.push(
  {no:167,key:'rallyArcadeMob',title:'モブくんラリー',sub:'下部スティックで2球を返す。8秒生存で100点。落球時は最大99点',legacy:190},
  {no:168,key:'potteryArcadeMob',title:'モブくんろくろの名人',sub:'10秒。上下で手の高さ、PRESSで成形。8段の輪郭改善率で0〜100点',legacy:191}
 );
+GAMES.push(
+  {"no":169,"key":"galaxyArcadeMob","title":"モブくんギャラクシー","sub":"12秒。破壊5点＋星2点−被弾15点。最大100点","legacy":192},
+  {"no":170,"key":"archeryArcadeMob","title":"モブくんのゆらゆらアーチェリー","sub":"7秒。下部スティックで移動、照準してSHOOT。10枚各10点","legacy":193},
+  {"no":171,"key":"lockArcadeMob","title":"モブくんのくるくるロック","sub":"10回各1点、10点満点。大会では1点を10ptに換算","legacy":194},
+  {"no":172,"key":"shieldArcadeMob","title":"モブくんシールド360","sub":"スティックを火球の方向へ。10発各10点、最大100点","legacy":195},
+  {"no":173,"key":"dockingArcadeMob","title":"モブくんの宇宙ドッキング","sub":"障害物を避け、同じ船型に位置合わせ。離して静止で確定。最大100点","legacy":196},
+  {"no":174,"key":"cargoArcadeMob","title":"モブくんの吊り荷ピタッ","sub":"風と波を読んでLOWERを1回。着地時の重なり率で最大100点","legacy":197},
+  {"no":175,"key":"pancakeArcadeMob","title":"モブくんのパンケーキ返し","sub":"中央の緑でFLIP。3枚の合計で最大100点","legacy":198},
+  {"no":176,"key":"firehoseArcadeMob","title":"モブくん消防ホース","sub":"10秒。角度を上下で調整しWATER。水切れ即終了。最大100点","legacy":199},
+  {"no":177,"key":"discArcadeMob","title":"モブくんカーブディスク","sub":"パワー確定→THROW。85%以上で1体、90%以上で2体貫通。3投最大100点","legacy":200}
+);
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,21,23,25,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,81,82,92,147,150,159,160].includes(g.no)).map(g=>g.key));
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob','minorityMob','focusBombMob']);
@@ -582,7 +593,7 @@ function freshState(){
     playlist:[],
     roundIndex:0,
     records:{
-      juiceArcadeMob:{},rallyArcadeMob:{},potteryArcadeMob:{},bananaBoatMob:{},warpedWallMob:{},santaClausMob:{},minorityMob:{},focusBombMob:{},colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
+      galaxyArcadeMob:{},archeryArcadeMob:{},lockArcadeMob:{},shieldArcadeMob:{},dockingArcadeMob:{},cargoArcadeMob:{},pancakeArcadeMob:{},firehoseArcadeMob:{},discArcadeMob:{},juiceArcadeMob:{},rallyArcadeMob:{},potteryArcadeMob:{},bananaBoatMob:{},warpedWallMob:{},santaClausMob:{},minorityMob:{},focusBombMob:{},colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
       factory:{},catcher:{},tidy:{},ski:{},slot:{},rope:{},pk:{},cut:{},climb:{},errand:{},dontHitMob:{},mobStop:{},overlap:{},shutter:{},darts:{},parachute:{},mobCount:{},brake:{},feint:{},bomb:{},overlapMaster:{},jumpingMob:{},heroMaybe:{},popularGame:{},planetEnergy:{},painter:{},bikeJump:{},trampoline:{},mobTrain:{},giantMob:{},wizardMob:{},brawlerMob:{},summonerMob:{},blackjackMob:{},mobIssen:{},crowEscape:{},dancingMob:{},guardianMob:{},mob50m:{},sniperMob:{},mobRacePredict:{},mobRocket:{},bossDuel:{},plushCatcher:{},toyOnOff:{},dodgeballMob:{},amidakujiMob:{},katanaSmith:{},homeRunMob:{},mobMisfortune:{},aimMob:{},mobDice:{},mobCombo:{},electricMaze:{},cardShop:{},
         bungeeMob:{},waterSlide:{},
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
@@ -658,6 +669,7 @@ function isGameRunValid(runId){
 }
 function gameTop(){requestAnimationFrame(()=>{try{window.scrollTo(0,0)}catch(e){};screen.scrollTop=0;});}
 function gameFit(){
+  const classic=GAMES[activeGameIndex];if(screen.dataset)screen.dataset.classic=classic?.no>=1&&classic.no<=10?classic.key:'';
   screen.classList.add("gameplay-fit");
   updatePartyViewport();
   gameTop();
@@ -670,6 +682,7 @@ function updatePartyViewport(){
 window.addEventListener('resize',updatePartyViewport);
 window.visualViewport?.addEventListener('resize',updatePartyViewport);
 function clearGameFit(){
+  delete screen.dataset?.classic;
   screen.classList.remove("illustrated-intro");window.MobPresentation?.cancel();
   screen.classList.remove("gameplay-fit");
 }
@@ -2956,7 +2969,7 @@ function renderModeLobby(){
 }
 
 function scoreRuleForGame(index){
-  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(GAMES[index]?.key))return GAMES[index].sub;
+  if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(GAMES[index]?.key))return GAMES[index].sub;
   if(GAMES[index]?.key==='bananaBoatMob')return '30個中1個4点 / 25個で100点';
   if(GAMES[index]?.key==='warpedWallMob')return '4段階・1段最大25点 / 登頂精度で加点、最大100点';
   if(GAMES[index]?.key==='santaClausMob')return '12秒 / ソリに届けると大25・中12・小7点 / 最大100点';
@@ -3153,7 +3166,7 @@ function showGameIntro(index){
   const legacyIndex=legacyGameIndex(index);
   let rules="";
 
-  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(g.key)){rules='<li>'+esc(g.sub)+'</li>';}
+  if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(g.key)){rules='<li>'+esc(g.sub)+'</li>';}
   else if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key)){
     rules=window.MobSeasonGames.rules[g.key].map(text=>'<li>'+esc(text)+'</li>').join('');
   }else if(g.key==='mobSpeedRacer'){
@@ -3493,7 +3506,7 @@ function humanReady(gameIndex,humanIndex){
     const badge=document.getElementById('partyActivePlayer')||document.createElement('span');badge.id='partyActivePlayer';badge.innerHTML=imgTag(p)+'<b>'+esc(p.name)+'</b>';document.querySelector('.topbar').appendChild(badge);
     const runId=beginGameRun(gameIndex);
 
-    if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(g.key))startApprovedArcade(g.key,p,humanIndex,runId);
+    if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(g.key))startApprovedArcade(g.key,p,humanIndex,runId);
     else if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key))startSeasonGame(g.key,p,humanIndex,runId);
     else if(legacyIndex===0)startReaction(p,humanIndex,runId);
     else if(legacyIndex===1)startMemory(p,humanIndex,runId);
@@ -3750,7 +3763,16 @@ function playBadge(humanIndex){
 }
 
 // GAME 1 -------------------------------------------------
+function partyRunCallbacks(runId){
+  const frames=new Set(),timers=new Set();
+  partyCleanups.push(()=>{frames.forEach(id=>window.cancelAnimationFrame(id));timers.forEach(id=>window.clearTimeout(id));frames.clear();timers.clear();});
+  return {
+    requestAnimationFrame(fn){const id=window.requestAnimationFrame(now=>{frames.delete(id);if(isGameRunValid(runId))fn(now)});frames.add(id);return id;},
+    setTimeout(fn,ms){const id=window.setTimeout(()=>{timers.delete(id);if(isGameRunValid(runId))fn()},ms);timers.add(id);return id;}
+  };
+}
 async function startReaction(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
 
   screen.innerHTML=`
@@ -3796,7 +3818,7 @@ async function startReaction(p,humanIndex,runId){
     state.records.reaction[p.id]=ms;
     beep(870,100);
 
-    recordScreen(
+    if(!isGameRunValid(runId))return;recordScreen(
       0,p,humanIndex,
       `${(ms/1000).toFixed(4)}<small>秒</small>`
     );
@@ -3805,6 +3827,7 @@ async function startReaction(p,humanIndex,runId){
 
 // GAME 2 -------------------------------------------------
 async function startMemory(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
   const ids=shuffle(Array.from({length:10},(_,i)=>i+1));const seq=shuffle([...ids]);let input=0,active=false;
   screen.innerHTML=`<div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんを覚えて！</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="memory-status"><div class="stat-box"><span>PHASE</span><b id="memPhase">WATCH</b></div><div class="stat-box"><span>CORRECT</span><b id="memCount">0 / 10</b></div></div><div id="memoryBoard" class="memory-board">${ids.map(id=>`<button type="button" class="memory-tile" data-id="${id}"><img src="icon/${String(id).padStart(2,"0")}.png" alt="icon ${id}" onerror="this.style.visibility='hidden'"></button>`).join("")}</div><p id="memHint" class="hint">3・2・1のあと、光る順番を覚えてください。</p>`;
@@ -3812,11 +3835,12 @@ async function startMemory(p,humanIndex,runId){
   if(!(await countdown("WATCH",runId)))return;
   for(const id of seq){if(!document.body.contains(board))return;tile(id).classList.add("showing");beep(400+id*18,55,.018);await wait(390);tile(id).classList.remove("showing");await wait(125)}
   phase.textContent="READY";hint.textContent="次の3・2・1のあと、同じ順番でタップ。";await wait(300);if(!isGameRunValid(runId))return;if(!(await countdown("TAP",runId)))return;phase.textContent="TAP";hint.textContent="光った順にタップしてください。";active=true;
-  board.addEventListener("pointerdown",async e=>{const t=e.target.closest(".memory-tile");if(!t||!active)return;const id=Number(t.dataset.id);if(id===seq[input]){t.classList.add("correct");setTimeout(()=>t.classList.remove("correct"),170);beep(730,45,.02);input++;count.textContent=`${input} / 10`;if(input===10){active=false;state.records.memory[p.id]=10;await wait(240);recordScreen(1,p,humanIndex,`10<small>/10</small>`)}}else{active=false;t.classList.add("wrong");beep(170,160,.03);state.records.memory[p.id]=input;hint.textContent="MISS";await wait(430);recordScreen(1,p,humanIndex,`${input}<small>/10</small>`)}});
+  board.addEventListener("pointerdown",async e=>{const t=e.target.closest(".memory-tile");if(!t||!active)return;const id=Number(t.dataset.id);if(id===seq[input]){t.classList.add("correct");setTimeout(()=>t.classList.remove("correct"),170);beep(730,45,.02);input++;count.textContent=`${input} / 10`;if(input===10){active=false;state.records.memory[p.id]=10;await wait(240);if(!isGameRunValid(runId))return;recordScreen(1,p,humanIndex,`10<small>/10</small>`)}}else{active=false;t.classList.add("wrong");beep(170,160,.03);state.records.memory[p.id]=input;hint.textContent="MISS";await wait(430);if(!isGameRunValid(runId))return;recordScreen(1,p,humanIndex,`${input}<small>/10</small>`)}});
 }
 
 // GAME 3 -------------------------------------------------
 async function startPuzzle(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
   const slots=shuffle(Array.from({length:12},(_,i)=>i+1));
   let next=1;
@@ -3908,6 +3932,7 @@ async function startPuzzle(p,humanIndex,runId){
 
 // GAME 4 -------------------------------------------------
 async function startLaunch(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
   let linear=0,circle=0,phase="linear",start=performance.now();
   const linearPeriod=rand(350,430);
@@ -3992,7 +4017,7 @@ async function startLaunch(p,humanIndex,runId){
     live.textContent=`${circle}%`;
     cc.classList.add("stopped");
     beep(760,80);
-    setTimeout(()=>launchAnimation(p,humanIndex,(linear+circle)/2,linear,circle),300);
+    setTimeout(()=>launchAnimation(p,humanIndex,(linear+circle)/2,linear,circle,runId),300);
   }
 
   activeAnimation=requestAnimationFrame(linearAnim);
@@ -4000,7 +4025,9 @@ async function startLaunch(p,humanIndex,runId){
   cg.addEventListener("pointerdown",stopCircle,{passive:false});
 }
 
-async function launchAnimation(p,humanIndex,power,linear,circle){
+async function launchAnimation(p,humanIndex,power,linear,circle,runId){
+  if(!isGameRunValid(runId))return;
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   const maxMeters=2000;
   const target=Math.round(Math.pow(power/100,1.55)*maxMeters*10)/10;
   const pxPerM=2.45;
@@ -4029,6 +4056,7 @@ async function launchAnimation(p,humanIndex,power,linear,circle){
 
 // GAME 5 -------------------------------------------------
 async function startStack(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
   let count=0,perfectChain=0;
   let active=null;
@@ -4380,6 +4408,7 @@ function build1990WorldRanking(laps){
 
 
 async function startGanbareMob(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
 
   let hits=0,streak=0,bonus=0,penalty=0;
@@ -4742,6 +4771,7 @@ async function startCrisis(p,humanIndex,runId){
 
 // GAME 8 -------------------------------------------------
 async function startFactory(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
   let completed=0;
   let discarded=0;
@@ -4924,7 +4954,7 @@ async function startFactory(p,humanIndex,runId){
     finished=true;
     if(timerRAF)cancelAnimationFrame(timerRAF);
     state.records.factory[p.id]=completed;
-    recordScreen(7,p,humanIndex,`${completed}<small>箱</small>`,`DISCARD ${discarded}`);
+    if(!isGameRunValid(runId))return;recordScreen(7,p,humanIndex,`${completed}<small>箱</small>`,`DISCARD ${discarded}`);
   }
 
   if(!(await countdown("FACTORY",runId)))return;
@@ -4949,6 +4979,7 @@ async function startFactory(p,humanIndex,runId){
 
 // GAME 9 -------------------------------------------------
 async function startCatcher(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
   const gameIndex=GAMES.findIndex(g=>g.key==='catcher');
   const PRIZE_COUNT=33;
@@ -5610,7 +5641,7 @@ async function startCatcher(p,humanIndex,runId){
     await wait(700);
 
     if(isGameRunValid(runId)){
-      recordScreen(
+      if(!isGameRunValid(runId))return;recordScreen(
         gameIndex,p,humanIndex,
         `${score}<small>pt</small>`,
         `${gotCount} / ${PRIZE_COUNT} GET`
@@ -5926,6 +5957,7 @@ function tidySimilarity(positions,targets){
 }
 
 async function startTidy(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
 
   const targets=generateTidyTargets();
@@ -6078,6 +6110,7 @@ function skiTimingLabel(deltaMs){
 }
 
 async function startSkiJump(p,humanIndex,runId){
+  const {requestAnimationFrame,setTimeout}=partyRunCallbacks(runId);
   gameFit();
 
   let running=false;
@@ -6195,7 +6228,7 @@ async function startSkiJump(p,humanIndex,runId){
 
     state.records.ski[p.id]=0;
     await wait(220);
-    recordScreen(10,p,humanIndex,`0.0<small>m</small>`,`NO JUMP`);
+    if(!isGameRunValid(runId))return;recordScreen(10,p,humanIndex,`0.0<small>m</small>`,`NO JUMP`);
   }
 
   async function resolveJump(delta){
@@ -6250,7 +6283,7 @@ async function startSkiJump(p,humanIndex,runId){
     state.records.ski[p.id]=Math.round(meters*10);
 
     await wait(420);
-    recordScreen(10,p,humanIndex,`${meters.toFixed(1)}<small>m</small>`,`${label} / MAX 1000m`);
+    if(!isGameRunValid(runId))return;recordScreen(10,p,humanIndex,`${meters.toFixed(1)}<small>m</small>`,`${label} / MAX 1000m`);
   }
 
   stage.addEventListener("pointerdown",e=>{
@@ -21888,10 +21921,10 @@ async function startRobotMarch(p,humanIndex,runId){
 // V10.34 GAME 83 — モブくんはモンスターマスター
 // =========================================================
 function startApprovedArcade(key,p,humanIndex,runId){
-  gameFit();const gameIndex=GAMES.findIndex(g=>g.key===key),id={juiceArcadeMob:'juice',rallyArcadeMob:'rally',potteryArcadeMob:'lathe_pottery'}[key];
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key===key),id={"juiceArcadeMob":"juice","rallyArcadeMob":"rally","potteryArcadeMob":"lathe_pottery","galaxyArcadeMob":"meteor","archeryArcadeMob":"archery","lockArcadeMob":"lock","shieldArcadeMob":"shield","dockingArcadeMob":"inertial_docking","cargoArcadeMob":"pendulum_cargo","pancakeArcadeMob":"pancake_flip_catch","firehoseArcadeMob":"ballistic_firehose","discArcadeMob":"curved_disc"}[key];
   return window.MobApprovedGames.run({id,screen,player:p,title:GAMES[gameIndex].title,esc,beep,
     valid:()=>isGameRunValid(runId),countdown:()=>countdown('READY!',runId),own:dispose=>partyCleanups.push(dispose),
-    done(score,note){if(!isGameRunValid(runId))return;state.records[key][p.id]=score;recordScreen(gameIndex,p,humanIndex,score+'<small>pt</small>',note);}
+    done(score,note){if(!isGameRunValid(runId))return;state.records[key][p.id]=score;recordScreen(gameIndex,p,humanIndex,score+(key==='lockArcadeMob'?'<small>/10点</small>':'<small>pt</small>'),note);}
   });
 }
 function startSeasonGame(key,p,humanIndex,runId){
@@ -26941,8 +26974,9 @@ async function startFrontFlipMob(p,humanIndex,runId){
     </div>`;
   const gauge=document.getElementById('flipGauge202'),marker=document.getElementById('flipMarker202'),stage=document.getElementById('flipStage202'),world=document.getElementById('flipWorld202'),mob=document.getElementById('flipMob202'),call=document.getElementById('flipCall202'),action=document.getElementById('flipAction202'),distEl=document.getElementById('flipDist202'),countEl=document.getElementById('flipCount202'),scoreEl=document.getElementById('flipScore202');
   void stage.offsetHeight;const VIEW=stage.clientWidth,H=stage.clientHeight;let phase='gauge',gaugeQ=.08,gaugeDir=1,raf=null,last=performance.now(),runStart=0,hold=false,angle=0,flips=0,distQ=.5,finished=false,x=72;
-  function camera(){const cam=clamp(x-120,0,WORLD_W-VIEW);world.style.transform=`translate3d(${-cam}px,0,0)`}
+  function camera(){const box=window.MobPartyLayout.fitWorldFrame({worldWidth:WORLD_W,viewportWidth:stage.clientWidth,viewportHeight:stage.clientHeight,minY:Math.min(0,GROUND-H*.45-100),maxY:GROUND+34,focusX:x});world.style.transformOrigin='0 0';world.style.height=(GROUND+34)+'px';world.style.transform=`translate3d(${-box.cameraX*box.scale}px,${box.offsetY}px,0) scale(${box.scale})`;}
   function place(px,py,rot=0){x=px;mob.style.transform=`translate3d(${px-31}px,${py-68}px,0) rotate(${rot}deg)`;camera()}
+  const cameraObserver=new ResizeObserver(camera);cameraObserver.observe(stage);partyCleanups.push(()=>{finished=true;hold=false;cancelAnimationFrame(raf);cameraObserver.disconnect();});
   place(72,GROUND);
   void stage.offsetHeight;
   if(!(await countdown('FRONT FLIP',runId,{transparent:true})))return;
@@ -27320,7 +27354,7 @@ function normalizeCpuRecordV152(gameIndex,p){
 }
 
 function simulateOneCpu(gameIndex,p){
-  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(GAMES[gameIndex]?.key)){state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));return false;}
+  if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(GAMES[gameIndex]?.key)){const raw=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=GAMES[gameIndex].key==='lockArcadeMob'?Math.round(raw/10):raw;return false;}
   if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(GAMES[gameIndex]?.key)){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=GAMES[gameIndex].key==='bananaBoatMob'?Math.min(100,Math.round(score/4)*4):score;return false;}
   if(p.characterRank){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuRaw(score,v=>performancePoints(gameIndex,v));return false;}
   const legacyIndex=legacyGameIndex(gameIndex);
@@ -28108,7 +28142,8 @@ async function startReverseJankenMob(p,humanIndex,runId){
 
 
 function performancePoints(gameIndex,v){
-  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
+  if(GAMES[gameIndex]?.key==='lockArcadeMob')return clamp(Math.round(v)*10,0,100);
+  if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
   if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
   if(GAMES[gameIndex]?.leagueOnly)return clamp(Math.round(v),0,100);
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
@@ -36633,7 +36668,7 @@ async function startDeathGameChallenge(p,humanIndex,runId){
   slots.forEach(s=>{if(!s.guest)state.records.deathGameChallenge[s.member.id]=s.score});
   if(state.freePlay){
     const mine=slots.find(s=>s.member.id===p.id);
-    gameSessionActive=false;activeGameIndex=-1;cancelCountdown();cancelActiveAnimation();
+    cancelCountdown();cancelActiveAnimation();
     return recordScreen(gameIndex,p,humanIndex,`${mine?.score||0}<small>/100 pt</small>`,mine?.alive?'DEATH GAME WINNER!':'DEATH GAME / 脱落');
   }
   finishGroupGameV177(gameIndex);
@@ -38460,19 +38495,19 @@ async function startTokotokoCatcher(p,humanIndex,runId){
   const chutePile=document.getElementById('ttkChutePile188');
 
   void stage.offsetHeight;
-  const W=stage.clientWidth,H=stage.clientHeight;
-  const CENTER_X=W*.52,START_Y=18,FIG_Y=H*.84,MAX_HEAD_Y=H*.61;
-  const CHUTE_X=54,CHUTE_Y=H-40;
+  let W=stage.clientWidth,H=stage.clientHeight;
+  let CENTER_X=W*.52,START_Y=18,FIG_Y=H*.84,MAX_HEAD_Y=H*.61;
+  let CHUTE_X=54,CHUTE_Y=H-40;
 
   // Treat the visible PRIZE box as a solid left wall.
   const stageRect=stage.getBoundingClientRect();
   const chuteRect=chute.getBoundingClientRect();
-  const WALK_MIN_X=clamp(
+  let WALK_MIN_X=clamp(
     chuteRect.right-stageRect.left+30,
     94,
     W*.34
   );
-  const WALK_MAX_X=W-28;
+  let WALK_MAX_X=W-28;
 
   const speeds=[62,60,64,58,61,63,59];
 
@@ -38494,6 +38529,7 @@ async function startTokotokoCatcher(p,humanIndex,runId){
     stage.appendChild(el);f.el=el;
   });
 
+  const layoutObserver=new ResizeObserver(()=>{if(!isGameRunValid(runId))return;const oldW=W,oldH=H;W=stage.clientWidth;H=stage.clientHeight;CENTER_X=W*.52;FIG_Y=H*.84;MAX_HEAD_Y=H*.61;CHUTE_Y=H-40;const sr=stage.getBoundingClientRect(),cr=chute.getBoundingClientRect();WALK_MIN_X=clamp(cr.right-sr.left+30,94,W*.34);WALK_MAX_X=W-28;craneX=clamp(craneX*W/oldW,48,W-48);craneY*=H/oldH;figs.forEach(f=>{f.x*=W/oldW;f.y*=H/oldH});renderCrane();renderFigures(performance.now());});layoutObserver.observe(stage);partyCleanups.push(()=>{active=false;finished=true;cancelAnimationFrame(raf);layoutObserver.disconnect();});
   const armSpread=()=>40+lockedWidth*1.02;
   const widthQuality=()=>clamp(1-Math.abs(lockedWidth-70)/48,0,1);
 
