@@ -21889,14 +21889,10 @@ async function startRobotMarch(p,humanIndex,runId){
 // =========================================================
 function startApprovedArcade(key,p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key===key),id={juiceArcadeMob:'juice',rallyArcadeMob:'rally',potteryArcadeMob:'lathe_pottery'}[key];
-  const frame=document.createElement('iframe');frame.title=GAMES[gameIndex].title;frame.style.cssText='display:block;width:100%;height:100%;min-height:0;border:0;background:#11182a';
-  screen.innerHTML='';screen.appendChild(frame);screen.style.overflow='hidden';let finished=false,ready=false;
-  const clean=()=>{window.removeEventListener('message',receive);screen.style.overflow='';};partyCleanups.push(clean);
-  async function receive(e){if(e.source!==frame.contentWindow||!isGameRunValid(runId)||e.data?.game!==id)return;
-    if(e.data.type==='mob-arcade-ready'&&!ready){ready=true;if(await countdown('READY!',runId)){frame.contentWindow.postMessage({type:'mob-arcade-start',image:new URL(p.img,location.href).href},'*');frame.focus();}}
-    if(e.data.type==='mob-arcade-result'&&ready&&!finished&&Number.isFinite(e.data.score)){finished=true;const score=clamp(Math.round(e.data.score),0,100);state.records[key][p.id]=score;clean();recordScreen(gameIndex,p,humanIndex,score+'<small>pt</small>',String(e.data.note||''));}
-  }
-  window.addEventListener('message',receive);frame.src='party-approved-arcade.html?game='+id;
+  return window.MobApprovedGames.run({id,screen,player:p,title:GAMES[gameIndex].title,esc,beep,
+    valid:()=>isGameRunValid(runId),countdown:()=>countdown('READY!',runId),own:dispose=>partyCleanups.push(dispose),
+    done(score,note){if(!isGameRunValid(runId))return;state.records[key][p.id]=score;recordScreen(gameIndex,p,humanIndex,score+'<small>pt</small>',note);}
+  });
 }
 function startSeasonGame(key,p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key===key);
