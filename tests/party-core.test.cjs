@@ -4,9 +4,9 @@ const fs=require('node:fs');
 const path=require('node:path');
 const core=require('../party-core.js');
 function seeded(seed=7){return ()=>{seed=(seed*1664525+1014704223)>>>0;return seed/4294967296;};}
-test('98 unique characters with exact-case existing assets and private ranks',()=>{
-  assert.equal(core.roster.length,98);
-  assert.equal(new Set(core.roster.map(c=>c.id)).size,98);
+test('183 unique characters with exact-case existing assets and private ranks',()=>{
+  assert.equal(core.roster.length,183);
+  assert.equal(new Set(core.roster.map(c=>c.id)).size,183);
   for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S-?|[ABCD][+-]?|E|F)(-(SS|S-?|[ABCD][+-]?|E|F))?$/);}
 });
 test('8 teams of 4 are unique and exclude all human selections, including collaboration selections',()=>{
