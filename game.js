@@ -447,6 +447,11 @@ GAMES.push(
   {no:164,key:'warpedWallMob',title:'モブくんのそり立つ壁',sub:'白線でダッシュ力を決め、オレンジラインで踏み切る4段階の壁。1段最大25点',legacy:187},
   {no:165,key:'santaClausMob',title:'モブくんはサンタクロース',sub:'12秒でソリへプレゼントを運ぼう！ 大25点・中12点・小7点、最大100点',legacy:188}
 );
+GAMES.push(
+ {no:166,key:'juiceArcadeMob',title:'モブくんのピッタリジュース',sub:'1回だけ注ぐ。目標±1%で100点、誤差1%ごとに4点減点。8秒',legacy:189},
+ {no:167,key:'rallyArcadeMob',title:'モブくんラリー',sub:'下部スティックで2球を返す。8秒生存で100点。落球時は最大99点',legacy:190},
+ {no:168,key:'potteryArcadeMob',title:'モブくんろくろの名人',sub:'10秒。上下で手の高さ、PRESSで成形。8段の輪郭改善率で0〜100点',legacy:191}
+);
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,21,23,25,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,81,82,92,147,150,159,160].includes(g.no)).map(g=>g.key));
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob','minorityMob','focusBombMob']);
@@ -577,7 +582,7 @@ function freshState(){
     playlist:[],
     roundIndex:0,
     records:{
-      bananaBoatMob:{},warpedWallMob:{},santaClausMob:{},minorityMob:{},focusBombMob:{},colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
+      juiceArcadeMob:{},rallyArcadeMob:{},potteryArcadeMob:{},bananaBoatMob:{},warpedWallMob:{},santaClausMob:{},minorityMob:{},focusBombMob:{},colorBridgeParty:{},treasureEscapeParty:{},treasureRuneParty:{},treasureDuoParty:{},reaction:{},memory:{},puzzle:{},launch:{},stack:{},breakdance:{},
       factory:{},catcher:{},tidy:{},ski:{},slot:{},rope:{},pk:{},cut:{},climb:{},errand:{},dontHitMob:{},mobStop:{},overlap:{},shutter:{},darts:{},parachute:{},mobCount:{},brake:{},feint:{},bomb:{},overlapMaster:{},jumpingMob:{},heroMaybe:{},popularGame:{},planetEnergy:{},painter:{},bikeJump:{},trampoline:{},mobTrain:{},giantMob:{},wizardMob:{},brawlerMob:{},summonerMob:{},blackjackMob:{},mobIssen:{},crowEscape:{},dancingMob:{},guardianMob:{},mob50m:{},sniperMob:{},mobRacePredict:{},mobRocket:{},bossDuel:{},plushCatcher:{},toyOnOff:{},dodgeballMob:{},amidakujiMob:{},katanaSmith:{},homeRunMob:{},mobMisfortune:{},aimMob:{},mobDice:{},mobCombo:{},electricMaze:{},cardShop:{},
         bungeeMob:{},waterSlide:{},
         paperPlane:{},tankMob:{},curlingMob:{},bubbleMob:{},
@@ -2951,6 +2956,7 @@ function renderModeLobby(){
 }
 
 function scoreRuleForGame(index){
+  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(GAMES[index]?.key))return GAMES[index].sub;
   if(GAMES[index]?.key==='bananaBoatMob')return '30個中1個4点 / 25個で100点';
   if(GAMES[index]?.key==='warpedWallMob')return '4段階・1段最大25点 / 登頂精度で加点、最大100点';
   if(GAMES[index]?.key==='santaClausMob')return '12秒 / ソリに届けると大25・中12・小7点 / 最大100点';
@@ -3147,7 +3153,8 @@ function showGameIntro(index){
   const legacyIndex=legacyGameIndex(index);
   let rules="";
 
-  if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key)){
+  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(g.key)){rules='<li>'+esc(g.sub)+'</li>';}
+  else if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key)){
     rules=window.MobSeasonGames.rules[g.key].map(text=>'<li>'+esc(text)+'</li>').join('');
   }else if(g.key==='mobSpeedRacer'){
     rules=`<li>タッグ2対2専用。1番手がタイヤ、2番手が車体を描きます。</li><li>描いた車で同時スタートし、横スクロール2km先のゴールを先に抜けたチームが勝利。</li>`;
@@ -3486,7 +3493,8 @@ function humanReady(gameIndex,humanIndex){
     const badge=document.getElementById('partyActivePlayer')||document.createElement('span');badge.id='partyActivePlayer';badge.innerHTML=imgTag(p)+'<b>'+esc(p.name)+'</b>';document.querySelector('.topbar').appendChild(badge);
     const runId=beginGameRun(gameIndex);
 
-    if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key))startSeasonGame(g.key,p,humanIndex,runId);
+    if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(g.key))startApprovedArcade(g.key,p,humanIndex,runId);
+    else if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(g.key))startSeasonGame(g.key,p,humanIndex,runId);
     else if(legacyIndex===0)startReaction(p,humanIndex,runId);
     else if(legacyIndex===1)startMemory(p,humanIndex,runId);
     else if(legacyIndex===2)startPuzzle(p,humanIndex,runId);
@@ -21879,6 +21887,17 @@ async function startRobotMarch(p,humanIndex,runId){
 // =========================================================
 // V10.34 GAME 83 — モブくんはモンスターマスター
 // =========================================================
+function startApprovedArcade(key,p,humanIndex,runId){
+  gameFit();const gameIndex=GAMES.findIndex(g=>g.key===key),id={juiceArcadeMob:'juice',rallyArcadeMob:'rally',potteryArcadeMob:'lathe_pottery'}[key];
+  const frame=document.createElement('iframe');frame.title=GAMES[gameIndex].title;frame.style.cssText='display:block;width:100%;height:100%;min-height:0;border:0;background:#11182a';
+  screen.innerHTML='';screen.appendChild(frame);screen.style.overflow='hidden';let finished=false,ready=false;
+  const clean=()=>{window.removeEventListener('message',receive);screen.style.overflow='';};partyCleanups.push(clean);
+  async function receive(e){if(e.source!==frame.contentWindow||!isGameRunValid(runId)||e.data?.game!==id)return;
+    if(e.data.type==='mob-arcade-ready'&&!ready){ready=true;if(await countdown('READY!',runId)){frame.contentWindow.postMessage({type:'mob-arcade-start',image:new URL(p.img,location.href).href},'*');frame.focus();}}
+    if(e.data.type==='mob-arcade-result'&&ready&&!finished&&Number.isFinite(e.data.score)){finished=true;const score=clamp(Math.round(e.data.score),0,100);state.records[key][p.id]=score;clean();recordScreen(gameIndex,p,humanIndex,score+'<small>pt</small>',String(e.data.note||''));}
+  }
+  window.addEventListener('message',receive);frame.src='party-approved-arcade.html?game='+id;
+}
 function startSeasonGame(key,p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key===key);
   return window.MobSeasonGames.run({key,screen,player:p,title:GAMES[gameIndex].title,esc,beep,valid:()=>isGameRunValid(runId),countdown:()=>countdown('READY!',runId),done(score,note){if(!isGameRunValid(runId))return;state.records[key][p.id]=score;recordScreen(gameIndex,p,humanIndex,score+'<small>pt</small>',note);}});
@@ -27305,6 +27324,7 @@ function normalizeCpuRecordV152(gameIndex,p){
 }
 
 function simulateOneCpu(gameIndex,p){
+  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(GAMES[gameIndex]?.key)){state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));return false;}
   if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(GAMES[gameIndex]?.key)){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=GAMES[gameIndex].key==='bananaBoatMob'?Math.min(100,Math.round(score/4)*4):score;return false;}
   if(p.characterRank){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuRaw(score,v=>performancePoints(gameIndex,v));return false;}
   const legacyIndex=legacyGameIndex(gameIndex);
@@ -28092,6 +28112,7 @@ async function startReverseJankenMob(p,humanIndex,runId){
 
 
 function performancePoints(gameIndex,v){
+  if(['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
   if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);
   if(GAMES[gameIndex]?.leagueOnly)return clamp(Math.round(v),0,100);
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[gameIndex]?.key))return clamp(Math.round(v),0,100);

@@ -46,10 +46,10 @@ test('CPU tag heats return four finite scores and team-shared results',()=>{
     if(key==='summonMaster')assert.equal(Object.values(result).reduce((a,b)=>a+b,0),200);
   }
 });
-test('163 games have records; new games score directly on a 100-point scale',()=>{
-  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,163);
+test('166 games have records; new games score directly on a 100-point scale',()=>{
+  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,166);
   for(const g of e.GAMES)assert.ok(state.records[g.key],g.key);
-  for(const key of ['bananaBoatMob','warpedWallMob','santaClausMob','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty']){const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(i>=0);assert.equal(e.performancePoints(i,80),80);}
+  for(const key of ['juiceArcadeMob','rallyArcadeMob','potteryArcadeMob','bananaBoatMob','warpedWallMob','santaClausMob','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty']){const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(i>=0);assert.equal(e.performancePoints(i,80),80);}
 });
 test('fast CPU death game keeps the exact elimination distribution',()=>{
   const e=engine(),players=Array.from({length:40},(_,i)=>({id:'leagueCpu'+i,name:'CPU '+i,cpu:true,characterRank:'A'}));
@@ -79,7 +79,7 @@ test('rank-based CPU record generation yields finite records and scores for ever
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,135);
+  assert.equal(e.activeGameIndices().length,138);
   const active=e.activeGameIndices().map(i=>e.GAMES[i].key);
   for(const key of ['killLeaderMob','mobSpeedRacer','mineCartMob','mobCount','feint','giantHammer3DMob'])assert.ok(!active.includes(key),key);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
