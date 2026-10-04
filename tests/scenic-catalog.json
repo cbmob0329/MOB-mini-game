@@ -1,0 +1,142 @@
+[
+  {
+    "no": 11,
+    "key": "slot",
+    "title": "モブくんスロット",
+    "sub": "キャラクタースロットでコイン勝負",
+    "legacy": 11
+  },
+  {
+    "no": 12,
+    "key": "pk",
+    "title": "モブくんPK",
+    "sub": "10本のシュートを止める",
+    "legacy": 13
+  },
+  {
+    "no": 13,
+    "key": "cut",
+    "title": "モブくんカットゲーム",
+    "sub": "指定%を感覚で切り分ける",
+    "legacy": 15
+  },
+  {
+    "no": 14,
+    "key": "errand",
+    "title": "お使いモブくん",
+    "sub": "1000円を10秒で使い切る",
+    "legacy": 17
+  },
+  {
+    "no": 15,
+    "key": "dontHitMob",
+    "title": "モブくんを叩かないで",
+    "sub": "モグラだけを叩く10秒勝負",
+    "legacy": 18
+  },
+  {
+    "no": 16,
+    "key": "mobStop",
+    "title": "モブくんストップ",
+    "sub": "棒のギリギリで止める",
+    "legacy": 19
+  },
+  {
+    "no": 17,
+    "key": "overlap",
+    "title": "重なるモブくん",
+    "sub": "2つの円を10秒以内に重ねる",
+    "legacy": 20
+  },
+  {
+    "no": 18,
+    "key": "shutter",
+    "title": "モブくんシャッターチャンス",
+    "sub": "ジャンプの頂点を撮影",
+    "legacy": 21
+  },
+  {
+    "no": 19,
+    "key": "darts",
+    "title": "ダーツ1投勝負",
+    "sub": "縦・横ゲージの中央を狙う",
+    "legacy": 23
+  },
+  {
+    "no": 20,
+    "key": "parachute",
+    "title": "モブくんとパラシュート",
+    "sub": "開くタイミングで着地点を狙う",
+    "legacy": 24
+  },
+  {
+    "no": 21,
+    "key": "mobCount",
+    "title": "モブくんは何人？",
+    "sub": "3秒で人数を見抜く",
+    "legacy": 25
+  },
+  {
+    "no": 22,
+    "key": "brake",
+    "title": "モブくんブレーキチキンレース",
+    "sub": "障害物ギリギリで瞬間停止",
+    "legacy": 26
+  },
+  {
+    "no": 23,
+    "key": "feint",
+    "title": "モブくんは騙されやすい",
+    "sub": "見た目が同じ本物のGO!を待つ",
+    "legacy": 27
+  },
+  {
+    "no": 24,
+    "key": "bomb",
+    "title": "爆弾チキンレース",
+    "sub": "0.000秒直前でSTOP",
+    "legacy": 28
+  },
+  {
+    "no": 25,
+    "key": "overlapMaster",
+    "title": "重なりモブくん",
+    "sub": "4つの円を同時に重ねる",
+    "legacy": 29
+  },
+  {
+    "no": 26,
+    "key": "jumpingMob",
+    "title": "ジャンピングモブくん",
+    "sub": "ホッピングで台を乗り継ぐ",
+    "legacy": 30
+  },
+  {
+    "no": 27,
+    "key": "heroMaybe",
+    "title": "モブくんは勇者かも",
+    "sub": "13秒で勇者を育てる",
+    "legacy": 31
+  },
+  {
+    "no": 28,
+    "key": "popularGame",
+    "title": "アクションモブくん",
+    "sub": "モブくんでモグラ踏み",
+    "legacy": 32
+  },
+  {
+    "no": 29,
+    "key": "planetEnergy",
+    "title": "モブくんは破壊神",
+    "sub": "3回チャージして高層ビルを貫く",
+    "legacy": 33
+  },
+  {
+    "no": 30,
+    "key": "painter",
+    "title": "モブくんは画家志望",
+    "sub": "猫の顔型を1回で綺麗になぞる",
+    "legacy": 34
+  }
+]
