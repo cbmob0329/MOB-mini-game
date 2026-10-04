@@ -9,14 +9,14 @@ function run(api){
   const canvas=shell.querySelector('canvas'),ctx=canvas.getContext('2d'),world=shell.querySelector('.season-world'),controls=shell.querySelector('[data-controls]'),timer=shell.querySelector('[data-time]'),scoreEl=shell.querySelector('[data-score]');
   const defs=[],TAU=Math.PI*2,W=400,H=440;
   const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t,dist=(a,b,c,d)=>Math.hypot(a-c,b-d),adiff=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b)),rnd=(a,b)=>b===undefined?Math.random()*a:a+Math.random()*(b-a);
-  let time=0,score=0,fxs=[],disposed=false,active=false,ended=false,delivered=false,raf=0,last=0,observer=null,disposeStick=()=>{},assetTimer=0,settleAsset=()=>{};
+  let time=0,score=0,fxs=[],disposed=false,active=false,ended=false,delivered=false,raf=0,last=0,observer=null,disposeStick=()=>{},assetTimer=0,resultAt=0,settleAsset=()=>{};
   const held=new Set(),sources=new Set();let pointer=null;
   const actor=new Image();
   function mob(x,y,size=55,angle=0){if(!actor.complete||!actor.naturalWidth)return;ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.imageSmoothingEnabled=false;const k=size/Math.max(actor.naturalWidth,actor.naturalHeight);ctx.drawImage(actor,-actor.naturalWidth*k/2,-actor.naturalHeight*k/2,actor.naturalWidth*k,actor.naturalHeight*k);ctx.restore()}
   function beep(freq=660,d=.07){if(!disposed&&valid())api.beep(freq,d*1000,.018)}
   function fx(x,y,label,c='#fff19b'){fxs.push({x,y,label,c,life:1});beep(label.includes('MISS')?180:750)}
   function direction(){return {x:held.axisX||0,y:held.axisY||0}}
-  function end(){if(!active||ended||disposed)return;ended=true;active=false;score=Math.round(clamp(score,0,current.max))}
+  function end(){if(!active||ended||disposed)return;ended=true;active=false;resultAt=current.id==='pendulum_cargo'&&state.landed?performance.now()+1000:0;score=Math.round(clamp(score,0,current.max))}
 function rect(x,y,w,h,c,r=0){ctx.fillStyle=c;ctx.beginPath();if(r)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);ctx.fill()}
 function circle(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,Math.max(0,r),0,TAU);ctx.fill()}
 function line(x,y,a,b,c,w=1){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(a,b);ctx.stroke()}
@@ -97,7 +97,7 @@ defs.push({
     ctx.save();ctx.translate(s.x,s.y);
     ellipse(0,12,31,13,'#00000055');poly([[-25,-20],[-5,-12],[23,-8],[31,0],[23,8],[-5,12],[-25,20],[-18,0]],'#e1e8e9');
     poly([[-23,19],[22,8],[27,2],[-3,4]],'#758baf');rect(-19,-15,11,30,'#7189a4',3);ellipse(0,0,14,11,'#314f71');mob(0,0,26);line(4,-10,14,-5,'#c4faff',2);ctx.restore();
-    b7panel('KEPLER STATION / DOCK 07','輪郭を合わせ、離して静止で確定');
+    b7panel('KEPLER STATION / DOCK 07','動く岩を避けて、着陸！で確定');
   },
   summary:s=>s.locked?'接続成功！ 緑のエリアに入って100点。':s.active?`接続口まで${Math.round(Math.hypot(s.x-294,s.y-166))}px。近さで採点。`:'小艇を動かしていないため0点。'
 });
@@ -382,11 +382,12 @@ shieldGame.update=function(s,dt){shieldUpdate.call(this,s,dt);for(const b of s.b
 function dockShape(x,y,color){ctx.save();ctx.translate(x,y);poly([[-25,-20],[-5,-12],[23,-8],[31,0],[23,8],[-5,12],[-25,20],[-18,0]],color);ellipse(0,0,14,11,'#314f71');ctx.restore()}
 function dockAccuracy(s){return 100*clamp(1-Math.hypot(s.x-294,s.y-166)/40)}
 const dockGame=gameById('inertial_docking'),dockInit=dockGame.init,dockDraw=dockGame.draw;
-dockGame.init=()=>({...dockInit(),hold:0,obstacles:[{x:161,y:246,r:25},{x:223,y:113,r:22},{x:266,y:292,r:25}]});
-dockGame.rules='岩を避け、同じ船型の輪郭を重ねよう。スティックを離して0.35秒静止すると接続確定。';dockGame.description='障害物を避けて、船型の位置をぴったり合わせよう。';dockGame.scoring='輪郭中心の位置誤差0pxで100点、40pxで0点。接続確定時に終了。';
-dockGame.update=function(s,dt){if(s.resolved)return;const d=direction(),moving=Math.hypot(d.x,d.y)>.03;if(moving)s.active=true;s.thrustX=d.x;s.thrustY=d.y;s.vx=lerp(s.vx,d.x*180,1-Math.exp(-(moving?19:27)*dt));s.vy=lerp(s.vy,d.y*180,1-Math.exp(-(moving?19:27)*dt));s.x=clamp(s.x+s.vx*dt,28,340);s.y=clamp(s.y+s.vy*dt,52,386);for(const o of s.obstacles){let dx=s.x-o.x,dy=s.y-o.y,n=Math.hypot(dx,dy),r=o.r+23;if(n<r){s.x=o.x+(dx/(n||1)||1)*r;s.y=o.y+dy/(n||1)*r;s.vx=s.vy=0}}score=s.active?dockAccuracy(s):0;s.hold=s.active&&!moving&&Math.hypot(s.vx,s.vy)<4&&Math.hypot(s.x-294,s.y-166)<27?s.hold+dt:0;if(s.hold>=.35){s.locked=s.resolved=true;s.vx=s.vy=0;end('DOCKED')}};
-dockGame.timeout=s=>{s.resolved=true;score=s.active?dockAccuracy(s):0;end('APPROACH COMPLETE')};
-dockGame.draw=function(s){dockDraw(s);for(const o of s.obstacles)rock(o.x,o.y,o.r,time*.3);ctx.save();ctx.globalAlpha=.65;dockShape(294,166,'#83ffbe');ctx.restore();dockShape(s.x,s.y,'#e1e8e9');mob(s.x,s.y,26);rect(100,397,270,35,'#14213e');text(s.locked?`接続完了 ${Math.round(score)}点`:'輪郭を合わせ、離して静止で確定',235,416,12,'#d1ffe3')};dockGame.summary=s=>`船型の位置一致 ${Math.round(score)}点 / 中心誤差 ${Math.hypot(s.x-294,s.y-166).toFixed(1)}px`;
+dockGame.init=()=>({...dockInit(),obstacleTime:0,obstacles:[{x:161,y:246,r:25},{x:223,y:113,r:22},{x:266,y:292,r:25}].map((o,i)=>({...o,bx:o.x,by:o.y,phase:i*2}))});
+dockGame.buttons=[{id:'land',label:'着陸！'}];dockGame.controlHint='スティックで移動 → 着陸！で位置を確定';dockGame.rules='動く岩を避けて船の輪郭を重ね、着陸！で確定。衝突は0点で終了。';dockGame.scoring='中心誤差0pxで100点、40pxで0点。着陸ボタンか時間切れで確定。衝突は0点。';
+dockGame.input=(s,e)=>{if(s.resolved||e.kind!=='buttonDown'||e.action!=='land')return;s.locked=s.resolved=true;s.vx=s.vy=0;score=dockAccuracy(s);end('LANDED')};
+dockGame.update=function(s,dt){if(s.resolved)return;s.obstacleTime+=dt;for(const o of s.obstacles){o.x=o.bx+Math.sin(s.obstacleTime*1.4+o.phase)*23;o.y=o.by+Math.sin(s.obstacleTime*.9+o.phase)*13}const d=direction(),moving=Math.hypot(d.x,d.y)>.03;if(moving)s.active=true;s.thrustX=d.x;s.thrustY=d.y;s.vx=lerp(s.vx,d.x*180,1-Math.exp(-(moving?19:27)*dt));s.vy=lerp(s.vy,d.y*180,1-Math.exp(-(moving?19:27)*dt));s.x=clamp(s.x+s.vx*dt,28,340);s.y=clamp(s.y+s.vy*dt,52,386);for(const o of s.obstacles)if(Math.hypot(s.x-o.x,s.y-o.y)<o.r+23){s.collided=s.resolved=true;s.vx=s.vy=0;score=0;end('COLLISION');return}score=s.active?dockAccuracy(s):0;};
+dockGame.timeout=s=>{if(s.resolved)return;s.resolved=true;s.vx=s.vy=0;score=dockAccuracy(s);end('TIME UP')};
+dockGame.draw=function(s){dockDraw(s);for(const o of s.obstacles)rock(o.x,o.y,o.r,time*.3);ctx.save();ctx.globalAlpha=.65;dockShape(294,166,'#83ffbe');ctx.restore();dockShape(s.x,s.y,'#e1e8e9');mob(s.x,s.y,26);rect(100,397,270,35,'#14213e');text(s.locked?`接続完了 ${Math.round(score)}点`:'輪郭を合わせ、着陸！で確定',235,416,12,'#d1ffe3')};dockGame.summary=s=>`船型の位置一致 ${Math.round(score)}点 / 中心誤差 ${Math.hypot(s.x-294,s.y-166).toFixed(1)}px`;
 
 function cargoWave(t){return{x:Math.sin(t*2.1)*29,y:Math.sin(t*2.7)*15}}
 const cargoGame=gameById('pendulum_cargo'),cargoInit=cargoGame.init,cargoDraw=cargoGame.draw;
@@ -448,7 +449,7 @@ discGame.rules='最初のTHROWでパワー確定、次のTHROWで投げる。左
   api.own(dispose);
   observer=new ResizeObserver(resize);observer.observe(world);resize();
   function complete(){if(delivered||disposed||!ended||!valid())return;delivered=true;const result=score,note=current.summary?current.summary(state):current.scoring;dispose();api.done(result,note)}
-  function frame(now){raf=0;if(disposed)return;if(!valid()){dispose();return}if(document.hidden){last=0;raf=requestAnimationFrame(frame);return}let remaining=last?Math.max(0,(now-last)/1000):0;last=now;while(remaining>1e-9&&enabled()){const dt=Math.min(1/120,remaining,(current.seconds?Math.max(0,current.seconds-time):Infinity));time+=dt;remaining-=dt;current.update(state,dt);fxs.forEach(f=>f.life-=dt);fxs=fxs.filter(f=>f.life>0);if(!ended&&current.seconds&&time>=current.seconds-1e-9){time=current.seconds;if(current.timeout)current.timeout(state);else end()}if(dt===0)break}if(ended){complete();return}render();raf=requestAnimationFrame(frame)}
+  function frame(now){raf=0;if(disposed)return;if(!valid()){dispose();return}if(document.hidden){last=0;raf=requestAnimationFrame(frame);return}let remaining=last?Math.max(0,(now-last)/1000):0;last=now;while(remaining>1e-9&&enabled()){const dt=Math.min(1/120,remaining,(current.seconds?Math.max(0,current.seconds-time):Infinity));time+=dt;remaining-=dt;current.update(state,dt);fxs.forEach(f=>f.life-=dt);fxs=fxs.filter(f=>f.life>0);if(!ended&&current.seconds&&time>=current.seconds-1e-9){time=current.seconds;if(current.timeout)current.timeout(state);else end()}if(dt===0)break}if(ended){if(now>=resultAt){complete();return}render();raf=requestAnimationFrame(frame);return}render();raf=requestAnimationFrame(frame)}
   const assetReady=new Promise(resolve=>{settleAsset=resolve;actor.onload=actor.onerror=resolve;assetTimer=setTimeout(resolve,2500);actor.src=api.player.img;if(actor.complete)resolve()});
   const ready=(async()=>{await assetReady;clearTimeout(assetTimer);if(disposed||!valid()){dispose();return}resize();if(!(await api.countdown())||disposed||!valid()){dispose();return}active=true;shell.dataset.phase='play';if(button)button.disabled=false;last=performance.now();raf=requestAnimationFrame(frame)})();
   return {dispose,ready};

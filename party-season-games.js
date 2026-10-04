@@ -2,10 +2,11 @@
 (function(root){
   'use strict';
   const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+  const balance=root?.MobGameBalance||(typeof module!=='undefined'?require('./party-game-balance.js'):null);
   const keys=['bananaBoatMob','warpedWallMob','santaClausMob'];
   const rules={
     bananaBoatMob:['下部のスティックを左右に倒してバナナボートを操作。船の幅に合わせてキャッチ！','1個4点、全30個。25個取れば100点です。','後半ほど落下が速くなります。波と横風を読み、次のバナナへ先回りしよう。'],
-    warpedWallMob:['ゲージを中央の白線で止めてダッシュ力を決定。指が触れた瞬間に止まります。','自動で走り始めたら、オレンジラインでタップして壁を駆け上がろう！ 力やタイミングが足りないと滑り落ちます。','全4段階。後半ほどゲージとダッシュが速くなります。1段最大25点、登頂精度で得点が変わります。'],
+    warpedWallMob:['ゲージを中央の白線で止めてダッシュ力を決定。指が触れた瞬間に止まります。','自動で走り始めたら、オレンジラインでタップして壁を駆け上がろう！ 力やタイミングが足りないと滑り落ちます。','全4段階。後半ほどゲージとダッシュが速くなります。1回登頂50〜65点、2回75〜89点、3回90〜97点、4回98〜100点。登頂精度で得点が変わります。'],
     santaClausMob:['散らばったプレゼントを選んでタップ。重さとソリまでの距離を考えて選ぼう！','拾ったら左右ボタンを交互に連打。重い箱ほど運搬が遅くなり、連打を速めすぎても速度には上限があります。','12秒勝負。届けると大25点・中12点・小7点、最大100点。箱は補充されず、運びかけでは得点になりません。']
   };
   function wallResult(level,power,timing){const quality=power*.5+timing*.5,clear=power>=.86&&timing>=.72&&quality>=.70+level*.025;return {clear,quality,points:clear?Math.round(23+2*clamp((quality-.7)/.3)):0};}
@@ -70,6 +71,7 @@
       art.ocean({w,h,time,boat,velocity,bananas,seaY:seaHeight(time)*h,catchY:catchY*h,breeze});
       if(caught+missed===30)finish(`${caught}個キャッチ / ${missed}個落下`,score===100?'PERFECT CATCH!':'CATCH FINISH!');
     }
+    let precisionSum=0,clears=0;
     let level=0,phase='gauge',phaseTime=0,power=0,runner=.12,jumpX=.12,result=null,lockedGauge=0,pose={x:.12,y:.85,height:0};
     const gaugeAt=t=>gaugeValue(t,level);
     function beginClimb(at,x,outcome){phase='climb';phaseTime=at;jumpX=Math.min(.51,x);result=outcome;action.disabled=true;}
@@ -84,8 +86,8 @@
       let t=Math.max(0,time-phaseTime);
       if(phase==='gauge'){pose={x:.12,y:.85,height:0};hint.textContent='中央の白線でタップ！ 指が触れた瞬間にSTOP';if(t>8)finish('ゲージ時間切れ','TIME UP');}
       else if(phase==='run'){runner=runPosition(t,level);pose={x:Math.min(.51,runner),y:.85,height:0};hint.textContent=`ダッシュ力 ${Math.round(power*100)}% · オレンジ線で踏切！`;if(runner>.535){beginClimb(time,.51,{clear:false,quality:0,points:0});t=0;}}
-      if(phase==='climb'){pose=climbPose(t,level,result.clear,result.quality,jumpX);hint.textContent=result.clear?'壁を駆け上がる！':power<.86?'白線から外れた… ダッシュ力不足！':'踏切線から外れた… 滑り落ちる！';if(t>=1.11){if(!result.clear){burst(.51,.85,'#f3b577','SLIP');finish(`${level}段クリア / 壁から滑落`,'TRY AGAIN');}else{points(score+result.points);phase='walk';phaseTime=time;burst(.83,wallSurface(1,level).y,'#ffe4a4','CLEAR!');api.beep(950,80,.02);}}}
-      else if(phase==='walk'){const surface=wallSurface(1,level);pose={x:.842+clamp(t/.55)*.108,y:surface.y,height:1};hint.textContent=`WALL ${level+1} CLEAR! +${result.points}点`;if(t>=.55){if(level===3)finish('4段すべて登頂！','ALL WALLS CLEAR!');else{level++;phase='gauge';phaseTime=time;runner=.12;action.disabled=false;action.innerHTML='白線でSTOP<span>触れた瞬間に確定</span>';pose={x:.12,y:.85,height:0};}}}
+      if(phase==='climb'){pose=climbPose(t,level,result.clear,result.quality,jumpX);hint.textContent=result.clear?'壁を駆け上がる！':power<.86?'白線から外れた… ダッシュ力不足！':'踏切線から外れた… 滑り落ちる！';if(t>=1.11){if(!result.clear){burst(.51,.85,'#f3b577','SLIP');finish(`${level}段クリア / 壁から滑落`,'TRY AGAIN');}else{precisionSum+=result.points;clears++;const previous=score;points(balance.wallTotal(clears,precisionSum));result.awarded=score-previous;phase='walk';phaseTime=time;burst(.83,wallSurface(1,level).y,'#ffe4a4','CLEAR!');api.beep(950,80,.02);}}}
+      else if(phase==='walk'){const surface=wallSurface(1,level);pose={x:.842+clamp(t/.55)*.108,y:surface.y,height:1};hint.textContent=`WALL ${level+1} CLEAR! +${result.awarded}点`;if(t>=.55){if(level===3)finish('4段すべて登頂！','ALL WALLS CLEAR!');else{level++;phase='gauge';phaseTime=time;runner=.12;action.disabled=false;action.innerHTML='白線でSTOP<span>触れた瞬間に確定</span>';pose={x:.12,y:.85,height:0};}}}
       status.textContent=`WALL ${level+1} / 4`;
       art.wall({w,h,time,level,phase,gauge:phase==='gauge'?gaugeAt(time-phaseTime):lockedGauge,power,runner,pose,result,surface:u=>wallSurface(u,level)});
     }

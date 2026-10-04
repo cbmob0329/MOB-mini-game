@@ -1,0 +1,32 @@
+/* Preserve the 400×440 logical world and its pointer mapping. */
+.approved-game{gap:3px!important}.approved-game header small{display:none}.approved-game header h2{font-size:17px;margin:1px 0}.approved-game .season-hud{padding:5px 9px}.approved-game .season-hud strong{font-size:19px}.approved-game>p{min-height:1.4em;font-size:11px;line-height:1.2}.approved-game .season-actions{gap:6px;padding-bottom:max(2px,env(safe-area-inset-bottom));min-height:48px}.approved-game .party-stick{width:82px;height:82px;min-width:82px;min-height:82px}.approved-game .season-actions button{min-height:48px;font-size:15px}.approved-game .season-world{border-radius:12px}
+.league-roulette-upgrade .roulette-stage{position:relative;isolation:isolate;min-height:170px;display:grid;place-items:center}
+.league-roulette-upgrade .league-wheel{width:clamp(140px,25vh,230px);height:clamp(140px,25vh,230px);border:6px solid #fff1a8;background:conic-gradient(#26bbb4 0deg 90deg,#5067d9 90deg 180deg,#d973ad 180deg 270deg,#eeb851 270deg);box-shadow:0 0 0 7px #192b51,0 0 35px #ffd76d77;position:relative;border-radius:50%}
+.league-roulette-upgrade .league-wheel span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(var(--angle)) translateY(-54px) rotate(calc(-1 * var(--angle)));font-size:22px;font-weight:900;color:white}
+.league-roulette-upgrade .league-wheel b{position:absolute;inset:33%;display:grid;place-content:center;text-align:center;background:#13243e;border:3px solid #ffe191;border-radius:50%;color:white;font-size:13px;line-height:1.1}
+.league-roulette-upgrade .roulette-pointer{position:absolute;top:-6px;left:calc(50% - 14px);z-index:3;font-size:28px;color:#fff8c7;filter:drop-shadow(0 2px 2px #000)}
+.league-roulette-upgrade .roulette-light-ring{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse,#ffdd8066,transparent 65%);animation:leagueGlow 1s ease-in-out infinite alternate;z-index:-1}
+.league-roulette-upgrade .roulette-options{margin:3px 0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:5px;counter-reset:none}
+.league-roulette-upgrade .roulette-options li{font-size:11px;padding:6px;border:1px solid #d4dceb;border-radius:9px;display:flex;gap:4px;align-items:center;min-width:0}
+.league-roulette-upgrade .roulette-options li.selected{border-color:#e7ac25;background:#fff0ad;color:#382b0b;box-shadow:0 0 14px #ffcc5577}
+#roulettePicks{display:grid;gap:3px;min-height:24px;font-size:13px;color:#775010}
+.league-roulette-upgrade .roulette-commentary{font-size:12px;margin:2px 0}
+.league-roulette-upgrade>button{min-height:44px}
+.league-champion-cinema{background:linear-gradient(#07172d,#243660)!important;color:#fff8d4!important;overflow:hidden;min-height:min(660px,80dvh);display:flex;flex-direction:column;text-align:center}
+.league-champion-cinema>header{position:relative;z-index:2}.league-champion-cinema h1{color:#ffe39c!important;font-size:clamp(25px,7vw,42px)}
+.champion-arena{position:relative;isolation:isolate;flex:1;min-height:300px;display:flex;flex-direction:column;justify-content:end;padding:45px 8px 20px;overflow:hidden}
+.champion-podium{position:relative;display:flex;justify-content:center;align-items:end;gap:2px;padding-bottom:70px;z-index:2;animation:championRise 1s ease-out both}
+.champion-podium img{width:clamp(70px,24vw,150px);height:180px;max-height:27vh;object-fit:contain;filter:drop-shadow(0 0 20px #ffdb7777)}
+.champion-podium strong{position:absolute;bottom:0;left:15%;width:70%;height:68px;display:grid;place-items:center;background:linear-gradient(110deg,#b37813,#fff1ad,#c99024);color:#593300;border:3px solid #ffeaa2;font-size:42px;border-radius:9px 9px 0 0}
+.champion-arena h2,.champion-arena p{position:relative;z-index:3;color:#fff1b5!important;margin:8px}.champion-arena h2{font-size:24px}
+.champion-crowd{position:absolute;inset:auto 0 0;height:140px;display:flex;flex-wrap:wrap;align-content:end;justify-content:center;opacity:.5;z-index:0}
+.champion-crowd i{width:12px;height:24px;margin:2px;border-radius:50% 50% 20% 20%;background:hsl(calc(var(--i) * 43),70%,65%);animation:crowdCheer .55s calc(var(--i) * -31ms) infinite alternate}
+.champion-confetti{position:absolute;inset:0;pointer-events:none;z-index:4}.champion-confetti i{position:absolute;left:calc(mod(var(--i) * 29,100) * 1%);top:-30px;width:8px;height:17px;background:hsl(calc(var(--i) * 51),90%,70%);animation:championFall 2.7s calc(var(--i) * -103ms) linear infinite}
+.champion-fireworks{position:absolute;inset:0;background:repeating-conic-gradient(from 10deg at 22% 25%,transparent 0deg 14deg,#ffd57055 15deg 16deg,transparent 17deg 30deg);mask-image:radial-gradient(circle at 22% 25%,transparent 8%,#000 9%,transparent 27%);animation:leagueGlow .8s infinite alternate}
+.league-champion-cinema>button{margin:10px;color:#ffe69a!important;opacity:1!important;background:#ffffff12!important}
+@keyframes leagueGlow{to{opacity:.35;transform:scale(.94)}}@keyframes crowdCheer{to{transform:translateY(-9px)}}@keyframes championFall{to{transform:translateY(650px) rotate(640deg)}}@keyframes championRise{from{transform:scale(.85)}}
+.studio-tabs{overflow-x:auto;flex-wrap:wrap}.studio-tabs button{min-height:44px;flex:1 0 48px}.studio-panel input[type=range]{width:100%;min-height:44px}.studio-panel button{min-height:44px}#studioCanvas{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+@media(prefers-reduced-motion:reduce){.champion-crowd i,.champion-confetti i,.champion-fireworks,.champion-podium,.roulette-light-ring{animation:none!important}}
+
+.studio-tabs{grid-template-columns:repeat(5,minmax(0,1fr))}.studio-panel[data-panel=layout] label output{font-size:10px;margin-left:4px}#studioLayoutReset{font-size:11px;padding:4px}
+.league-champion-cinema{height:calc(100dvh - 78px);min-height:0;padding:8px!important;gap:0}.league-champion-cinema>header{padding:6px 0}.league-champion-cinema h1{margin:8px 0}.league-champion-cinema .champion-arena{min-height:0;padding:12px 4px 8px}.league-champion-cinema .champion-podium{padding-bottom:60px}.league-champion-cinema .champion-podium strong{height:58px}.league-champion-cinema .champion-podium img{height:24vh}.league-champion-cinema .champion-arena h2{font-size:21px;margin:5px}.league-champion-cinema .champion-arena p{margin:3px;font-size:12px}.league-champion-cinema>button{margin:4px 0;min-height:44px;flex:none}.league-roulette-upgrade #roulettePicks{color:#ffe18c}

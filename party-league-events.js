@@ -22,6 +22,10 @@
     return ranked.map((r,i)=>({...r,tiebreak:ranked[i-1]?.error===r.error||ranked[i+1]?.error===r.error}));
   }
   const FOODS=[['🍕','ピザ','🍣','お寿司'],['🍔','ハンバーガー','🍜','ラーメン'],['🍓','いちご','🍇','ぶどう'],['🍩','ドーナツ','🍰','ケーキ'],['🍛','カレー','🍝','パスタ'],['🍦','アイス','🍮','プリン'],['🍙','おにぎり','🥪','サンドイッチ'],['🥟','ぎょうざ','🍤','エビフライ']];
+  const EXTRA_FOODS=[['🍎','りんご','🍐','なし'],['🍑','もも','🍊','みかん'],['🍌','バナナ','🥝','キウイ'],['🍉','すいか','🍈','メロン'],['🍍','パイン','🥭','マンゴー'],['🍒','さくらんぼ','🫐','ブルーベリー'],['🥐','クロワッサン','🥯','ベーグル'],['🍞','食パン','🥖','フランスパン'],['🥞','パンケーキ','🧇','ワッフル'],['🍫','チョコ','🍪','クッキー'],['🍡','だんご','🍘','せんべい'],['🍵','お茶','☕','コーヒー'],['🥛','牛乳','🧃','ジュース'],['🍋','レモン','🍊','オレンジ'],['🍟','ポテト','🍿','ポップコーン'],['🌭','ホットドッグ','🌮','タコス'],['🍗','チキン','🥩','ステーキ'],['🍲','おなべ','🥗','サラダ'],['🍠','やきいも','🌽','とうもろこし'],['🥔','じゃがいも','🎃','かぼちゃ'],['🍅','トマト','🥒','きゅうり'],['🥕','にんじん','🥦','ブロッコリー'],['🍄','きのこ','🫑','ピーマン'],['🍳','目玉焼き','🥚','ゆで卵'],['🍚','ごはん','🍞','パン'],['🍜','うどん','🍝','パスタ'],['🍱','お弁当','🍔','バーガー'],['🍧','かき氷','🍨','パフェ'],['🥨','プレッツェル','🧀','チーズ'],['🥜','ナッツ','🌰','くり'],['🍯','はちみつ','🍫','チョコソース'],['🍤','天ぷら','🍢','おでん']];
+  FOODS.push(...EXTRA_FOODS);
+  function questionDeck(random=Math.random){let bag=[],last=null;return ()=>{if(!bag.length){bag=shuffle(FOODS,random);if(bag.length>1&&bag[bag.length-1]===last)[bag[0],bag[bag.length-1]]=[bag[bag.length-1],bag[0]];}return last=bag.pop();};}
+  function votingTeams(entrants){return [...new Set(entrants.map(p=>p.teamId))].map(id=>({id,members:entrants.filter(p=>p.teamId===id)}));}
   async function run(api){
     const {screen,esc,entrants,valid,beep}=api,random=api.random||Math.random,score=Object.fromEntries(entrants.map(p=>[p.id,0]));
     const human=entrants.some(p=>!p.cpu),sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -38,12 +42,41 @@
     async function next(label='確認して次へ →'){await buttons([label]);return valid();}
     function roster(list,out=false){return `<div class="event-roster ${out&&list.length>20?'event-roster-crowded':''}" style="--roster-rows:${Math.ceil(list.length/5)}">${list.map(p=>`<article class="${out&&!p.cpu?'human-eliminated':''}">${image(p)}<b>${esc(p.name)}</b><small>${esc(p.team)} · ${p.cpu?'CPU':'P'+p.no}${out?' · 脱落':''}</small></article>`).join('')}</div>`;}
     async function handoff(p,title,detail){draw(title,`<p class="event-call">プレイヤー ${esc(p.name)}！</p><div class="event-portrait">${image(p)}</div><p>${esc(p.team)} · P${p.no}</p><p>${detail}</p><div id="eventActions"></div>`);return next('準備OK');}
+    const nextQuestion=questionDeck(random);
+    if(api.key==='minorityMob'&&api.teamVote){
+      let alive=votingTeams(entrants),stage=0,round=0;
+      draw('モブくんは少数派', '<p>1チーム1票。2人で相談して少数派を選ぼう！ CPUチームも1票です。</p><p>多数派は脱落。段階ごとに20・40・60・80点、最後の1〜2チームは100点をメンバーそれぞれに加算。同数・全員同じなら得点段階を進めず再投票します。</p><div id="eventActions"></div>');
+      preview();if(!(await next('チーム投票を始める')))return;
+      while(alive.length>2&&valid()){
+        const f=nextQuestion(),votes=[];round++;
+        for(const t of alive){
+          if(!valid())return;let side=random()<.5?0:1;
+          if(t.members.some(p=>!p.cpu)){
+            draw('秘密のチーム投票 · ROUND '+round, '<p>'+esc(t.members[0].team)+' · 2人で相談して1票</p>'+roster(t.members)+'<div id="eventActions"></div>');
+            if(!(await next('準備OK · 選択肢を見る')))return;
+            draw('どちらが少数派？','<p>'+esc(t.members[0].team)+' · 残り'+alive.length+'チーム</p><p>相談してチームの1票を決めよう！</p><div id="eventActions" class="food-options"></div>');
+            side=await buttons(['<span>'+f[0]+'</span><b>'+f[1]+'</b>','<span>'+f[2]+'</span><b>'+f[3]+'</b>']);
+          }
+          if(!valid())return;votes.push({id:t.id,side});
+          if(t.members.some(p=>!p.cpu))draw('投票を受け付けました','<p>選択は秘密です。次のチームへ端末を渡してください。</p>');
+        }
+        const result=minority(votes);
+        draw('全チームの投票が揃いました','<p>端末をみんなに見せて結果を確認しよう！</p><div id="eventActions"></div>');if(!(await next('投票結果を見る')))return;
+        draw('投票結果！','<div class="vote-totals"><div><span>'+f[0]+'</span><b>'+f[1]+'</b><strong>'+result.counts[0]+'票</strong></div><div><span>'+f[2]+'</span><b>'+f[3]+'</b><strong>'+result.counts[1]+'票</strong></div></div><p>'+ (result.retry?'脱落なし！ 別のお題で再投票。':'少数派の'+result.survivors.length+'チームが勝ち残り！')+'</p><div id="eventActions"></div>');
+        beep(result.retry?480:180,200,.03);if(!(await next()))return;if(result.retry)continue;
+        const losers=alive.filter(t=>result.out.includes(t.id)),earned=Math.min(80,++stage*20);alive=alive.filter(t=>result.survivors.includes(t.id));
+        losers.forEach(t=>t.members.forEach(p=>score[p.id]=earned));
+        for(let i=0;i<losers.length;i+=2){draw('脱落チーム発表','<p>各メンバー '+earned+'ポイント獲得 · 残り'+alive.length+'チーム</p>'+roster(losers.slice(i,i+2).flatMap(t=>t.members),true)+'<div id="eventActions"></div>');if(!(await next()))return;}
+      }
+      if(!valid())return;alive.forEach(t=>t.members.forEach(p=>score[p.id]=100));
+      draw('少数派の勝者！','<p>'+alive.length+'チームが優勝！ 各メンバー100ポイント！</p>'+roster(alive.flatMap(t=>t.members))+'<div id="eventActions"></div>');if(await next('大会リザルトへ →'))api.done(score);return;
+    }
     if(api.key==='minorityMob'){
       draw('モブくんは少数派',`<div class="food-preview" aria-hidden="true">🍕 VS 🍣</div><p>2つの食べ物から、選ぶ人が少ないと思う方へ投票！</p><p>多数派は脱落。最後の1〜2人は100点。脱落者も勝ち残った段階に応じて20・40・60・80点（上限80点）を獲得！同数・全員同じなら再投票し、得点段階は進みません。</p><p>選ぶ時はスマホをほかの人に見られないように！</p><div id="eventActions"></div>`);
       preview();if(!(await next('全員準備OK · 投票開始')))return;
       let alive=[...entrants],round=0,lastFood=-1,eliminationStage=0;
       while(alive.length>2&&valid()){
-        round++;let fi=Math.floor(random()*(FOODS.length-1));if(fi>=lastFood&&lastFood>=0)fi++;lastFood=fi;const f=FOODS[fi],votes=[];
+        round++;const f=nextQuestion(),votes=[];
         for(const p of alive){
           if(!valid())return;
           let side=random()<.5?0:1;
@@ -119,5 +152,5 @@
     }
     api.done(score);
   }
-  const api={minority,groups,errorAt,bombRecord,rankBombRecords,run};if(typeof module!=='undefined'&&module.exports)module.exports=api;if(root)root.MobLeagueEvents=api;
+  const api={minority,questionDeck,votingTeams,FOODS,groups,errorAt,bombRecord,rankBombRecords,run};if(typeof module!=='undefined'&&module.exports)module.exports=api;if(root)root.MobLeagueEvents=api;
 })(typeof window!=='undefined'?window:null);

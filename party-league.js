@@ -4,6 +4,9 @@
   const TAG=['mobSpeedRacer','summonMaster','linkedCartBlast'];
   const DIVISIONS=['PB2リーグ','Realizeリーグ','Portalリーグ','DENDENリーグ'];
   const pick=(a,r)=>a[Math.floor(r()*a.length)];
+  const CARRYOVER=[50,25,18,15,12,10,8,5];
+  const PAIR_ROULETTE=['juiceArcadeMob','lockArcadeMob','cargoArcadeMob','dockingArcadeMob'];
+  const CATCHERS=['catcher','plushCatcher','tokotokoCatcher','craneGame3DMob'];
   const TAG_ROULETTE=['ohajikiMob','toyOnOff','errand','mobIssen','ropeSwingMob'];
   const TAG_TEAM_CHOICES=['cardShop','mobPinball','mobDice','zeroOrHundredMob'];
   const TAG_EIGHTH_CHOICES=['warpedWallMob','santaClausMob','monsterBoxMob'];
@@ -11,8 +14,8 @@
     if(!pool.length)throw Error('League needs a game pool');
     const any=()=>pick(pool,random);
     if(mode==='tag')return {
-      profile:'tag',rouletteCandidates:[...TAG_ROULETTE],
-      qualifier:[pick(['reaction','mergeMob','brake'],random),any(),'minorityMob','rouletteChoice',pick(['catcher','plushCatcher','cleaningMob','tableclothPull'],random),'individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob'],
+      profile:'tag',rouletteCandidates:[...TAG_ROULETTE],pairCandidates:[...PAIR_ROULETTE],
+      qualifier:[pick(['reaction','mergeMob','brake'],random),'pairedChoice','minorityMob','rouletteChoice',pick(['catcher','plushCatcher','cleaningMob','tableclothPull'],random),'individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob'],
       repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
       final:[pick(['monsterBoxMob','warpedWallMob','fruitCatchMob'],random),pick(['launch','ski','frontFlipMob'],random),'bikeJump',pick(['waterSkip','tableclothPull'],random),'focusBombMob','deathGameChallenge'],pool:[...pool]
     };
@@ -35,9 +38,10 @@
     if(tag&&s.phase==='qualifier'&&s.round===3&&s.schedule.qualifier[3]==='rouletteChoice')s.schedule.qualifier[3]=pick(s.schedule.rouletteCandidates,random);
     const tiePool=s.mode==='tag'?s.schedule.pool:s.schedule.pool.filter(k=>!TAG.includes(k)&&k!=='treasureDuoParty');
     const key=s.phase==='cutoff'?'reaction':s.phase==='championship'?(pick(tiePool,random)||'reaction'):(s.schedule[s.phase][s.round]||pick(s.schedule.pool,random));
-    const choices=key==='teamChoice'?(tag?[...TAG_TEAM_CHOICES]:['mobDice','slot']):key==='individualChoice'?(tag&&s.round===7?[...TAG_EIGHTH_CHOICES]:sample([...s.schedule.pool,'reaction','longJumpMob','brake'].filter(k=>!TAG.includes(k)&&!['deathGameChallenge','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),3,random)):null;
+    if(tag&&key==='pairedChoice'&&!s.schedule.pairGames)s.schedule.pairGames=sample(s.schedule.pairCandidates||PAIR_ROULETTE,2,random);
+    const choices=key==='pairedChoice'?[...s.schedule.pairGames]:key==='teamChoice'?(tag?[...TAG_TEAM_CHOICES]:['mobDice','slot']):key==='individualChoice'?(tag&&s.round===7?[...TAG_EIGHTH_CHOICES]:sample([...s.schedule.pool,'reaction','longJumpMob','brake'].filter(k=>!TAG.includes(k)&&!['deathGameChallenge','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),3,random)):null;
     if(choices&&key==='individualChoice'&&s.size===4){const extra=sample(s.schedule.pool.filter(k=>!TAG.includes(k)&&!choices.includes(k)&&!['deathGameChallenge','minorityMob','focusBombMob','individualChoice','teamChoice','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),1,random);choices.push(...extra);}
-    return {key,choices,roulette:tag&&s.phase==='qualifier'&&s.round===3?[...s.schedule.rouletteCandidates]:null,multiplier:s.phase==='qualifier'&&[3,4,6,9].includes(s.round)?2:1,winnerBonus:s.phase==='qualifier'&&s.round===8,phase:s.phase,division:s.division,round:s.round+1,active:[...s.active]};
+    return {key,choices,representative:tag&&CATCHERS.includes(key),roulette:key==='pairedChoice'?[...(s.schedule.pairCandidates||PAIR_ROULETTE)]:tag&&s.phase==='qualifier'&&s.round===3?[...s.schedule.rouletteCandidates]:null,multiplier:s.phase==='qualifier'&&[3,4,6,9].includes(s.round)?2:1,winnerBonus:s.phase==='qualifier'&&s.round===8,phase:s.phase,division:s.division,round:s.round+1,active:[...s.active]};
   }
   function sample(items,count,random=Math.random){const a=[...new Set(items)];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a.slice(0,count);}
   function reset(s,phase,ids){s.phase=phase;s.round=0;s.active=[...ids];s.scores={};s.personal={};}
@@ -49,10 +53,11 @@
       reset(s,'final',s.qualifiers);s.lit=[];return {type:'kingFinalists',ids:[...s.qualifiers],qualified:orderedIds,division};
     }
     if(stage==='qualifier'){
+      if(s.mode==='tag'){s.qualifierTotals={...s.scores};s.qualifierPlaces=Object.fromEntries(ids.map(id=>[id,1+Object.values(s.qualifierTotals).filter(v=>v>(s.qualifierTotals[id]||0)).length]));s.finalCarryover=Object.fromEntries(ids.map(id=>[id,CARRYOVER[s.qualifierPlaces[id]-1]||0]));}
       s.direct=[...ids];reset(s,'repechage',s.teams.map(t=>t.id).filter(id=>!ids.includes(id)));
       return {type:'qualified',ids:[...ids]};
     }
-    reset(s,'final',[...s.direct,...ids]);s.lit=[];
+    reset(s,'final',[...s.direct,...ids]);if(s.mode==='tag')s.scores={...(s.finalCarryover||{})};s.lit=[];
     return {type:'finalists',ids:[...s.active],wildcards:[...ids]};
   }
   function cut(s,ids,points,slots,kept,stage){
@@ -100,17 +105,17 @@
     const phase=s.phase,division=s.division,finalStage=['final','championship'].includes(phase),active=[...s.active];let result,lastStage,rounds=0;
     do{
       if(++rounds>200)throw Error('CPU stage did not resolve');
-      const d=next(s,random),points={},selections={},teams=d.active.map(id=>s.teams.find(t=>t.id===id));
+      const d=next(s,random),points={},selections={},representatives={},teams=d.active.map(id=>s.teams.find(t=>t.id===id));
       for(const t of teams){const used=[];for(const [i,id] of t.members.entries()){
-        let key=d.key;if(d.choices){const options=d.choices.filter(k=>d.key!=='individualChoice'||!used.includes(k));key=d.key==='teamChoice'&&i?selections[t.members[0]]:pick(options.length?options:d.choices,random);used.push(key);selections[id]=key;}
-        const selected=t.members.length<=2||[0,1].some(j=>(d.round-1+j)%t.members.length===i);
-        points[id]=representativeKeys.has(key)&&!selected?0:score(key,players.find(p=>p.id===id),random);
+        let key=d.key;if(d.choices){const options=d.choices.filter(k=>!['individualChoice','pairedChoice'].includes(d.key)||!used.includes(k));key=d.key==='teamChoice'&&i?selections[t.members[0]]:pick(options.length?options:d.choices,random);used.push(key);selections[id]=key;}
+        const selected=d.representative?i===(d.round-1)%t.members.length:t.members.length<=2||[0,1].some(j=>(d.round-1+j)%t.members.length===i);
+        if(d.representative&&selected)representatives[t.id]=id;points[id]=(d.representative||representativeKeys.has(key))&&!selected?0:score(key,players.find(p=>p.id===id),random);
       }}
       if(d.key==='minorityMob'){
-        let alive=Object.keys(points),stage=0,retries=0;
+        const teamVote=s.mode==='tag',voteUnits=teamVote?teams.map(t=>t.id):Object.keys(points),award=(id,n)=>{if(teamVote)teams.find(t=>t.id===id).members.forEach(p=>points[p]=n);else points[id]=n};let alive=voteUnits,stage=0,retries=0;
         while(alive.length>2){let a=alive.filter(()=>random()<.5),b=alive.filter(id=>!a.includes(id));if(!a.length||!b.length||a.length===b.length){if(++retries<32)continue;a=sample(alive,Math.max(1,Math.floor((alive.length-1)/2)),random);b=alive.filter(id=>!a.includes(id));}retries=0;const keep=a.length<b.length?a:b,out=a.length<b.length?b:a;
-          stage++;out.forEach(id=>points[id]=Math.min(80,stage*20));alive=keep;
-        }alive.forEach(id=>points[id]=100);
+          stage++;out.forEach(id=>award(id,Math.min(80,stage*20)));alive=keep;
+        }alive.forEach(id=>award(id,100));
       }
       if(d.key==='deathGameChallenge'){
         let alive=sample(teams.flatMap(t=>t.members.length>2?[0,1].map(i=>t.members[(d.round-1+i)%t.members.length]):t.members),999,random);Object.keys(points).forEach(id=>points[id]=0);
@@ -126,11 +131,11 @@
       if(TAG.includes(d.key)||d.key==='treasureDuoParty'){
         const order=sample(teams,teams.length,random);for(let i=0;i<order.length;i+=2)for(let leg=0;leg<s.size;leg+=2){const pair=order.slice(i,i+2),averages=pair.map(t=>t.members.slice(leg,leg+2).reduce((n,id)=>n+points[id],0)/2);pair.forEach((t,j)=>{const shared=d.key==='summonMaster'?(j===(averages[0]>=averages[1]?0:1)?100:0):Math.round(averages[j]);t.members.slice(leg,leg+2).forEach(id=>points[id]=shared);});}
       }
-      result=submit(s,points,{...d,...(d.choices?{selections}:{})});if(d.phase===phase)lastStage=result.record;
+      result=submit(s,points,{...d,...(d.choices?{selections}:{}),...(d.representative?{representatives}:{})});if(d.phase===phase)lastStage=result.record;
     }while(finalStage?!s.champion:(s.phase==='cutoff'||s.phase===phase&&s.division===division));
     return {event:result.event,record:{...lastStage,active,summary:true,simulatedRounds:rounds}};
   }
-  const api={TAG,DIVISIONS,program,create,next,ordered,submit,sample,canFastForward,fastForward};
+  const api={CARRYOVER,PAIR_ROULETTE,CATCHERS,TAG,DIVISIONS,program,create,next,ordered,submit,sample,canFastForward,fastForward};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   if(root)root.MobPartyLeague=api;
 })(typeof window!=='undefined'?window:null);

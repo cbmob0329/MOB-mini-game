@@ -28,10 +28,10 @@ test('minority keeps the smaller side, and never eliminates on equal or unanimou
 });
 
 test('minority awards every elimination stage, ignores retries and submits all points to the league',async()=>{
-  const sequence=[],pages=[];
+  const sequence=Array(39).fill(.1),pages=[];
   // Each round draws one food, followed by one vote per survivor.
   for(const [count,minority] of [[40,20],[40,40],[40,19],[19,9],[9,4],[4,1]]){
-    sequence.push(.1,...Array.from({length:count},(_,i)=>i<minority?.1:.9));
+    sequence.push(...Array.from({length:count},(_,i)=>i<minority?.1:.9));
   }
   const button={dataset:{answer:'0'},set onclick(fn){queueMicrotask(fn);}},host={innerHTML:'',querySelectorAll:()=>[button]};
   const screen={set innerHTML(value){pages.push(value);},getBoundingClientRect:()=>({top:0}),querySelector:sel=>sel==='#eventActions'?host:{style:{setProperty(){}},textContent:''}};
@@ -85,7 +85,7 @@ test('repechage winners are revealed before standings',()=>{
   for(let i=1;i<=2;i++){assert.match(h.html(),new RegExp('進出発表 '+i+' / 2'));assert.doesNotMatch(h.html(),/class="league-rank/);h.next();}assert.match(h.html(),/今回のチーム順位/);
 });
 test('lit finals reveal suspense then champion or continuation before scores',()=>{
-  for(const type of ['champion','round','championship']){const h=uiHarness();h.record.phase='final';h.record.litBefore=['L0','L1'];h.ui.results({event:{type,ids:type==='round'?[]:['L0']},record:h.record});assert.match(h.html(),/さあ、これで決まるのか/);assert.doesNotMatch(h.html(),/class="league-rank/);h.next();assert.match(h.html(),type==='champion'?/CHAMPION!!/:/勝負はまだ続きます/);h.next();assert.match(h.html(),/今回のチーム順位/);}
+  for(const type of ['round','championship']){const h=uiHarness();h.record.phase='final';h.record.litBefore=['L0','L1'];h.ui.results({event:{type,ids:type==='round'?[]:['L0']},record:h.record});assert.match(h.html(),/さあ、これで決まるのか/);assert.doesNotMatch(h.html(),/class="league-rank/);h.next();assert.match(h.html(),type==='champion'?/CHAMPION!!/:/勝負はまだ続きます/);h.next();assert.match(h.html(),/今回のチーム順位/);}
 });
 test('league launches the shared event for all active entrants and rejects a stopped callback',()=>{
   for(const [phase,round,key,count] of [['qualifier',2,'minorityMob',40],['final',4,'focusBombMob',20]]){
@@ -108,8 +108,7 @@ test('new ignition precedes results; championship takes priority with no ignitio
   h.next();h.next();assert.match(h.html(),/決勝の総合順位/);
   const winner=uiHarness();winner.record.phase='final';winner.record.litBefore=['L0'];
   winner.ui.results({event:{type:'champion',ids:['L0']},record:winner.record});
-  winner.next();assert.match(winner.html(),/CHAMPION!!/);assert.doesNotMatch(winner.html(),/MATCH POINT/);
-  winner.next();assert.match(winner.html(),/このゲームだけの順位/);
+  assert.equal(winner.state.celebratedChampion,'L0');assert.match(winner.html(),/このゲームだけの順位/);
 });
 
 test('minority waits for shared-result button before any countdown or result disclosure',async()=>{
@@ -117,7 +116,7 @@ test('minority waits for shared-result button before any countdown or result dis
   const button={dataset:{answer:'0'},set onclick(fn){handler=fn;}},host={innerHTML:'',querySelectorAll:()=>[button]};
   const screen={set innerHTML(value){html=value;},getBoundingClientRect:()=>({top:0}),querySelector:sel=>sel==='#eventActions'?host:{style:{setProperty(){}},textContent:''}};
   const window={};vm.runInNewContext(fs.readFileSync(require.resolve('../party-league-events.js'),'utf8'),{window,setTimeout:fn=>{timers++;queueMicrotask(fn);}});
-  const run=window.MobLeagueEvents.run({key:'minorityMob',screen,entrants:entrants.map(p=>({...p,cpu:true})),esc:String,valid:()=>valid,beep(){},clear(){},top(){},random:()=>++randomCalls===2?.1:.9,done(){}});
+  const run=window.MobLeagueEvents.run({key:'minorityMob',screen,entrants:entrants.map(p=>({...p,cpu:true})),esc:String,valid:()=>valid,beep(){},clear(){},top(){},random:()=>++randomCalls===40?.1:.9,done(){}});
   handler();for(let i=0;i<10;i++)await Promise.resolve();
   assert.match(html,/全ての票が揃いました/);assert.match(host.innerHTML,/みんなで結果を見る/);assert.equal(timers,0);assert.doesNotMatch(html,/voteCountdown|票<\/strong>/);
   handler();for(let i=0;i<12;i++)await Promise.resolve();

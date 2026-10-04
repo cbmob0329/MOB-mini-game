@@ -7,7 +7,7 @@ const play=(s,fn)=>L.submit(s,points(s,fn),L.next(s,()=>0));
 function qualified(){const s=fresh();for(let i=0;i<10;i++)play(s,t=>100-t*3);return s;}
 function finals(){const s=qualified();for(let i=0;i<3;i++)play(s,t=>100-t*3);return s;}
 test('schedule matches fixed games, minority third round and four bonus rounds',()=>{
-  const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','reaction','minorityMob','rouletteChoice','catcher','individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob']);
+  const s=fresh();assert.deepEqual(s.schedule.qualifier,['reaction','pairedChoice','minorityMob','rouletteChoice','catcher','individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob']);
   assert.deepEqual(s.schedule.repechage,['longJumpMob','cardShop','bowling3DMob']);
   assert.deepEqual(s.schedule.final,['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge']);
   for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,4,6,9].includes(i)?2:1);play(s,t=>100-t);}
@@ -29,14 +29,14 @@ test('only boundary ties enter overtime, tied survivors replay until slots are r
   play(s,()=>50);assert.equal(s.phase,'cutoff');assert.equal(s.cut.kept.length,7);
   result=play(s,t=>t===9?90:40);assert.equal(result.event.type,'qualified');assert.ok(s.direct.includes('L9'));assert.equal(s.direct.length,8);
 });
-test('repechage top two join the direct eight with zero carryover, including cutoff overtime',()=>{
+test('repechage top two join the direct eight with qualifier rank carryover, including cutoff overtime',()=>{
   const s=qualified();for(let i=0;i<3;i++)play(s,t=>t<11?90:30);
   assert.equal(s.phase,'cutoff');assert.equal(s.cut.stage,'repechage');assert.equal(s.cut.slots,2);
-  const r=play(s,t=>t===10?20:90);assert.equal(r.event.type,'finalists');assert.equal(s.active.length,10);assert.deepEqual(s.scores,{});assert.deepEqual(s.personal,{});assert.equal(new Set(s.active).size,10);
+  const r=play(s,t=>t===10?20:90);assert.equal(r.event.type,'finalists');assert.equal(s.active.length,10);assert.deepEqual(s.scores,s.finalCarryover);assert.deepEqual(s.personal,{});assert.equal(new Set(s.active).size,10);
 });
 test('600 on a winning round only lights a team; it must win a later round',()=>{
   const s=finals();for(let i=0;i<3;i++){const r=play(s,t=>t===0?100:10);assert.equal(r.event.type,'round');assert.equal(s.champion,null);}
-  assert.deepEqual(s.lit,['L0']);assert.equal(s.scores.L0,600);
+  assert.deepEqual(s.lit,['L0']);assert.equal(s.scores.L0,650);
   const r=play(s,t=>t===0?100:10);assert.equal(r.event.type,'champion');assert.equal(s.champion,'L0');assert.equal(L.next(s),null);
 });
 test('only already lit tied leaders enter a random championship; ties repeat',()=>{

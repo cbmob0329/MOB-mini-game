@@ -384,7 +384,7 @@ const GAMES=[
   {no:105,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"▲▼で高度操作。15秒、トゲ13個＋上下の柱ゲート3組を避ける",legacy:121},
   {no:106,key:"fruitCatchMob",title:"モブくんフルーツキャッチ",sub:"15秒。フルーツを集めながら岩・爆弾・腐った実を避ける",legacy:123},
   {no:107,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124},
-  {no:108,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"モブくん人形5体を残したまま、テーブルクロスを真下へ一気に引く",legacy:125},
+  {no:108,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"人形5体を残し、速さ・方向・引き切る精度をそろえて高得点を狙う",legacy:125},
   {no:109,key:"bombPassMob",title:"モブくんの爆弾ゲーム",sub:"横一列の5体で爆弾を隣へ渡し、最後の1体まで生き残れ",legacy:126},
   {no:110,key:"obstacleRaceMob",title:"モブくんの障害物競走",sub:"自動走行＋JUMP/PUNCH。通常障害物と上下に動く岩ブロックを突破する横スクロールタイムアタック",legacy:127},
   {no:111,key:"sphereMob",title:"球体モブくん",sub:"岩に乗って5体で押し合い！スティック移動＋体当たりで相手を海へ落とせ。最後の1体が100点",legacy:128},
@@ -457,7 +457,7 @@ GAMES.push(
   {"no":170,"key":"archeryArcadeMob","title":"モブくんのゆらゆらアーチェリー","sub":"7秒。下部スティックで移動、照準してSHOOT。10枚各10点","legacy":193},
   {"no":171,"key":"lockArcadeMob","title":"モブくんのくるくるロック","sub":"10回各1点、10点満点。大会では1点を10ptに換算","legacy":194},
   {"no":172,"key":"shieldArcadeMob","title":"モブくんシールド360","sub":"スティックを火球の方向へ。10発各10点、最大100点","legacy":195},
-  {"no":173,"key":"dockingArcadeMob","title":"モブくんの宇宙ドッキング","sub":"障害物を避け、同じ船型に位置合わせ。離して静止で確定。最大100点","legacy":196},
+  {"no":173,"key":"dockingArcadeMob","title":"モブくんの宇宙ドッキング","sub":"障害物を避け、同じ船型に位置合わせ。着陸ボタンで確定。最大100点","legacy":196},
   {"no":174,"key":"cargoArcadeMob","title":"モブくんの吊り荷ピタッ","sub":"風と波を読んでLOWERを1回。着地時の重なり率で最大100点","legacy":197},
   {"no":175,"key":"pancakeArcadeMob","title":"モブくんのパンケーキ返し","sub":"中央の緑でFLIP。3枚の合計で最大100点","legacy":198},
   {"no":176,"key":"firehoseArcadeMob","title":"モブくん消防ホース","sub":"10秒。角度を上下で調整しWATER。水切れ即終了。最大100点","legacy":199},
@@ -26805,9 +26805,10 @@ async function startTableclothPull(p,humanIndex,runId){
     else if(avg<=14){score=clamp(Math.round(99-(avg-3)/11*19-moved*.5),80,99)}
     else if(avg<=34){score=clamp(Math.round(79-(avg-14)/20*19-moved*.7),60,79)}
     else{score=clamp(Math.round(59-(avg-34)/55*19-moved),40,59)}
+    score=Math.min(score,window.MobGameBalance.clothCap(speed,dx,dy));
     state.records.tableclothPull[p.id]=score;
     movedEl.textContent=moved;dollsEl.textContent=`${5-fallen} / 5`;scoreEl.textContent=score;
-    call.textContent=fallen?`${fallen}体 落下！`:score===100?'PERFECT!! 全員静止！':`${moved}体 動いた！`;
+    call.textContent=fallen?`${fallen}体 落下！`:score===100?'PERFECT!! 全員静止！':moved?`${moved}体 動いた！`:'引く速さ・方向・距離で採点！';
     call.classList.toggle('bad-v202',fallen>0);call.classList.add('result-v202');
     stage.classList.add(score===100?'perfect-v202':'finish-v202');
     beep(score===100?1180:score>=80?920:score>=60?690:330,180,.04);

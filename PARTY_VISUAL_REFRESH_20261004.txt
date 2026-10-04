@@ -1,0 +1,46 @@
+MOB 1〜10・選択／説明画面 更新報告（2026-10-04）
+対象: C:/Users/user/Documents/GitHub/MOB-mini-game
+基点: ce619b02215c412cbf40e7b8de070fca573e3547 + 既存の未コミットリーグ変更。
+既存変更をバックアップしてから作業。ブラウザ検証は独立した一時プロフィールで行い、利用者の保存データにはアクセスしていません。
+
+状態: ユーザーの直接承認後、対象11ファイルを実プロジェクトへ反映済み。
+バックアップ74ファイルと現在のベースラインを照合して実行。既存リーグ変更21ファイルはSHA256一致、共通indexのリーグ読み込み設定も維持しています。
+本体検証: 144テスト再実行で全成功、10ゲーム×3幅=30ケース成功、一覧・正方形説明・開始終了戻る・カップ選択・実ゲームでの人間CPU混合タッグ2ラウンド成功。ブラウザ例外0。
+留意: 初回の回帰は143/144で、既存の表彰テスト「best play ceremony caps perfect scorers at two and presents specialty awards」が1回失敗。単独再実行と全体再実行は成功。このテストはMath.randomを固定していません。関連する既存ゲーム／リーグ処理と当該テストは未変更です。初回ログも保存しています。
+適用ハッシュ: qa/deployed.json。本体検証: qa/actual/ および qa/actual-unit-rerun.txt。
+
+今回の変更
+・1〜10: ネオンのアーケード、収蔵室、宇宙の操作卓、空港、建築会場、ダンスクラブ、工場設備、プライズ筐体、木の部屋、雪山をCanvas背景として描画。遠近・照明・金属／木材・小物を追加。
+・既存DOMのゲーム領域、物体、操作対象の座標系は保持。11〜20のゲーム本体は未変更。
+・一覧: テーマのイラスト＋選択中キャラのサムネイル、大型カード、件数、カテゴリ、検索クリア、検索・スクロール位置を保持して説明から戻る導線。147件の既存ID・選択可否を維持。
+・説明: 以前は横長プレビュー内にHUDや操作パネルまで収まり、ゲーム部分が小さかった。正方形のタブ切替（画面／遊び方／採点または設定）と常設開始ボタンへ変更。新ゲームのプレビュー内だけHUD等を省き、実ゲーム画面を拡大。実プレイは変更なし。
+・カップの重複選択、最大件数、取り消し、おまかせ、キャラクター保持を維持。
+・ゲーム背景はサイズ別にキャッシュ。サムネイルは表示付近だけ生成。
+
+検証
+・既存Nodeテスト 144/144成功。
+・旧ゲーム1〜10 × 320×640 / 390×600 / 430×932 = 30ケース: 開始→終了→リザルト→再プレイ→ホーム→遅延結果が出ないこと。ブラウザ例外0。
+・上記3幅: 一覧147件、検索／カテゴリ／空結果／クリア、正方形タブ、開始と戻るの画面内配置、旧反射・新ギャラクシー終了、カップ選択を実ブラウザ操作で確認。
+・人間1＋CPU39の実タッグ進行: 反射神経→GAME2くるくるロック／吊り荷の分担、得点集計と相棒の別種目選択。得点コールバックの差替えなし。全大会を人間操作で完走した検証ではありません。
+・全既存ゲーム／採点／大会JavaScriptのSHA256一致（変更はUIと説明用JSのみ）。390×600で10種のステージ・入力領域を前後照合。スキーの移動中キャラは同じポーズに固定して寸法比較。
+・工場／1990／スキーの90フレーム計測: 前後とも中央値16.7ms、変更後p95は16.8ms。測定中の背景再生成0回。初回Canvas生成の最大値はこの計測では270.5ms（初期化の一時コスト）。端末性能によって異なり、実機FPS保証ではありません。
+
+反映済みファイル
+index.html
+party-ui.js
+party-presentation.js
+party-scene-art.js
+party-scene-art.css
+party-discovery.css
+tests/visual-refresh-harness.cjs
+tests/visual-discovery.browser.cjs
+tests/visual-classic.browser.cjs
+tests/visual-tag.browser.cjs
+PARTY_VISUAL_REFRESH_20261004.txt
+
+比較資料: C:\Users\user\Documents\Codex\2026-10-03\task-3\visual-refresh\MOB_VISUAL_BEFORE_AFTER.html
+生スクリーンショット: C:\Users\user\Documents\Codex\2026-10-03\task-3\visual-refresh\before / C:\Users\user\Documents\Codex\2026-10-03\task-3\visual-refresh\after
+検証JSON: C:\Users\user\Documents\Codex\2026-10-03\task-3\visual-refresh\qa
+バックアップ: C:\Users\user\Documents\Codex\2026-10-03\task-3\visual-refresh\backup
+未確認: iPhone/Android実機・Safari。横向きの極端に低い画面は対象の縦画面テスト外。
+Gitへのコミット／push、公開、保存データ初期化なし。
