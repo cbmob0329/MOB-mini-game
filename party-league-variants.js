@@ -46,7 +46,8 @@
     }
     function phaseName(record=league){return record.phase==='qualifier'?(mode==='king'?L.DIVISIONS[record.division]+' 予選':'予選'):record.phase==='repechage'?'敗者復活':record.phase==='cutoff'?'進出決定・延長戦':record.phase==='championship'?'優勝決定戦':'決勝';}
     function fast(){return api.fastStage&&L.canFastForward(league,players);}
-    function play(){if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':phaseName())+'！','プレイヤー不在のため高速処理！<br>各試合の操作・途中結果をスキップし、このステージをまとめて集計します。',[],()=>{const result=api.fastStage(league,players);syncOrigins();if(result.event.type==='champion')results(result);else rankings(result.record,result.event);},'league-stage-entry');return;}const descriptor=L.next(league);if(!descriptor)return;
+    function play(prepared=null){if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':phaseName())+'！','プレイヤー不在のため高速処理！<br>各試合の操作・途中結果をスキップし、このステージをまとめて集計します。',[],()=>{const result=api.fastStage(league,players);syncOrigins();if(result.event.type==='champion')results(result);else rankings(result.record,result.event);},'league-stage-entry');return;}const descriptor=prepared||L.next(league);if(!descriptor)return;
+      if(descriptor.roulette&&!descriptor.rouletteShown){const own=ticket;window.MobRandomUI.show({screen,esc,title:gameTitle,choices:descriptor.roulette,selected:descriptor.key,top:api.top,beep:api.beep,valid:()=>ticket===own&&!!league,done:()=>play({...descriptor,rouletteShown:true})});return;}
       announce(`${phaseName()} · GAME ${descriptor.round}`,`${esc(gameTitle(descriptor.key))}<br>${descriptor.multiplier===2?'POINTS ×2 · 全員2倍！':descriptor.winnerBonus?'個人1位だけ POINTS ×2！':'1人最大100点'}${league.phase==='final'?`<br>${league.threshold}点で点灯 → 次戦以降の1位で優勝`:''}`,[],()=>descriptor.choices?choiceRound(descriptor):execute(descriptor));
     }
     function runGame(key,rows,descriptor,done){

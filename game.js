@@ -313,7 +313,7 @@ const GAMES=[
   {no:25,key:"overlapMaster",title:"重なりモブくん",sub:"4つの円を同時に重ねる",legacy:29},
   {no:26,key:"jumpingMob",title:"ジャンピングモブくん",sub:"ホッピングで台を乗り継ぐ",legacy:30},
   {no:27,key:"heroMaybe",title:"モブくんは勇者かも",sub:"13秒で勇者を育てる",legacy:31},
-  {no:28,key:"popularGame",title:"アクションモブくん",sub:"モブくんでモグラ踏み",legacy:32},
+  {no:28,key:"popularGame",title:"削除済みゲーム（028）",sub:"このゲームは終了しました",legacy:32,removed:true},
   {no:29,key:"planetEnergy",title:"モブくんは破壊神",sub:"3回チャージして高層ビルを貫く",legacy:33},
   {no:30,key:"painter",title:"モブくんは画家志望",sub:"猫の顔型を1回で綺麗になぞる",legacy:34},
   {no:31,key:"bikeJump",title:"モブくんバイクで飛ぶ",sub:"約3秒走って巨大ジャンプ台へ",legacy:35},
@@ -393,7 +393,7 @@ const GAMES=[
   {no:105,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"▲▼で高度操作。15秒、トゲ13個＋上下の柱ゲート3組を避ける",legacy:121},
   {no:106,key:"fruitCatchMob",title:"モブくんフルーツキャッチ",sub:"15秒。フルーツを集めながら岩・爆弾・腐った実を避ける",legacy:123},
   {no:107,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124},
-  {no:108,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"人形5体を残し、速さ・方向・引き切る精度をそろえて高得点を狙う",legacy:125},
+  {no:108,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"人形7体を残し、速さ・方向・引き切る精度をそろえて高得点を狙う",legacy:125},
   {no:109,key:"bombPassMob",title:"モブくんの爆弾ゲーム",sub:"横一列の5体で爆弾を隣へ渡し、最後の1体まで生き残れ",legacy:126},
   {no:110,key:"obstacleRaceMob",title:"モブくんの障害物競走",sub:"自動走行＋JUMP/PUNCH。通常障害物と上下に動く岩ブロックを突破する横スクロールタイムアタック",legacy:127},
   {no:111,key:"sphereMob",title:"球体モブくん",sub:"岩に乗って5体で押し合い！スティック移動＋体当たりで相手を海へ落とせ。最後の1体が100点",legacy:128},
@@ -473,7 +473,7 @@ GAMES.push(
   {"no":177,"key":"discArcadeMob","title":"モブくんカーブディスク","sub":"パワー確定→THROW。85%以上で1体、90%以上で2体貫通。3投最大100点","legacy":200}
 );
 // V11.18 — 廃止ゲーム / 大会のみ除外
-const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,21,23,25,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,81,82,92,147,150,159,160].includes(g.no)).map(g=>g.key));
+const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,21,23,25,28,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,81,82,92,147,150,159,160].includes(g.no)).map(g=>g.key));
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob','minorityMob','focusBombMob']);
 const UNIVERSAL_GAME_KEYS=new Set(['tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob','mergeMob','parkingEscapeMob','elevatorMob','cashierMob','coinPusherMob','survivorMob','ringToss3DMob','bowling3DMob','homeRun3DMob','puttGolf3DMob','freeThrow3DMob','curling3DMob','punchMachine3DMob','coinPusher3DMob','blackjack3DMob','skiJump3DMob','craneGame3DMob','giantHammer3DMob','shotPut3DMob','rescueHeli3DMob','submarine3DMob','foodCatch3DMob','buildingClimb3DMob','mazeBall3DMob','deathGameChallenge']);
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
@@ -773,6 +773,7 @@ function renderFreePlaySelect(){
 }
 
 function startFreeGame(gameIndex){
+  if(isRetiredGameIndex(gameIndex))return renderHome();
   cancelActiveAnimation();
   invalidateGameRun();
 
@@ -840,16 +841,12 @@ function tournamentGamePool(){
   return GAMES.map((g,i)=>({g,i})).filter(x=>!blocked.has(x.g.key)).map(x=>x.i);
 }
 
-function pickTournamentGame(exclude=[]){
-  const blocked=new Set(exclude);
-  let pool=tournamentGamePool().filter(i=>!blocked.has(i));
-
-  if(!pool.length){
-    pool=tournamentGamePool();
-  }
-
-  return pool[randi(0,pool.length-1)];
-}
+function approvedRandomIndices(){return window.MobRandomGames.ALLOWED.map(g=>GAMES.findIndex(x=>x.key===g.key)).filter(i=>i>=0&&!isRetiredGameIndex(i))}
+function drawClassicGame(exclude=[]){const all=approvedRandomIndices(),available=all.filter(i=>!exclude.includes(i)),pool=available.length>=5?available:all;
+ const draw=window.MobRandomGames.draw(1,Math.random,pool.map(i=>GAMES[i].key));if(available.length&&available.length<5){const selected=GAMES[available[Math.floor(Math.random()*available.length)]].key;draw.selected=[selected];draw.choices=window.MobRandomGames.sample([selected,...window.MobRandomGames.sample(all.map(i=>GAMES[i].key).filter(k=>k!==selected),4)],5)}const index=GAMES.findIndex(g=>g.key===draw.selected[0]);
+ state.randomDraws=state.randomDraws||{};(state.randomDraws[index]??=[]).push(draw);return index;}
+function presentClassicDraw(index,done){const list=state.randomDraws?.[index],draw=state.playlistDraws?.[state.roundIndex]||list?.[0];if(!draw||draw.shown||draw.selected[0]!==GAMES[index]?.key)return false;const own=state;draw.shown=true;clearGameFit();window.MobRandomUI.show({screen,esc,title:k=>GAMES.find(g=>g.key===k)?.title||k,choices:draw.choices,selected:draw.selected[0],top:gameTop,beep,valid:()=>state===own,done});return true;}
+function pickTournamentGame(exclude=[]){return drawClassicGame(exclude)}
 
 function seedTournamentEntrants(size,humanCount){
   const humanIds=[
@@ -1831,7 +1828,7 @@ function renderBlockKingFinalIntro(){
   screen.innerHTML=`<div class="game-head"><div><span class="kicker">FINAL 3 GAMES</span><h2>モブくん王・決勝</h2><p class="lead">決勝だけ3種目。3ゲーム合計300点満点。</p></div><div class="game-badge">FINAL</div></div>${blockKingRoadHtml(3)}
   ${tournamentCommentary("ついに最後の2人！",`${pa.name} vs ${pb.name}！ 決勝は3種目の100点換算合計でモブくん王を決めます！`,true)}
   <div class="tournament-versus-v158 final">${tournamentPlayerCard(a)}<strong>VS</strong>${tournamentPlayerCard(b)}</div>
-  <section class="panel"><div class="panel-head"><h3>FINAL 3 GAMES</h3><span class="tag">TOTAL 300</span></div><div class="tournament-game-list-v158">${t.finalGames.map((idx,i)=>`<div class="tournament-game-chip-v158"><span>GAME ${i+1}</span><b>${GAMES[idx].title}</b></div>`).join("")}</div></section>
+  <section class="panel"><div class="panel-head"><h3>FINAL 3 GAMES</h3><span class="tag">TOTAL 300</span></div><div class="tournament-game-list-v158">${t.finalGames.map((idx,i)=>`<div class="tournament-game-chip-v158"><span>GAME ${i+1}</span><b>${state.playlistDraws?.[i]?'ルーレットで決定':GAMES[idx].title}</b></div>`).join("")} </div></section>
   <button id="blockKingFinalStart196" class="primary tournament-main-btn-v158" type="button">決勝 第1種目スタート！</button>`;
   document.getElementById("blockKingFinalStart196").addEventListener("click",startBlockKingFinalGame);gameTop();
 }
@@ -2546,10 +2543,10 @@ function renderGameLengthSelect(config){
       return;
     }
 
-    const all=shuffle(eligibleGameIndices());
+    const all=shuffle(approvedRandomIndices());
     const count=kind==='all'?all.length:Math.min(Number(kind),all.length);
     state.playStyle=kind;
-    state.playlist=all.slice(0,count);
+    state.playlist=[];for(let n=0;n<count;n++)state.playlist.push(drawClassicGame(state.playlist));
     renderModeLobby();
   }));
 
@@ -2961,7 +2958,7 @@ function renderModeLobby(){
     <section class="panel">
       <div class="panel-head"><h3>GAME ORDER</h3><span class="tag">${state.playlist.length} GAMES</span></div>
       <div class="lobby-playlist">
-        ${state.playlist.map((idx,i)=>`<div><span>${i+1}</span><b>${GAMES[idx].title}</b></div>`).join("")}
+        ${state.playlist.map((idx,i)=>`<div><span>${i+1}</span><b>${state.playlistDraws?.[i]?'ルーレットで決定':GAMES[idx].title}</b></div>`).join("")}
       </div>
     </section>
 
@@ -2991,7 +2988,7 @@ function scoreRuleForGame(index){
   const legacyIndex=legacyGameIndex(index);
   if(legacyIndex===63)return "GOALまでの秒数 / 4秒以下=100点・20秒以上=0点 / 球に触れると1秒スタン";
   if(GAMES[index]?.key==='mobSpeedRacer')return "横スクロール2kmレースのゴールタイム / 速いチームほど高得点";
-  if(legacyIndex===125)return "人形5体の最終移動量・動いた体数・落下数を判定 / 完全静止=100点 / 落下は39点以下";
+  if(legacyIndex===125)return "人形7体の最終移動量・動いた体数・落下数を判定 / 完全静止=100点 / 落下は39点以下";
   if(legacyIndex===126)return "1回目敗退=0 / 2回目=40 / 3回目=60 / 4回目=80 / 最後の1体=100点";
   if(legacyIndex===127)return "10障害物を突破してGOALしたタイム / 9.45秒以下=100点 / 18.50秒以上=0点";
   if(legacyIndex===128)return "押し出しK.O.・生存時間・残った順位で最大80点 / 最後の1体だけ100点";
@@ -3168,6 +3165,8 @@ function scoreRuleForGame(index){
 }
 
 function showGameIntro(index){
+  if(GAMES[index]?.removed){renderHome();return;}
+  if(presentClassicDraw(index,()=>showGameIntro(index)))return;
   if(!state.freePlay)state.competitionStarted=true;
   state.partyRepresentatives=null;
   clearGameFit();
@@ -3482,6 +3481,8 @@ function showGameIntro(index){
 }
 
 function humanReady(gameIndex,humanIndex){
+  if(GAMES[gameIndex]?.removed){renderHome();return;}
+  if(humanIndex===0&&presentClassicDraw(gameIndex,()=>humanReady(gameIndex,humanIndex)))return;
   clearGameFit();
   const list=humans();
   if(humanIndex>=list.length){
@@ -3549,7 +3550,7 @@ function humanReady(gameIndex,humanIndex){
     else if(legacyIndex===29)startOverlapMaster(p,humanIndex,runId);
     else if(legacyIndex===30)startJumpingMob(p,humanIndex,runId);
     else if(legacyIndex===31)startHeroMaybe(p,humanIndex,runId);
-    else if(legacyIndex===32)startPopularGame(p,humanIndex,runId);
+    else if(legacyIndex===32)renderHome();
     else if(legacyIndex===33)startPlanetEnergy(p,humanIndex,runId);
     else if(legacyIndex===34)startPainterMob(p,humanIndex,runId);
     else if(legacyIndex===35)startBikeJump(p,humanIndex,runId);
@@ -4098,7 +4099,6 @@ async function startStack(p,humanIndex,runId){
       </div>
 
       <div id="stackStage" class="stack-stage">
-        <div id="stackCallout" class="stack-callout"></div>
         <div class="stack-sky-label">HOLD / MOVE / RELEASE</div>
         <div id="stackWaitingDock" class="stack-waiting-dock">
           <span>NEXT MOB</span>
@@ -4114,7 +4114,7 @@ async function startStack(p,humanIndex,runId){
         <div id="stackLandingGuide" class="stack-landing-guide"></div><div id="activeLayer" class="active-layer"></div>
       </div>
 
-      <p id="stackHint" class="hint">つかんで移動→離してDROP。中央PERFECT連続で時間ボーナス！</p>
+      <div class="stack-feedback" aria-live="polite"><div id="stackCallout" class="stack-callout"></div></div><p id="stackHint" class="hint">つかんで移動→離してDROP。中央PERFECT連続で時間ボーナス！</p>
     </div>
   </div>`;
   gameTop();
@@ -8886,34 +8886,6 @@ async function startHeroMaybe(p,humanIndex,runId){
 }
 
 // GAME 33 -------------------------------------------------
-async function startPopularGame(p,humanIndex,runId){
-  gameFit();let raf=null,timerRAF=null,finished=false,leftHeld=false,rightHeld=false,grounded=true,last=0,endAt=0,kills=0,playerX=150,playerY=54,vy=0;const worldW=3400,groundY=54,gravity=980,jumpV=500,moles=[];
-  screen.innerHTML=`<div class="popular-shell"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>アクションモブくん</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="popular-hud"><div><span>TIME</span><b id="popularTime">10.00</b></div><div><span>STOMP</span><b id="popularKills">0</b></div></div><div id="popularView" class="popular-view"><div id="popularWorld" class="popular-world" style="width:${worldW}px">
-      <div class="popular-sky-decor">
-        ${Array.from({length:10},(_,i)=>`<span class="popular-cloud" style="left:${140+i*330}px;top:${28+(i%3)*42}px">☁</span>`).join('')}
-        ${Array.from({length:8},(_,i)=>`<span class="popular-hill" style="left:${180+i*430}px"></span>`).join('')}
-        ${Array.from({length:12},(_,i)=>`<span class="popular-bush" style="left:${90+i*285}px"></span>`).join('')}
-        ${Array.from({length:9},(_,i)=>`<span class="popular-block" style="left:${280+i*360}px;bottom:${150+(i%2)*74}px"></span>`).join('')}
-      </div>
-      <div class="popular-ground"><i></i></div>
-      <div id="popularMoles"></div>
-      <div id="popularPlayer" class="popular-player figure-mob-player" style="background-image:url('${partyActorImage()}')"></div>
-    </div></div><div class="popular-controls"><button id="popularLeft">←</button><button id="popularJump" class="jump">JUMP</button><button id="popularRight">→</button></div></div>`;
-  const view=document.getElementById('popularView'),world=document.getElementById('popularWorld'),moleLayer=document.getElementById('popularMoles'),player=document.getElementById('popularPlayer'),timeEl=document.getElementById('popularTime'),killEl=document.getElementById('popularKills'),left=document.getElementById('popularLeft'),right=document.getElementById('popularRight'),jump=document.getElementById('popularJump');
-  function hold(el,set){el.addEventListener('pointerdown',e=>{e.preventDefault();set(true)},{passive:false});['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev,()=>set(false),{passive:false}));}hold(left,v=>leftHeld=v);hold(right,v=>rightHeld=v);
-  jump.addEventListener('pointerdown',e=>{if(finished||!grounded||!isGameRunValid(runId))return;e.preventDefault();grounded=false;vy=jumpV;beep(620,30,.012)},{passive:false});
-  function spawnMole(slot){const vw=view.clientWidth;let x=clamp(playerX+rand(-vw*.75,vw*.95),90,worldW-90);if(Math.abs(x-playerX)<110)x=clamp(x+(Math.random()<.5?-1:1)*180,90,worldW-90);moles[slot]={x,vx:rand(30,55)*(Math.random()<.5?-1:1),alive:true};}
-  for(let i=0;i<4;i++)spawnMole(i);
-  function renderMoles(){moleLayer.innerHTML=moles.map((m,i)=>m&&m.alive?`<div class="popular-mole" data-mole="${i}" style="left:${m.x}px"></div>`:'').join('')}
-  function camera(){const vw=view.clientWidth,cam=clamp(playerX-vw*.34,0,worldW-vw);world.style.transform=`translateX(${-cam}px)`}
-  function finish(){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);if(timerRAF)cancelAnimationFrame(timerRAF);state.records.popularGame[p.id]=kills;setTimeout(()=>{if(isGameRunValid(runId))recordScreen(32,p,humanIndex,`${kills}<small>体</small>`,`MOLE STOMP`)},300)}
-  if(!(await countdown('STOMP',runId)))return;endAt=performance.now()+10000;last=performance.now();
-  function frame(now){if(finished||!isGameRunValid(runId))return;const dt=Math.min(30,now-last)/1000;last=now;const move=(rightHeld?1:0)-(leftHeld?1:0);playerX=clamp(playerX+move*235*dt,30,worldW-30);if(!grounded){vy-=gravity*dt;playerY+=vy*dt;if(playerY<=groundY){playerY=groundY;vy=0;grounded=true;}}for(let i=0;i<moles.length;i++){const m=moles[i];if(!m||!m.alive)continue;m.x+=m.vx*dt;if(m.x<55||m.x>worldW-55)m.vx*=-1;const dx=Math.abs(playerX-m.x),moleTop=groundY+38;if(dx<40&&vy<0&&playerY<=moleTop+18&&playerY>=moleTop-15){m.alive=false;kills++;killEl.textContent=kills;playerY=moleTop+4;vy=285;grounded=false;beep(850,35,.016);setTimeout(()=>{if(!finished&&isGameRunValid(runId)){spawnMole(i);renderMoles()}},90);}}player.style.left=`${playerX}px`;player.style.bottom=`${playerY}px`;renderMoles();camera();raf=requestAnimationFrame(frame)}
-  function timer(now){if(finished||!isGameRunValid(runId))return;const rem=endAt-now;timeEl.textContent=(Math.max(0,rem)/1000).toFixed(2);if(rem<=0){finish();return;}timerRAF=requestAnimationFrame(timer)}raf=requestAnimationFrame(frame);timerRAF=requestAnimationFrame(timer);
-}
-
-
-// GAME 34 -------------------------------------------------
 async function startPlanetEnergy(p,humanIndex,runId){
   gameFit();
 
@@ -9274,7 +9246,7 @@ function painterTraceScore(points,targetPath){
   }
 
   const avgDist=distSum/points.length;
-  const accuracy=clamp(100-avgDist*5.0,0,100);
+  const accuracy=clamp(100-avgDist*4.7,0,100);
 
   let covered=0;
   for(const t of samples){
@@ -26750,7 +26722,7 @@ async function startTableclothPull(p,humanIndex,runId){
   screen.innerHTML=`
     <div class="cloth-shell-v202 gameplay-fit">
       <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのテーブルクロス引き</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
-      <div class="cloth-hud-v202"><div><span>DOLLS</span><b id="clothDolls202">5 / 5</b></div><div><span>MOVED</span><b id="clothMoved202">0</b></div><div><span>SCORE</span><b id="clothScore202">---</b></div></div>
+      <div class="cloth-hud-v202"><div><span>DOLLS</span><b id="clothDolls202">7 / 7</b></div><div><span>MOVED</span><b id="clothMoved202">0</b></div><div><span>SCORE</span><b id="clothScore202">---</b></div></div>
       <div id="clothStage202" class="cloth-stage-v202">
         <div class="cloth-room-v202"></div>
         <div class="cloth-table-v202"><i></i></div>
@@ -26771,7 +26743,7 @@ async function startTableclothPull(p,humanIndex,runId){
   void stage.offsetHeight;
   const W=stage.clientWidth,H=stage.clientHeight;
   const tableY=Math.round(H*.47);
-  const spots=[[-82,-6],[-42,-18],[0,-8],[43,-18],[82,-6]];
+  const spots=[[-78,-2],[-52,-25],[-26,0],[0,-25],[26,0],[52,-25],[78,-2]];
   const dolls=spots.map((s,i)=>({
     i,x:W/2+s[0],y:tableY+s[1],startX:W/2+s[0],startY:tableY+s[1],rot:0,fallen:false,el:null
   }));
@@ -26784,7 +26756,7 @@ async function startTableclothPull(p,humanIndex,runId){
   function renderDoll(d){d.el.style.transform=`translate3d(${d.x-26}px,${d.y-54}px,0) rotate(${d.rot}deg)`}
   dolls.forEach(renderDoll);
   fabric.style.transform='translate3d(-50%,0,0)';
-  // ABSOLUTE RULE: table, cloth and all five dolls are already at true start coordinates before countdown.
+  // ABSOLUTE RULE: table, cloth and all seven dolls are already at true start coordinates before countdown.
   void stage.offsetHeight;
   if(!(await countdown('TABLE CLOTH',runId,{transparent:true})))return;
   active=true;
@@ -26808,7 +26780,7 @@ async function startTableclothPull(p,humanIndex,runId){
     fabric.style.transition='transform .18s cubic-bezier(.2,.8,.2,1)';
     fabric.style.transform=`translate3d(calc(-50% + ${dx*.28}px),${H*.62}px,0)`;
     const slow=clamp((970-speed)/740,0,1),crooked=clamp(Math.abs(dx)/108,0,1),short=clamp((210-dy)/110,0,1);
-    const force=clamp(slow*.72+crooked*.46+short*.28,0,1.35);
+    const force=clamp(slow*.75+crooked*.48+short*.28,0,1.35);
     let moved=0,fallen=0,totalDist=0;
     dolls.forEach((d,i)=>{
       const jitter=(.78+((i*37)%31)/100);
@@ -26822,7 +26794,7 @@ async function startTableclothPull(p,humanIndex,runId){
       if(finalDist>6)moved++;
       d.el.style.transition=`transform ${d.fallen?.56:.34}s cubic-bezier(.2,.8,.2,1)`;renderDoll(d);
     });
-    const avg=totalDist/5;
+    const avg=totalDist/dolls.length;
     let score;
     if(fallen>0){score=clamp(Math.round(39-fallen*7-avg*.18),0,39)}
     else if(moved===0&&avg<=3){score=100}
@@ -26831,7 +26803,7 @@ async function startTableclothPull(p,humanIndex,runId){
     else{score=clamp(Math.round(59-(avg-34)/55*19-moved),40,59)}
     score=Math.min(score,window.MobGameBalance.clothCap(speed,dx,dy));
     state.records.tableclothPull[p.id]=score;
-    movedEl.textContent=moved;dollsEl.textContent=`${5-fallen} / 5`;scoreEl.textContent=score;
+    movedEl.textContent=moved;dollsEl.textContent=`${dolls.length-fallen} / ${dolls.length}`;scoreEl.textContent=score;
     call.textContent=fallen?`${fallen}体 落下！`:score===100?'PERFECT!! 全員静止！':moved?`${moved}体 動いた！`:'引く速さ・方向・距離で採点！';
     call.classList.toggle('bad-v202',fallen>0);call.classList.add('result-v202');
     stage.classList.add(score===100?'perfect-v202':'finish-v202');
@@ -27380,6 +27352,7 @@ function normalizeCpuRecordV152(gameIndex,p){
 }
 
 function simulateOneCpu(gameIndex,p){
+  if(GAMES[gameIndex]?.removed)return;
   if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(GAMES[gameIndex]?.key)){const raw=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=GAMES[gameIndex].key==='lockArcadeMob'?Math.round(raw/10):raw;return false;}
   if(['bananaBoatMob','warpedWallMob','santaClausMob'].includes(GAMES[gameIndex]?.key)){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=GAMES[gameIndex].key==='bananaBoatMob'?Math.min(100,Math.round(score/4)*4):score;return false;}
   if(p.characterRank){const score=window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES[gameIndex]));state.records[GAMES[gameIndex].key][p.id]=window.MobPartyCore.cpuRaw(score,v=>performancePoints(gameIndex,v));return false;}
@@ -27455,7 +27428,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===31){
     state.records.heroMaybe[p.id]=ultra?randi(84,98):randi(48,85);
   }else if(legacyIndex===32){
-    state.records.popularGame[p.id]=ultra?randi(17,23):randi(9,18);
+    return;
   }else if(legacyIndex===33){
     state.records.planetEnergy[p.id]=Math.round((ultra?rand(82,98):rand(38,84))*10)/10;
   }else if(legacyIndex===34){
@@ -28547,6 +28520,7 @@ function teamTotals(){
   return out;
 }
 function finishGame(gameIndex){
+  if(state.randomDraws?.[gameIndex]?.[0]?.shown)state.randomDraws[gameIndex].shift();
   if(previewKey)return;
   if(leagueRoundDone){
     clearGameFit();cancelActiveAnimation();
@@ -38926,11 +38900,8 @@ function mobCupSpecialGamePool(single=false){
   MODES.mobCupSpecial.participants=old;
   return pool;
 }
-function mobCupSpecialPickGames(n,single=false,exclude=[]){
-  const ex=new Set(exclude);let pool=shuffle(mobCupSpecialGamePool(single).filter(i=>!ex.has(i)));
-  if(pool.length<n)pool=shuffle(mobCupSpecialGamePool(single));
-  return pool.slice(0,n);
-}
+function mobCupSpecialPickGames(n,single=false,exclude=[]){const chosen=[];for(let i=0;i<n;i++)chosen.push(drawClassicGame([...exclude,...chosen]));return chosen;}
+
 function mobCupSpecialCpuMemberScore(team,memberIndex,gameIndex){
   const skill=mobCupSpecialUsedSkills(team)[memberIndex]??65;
   const affinity=((mobCupSpecialHash(`${team.id}:${memberIndex}:${GAMES[gameIndex].key}`)%1301)/1300-.5)*10;
@@ -39114,7 +39085,7 @@ function mobCupSpecialBuildMatchPlan(isFinal=false){
   const used=[];const normal=mobCupSpecialPickGames(5,false,used);used.push(...normal);const plan=normal.slice(0,3).map(gi=>({type:'normal',gameIndex:gi,multiplier:1,label:'ランダムゲーム'}));plan.push({type:'repChoice',multiplier:2,label:'ポイント倍代表戦1'});plan.push({type:'repChoice',multiplier:2,label:'ポイント倍代表戦2'});plan.push(...normal.slice(3,5).map(gi=>({type:'normal',gameIndex:gi,multiplier:1,label:'ランダムゲーム'})));plan.push({type:'roulette3',multiplier:2,label:'ポイント倍ラストゲーム'});if(isFinal){plan.push({type:'roulette10',multiplier:3,label:'ポイント3倍ラストゲーム1'});plan.push({type:'choice10',multiplier:3,label:'ポイント3倍ラストゲーム2'})}return plan;
 }
 function mobCupSpecialStartPlayerMatch(a,b,round){
-  const c=state.mobCupSpecial,label=round==='quarter'?'準々決勝':round==='semi'?'準決勝':'決勝';c.currentMatch={a,b,round,label,step:0,totalA:0,totalB:0,history:[],plan:mobCupSpecialBuildMatchPlan(round==='final')};if(round==='final')c.currentMatch.finalTen=mobCupSpecialPickGames(10,false);
+  const c=state.mobCupSpecial,label=round==='quarter'?'準々決勝':round==='semi'?'準決勝':'決勝';c.currentMatch={a,b,round,label,step:0,totalA:0,totalB:0,history:[],plan:mobCupSpecialBuildMatchPlan(round==='final')};if(round==='final')c.currentMatch.finalTen=shuffle(approvedRandomIndices()).slice(0,10);
   const opp=a==='player'?b:a;
   screen.innerHTML=`<div class="mcs-match-opening-v214"><span>${label}</span><h2>${esc(mobCupSpecialTeamById(a).name)}<i>VS</i>${esc(mobCupSpecialTeamById(b).name)}</h2><div class="mcs-versus-v214">${mobCupSpecialTeamVisual(mobCupSpecialTeamById('player'))}<strong>VS</strong>${mobCupSpecialTeamVisual(mobCupSpecialTeamById(opp))}</div><p>1ゲーム終わるたびに累計ポイントと点差を表示します。</p><button id="mcsMatchStart214" class="primary" type="button">${label} START！</button></div>`;
   document.getElementById('mcsMatchStart214').addEventListener('click',mobCupSpecialAdvanceMatch);gameTop();
@@ -39127,9 +39098,10 @@ function mobCupSpecialAdvanceMatch(){
   if(step.type==='roulette10'){mobCupSpecialRenderRoulette(step,10);return}
   if(step.type==='choice10'){mobCupSpecialRenderFinalChoice(step);return}
 }
-function mobCupSpecialRenderRepGameChoice(step){const choices=mobCupSpecialPickGames(3,true);screen.innerHTML=`<div class="mcs-choice-v214"><span>${esc(step.label)}</span><h2>3つからゲームを選択</h2><div class="mcs-game-choices-v214">${choices.map(i=>`<button data-mcs-repgame="${i}" type="button"><span>×2</span><b>${esc(GAMES[i].title)}</b><small>${GAMES[i].sub}</small></button>`).join('')}</div></div>`;screen.querySelectorAll('[data-mcs-repgame]').forEach(b=>b.addEventListener('click',()=>mobCupSpecialRenderRepresentativeChoice(Number(b.dataset.mcsRepgame),step)));gameTop()}
+function mobCupSpecialRenderRepGameChoice(step){const choices=shuffle(approvedRandomIndices()).slice(0,3);screen.innerHTML=`<div class="mcs-choice-v214"><span>${esc(step.label)}</span><h2>3つからゲームを選択</h2><div class="mcs-game-choices-v214">${choices.map(i=>`<button data-mcs-repgame="${i}" type="button"><span>×2</span><b>${esc(GAMES[i].title)}</b><small>${GAMES[i].sub}</small></button>`).join('')}</div></div>`;screen.querySelectorAll('[data-mcs-repgame]').forEach(b=>b.addEventListener('click',()=>mobCupSpecialRenderRepresentativeChoice(Number(b.dataset.mcsRepgame),step)));gameTop()}
 function mobCupSpecialRenderRepresentativeChoice(gi,step){screen.innerHTML=`<div class="mcs-choice-v214"><span>${esc(step.label)}</span><h2>代表者を選択</h2><strong>${esc(GAMES[gi].title)}</strong><div class="mcs-rep-choices-v214">${mobCupSpecialPlayerIds().map(id=>{const p=pById(id);return `<button data-mcs-rep="${id}" type="button">${imgTag(p,'mcs-rep-avatar-v214')}<b>P${p.no}</b></button>`}).join('')}</div></div>`;screen.querySelectorAll('[data-mcs-rep]').forEach(b=>b.addEventListener('click',()=>mobCupSpecialStartMatchSelectedGame(gi,step,true,b.dataset.mcsRep)));gameTop()}
-function mobCupSpecialRenderRoulette(step,count){const m=state.mobCupSpecial.currentMatch,choices=(count===10&&m?.finalTen)?[...m.finalTen]:mobCupSpecialPickGames(count,false),chosen=choices[randi(0,choices.length-1)];if(count===10&&m)m.finalRouletteChosen=chosen;screen.innerHTML=`<div class="mcs-roulette-v214"><span>${esc(step.label)}</span><h2>${count} GAME ROULETTE</h2><div class="mcs-roulette-strip-v214">${choices.map(i=>`<b>${esc(GAMES[i].title)}</b>`).join('')}</div><strong id="mcsRoulettePick214">ROULETTE...</strong><button id="mcsRouletteGo214" class="primary" type="button" disabled>決定</button></div>`;setTimeout(()=>{const el=document.getElementById('mcsRoulettePick214'),btn=document.getElementById('mcsRouletteGo214');if(!el||!btn)return;el.textContent=GAMES[chosen].title;btn.disabled=false;btn.addEventListener('click',()=>mobCupSpecialStartMatchSelectedGame(chosen,step,false),{once:true});beep(980,100,.035)},950);gameTop()}
+function mobCupSpecialRenderRoulette(step,count){const m=state.mobCupSpecial.currentMatch,draw=window.MobRandomGames.draw(),chosen=GAMES.findIndex(g=>g.key===draw.selected[0]);if(count===10&&m)m.finalRouletteChosen=chosen;const own=state;window.MobRandomUI.show({screen,esc,title:k=>GAMES.find(g=>g.key===k).title,choices:draw.choices,selected:draw.selected[0],top:gameTop,beep,valid:()=>state===own,done:()=>mobCupSpecialStartMatchSelectedGame(chosen,step,false)})}
+
 function mobCupSpecialRenderFinalChoice(step){const m=state.mobCupSpecial.currentMatch,choices=(m?.finalTen||mobCupSpecialPickGames(10,false)).filter(i=>i!==m?.finalRouletteChosen);screen.innerHTML=`<div class="mcs-choice-v214 final"><span>${esc(step.label)}</span><h2>同じ10候補から1つ選択</h2><div class="mcs-game-choices-v214 ten">${choices.map(i=>`<button data-mcs-finalgame="${i}" type="button"><span>×3</span><b>${esc(GAMES[i].title)}</b></button>`).join('')}</div></div>`;screen.querySelectorAll('[data-mcs-finalgame]').forEach(b=>b.addEventListener('click',()=>mobCupSpecialStartMatchSelectedGame(Number(b.dataset.mcsFinalgame),step,false)));gameTop()}
 function mobCupSpecialStartMatchSelectedGame(gi,step,representative=false,repId=null){step.gameIndex=gi;step.representative=representative;step.repId=repId;mobCupSpecialStartGame(gi,{kind:'match',multiplier:step.multiplier,representative,playerIds:representative?[repId]:mobCupSpecialPlayerIds()})}
 function mobCupSpecialCommitMatchGame(gameIndex,playerBase,playerVals){
@@ -39710,7 +39682,7 @@ const partyUI=window.MobPartyUI.create({
     state.partyCup=!!cup;if(cup){MODES.configured.name='MOB PARTY CUP';MODES.configured.teamNames.A='YOUR TEAM';}
     return participants();
   },
-  launch(indices){state.playStyle='custom';state.playlist=indices;state.roundIndex=0;renderModeLobby();}
+  launch(indices,draws=[]){state.playStyle='custom';state.playlistDraws=draws;state.playlist=indices;state.roundIndex=0;renderModeLobby();}
 });
 const partyEvents=window.MobPartyGames.create({
   screen,games:GAMES,esc,beep,top:gameTop,

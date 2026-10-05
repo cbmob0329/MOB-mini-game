@@ -10,3 +10,25 @@
 .arena-scorecard{flex:none}.arena-paging select{min-width:0;max-width:calc(100% - 116px);height:44px;font-size:11px}.arena-paging{flex:none}.arena-score-list{justify-content:center}
 
 .arena-ignition{animation:arenaFlare 1.1s ease-in-out 3}@keyframes arenaFlare{50%{text-shadow:0 0 60px #ffca4bdd;transform:scale(1.04)}}
+
+/* Full standings keep navigation outside the scroll region. */
+.arena-results,.arena-opening,.arena-champion,.arena-draw{padding-bottom:max(10px,env(safe-area-inset-bottom));box-sizing:border-box}
+.arena-score-list{overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;justify-content:flex-start;padding:3px 3px 12px;scrollbar-gutter:stable}
+.arena-scorecard{border-radius:4px;border-left:4px solid #8098b2;padding:12px;flex-shrink:0}
+.arena-scorecard header{font-size:14px;align-items:center}.arena-scorecard header>b{flex:1;overflow-wrap:anywhere}.arena-rank{font:900 26px/1 system-ui;color:#ffdc8d}
+.arena .arena-rank-pair{font-size:11px;margin:7px 0;color:#d5dfed!important;display:flex;justify-content:space-between}
+.arena-score-main span{font-size:11px}.arena-score-main strong{font-size:24px}.arena-score-main strong small{font-size:10px;margin-left:2px}
+.arena-score-members>div{font-size:12px}.arena-score-members img{width:32px;height:38px}.arena-score-members small{font-size:11px}.arena-scorecard footer{font-size:10px;line-height:1.5}
+.arena-results>header,.arena-results>nav,.arena-results>p,.arena-results>button{flex-shrink:0}.arena-results>button{margin-top:3px}
+.arena-opening{height:calc(100dvh - var(--arena-top,68px) - 12px);min-height:0;overflow:hidden}.arena-opening-stage{position:relative;flex:1;min-height:0;overflow:auto;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.arena-opening-rays{position:absolute;inset:0;pointer-events:none;background:repeating-conic-gradient(from 0deg,#ffe59a15 0deg 5deg,transparent 5deg 20deg);mask-image:radial-gradient(ellipse,#000,transparent 70%);animation:arenaOpeningRays 12s linear infinite}
+.arena-crown{font-size:70px;line-height:1;color:#ffe096;filter:drop-shadow(0 0 20px #eeba65)}.arena-opening-title{font:1000 clamp(28px,10vw,45px)/1 system-ui;letter-spacing:-.04em;color:#ffeab9}.arena-opening-rules{display:grid;gap:8px;width:100%;margin-top:10px;position:relative}.arena-opening-rules>div{background:#132233ed;border:1px solid #71819a;border-left:4px solid #f6cf7b;padding:10px;text-align:left;display:grid;grid-template-columns:42px 1fr;gap:2px 8px;animation:arenaRuleReveal .6s both}.arena-opening-rules>div:nth-child(2){animation-delay:.85s}.arena-opening-rules>div:nth-child(3){animation-delay:1.7s}.arena-opening-rules b{grid-row:span 2;align-self:center;text-align:center;color:#ffe08b;font-size:25px}.arena-opening-rules strong{font-size:14px}.arena-opening-rules span{font-size:11px;color:#dce5f1}.arena-opening>button{flex:none}
+@keyframes arenaRuleReveal{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}@keyframes arenaOpeningRays{to{transform:rotate(360deg)}}
+@media(max-height:650px){.arena-crown{font-size:45px}.arena-opening-rules>div{padding:7px}.arena-opening-stage{gap:4px}.arena-scorecard{padding:9px}}
+@media(prefers-reduced-motion:reduce){.arena-opening *{animation:none!important}}
+
+.stack-feedback{height:28px;flex:none;position:relative;text-align:center}.stack-feedback .stack-callout{position:static!important;inset:auto!important;transform:none!important;margin:0!important;font-size:17px!important;line-height:28px;pointer-events:none}.stack-feedback .stack-callout.show{transform:none!important}.stack-feedback:has(.stack-callout:not(.show)){color:transparent}
+
+.cloth-stage-v202 .cloth-call-v202{top:5px;translate:-50% 0;font-size:12px;padding:4px 10px}.cloth-stage-v202 .cloth-doll-v202{width:42px;height:48px}.cloth-stage-v202 .cloth-doll-v202 img{width:42px;height:42px}.stack-feedback .stack-callout{padding:0 8px!important;max-height:28px;display:inline-block}
+
+.tag-league.league-roulette-upgrade>header h1{color:#fff0bd!important;text-shadow:none}

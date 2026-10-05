@@ -65,7 +65,7 @@
       velocity+=clamp(desired-velocity,-dt*7,dt*7);boat=clamp(boat+(velocity+breeze*.018)*dt,.14,.86);
       while(spawned<30&&time>=plan[spawned].at)bananas.push({...plan[spawned++]});
       const catchY=seaHeight(time)-.125,previousCatch=seaHeight(Math.max(0,time-dt))-.125;
-      for(const b of bananas){if(b.dead)continue;const old=b.y;b.vx=breeze*.042;b.y+=dt*b.speed;b.x=clamp(b.x+b.vx*dt,.08,.92);if(old<previousCatch&&b.y>=catchY){b.dead=true;if(Math.abs(b.x-boat)<=.14){caught++;combo++;points(bananaPoints(caught));burst(boat,catchY,'#fff49d',combo>=3?`${combo} COMBO`:'+4');api.beep(750+Math.min(combo,8)*45,35,.015);}else{missed++;combo=0;burst(b.x,seaHeight(time),'#b6f5ff','MISS');}}}
+      for(const b of bananas){if(b.dead)continue;const old=b.y;b.vx=breeze*.042;b.y+=dt*b.speed;b.x=clamp(b.x+b.vx*dt,.08,.92);if(old<previousCatch&&b.y>=catchY){b.dead=true;if(Math.abs(b.x-boat)<=.15){caught++;combo++;points(bananaPoints(caught));burst(boat,catchY,'#fff49d',combo>=3?`${combo} COMBO`:'+4');api.beep(750+Math.min(combo,8)*45,35,.015);}else{missed++;combo=0;burst(b.x,seaHeight(time),'#b6f5ff','MISS');}}}
       status.textContent=`CATCH ${caught} / 30 · MISS ${missed}`;
       const upcoming=wind(time+.7);hint.textContent=upcoming!==breeze?'風向きが変わる！ 次の落下位置を見よう':breeze===1?'横風 → · スティックで先回り！':breeze===-1?'横風 ← · 船の中央でキャッチ！':spawned>=20?'ラスト10個！ 落下スピードUP':'下部スティックで操作 · 次のバナナへ！';
       art.ocean({w,h,time,boat,velocity,bananas,seaY:seaHeight(time)*h,catchY:catchY*h,breeze});

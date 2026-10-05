@@ -1,29 +1,22 @@
 /* Pure tournament rules. UI and mini-game execution live in party-league-ui.js. */
 (function(root){
   'use strict';
+  const draws=typeof module!=='undefined'&&module.exports?require('./party-random-games.js'):root.MobRandomGames;
   const TAG=['mobSpeedRacer','summonMaster','linkedCartBlast'];
   const DIVISIONS=['PB2リーグ','Realizeリーグ','Portalリーグ','DENDENリーグ'];
   const pick=(a,r)=>a[Math.floor(r()*a.length)];
   const CARRYOVER=[50,25,18,15,12,10,8,5];
-  const PAIR_ROULETTE=['juiceArcadeMob','lockArcadeMob','cargoArcadeMob','dockingArcadeMob'];
+  const PAIR_ROULETTE=draws.ALLOWED.map(g=>g.key);
   const CATCHERS=['catcher','plushCatcher','tokotokoCatcher','craneGame3DMob'];
-  const TAG_ROULETTE=['ohajikiMob','toyOnOff','errand','mobIssen','ropeSwingMob'];
+  const TAG_ROULETTE=[...PAIR_ROULETTE];
   const TAG_TEAM_CHOICES=['cardShop','mobPinball','mobDice','zeroOrHundredMob'];
   const TAG_EIGHTH_CHOICES=['warpedWallMob','santaClausMob','monsterBoxMob'];
   function program(pool,random=Math.random,mode='tag'){
     if(!pool.length)throw Error('League needs a game pool');
-    const any=()=>pick(pool,random);
-    if(mode==='tag')return {
-      profile:'tag',rouletteCandidates:[...TAG_ROULETTE],pairCandidates:[...PAIR_ROULETTE],
-      qualifier:[pick(['reaction','mergeMob','brake'],random),'pairedChoice','minorityMob','rouletteChoice',pick(['catcher','plushCatcher','cleaningMob','tableclothPull'],random),'individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob'],
-      repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
-      final:[pick(['monsterBoxMob','warpedWallMob','fruitCatchMob'],random),pick(['launch','ski','frontFlipMob'],random),'bikeJump',pick(['waterSkip','tableclothPull'],random),'focusBombMob','deathGameChallenge'],pool:[...pool]
-    };
-    return {
-      qualifier:['reaction',any(),'minorityMob',pick(['ohajikiMob','toyOnOff'],random),pick(['catcher','plushCatcher'],random),'individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
-      repechage:[pick(['longJumpMob','bungeeMob','overlap'],random),pick(['cardShop','mobPinball','mobDice'],random),'bowling3DMob'],
-      final:['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge'],pool:[...pool]
-    };
+    return {profile:mode==='tag'?'tag':mode,drawVersion:2,
+      qualifier:mode==='tag'?['randomChoice','pairedChoice','minorityMob','randomChoice','randomChoice','individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob']:['reaction','randomChoice','minorityMob','randomChoice','randomChoice','individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
+      repechage:['randomChoice','randomChoice','bowling3DMob'],
+      final:mode==='tag'?['randomChoice','randomChoice','bikeJump','randomChoice','focusBombMob','deathGameChallenge']:['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge'],pool:pool.filter(k=>k!=='popularGame')};
   }
   function create(teams,schedule,options={}){
     const mode=options.mode||'tag',size=mode==='crew'?4:mode==='king'?1:2,count=mode==='king'?80:20;
@@ -35,13 +28,15 @@
   function next(s,random=Math.random){
     if(s.champion)return null;
     const tag=s.mode==='tag'&&s.schedule.profile==='tag';
-    if(tag&&s.phase==='qualifier'&&s.round===3&&s.schedule.qualifier[3]==='rouletteChoice')s.schedule.qualifier[3]=pick(s.schedule.rouletteCandidates,random);
-    const tiePool=s.mode==='tag'?s.schedule.pool:s.schedule.pool.filter(k=>!TAG.includes(k)&&k!=='treasureDuoParty');
-    const key=s.phase==='cutoff'?'reaction':s.phase==='championship'?(pick(tiePool,random)||'reaction'):(s.schedule[s.phase][s.round]||pick(s.schedule.pool,random));
-    if(tag&&key==='pairedChoice'&&!s.schedule.pairGames)s.schedule.pairGames=sample(s.schedule.pairCandidates||PAIR_ROULETTE,2,random);
+    const slot=s.phase+':'+s.division+':'+s.round+':'+s.history.length;
+    const scheduled=s.schedule[s.phase]?.[s.round];
+    const legacyRandom=!s.schedule.drawVersion&&((s.phase==='qualifier'&&[0,3,4].includes(s.round))||(s.phase==='repechage'&&s.round<2)||(tag&&s.phase==='final'&&[0,1,3].includes(s.round)));
+    const randomRound=legacyRandom||['randomChoice','rouletteChoice','popularGame','pairedChoice'].includes(scheduled)||s.phase==='championship'||(!scheduled&&s.phase!=='cutoff');
+    let draw=null,key=s.phase==='cutoff'?'reaction':scheduled;
+    if(randomRound){s.draws=s.draws||{};draw=s.draws[slot]||(s.draws[slot]=draws.draw(scheduled==='pairedChoice'?2:1,random));key=scheduled==='pairedChoice'?'pairedChoice':draw.selected[0];if(key==='pairedChoice')s.schedule.pairGames=[...draw.selected];}
     const choices=key==='pairedChoice'?[...s.schedule.pairGames]:key==='teamChoice'?(tag?[...TAG_TEAM_CHOICES]:['mobDice','slot']):key==='individualChoice'?(tag&&s.round===7?[...TAG_EIGHTH_CHOICES]:sample([...s.schedule.pool,'reaction','longJumpMob','brake'].filter(k=>!TAG.includes(k)&&!['deathGameChallenge','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),3,random)):null;
     if(choices&&key==='individualChoice'&&s.size===4){const extra=sample(s.schedule.pool.filter(k=>!TAG.includes(k)&&!choices.includes(k)&&!['deathGameChallenge','minorityMob','focusBombMob','individualChoice','teamChoice','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),1,random);choices.push(...extra);}
-    return {key,choices,representative:tag&&CATCHERS.includes(key),roulette:key==='pairedChoice'?[...(s.schedule.pairCandidates||PAIR_ROULETTE)]:tag&&s.phase==='qualifier'&&s.round===3?[...s.schedule.rouletteCandidates]:null,multiplier:s.phase==='qualifier'&&[3,4,6,9].includes(s.round)?2:1,winnerBonus:s.phase==='qualifier'&&s.round===8,phase:s.phase,division:s.division,round:s.round+1,active:[...s.active]};
+    return {key,choices,representative:tag&&s.phase==='qualifier'&&s.round===4,roulette:draw?[...draw.choices]:null,multiplier:s.phase==='qualifier'&&[3,4,6,9].includes(s.round)?2:1,winnerBonus:s.phase==='qualifier'&&s.round===8,phase:s.phase,division:s.division,round:s.round+1,active:[...s.active]};
   }
   function sample(items,count,random=Math.random){const a=[...new Set(items)];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a.slice(0,count);}
   function reset(s,phase,ids){s.phase=phase;s.round=0;s.active=[...ids];s.scores={};s.personal={};}

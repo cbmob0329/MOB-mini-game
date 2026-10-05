@@ -20,7 +20,8 @@ test('shared contrast repair replaces white/yellow on white and preserves legibl
 test('repechage can select the renamed two-circle overlap, never the removed master game',()=>{
   const L=require('../party-league.js');
   const program=L.program(['reaction'],()=>.999);
-  assert.equal(program.repechage[0],'overlap');
+  assert.equal(program.repechage[0],'randomChoice');
+  assert.ok(require('../party-random-games.js').ALLOWED.some(g=>g.key==='overlap'));
   assert.ok(!program.repechage.includes('overlapMaster'));
 });
 

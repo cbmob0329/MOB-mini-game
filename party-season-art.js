@@ -18,7 +18,7 @@
       for(let n=0;n<5;n++){C.strokeStyle='#d5ffff55';C.lineWidth=2;C.beginPath();C.ellipse(boat*w-velocity*n*5,seaY+n*6,23+n*7,4+n*1.7,0,.1,Math.PI-.1);C.stroke();}
       // Tow rope, inflated banana hull, seat and handles.
       C.save();C.translate(boat*w,seaY);C.rotate(velocity*.065+Math.sin(time*3)*.035);line(-w*.11,0,-w*.20,9,'#e8dfbc',1);C.shadowColor='#00394b88';C.shadowBlur=6;C.shadowOffsetY=6;C.beginPath();C.moveTo(-w*.12,-12);C.bezierCurveTo(-w*.08,21,w*.13,20,w*.13,-18);C.quadraticCurveTo(w*.06,-1,-w*.12,-12);C.fillStyle='#ffc72e';C.fill();C.shadowBlur=0;C.shadowOffsetY=0;C.lineWidth=2;C.strokeStyle='#9b6313';C.stroke();line(-w*.07,4,w*.065,6,'#fff29b',3);round(-16,-8,32,9,4,'#087491');for(const x of [-15,15]){C.beginPath();C.arc(x,-7,5,Math.PI,0);C.strokeStyle='#273c3a';C.stroke();}mob(0,-8,Math.min(45,w*.135),velocity*.07);C.restore();
-      C.setLineDash([3,4]);C.strokeStyle='#fff5b488';C.lineWidth=1;C.beginPath();C.ellipse(boat*w,catchY,w*.14,4,0,0,TAU);C.stroke();C.setLineDash([]);
+      C.setLineDash([3,4]);C.strokeStyle='#fff5b488';C.lineWidth=1;C.beginPath();C.ellipse(boat*w,catchY,w*.15,4,0,0,TAU);C.stroke();C.setLineDash([]);
       for(const b of bananas){if(!b.dead){line(b.x*w-b.vx*20,b.y*h-21,b.x*w,b.y*h-9,'#fff8d955',2);banana(b.x*w,b.y*h,24,Math.sin(time*6+b.id)*.3);}}
       round(w-93,10,82,26,13,'#063b5799');text(breeze===0?'風 おだやか':breeze>0?'風 → →':'風 ← ←',w-52,28,11,'#fff8d8');
     }

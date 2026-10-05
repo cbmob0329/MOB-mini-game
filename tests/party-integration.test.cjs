@@ -73,13 +73,13 @@ test('10 teams of 2 produce 20 distinct participants',()=>{
 });
 test('rank-based CPU record generation yields finite records and scores for every game',()=>{
   const e=engine();const p=e.PLAYERS.find(p=>p.cpu);p.characterRank='SS';
-  for(let i=0;i<e.GAMES.length;i++){e.simulateOneCpu(i,p);const raw=e.getState().records[e.GAMES[i].key][p.id],points=e.performancePoints(i,raw);assert.ok(Number.isFinite(raw),e.GAMES[i].key);assert.ok(Number.isFinite(points)&&points>=0&&points<=100,e.GAMES[i].key);}
+  for(let i=0;i<e.GAMES.length;i++){if(e.GAMES[i].removed)continue;e.simulateOneCpu(i,p);const raw=e.getState().records[e.GAMES[i].key][p.id],points=e.performancePoints(i,raw);assert.ok(Number.isFinite(raw),e.GAMES[i].key);assert.ok(Number.isFinite(points)&&points>=0&&points<=100,e.GAMES[i].key);}
 });
 
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,147);
+  assert.equal(e.activeGameIndices().length,146);
   const active=e.activeGameIndices().map(i=>e.GAMES[i].key);
   for(const key of ['killLeaderMob','mobSpeedRacer','mineCartMob','mobCount','feint','giantHammer3DMob'])assert.ok(!active.includes(key),key);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
