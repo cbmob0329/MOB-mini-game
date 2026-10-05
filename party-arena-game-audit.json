@@ -1,0 +1,1129 @@
+{
+  "scope": "Only explicit allowlist; menus, user reading and asset loading excluded from play duration",
+  "audited": [
+    {
+      "key": "archeryArcadeMob",
+      "play": 7,
+      "bound": 11,
+      "source": "party-approved-games.js: archery seconds=7; shared timeout",
+      "measuredToResultMs": 9250
+    },
+    {
+      "key": "juiceArcadeMob",
+      "play": 8,
+      "bound": 12,
+      "source": "party-approved-games.js: juice seconds=8; release or timeout",
+      "measuredToResultMs": 10250
+    },
+    {
+      "key": "rallyArcadeMob",
+      "play": 8,
+      "bound": 12,
+      "source": "party-approved-games.js: rally seconds=8; shared timeout",
+      "measuredToResultMs": 4750
+    },
+    {
+      "key": "potteryArcadeMob",
+      "play": 10,
+      "bound": 14,
+      "source": "party-approved-games.js: lathe_pottery override seconds=10",
+      "measuredToResultMs": 12250
+    },
+    {
+      "key": "firehoseArcadeMob",
+      "play": 10,
+      "bound": 14,
+      "source": "party-approved-games.js: ballistic_firehose override seconds=10; water exhaustion",
+      "measuredToResultMs": 12250
+    },
+    {
+      "key": "factory",
+      "play": 10,
+      "bound": 14,
+      "source": "game.js: startFactory endAt=now+10000; recordScreen",
+      "measuredToResultMs": 12250
+    },
+    {
+      "key": "errand",
+      "play": 10,
+      "bound": 14,
+      "source": "game.js: startErrand endAt=now+10000; recordScreen",
+      "measuredToResultMs": 12250
+    },
+    {
+      "key": "dontHitMob",
+      "play": 10,
+      "bound": 14,
+      "source": "game.js: startDontHitMob endAt=now+10000; result delay",
+      "measuredToResultMs": 12500
+    },
+    {
+      "key": "jumpingMob",
+      "play": 10,
+      "bound": 14,
+      "source": "game.js: startJumpingMob endAt=now+10000; 350ms result",
+      "measuredToResultMs": 12750
+    },
+    {
+      "key": "popularGame",
+      "play": 10,
+      "bound": 14,
+      "source": "game.js: startPopularGame endAt=now+10000; result transition",
+      "measuredToResultMs": 12500
+    }
+  ],
+  "games": [
+    {
+      "key": "reaction",
+      "title": "モブくんの反射神経",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "memory",
+      "title": "モブくんを覚えて！",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "puzzle",
+      "title": "モブくん12",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "launch",
+      "title": "モブくん人形空を飛ぶ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "stack",
+      "title": "グラグラモブくん",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "breakdance",
+      "title": "モブくん1990にチャレンジ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "factory",
+      "title": "モブくん人形大人気",
+      "allowed": true,
+      "reason": "game.js: startFactory endAt=now+10000; recordScreen"
+    },
+    {
+      "key": "catcher",
+      "title": "モブくんキャッチャー",
+      "allowed": false,
+      "reason": "指定のキャッチャー種目のため除外"
+    },
+    {
+      "key": "tidy",
+      "title": "モブくん整理整頓",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "ski",
+      "title": "モブくんスキージャンプ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "slot",
+      "title": "モブくんスロット",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "pk",
+      "title": "モブくんPK",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "cut",
+      "title": "モブくんカットゲーム",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "errand",
+      "title": "お使いモブくん",
+      "allowed": true,
+      "reason": "game.js: startErrand endAt=now+10000; recordScreen"
+    },
+    {
+      "key": "dontHitMob",
+      "title": "モブくんを叩かないで",
+      "allowed": true,
+      "reason": "game.js: startDontHitMob endAt=now+10000; result delay"
+    },
+    {
+      "key": "mobStop",
+      "title": "モブくんストップ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "overlap",
+      "title": "重なるモブくん",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "shutter",
+      "title": "モブくんシャッターチャンス",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "darts",
+      "title": "ダーツ1投勝負",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "parachute",
+      "title": "モブくんとパラシュート",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobCount",
+      "title": "モブくんは何人？",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "brake",
+      "title": "モブくんブレーキチキンレース",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "feint",
+      "title": "モブくんは騙されやすい",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "bomb",
+      "title": "爆弾チキンレース",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "overlapMaster",
+      "title": "重なりモブくん",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "jumpingMob",
+      "title": "ジャンピングモブくん",
+      "allowed": true,
+      "reason": "game.js: startJumpingMob endAt=now+10000; 350ms result"
+    },
+    {
+      "key": "heroMaybe",
+      "title": "モブくんは勇者かも",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "popularGame",
+      "title": "アクションモブくん",
+      "allowed": true,
+      "reason": "game.js: startPopularGame endAt=now+10000; result transition"
+    },
+    {
+      "key": "planetEnergy",
+      "title": "モブくんは破壊神",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "painter",
+      "title": "モブくんは画家志望",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "bikeJump",
+      "title": "モブくんバイクで飛ぶ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobTrain",
+      "title": "モブくん列車出発進行！",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "giantMob",
+      "title": "巨大モブくん大進撃",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "wizardMob",
+      "title": "魔法使いモブくん",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "brawlerMob",
+      "title": "モブくんは喧嘩番長",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "summonerMob",
+      "title": "モブくんは召喚師",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "blackjackMob",
+      "title": "ブラックジャックの決戦",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobIssen",
+      "title": "モブくん一閃",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "dancingMob",
+      "title": "ダンシングモブくん",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "guardianMob",
+      "title": "モブくんはガーディアン",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mob50m",
+      "title": "モブくん50m走",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "sniperMob",
+      "title": "モブくんはスナイパー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobRacePredict",
+      "title": "モブくんレースだれが勝つ!?",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobRocket",
+      "title": "モブくんロケット",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "bossDuel",
+      "title": "モブくん番長決戦",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "plushCatcher",
+      "title": "モブくんはぬいぐるみが好き",
+      "allowed": false,
+      "reason": "指定のキャッチャー種目のため除外"
+    },
+    {
+      "key": "toyOnOff",
+      "title": "モブくんおもちゃON or OFF",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "dodgeballMob",
+      "title": "モブくんドッジボール",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "amidakujiMob",
+      "title": "モブくんのあみだくじ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "katanaSmith",
+      "title": "モブくんは刀鍛冶",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "homeRunMob",
+      "title": "モブくんはパワーヒッター",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobMisfortune",
+      "title": "モブくんの災難",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "aimMob",
+      "title": "狙ってモブくん！",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobDice",
+      "title": "モブくんのサイコロ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobCombo",
+      "title": "モブくん20連コンボ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "electricMaze",
+      "title": "こっちだよモブくん！",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "cardShop",
+      "title": "モブくんカードショップ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "bungeeMob",
+      "title": "モブくんバンジー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "waterSlide",
+      "title": "モブくんウォータースライダー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "paperPlane",
+      "title": "モブくん紙飛行機研究所",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "tankMob",
+      "title": "モブくん戦車に乗る",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "curlingMob",
+      "title": "モブくん氷上カーリング",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "bubbleMob",
+      "title": "モブくん巨大シャボン玉",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "changeMob",
+      "title": "モブくん何が変わった？",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "baggageMob",
+      "title": "モブくん荷物検査",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "treasureMob",
+      "title": "モブくん宝箱どれだ!?",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "rouletteMob",
+      "title": "モブくんルーレットジャンプ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "excavationMob",
+      "title": "モブくん地下発掘",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "oldMaidDuel",
+      "title": "モブくんのババ抜き決闘",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "robotMarch",
+      "title": "モブくんロボット大発進",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "monsterMaster",
+      "title": "モブくんはモンスターマスター",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "scoutMan",
+      "title": "モブくんはスカウトマン！",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "atafutaSurvival",
+      "title": "モブくんあたふたサバイバル",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "waveMaster",
+      "title": "モブくん波動を極める",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "battleRoyaleMob",
+      "title": "モブくんFPSアリーナに挑戦",
+      "allowed": false,
+      "reason": "複数選手競技または大会専用のため除外"
+    },
+    {
+      "key": "littleMobShot",
+      "title": "Little MOB SHOT",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "monsterBoxMob",
+      "title": "モブくんモンスターボックスに挑む",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "alienBattleMob",
+      "title": "モブくんエイリアンと戦う",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobMusou",
+      "title": "モブくん無双",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "iaidoMaster",
+      "title": "モブくんは居合切りの達人",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "killLeaderMob",
+      "title": "モブくんの長い夜",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mobSpeedRacer",
+      "title": "モブくんは爆速レーサー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "summonMaster",
+      "title": "モブくんは召喚マスター",
+      "allowed": false,
+      "reason": "複数選手競技または大会専用のため除外"
+    },
+    {
+      "key": "mobPinball",
+      "title": "モブくんピンボール",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "hurdleRun",
+      "title": "モブくんのハードル走",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "longJumpMob",
+      "title": "モブくんの走り幅跳び",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "pkKicker",
+      "title": "モブくんPKキッカー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "threePoint",
+      "title": "モブくん3ポイント",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "bowlingMob",
+      "title": "モブくんボウリング",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "waterSkip",
+      "title": "モブくん水切り",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "tamaireMob",
+      "title": "モブくん玉入れ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mineCartMob",
+      "title": "モブくんトロッコ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "airHockeyMob",
+      "title": "モブくんエアホッケー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "ropeSwingMob",
+      "title": "モブくんロープスイング",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "billiardsMob",
+      "title": "モブくんビリヤード",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "billiardsBattleRoyale",
+      "title": "モブくんビリヤードバトルロイヤル",
+      "allowed": false,
+      "reason": "複数選手競技または大会専用のため除外"
+    },
+    {
+      "key": "linkedCartBlast",
+      "title": "くっつきモブくんトロッコ大爆走",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "soloCartBlast",
+      "title": "モブくんトロッコ大爆走",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "deathGameChallenge",
+      "title": "モブくんデスゲームにチャレンジ",
+      "allowed": false,
+      "reason": "複数選手競技または大会専用のため除外"
+    },
+    {
+      "key": "tokotokoCatcher",
+      "title": "トコトコモブくんキャッチャー",
+      "allowed": false,
+      "reason": "指定のキャッチャー種目のため除外"
+    },
+    {
+      "key": "amidakujiMasters",
+      "title": "モブくんのあみだくじマスターズ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "djMaster",
+      "title": "モブくんDJの達人",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "rocketPunch",
+      "title": "モブくんロケットパンチ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "flagRaise",
+      "title": "モブくん旗上げ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "flyingCarpet",
+      "title": "モブくん空飛ぶじゅうたん",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "fruitCatchMob",
+      "title": "モブくんフルーツキャッチ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "senryobakoMob",
+      "title": "モブくん千両箱",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "tableclothPull",
+      "title": "モブくんのテーブルクロス引き",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "bombPassMob",
+      "title": "モブくんの爆弾ゲーム",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "obstacleRaceMob",
+      "title": "モブくんの障害物競走",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "sphereMob",
+      "title": "球体モブくん",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "frontFlipMob",
+      "title": "モブくんの前宙",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "swimmingMob",
+      "title": "モブくんの水泳",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "cheerLeaderMob",
+      "title": "モブくんは応援団長",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "zeroOrHundredMob",
+      "title": "モブくん0 or 100",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "fireworkStandMob",
+      "title": "モブくん打ち上げ台を作る",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "poiGameMob",
+      "title": "モブくんのポイゲーム",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "cleaningMob",
+      "title": "モブくんのお掃除",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "findMob",
+      "title": "モブくんを探せ！",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "ohajikiMob",
+      "title": "モブくんのおはじき",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "dontBreakBlocksMob",
+      "title": "モブくんのブロック崩さないで",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "ohajikiShootMob",
+      "title": "おはじきモブくんシュート",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "electricMaze2",
+      "title": "こっちだよモブくんⅡ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "truckHaulMob",
+      "title": "モブくんのトラック運び",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "fishingMob",
+      "title": "モブくんの魚釣り",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "othelloOneMoveMob",
+      "title": "モブくんオセロ1手勝負",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "gomokuOneMoveMob",
+      "title": "モブくんの五目並べ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mathChallengeMob",
+      "title": "モブくん算数にチャレンジ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "colorTrapMob",
+      "title": "モブくんのカラートラップ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "reverseJankenMob",
+      "title": "モブくんの逆ジャンケン",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "mergeMob",
+      "title": "モブくんマージ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "parkingEscapeMob",
+      "title": "モブくん駐車場脱出",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "elevatorMob",
+      "title": "モブくんエレベーター",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "cashierMob",
+      "title": "モブくんレジ打ち",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "coinPusherMob",
+      "title": "モブくんコインプッシャー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "survivorMob",
+      "title": "モブくんサバイバー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "ringToss3DMob",
+      "title": "モブくん3D輪投げ",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "bowling3DMob",
+      "title": "モブくん3Dボウリング",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "homeRun3DMob",
+      "title": "モブくん3Dホームランチャレンジ",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "puttGolf3DMob",
+      "title": "モブくん3Dパターゴルフ",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "freeThrow3DMob",
+      "title": "モブくん3Dフリースロー",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "curling3DMob",
+      "title": "モブくん3Dカーリング",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "punchMachine3DMob",
+      "title": "モブくん3Dパンチングマシーン",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "coinPusher3DMob",
+      "title": "モブくん3Dコインプッシャー",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "blackjack3DMob",
+      "title": "モブくん3Dブラックジャック",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "skiJump3DMob",
+      "title": "モブくん3Dスキージャンプ",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "craneGame3DMob",
+      "title": "モブくん3Dクレーンゲーム",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "giantHammer3DMob",
+      "title": "モブくん3D巨大ハンマー",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "shotPut3DMob",
+      "title": "モブくん3D砲丸投げ",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "rescueHeli3DMob",
+      "title": "モブくん3Dレスキューヘリ",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "submarine3DMob",
+      "title": "モブくん3D潜水艦",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "foodCatch3DMob",
+      "title": "モブくん3Dフードキャッチ",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "buildingClimb3DMob",
+      "title": "モブくん3Dビル登り",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "mazeBall3DMob",
+      "title": "モブくん3D巨大迷路ボール",
+      "allowed": false,
+      "reason": "3Dゲームのため除外"
+    },
+    {
+      "key": "colorBridgeParty",
+      "title": "モブくんカラーブリッジ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "treasureEscapeParty",
+      "title": "モブくんお宝エスケープ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "treasureRuneParty",
+      "title": "モブくんお宝ルーン迷宮",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "treasureDuoParty",
+      "title": "モブくんお宝ツイン強奪",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "minorityMob",
+      "title": "モブくんは少数派",
+      "leagueOnly": true,
+      "allowed": false,
+      "reason": "複数選手競技または大会専用のため除外"
+    },
+    {
+      "key": "focusBombMob",
+      "title": "モブくん集中大爆弾！",
+      "leagueOnly": true,
+      "allowed": false,
+      "reason": "複数選手競技または大会専用のため除外"
+    },
+    {
+      "key": "bananaBoatMob",
+      "title": "モブくんのそんなバナナ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "warpedWallMob",
+      "title": "モブくんのそり立つ壁",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "santaClausMob",
+      "title": "モブくんはサンタクロース",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "juiceArcadeMob",
+      "title": "モブくんのピッタリジュース",
+      "allowed": true,
+      "reason": "party-approved-games.js: juice seconds=8; release or timeout"
+    },
+    {
+      "key": "rallyArcadeMob",
+      "title": "モブくんラリー",
+      "allowed": true,
+      "reason": "party-approved-games.js: rally seconds=8; shared timeout"
+    },
+    {
+      "key": "potteryArcadeMob",
+      "title": "モブくんろくろの名人",
+      "allowed": true,
+      "reason": "party-approved-games.js: lathe_pottery override seconds=10"
+    },
+    {
+      "key": "galaxyArcadeMob",
+      "title": "モブくんギャラクシー",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "archeryArcadeMob",
+      "title": "モブくんのゆらゆらアーチェリー",
+      "allowed": true,
+      "reason": "party-approved-games.js: archery seconds=7; shared timeout"
+    },
+    {
+      "key": "lockArcadeMob",
+      "title": "モブくんのくるくるロック",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "shieldArcadeMob",
+      "title": "モブくんシールド360",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "dockingArcadeMob",
+      "title": "モブくんの宇宙ドッキング",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "cargoArcadeMob",
+      "title": "モブくんの吊り荷ピタッ",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "pancakeArcadeMob",
+      "title": "モブくんのパンケーキ返し",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    },
+    {
+      "key": "firehoseArcadeMob",
+      "title": "モブくん消防ホース",
+      "allowed": true,
+      "reason": "party-approved-games.js: ballistic_firehose override seconds=10; water exhaustion"
+    },
+    {
+      "key": "discArcadeMob",
+      "title": "モブくんカーブディスク",
+      "allowed": false,
+      "reason": "15秒未満の自動終了を今回保証する対象外。条件を緩めず不採用"
+    }
+  ]
+}

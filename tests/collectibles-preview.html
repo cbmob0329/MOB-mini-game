@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="party-ui.css"><title>記念画像の表示テスト</title><body><main id="preview"></main><script src="party-core.js"></script><script src="party-champion-studio.js"></script><script src="party-collectibles.js"></script><script>
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="party-ui.css"><link rel="stylesheet" href="party-league-upgrade.css"><title>記念画像の表示テスト</title><body><main id="preview"></main><script src="party-core.js"></script><script src="party-victory-stamps.js"></script><script src="party-champion-studio.js"></script><script src="party-collectibles.js"></script><script>
 const screen=document.getElementById('preview');
 const members=[9,12].map(id=>MobPartyCore.roster.find(c=>c.id===id));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

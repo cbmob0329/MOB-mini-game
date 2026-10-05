@@ -10,9 +10,17 @@ let kingRoundDone=null;
 const partyCleanups=[];
 function isPartyEditable(target){return !!target?.closest?.('input,textarea,select,[contenteditable="true"]');}
 // Native editing/IME events must not reach the old app-wide game input locks.
-for(const type of ['selectstart','contextmenu','copy','cut','paste','pointerdown','pointermove','pointerup','mousedown','mousemove','mouseup','touchstart','touchmove','touchend','dblclick']){
+for(const type of ['dragstart','selectstart','contextmenu','copy','cut','paste','pointerdown','pointermove','pointerup','mousedown','mousemove','mouseup','touchstart','touchmove','touchend','dblclick']){
   document.addEventListener(type,e=>{if(isPartyEditable(e.target))e.stopImmediatePropagation();},{capture:true});
 }
+// A finger held across a screen replacement must not click the new result buttons.
+const partyHeldPointers=new Set(),partyStaleClicks=new Set();
+document.addEventListener('pointerdown',e=>{partyStaleClicks.delete(e.pointerId);if(!isPartyEditable(e.target))partyHeldPointers.add(e.pointerId);},{capture:true});
+document.addEventListener('pointerup',e=>partyHeldPointers.delete(e.pointerId),{capture:true});
+document.addEventListener('pointercancel',e=>{partyHeldPointers.delete(e.pointerId);partyStaleClicks.delete(e.pointerId);},{capture:true});
+document.addEventListener('click',e=>{if(partyStaleClicks.delete(e.pointerId)){e.preventDefault();e.stopImmediatePropagation();}},{capture:true});
+window.addEventListener('blur',()=>{partyHeldPointers.clear();partyStaleClicks.clear();});
+function suppressHeldGameClicks(){for(const id of partyHeldPointers)partyStaleClicks.add(id);}
 function partyActorImage(){return partyActivePlayer?.img||'icon/01.png';}
 function party3dActor(){
   const group=new THREE.Group();
@@ -59,6 +67,7 @@ function clearAllSelectionV156(){
 }
 
 function blockNativeUiV156(e){
+  if(isPartyEditable(e.target))return;
   e.preventDefault();
   clearAllSelectionV156();
 }
@@ -723,6 +732,7 @@ resetBtn.addEventListener("click",()=>{
 });
 
 function renderHome(){
+  gameKingArena?.stop();
   kingChallenge?.stop();kingRoundDone=null;
   tagLeague?.stop();variantLeagues?.stop();leagueRoundDone=null;
   clearGameFit();
@@ -22613,6 +22623,14 @@ async function startScoutMan(p,humanIndex,runId){
 // =========================================================
 async function startAtafutaSurvival(p,humanIndex,runId){
   gameFit();
+  const gameIndex=GAMES.findIndex(g=>g.key==='atafutaSurvival');
+  const heldPointers=new Map();
+  function releaseControls(){
+    input.left=input.right=false;
+    for(const [id,button] of heldPointers){try{if(button.hasPointerCapture(id))button.releasePointerCapture(id);}catch{}}
+    heldPointers.clear();
+  }
+  partyCleanups.push(releaseControls);
 
   let active=false;
   let finished=false;
@@ -22860,6 +22878,8 @@ async function startAtafutaSurvival(p,humanIndex,runId){
 
     finished=true;
     active=false;
+    releaseControls();
+    leftBtn.disabled=rightBtn.disabled=jumpBtn.disabled=true;
     if(raf)cancelAnimationFrame(raf);
 
     const score=playerScore(place);
@@ -22879,7 +22899,7 @@ async function startAtafutaSurvival(p,humanIndex,runId){
 
     if(isGameRunValid(runId)){
       recordScreen(
-        84,p,humanIndex,
+        gameIndex,p,humanIndex,
         `${score}<small>pt</small>`,
         clear
           ? '最後の1人まで生存 / CLEAR'
@@ -22919,13 +22939,16 @@ async function startAtafutaSurvival(p,humanIndex,runId){
   function bindHold(btn,key){
     const on=e=>{
       e.preventDefault();
-      if(active&&!finished)input[key]=true;
+      if(!active||finished||!isGameRunValid(runId))return;
+      input[key]=true;
+      heldPointers.set(e.pointerId,btn);
       try{btn.setPointerCapture(e.pointerId)}catch(_){}
     };
 
     const off=e=>{
       if(e)e.preventDefault();
       input[key]=false;
+      if(e)heldPointers.delete(e.pointerId);
     };
 
     btn.addEventListener('pointerdown',on,{passive:false});
@@ -23138,6 +23161,7 @@ async function startAtafutaSurvival(p,humanIndex,runId){
         a.y>H+75
       ){
         eliminate(a);
+        if(finished)return;
         continue;
       }
 
@@ -27196,6 +27220,7 @@ function recordScreen(gameIndex,p,humanIndex,main,sub=""){
     activeGameIndex!==gameIndex
   )return;
 
+  suppressHeldGameClicks();
   gameSessionActive=false;
   activeGameIndex=-1;
   cancelCountdown();
@@ -28833,6 +28858,7 @@ async function startMobPinball(p,humanIndex,runId){
   let stuckFor=0;
   let edgeStuckFor=0;
   let elapsedPlay=0;
+  let jamTime=0,jamDepth=72;
 
   const ball={x:180,y:72,vx:0,vy:0};
 
@@ -29064,6 +29090,22 @@ async function startMobPinball(p,humanIndex,runId){
     }
 
 
+
+    // A velocity kick alone can keep returning to the same fan/peg contact.
+    // Watch net descent independently of those kicks; escape only the local cluster.
+    if(ball.y>jamDepth+32){jamDepth=ball.y;jamTime=0;}else jamTime+=dt;
+    if(jamTime>=2.5){
+      ball.x=clamp(ball.x,leftWall+2,rightWall-2);
+      let y=Math.max(ball.y,jamDepth)+24;
+      const obstacles=[...pegs.map(q=>({...q,r:PEG_R+BALL_R})),...fans.map(q=>({...q,r:q.r+BALL_R-5}))];
+      for(let pass=0;pass<obstacles.length;pass++){
+        let moved=false;
+        for(const q of obstacles){const dx=ball.x-q.x;if(Math.abs(dx)>=q.r)continue;const half=Math.sqrt(q.r*q.r-dx*dx);if(y>=q.y-half-2&&y<=q.y+half+2){y=q.y+half+3;moved=true;}}
+        if(!moved)break;
+      }
+      ball.y=y;ball.vy=Math.max(ball.vy,180);ball.vx=clamp(ball.vx,-180,180);
+      jamDepth=bestFallY=ball.y;jamTime=stuckFor=edgeStuckFor=0;
+    }
 
     if(ball.y>=SLOT_Y+50){
       const slotWidth=W/10;
@@ -39636,6 +39678,7 @@ const leagueHost={
     else showGameIntro(index);
   }
 };
+const gameKingArena=window.MobGameKingArena?.create(leagueHost);
 const tagLeague=window.MobPartyLeagueUI?.create(leagueHost);
 const variantLeagues=window.MobLeagueVariants?.create(leagueHost);
 const kingChallenge=window.MobGameKing?.create({
@@ -39657,6 +39700,7 @@ const partyUI=window.MobPartyUI.create({
   crew:()=>variantLeagues.setup('crew'),
   kingLeague:()=>variantLeagues.setup('king'),
   king:()=>kingChallenge.setup(),
+  arena:()=>gameKingArena.setup(),
   free:startFreeGame,
   configure(count,cup){
     state=freshState();
