@@ -28,13 +28,18 @@ test('gift layouts are scattered and balanced; finite distance limits delivery e
 test('30 bananas allow five misses for full marks and never exceed 100',()=>{
   assert.equal(games.bananaPoints(24),96);assert.equal(games.bananaPoints(25),100);assert.equal(games.bananaPoints(30),100);assert.equal(games.bananaPoints(0),0);
 });
-test('six continuous walls reward centered taps; 30m has the old second-wall speed',()=>{
+test('six continuous walls reward centered taps and accelerate strongly through 30m',()=>{
   for(let level=0;level<6;level++){
     assert.equal(games.wallResult(level,1,1,.999).clear,true);
     assert.equal(games.wallResult(level,1,0,0).clear,false);
     assert.ok(games.wallResult(level,1,.7).chance<=games.wallResult(0,1,.7).chance);
   }
-  assert.equal(games.runPosition(1,5),.12+.29);
+  const speeds=Array.from({length:6},(_,i)=>games.runPosition(1,i)-.12);
+  assert.ok(speeds[0]>.245*1.2);
+  for(let i=1;i<6;i++)assert.ok(speeds[i]>speeds[i-1]+.05);
+  assert.ok(speeds[5]/.29>1.97&&speeds[5]/.29<2);
+  // The final guaranteed-success window is still roughly 88ms wide.
+  assert.ok((.09*(1-.72)*2)/speeds[5]>.085);
   assert.ok(games.wallResult(5,1,.72,.999).clear);
   const at=t=>games.climbPose(t,5,true,1,.49).height;
   assert.ok(at(.9)-at(.8)>at(.4)-at(.3),'climbing accelerates');

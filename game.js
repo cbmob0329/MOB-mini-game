@@ -3051,7 +3051,7 @@ function scoreRuleForGame(index){
     "30体回避=100点 / 0体=0点",
     "10本セーブ=100点 / 1本=10点",
     "0.180秒以下=100点 / 0.210秒≈90点 / 0.300秒≈55点",
-    "3回のカット精度を0〜100点化",
+    "1回100−誤差%×8点 / 3回の平均・最大100点",
     "700m以上=100点 / 0m=0点",
     "残金0円=100点 / 残金10円=90点 / 残金100円以上=0点",
     "モグラ28体以上=100点 / 0体=0点",
@@ -3064,7 +3064,7 @@ function scoreRuleForGame(index){
     "正解=100点 / 誤差1人=75 / 2人=50 / 3人=25",
     "停止差0.5m以内=100点 / 3m=95点 / 6m=85点 / 10m=70点 / 30m以上または衝突=0点",
     "0.150秒以下=100点 / 0.300秒=50点 / フェイント押し=0点",
-    "チキンスコア10000=100点 / 爆発=0点",
+    "残り0.600秒=77点 / 0.300秒=88点 / 直前STOPで最大100点・爆発0点",
     "4円一致率64%=80点 / 81%=90点 / 100%=100点",
     "900m以上=100点 / 0m=0点",
     "勇者ポイントを1.15倍して採点 / 最大100点",
@@ -3209,7 +3209,7 @@ function showGameIntro(index){
   }else if(legacyIndex===13){
     rules=`<li>3・2・1後、様々なモブくんが合計10本シュート。</li><li>左スワイプ / 右スワイプでセーブ。正面シュートはありません。</li><li>基本速度は少し遅め。たまに高速シュートが混ざります。</li><li>10本全部止めれば100点。</li>`;
   }else if(legacyIndex===15){
-    rules=`<li>「右側を○%残せ！」と表示。</li><li>長い棒を縦スワイプしてカット。</li><li>右側に残った割合と指定%の誤差を判定。</li><li>3回の平均精度で0〜100点。</li>`;
+    rules=`<li>「右側を○%残せ！」と表示。</li><li>長い棒を縦スワイプしてカット。</li><li>右側に残った割合と指定%の誤差を判定。</li><li>各回は100−誤差%×8点（最低0点）。3回の平均で最大100点。</li>`;
   }else if(legacyIndex===16){
     rules=`<li>3・2・1後、10秒間木登り。</li><li>短いゲージのマーカーが左右へ移動。</li><li>中央に近い時ほど1タップで大きく登ります。</li><li>700m以上で100点。</li>`;
   }else if(legacyIndex===17){
@@ -3235,7 +3235,7 @@ function showGameIntro(index){
   }else if(legacyIndex===27){
     rules=`<li>3・2・1後にREADY。</li><li>G0 / G00 / NOW / MOVE / GO?などのフェイント。</li><li>本物のGO!もフェイントと同じ色・同じ演出。</li><li>本物だけを見分けて素早くタップ。フェイント押しは0点。</li>`;
   }else if(legacyIndex===28){
-    rules=`<li>3・2・1後、爆弾が3.000秒から0.000秒へカウント。</li><li>好きなタイミングでSTOP。</li><li>0.000秒に近いほど高得点。</li><li>0秒を超えたら爆発して0点。</li>`;
+    rules=`<li>3・2・1後、爆弾が3.000秒から0.000秒へカウント。</li><li>好きなタイミングでSTOP。</li><li>0.000秒に近いほど高得点、最大100点。残り0.600秒で77点、0.300秒で88点。</li><li>0秒になったら爆発して0点。</li>`;
   }else if(legacyIndex===29){
     rules=`<li>「重なるモブくん」のMASTER版。</li><li>4つの円がそれぞれ別の速度で左右移動。</li><li>10秒以内に4つ全部が重なる瞬間をタップ。</li><li>4円の広がりから一致率を計算。100.0%を狙います。</li>`;
   }else if(legacyIndex===30){
@@ -7102,7 +7102,7 @@ async function startCutGame(p,humanIndex,runId){
     });
 
     const error=Math.abs(result.rightRemain-target);
-    const roundScore=clamp(Math.round(100-error*10),0,100);
+    const roundScore=window.MobGameBalance.cutPoints(error);
 
     errors.push(error);
     scores.push(roundScore);
@@ -8563,7 +8563,7 @@ async function startBombChicken(p,humanIndex,runId){
     state.records.bomb[p.id]=score;
 
     timeEl.textContent=(remaining/1000).toFixed(3);
-    scoreEl.textContent=`SCORE ${score}`;
+    scoreEl.textContent=`SCORE ${window.MobGameBalance.bombPoints(score)} pt`;
 
     bomb.classList.add('stopped');
 
@@ -8578,7 +8578,7 @@ async function startBombChicken(p,humanIndex,runId){
       if(isGameRunValid(runId)){
         recordScreen(
           28,p,humanIndex,
-          `${score}<small>pt</small>`,
+          `${window.MobGameBalance.bombPoints(score)}<small>pt</small>`,
           `${(remaining/1000).toFixed(3)}秒残し`
         );
       }
@@ -8597,7 +8597,7 @@ async function startBombChicken(p,humanIndex,runId){
 
     timeEl.textContent=(rem/1000).toFixed(3);
     scoreEl.textContent=
-      `SCORE ${Math.floor((LIMIT-rem)/LIMIT*10000)}`;
+      `SCORE ${window.MobGameBalance.bombPoints(Math.floor((LIMIT-rem)/LIMIT*10000))} pt`;
 
     bomb.classList.toggle('danger',rem<850);
 
@@ -27396,7 +27396,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===13){
     state.records.pk[p.id]=ultra?randi(8,10):randi(4,8);
   }else if(legacyIndex===15){
-    state.records.cut[p.id]=ultra?randi(88,97):randi(55,88);
+    state.records.cut[p.id]=window.MobGameBalance.cutPoints((100-(ultra?randi(88,97):randi(55,88)))/10);
   }else if(legacyIndex===16){
     state.records.climb[p.id]=Math.round((ultra?rand(620,760):rand(340,650))*10);
   }else if(legacyIndex===17){
@@ -28195,7 +28195,7 @@ function performancePoints(gameIndex,v){
     if(v<=500)return Math.round(50-(v-300)/200*50);
     return 0;
   }
-  if(legacyIndex===28)return clamp(Math.round(v/100),0,100);
+  if(legacyIndex===28)return window.MobGameBalance.bombPoints(v);
   if(legacyIndex===29)return clamp(Math.round(Math.sqrt(Math.max(0,v)/100)*100),0,100);
   if(legacyIndex===30)return masteryPoints(v,900,1.35);
   if(legacyIndex===31)return clamp(Math.round(v*1.15),0,100);
@@ -28413,7 +28413,7 @@ function formatRecord(gameIndex,v){
   if(legacyIndex===25)return v===0?`PERFECT`:`誤差${v}人`;
   if(legacyIndex===26)return v>=900?`CRASH`:`${Number(v).toFixed(1)}m`;
   if(legacyIndex===27)return v>=900?`FOUL`:`${(v/1000).toFixed(4)}秒`;
-  if(legacyIndex===28)return `${Math.round(v)}pt`;
+  if(legacyIndex===28)return `${window.MobGameBalance.bombPoints(v)}pt`;
   if(legacyIndex===29)return `${Number(v).toFixed(1)}%`;
   if(legacyIndex===30)return `${Math.round(v)}m`;
   if(legacyIndex===31)return `${Math.round(v)}pt`;

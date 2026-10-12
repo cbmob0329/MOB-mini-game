@@ -6,13 +6,13 @@
   const keys=['bananaBoatMob','warpedWallMob','santaClausMob'];
   const rules={
     bananaBoatMob:['下部のスティックを左右に倒してバナナボートを操作。船の幅に合わせてキャッチ！','1個4点、全30個。25個取れば100点です。','後半ほど落下が速くなります。波と横風を読み、次のバナナへ先回りしよう。'],
-    warpedWallMob:['自動で走るモブくんがオレンジ線の中央に来たらタップ！ 中央に近いほど登頂しやすくなります。','5m → 10m → 15m → 20m → 25m → 30m。登る時は加速し、登頂後はそのまま次の壁へ進みます。','6つの壁を連続で攻略。登頂数とタイミング精度で最大100点。滑り落ちると終了です。'],
+    warpedWallMob:['自動で走るモブくんがオレンジ線の中央に来たらタップ！ 中央に近いほど登頂しやすくなります。','5m → 10m → 15m → 20m → 25m → 30m。壁を進むごとに走る速度がアップ！ 登る時も加速し、そのまま次の壁へ進みます。','6つの壁を連続で攻略。登頂数とタイミング精度で最大100点。滑り落ちると終了です。'],
     santaClausMob:['散らばったプレゼントを選んでタップ。重さとソリまでの距離を考えて選ぼう！','拾ったら左右ボタンを交互に連打。重い箱ほど運搬が遅くなり、連打を速めすぎても速度には上限があります。','12秒勝負。届けると大25点・中12点・小7点、最大100点。箱は補充されず、運びかけでは得点になりません。']
   };
   function wallResult(level,power,timing,roll=.5){const chance=clamp((timing-(.28+.18*clamp(level/5)))/.26),clear=roll<chance;return {clear,chance,quality:timing,points:clear?23+2*timing:0};}
   const bananaPoints=count=>Math.min(100,Math.max(0,count)*4);
   const gaugeValue=(elapsed,level)=>(1-Math.cos(Math.max(0,elapsed)*(3.6+level*1.3)))/2;
-  const runPosition=(elapsed,level)=>.12+Math.max(0,elapsed)*(.245+level*.009);
+  const runPosition=(elapsed,level)=>.12+Math.max(0,elapsed)*(.30+level*.055);
   const wallSurface=(height,level)=>({x:.57+.29*(1-Math.pow(1-clamp(height),2.4)),y:.85-(.26+level*.028)*clamp(height)});
   // The whole avatar stays on the exposed side of the same curve used to paint the wall.
   function climbPose(elapsed,level,clear,quality,from){

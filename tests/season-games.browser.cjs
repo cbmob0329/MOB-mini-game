@@ -21,7 +21,7 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+deco
     for(let i=0;i<2200;i++){s=await read();if(s.ended)break;
       assert.notEqual(s.phase,'gauge');
       if(previous){assert.ok(s.worldPose.x>=previous.x-.0001,'no reset or backward teleport');assert.ok(Math.abs(s.worldPose.y-previous.y)<.06,'continuous climb and camera handoff');}previous=s.worldPose;
-      if(s.phase==='run'&&Math.abs(s.runner-.49)<.004)await press();
+      if(s.phase==='run'&&Math.abs(s.runner-.49)<.006)await press();
       if(s.level===5&&s.phase==='climb'&&s.pose.height>.9&&!capturedTop){await page.screenshot({path:path.join(output,'wall-top-'+width+'.png')});capturedTop=true;}
       await page.clock.runFor(16);if(i===90)await page.screenshot({path:path.join(output,'wall-'+width+'.png')});
     }
