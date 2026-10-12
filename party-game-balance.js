@@ -4,4 +4,5 @@ function wallTotal(clears,precisionSum){if(clears<=0)return 0;const n=Math.min(6
 function cutPoints(error){return Math.round(clamp(100-Math.abs(error)*8,0,100));}
 // Keep the stored 0..9999 timing record compatible with existing results.
 function bombPoints(record){return Math.round(100*Math.pow(clamp(record/10000),1.2));}
-const api={clothCap,wallTotal,cutPoints,bombPoints};if(typeof module!=='undefined'&&module.exports)module.exports=api;if(root)root.MobGameBalance=api;})(typeof window!=='undefined'?window:null);
+function spherePoints(kos,othersOut,seconds,timeout=false){return Math.min(95,timeout?65+kos*15:15+kos*20+othersOut*15+Math.floor(seconds/2));}
+const api={clothCap,wallTotal,cutPoints,bombPoints,spherePoints};if(typeof module!=='undefined'&&module.exports)module.exports=api;if(root)root.MobGameBalance=api;})(typeof window!=='undefined'?window:null);

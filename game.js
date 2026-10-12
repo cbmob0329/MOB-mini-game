@@ -393,10 +393,10 @@ const GAMES=[
   {no:105,key:"flyingCarpet",title:"モブくん空飛ぶじゅうたん",sub:"▲▼で高度操作。15秒、トゲ13個＋上下の柱ゲート3組を避ける",legacy:121},
   {no:106,key:"fruitCatchMob",title:"モブくんフルーツキャッチ",sub:"15秒。フルーツを集めながら岩・爆弾・腐った実を避ける",legacy:123},
   {no:107,key:"senryobakoMob",title:"モブくん千両箱",sub:"5連続GETでFEVER×2。全小判を取らなくても100点を狙える",legacy:124},
-  {no:108,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"人形7体を残し、速さ・方向・引き切る精度をそろえて高得点を狙う",legacy:125},
+  {no:108,key:"tableclothPull",title:"モブくんのテーブルクロス引き",sub:"人形9体を残し、速さ・方向・引き切る精度をそろえて高得点を狙う",legacy:125},
   {no:109,key:"bombPassMob",title:"モブくんの爆弾ゲーム",sub:"横一列の5体で爆弾を隣へ渡し、最後の1体まで生き残れ",legacy:126},
   {no:110,key:"obstacleRaceMob",title:"モブくんの障害物競走",sub:"自動走行＋JUMP/PUNCH。通常障害物と上下に動く岩ブロックを突破する横スクロールタイムアタック",legacy:127},
-  {no:111,key:"sphereMob",title:"球体モブくん",sub:"岩に乗って5体で押し合い！スティック移動＋体当たりで相手を海へ落とせ。最後の1体が100点",legacy:128},
+  {no:111,key:"sphereMob",title:"球体モブくん",sub:"岩に乗って5体で押し合い！スティック移動＋体当たりで相手を海へ落とせ。生存・撃破で加点、途中終了でも最大95点。最後の1体が100点",legacy:128},
   {no:112,key:"frontFlipMob",title:"モブくんの前宙",sub:"横スクロールで大きく飛び、長押し回転を止めて綺麗に着地",legacy:129},
   {no:113,key:"swimmingMob",title:"モブくんの水泳",sub:"10秒間、LEFT/RIGHTを交互に押してクロール加速。120mを目指す",legacy:130},
   {no:114,key:"cheerLeaderMob",title:"モブくんは応援団長",sub:"7秒でメガホンを描き、頑張れ～！！の文字サイズで最大100点",legacy:131},
@@ -2988,10 +2988,10 @@ function scoreRuleForGame(index){
   const legacyIndex=legacyGameIndex(index);
   if(legacyIndex===63)return "GOALまでの秒数 / 4秒以下=100点・20秒以上=0点 / 球に触れると1秒スタン";
   if(GAMES[index]?.key==='mobSpeedRacer')return "横スクロール2kmレースのゴールタイム / 速いチームほど高得点";
-  if(legacyIndex===125)return "人形7体の最終移動量・動いた体数・落下数を判定 / 完全静止=100点 / 落下は39点以下";
+  if(legacyIndex===125)return "人形9体の安定＋引く速さ・方向・距離で最大100点 / 落下は39点以下";
   if(legacyIndex===126)return "1回目敗退=0 / 2回目=40 / 3回目=60 / 4回目=80 / 最後の1体=100点";
   if(legacyIndex===127)return "10障害物を突破してGOALしたタイム / 9.45秒以下=100点 / 18.50秒以上=0点";
-  if(legacyIndex===128)return "押し出しK.O.・生存時間・残った順位で最大80点 / 最後の1体だけ100点";
+  if(legacyIndex===128)return "押し出しK.O.・生存時間・残った順位で最大95点 / 最後の1体だけ100点";
   if(legacyIndex===129)return "助走距離30点 + 回転数35点 + 着地35点 / 合計100点";
   if(legacyIndex===130)return "10秒で泳いだ距離 / 110m≈90点・120m以上で100点";
   if(legacyIndex===131)return "描いたメガホンから出る『頑張れ～！！』の文字サイズ / 最大100点";
@@ -3411,13 +3411,13 @@ function showGameIntro(index){
   }else if(legacyIndex===124){
     rules=`<li>◀ / ▶で千両箱を持ったモブくんを動かします。小判を取るほど箱が重くなります。</li><li>5枚連続GETごとにFEVERが発動し約2.4秒ポイント×2。巨大小判でもFEVERになるため、48枚全部を取らなくても100点を狙えます。</li>`;
   }else if(legacyIndex===125){
-    rules=`<li>テーブルクロスを指で真下へ一気にスワイプ。上にはモブくん人形が5体乗っています。</li><li>最終位置を実測し、動いた体数・平均ズレ・落下数から採点。まったく動かなければ100点、落下した場合は39点以下です。</li>`;
+    rules=`<li>テーブルクロスを指で真下へ一気にスワイプ。上にはモブくん人形が9体乗っています。</li><li>最終位置を実測し、動いた体数・平均ズレ・落下数から採点。人形の安定と、引く速さ・方向・距離を合わせて最大100点。落下した場合は39点以下です。</li>`;
   }else if(legacyIndex===126){
     rules=`<li>横一列のモブくんへ爆弾を隣同士で渡します。爆発タイミングは毎回ランダムです。</li><li>5人→4人→3人→2人。1回目敗退0点、2回目40点、3回目60点、4回目80点、最後まで残れば100点です。</li>`;
   }else if(legacyIndex===127){
     rules=`<li>モブくんは自動で走ります。操作はJUMPとPUNCHだけ。ゴールまで10個の障害物があります。</li><li>ゴミ箱・段ボールはPUNCHで破壊、岩・自転車はJUMP。接触すると一瞬遅くなり、ゴールタイムを競います。</li>`;
   }else if(legacyIndex===128){
-    rules=`<li>岩に乗った5体で対戦。スティックで移動し、体当たりで相手を押し落とします。体当たりは2秒で再チャージ。</li><li>慣性で滑るので外周では慎重に。島は徐々に縮みます。K.O.と生存で最大80点、最後の1体なら100点です。</li>`;
+    rules=`<li>岩に乗った5体で対戦。スティックで移動し、体当たりで相手を押し落とします。体当たりは2秒で再チャージ。</li><li>慣性で滑るので外周では慎重に。島は徐々に縮みます。K.O.と生存で最大95点、最後の1体なら100点です。</li>`;
   }else if(legacyIndex===129){
     rules=`<li>助走ゲージを止めて「タップ！」。横スクロールの長いコースをカメラが追い、モブくんが大ジャンプします。</li><li>空中で「長押し！」して前宙、着地前に離します。飛距離・回転数・着地を合計100点で採点します。</li>`;
   }else if(legacyIndex===130){
@@ -26724,7 +26724,7 @@ async function startTableclothPull(p,humanIndex,runId){
   screen.innerHTML=`
     <div class="cloth-shell-v202 gameplay-fit">
       <div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのテーブルクロス引き</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
-      <div class="cloth-hud-v202"><div><span>DOLLS</span><b id="clothDolls202">7 / 7</b></div><div><span>MOVED</span><b id="clothMoved202">0</b></div><div><span>SCORE</span><b id="clothScore202">---</b></div></div>
+      <div class="cloth-hud-v202"><div><span>DOLLS</span><b id="clothDolls202">9 / 9</b></div><div><span>MOVED</span><b id="clothMoved202">0</b></div><div><span>SCORE</span><b id="clothScore202">---</b></div></div>
       <div id="clothStage202" class="cloth-stage-v202">
         <div class="cloth-room-v202"></div>
         <div class="cloth-table-v202"><i></i></div>
@@ -26745,7 +26745,7 @@ async function startTableclothPull(p,humanIndex,runId){
   void stage.offsetHeight;
   const W=stage.clientWidth,H=stage.clientHeight;
   const tableY=Math.round(H*.47);
-  const spots=[[-78,-2],[-52,-25],[-26,0],[0,-25],[26,0],[52,-25],[78,-2]];
+  const spots=Array.from({length:9},(_,i)=>[(i-4)*W*.0675,i%2?-30:0]);
   const dolls=spots.map((s,i)=>({
     i,x:W/2+s[0],y:tableY+s[1],startX:W/2+s[0],startY:tableY+s[1],rot:0,fallen:false,el:null
   }));
@@ -26786,7 +26786,7 @@ async function startTableclothPull(p,humanIndex,runId){
     let moved=0,fallen=0,totalDist=0;
     dolls.forEach((d,i)=>{
       const jitter=(.78+((i*37)%31)/100);
-      const dist=Math.max(0,(force*78-5))*jitter;
+      const dist=Math.max(0,(force*84-5))*jitter;
       const side=(dx===0?(i%2?1:-1):Math.sign(dx))*dist*(.38+((i*11)%17)/100);
       const down=dist*(.28+((i*7)%12)/100);
       d.x+=side;d.y+=down;d.rot=(side*.35)+(i-2)*1.2;
@@ -26945,7 +26945,7 @@ async function startSphereMob(p,humanIndex,runId){
   dash.addEventListener('pointerdown',e=>{e.preventDefault();burst(balls[0],performance.now());},{passive:false});
   dash.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();burst(balls[0],performance.now());}});
   function finish(score,text){if(finished)return;finished=true;active=false;cancelAnimationFrame(raf);dash.disabled=true;state.records.sphereMob[p.id]=score;call.textContent=text;call.classList.add('result-v202');beep(score===100?1100:300,150,.025);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>/100 pt</small>`,`${text} / K.O. ${kos}`);},1500);}
-  function eliminate(b,now){if(!b.alive)return;b.alive=false;b.el.classList.add('rock-out');if(b.i&&b.lastHit===0&&now-b.lastHitAt<2400){kos++;koEl.textContent=kos;call.textContent='K.O.! 相手を押し出した！';beep(850,100,.02);}const living=balls.filter(x=>x.alive);aliveEl.textContent=living.length;if(b.i===0){finish(Math.min(80,kos*15+(5-living.length-1)*10+Math.floor((now-start)/2000)),'RING OUT!');}else if(living.length===1&&living[0].i===0)finish(100,'CHAMPION! 最後の1体！');}
+  function eliminate(b,now){if(!b.alive)return;b.alive=false;b.el.classList.add('rock-out');if(b.i&&b.lastHit===0&&now-b.lastHitAt<2400){kos++;koEl.textContent=kos;call.textContent='K.O.! 相手を押し出した！';beep(850,100,.02);}const living=balls.filter(x=>x.alive);aliveEl.textContent=living.length;if(b.i===0){finish(window.MobGameBalance.spherePoints(kos,4-living.length,(now-start)/1000),'RING OUT!');}else if(living.length===1&&living[0].i===0)finish(100,'CHAMPION! 最後の1体！');}
   draw();if(!(await countdown('岩に乗って RING OUT!',runId,{transparent:true})))return;active=true;start=last=performance.now();
   function frame(now){if(finished||!isGameRunValid(runId))return;const dt=Math.min(.025,(now-last)/1000);last=now;const elapsed=now-start,safeR=R*(1-clamp((elapsed-9000)/30000,0,.90));island.style.width=island.style.height=`${safeR*2}px`;island.style.left=`${cx-safeR}px`;island.style.top=`${cy-safeR}px`;timeEl.textContent=Math.max(0,40-Math.floor(elapsed/1000));
     for(const b of balls){if(!b.alive)continue;let ax=0,ay=0;if(!b.i){ax=held.axisX||0;ay=held.axisY||0;}else{if(now>=b.thinkAt){b.thinkAt=now+rand(260,600);const enemies=balls.filter(x=>x.alive&&x!==b).sort((a,c)=>Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(c.x-b.x,c.y-b.y));const target=enemies[0],edge=Math.hypot(b.x-cx,b.y-cy)>safeR*.72;let dx=(edge?cx:target?.x??cx)-b.x,dy=(edge?cy:target?.y??cy)-b.y,d=Math.hypot(dx,dy)||1;b.dx=dx/d;b.dy=dy/d;if(now-start>3500&&!edge&&d<safeR*.85&&Math.random()<.25)burst(b,now);}ax=b.dx;ay=b.dy;}
@@ -26954,7 +26954,7 @@ async function startSphereMob(p,humanIndex,runId){
     }
     for(let i=0;i<5;i++)for(let j=i+1;j<5;j++){const a=balls[i],b=balls[j];if(!a.alive||!b.alive)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.001;if(d>=BR*2)continue;const nx=dx/d,ny=dy/d,over=BR*2-d;a.x-=nx*over*.5;a.y-=ny*over*.5;b.x+=nx*over*.5;b.y+=ny*over*.5;const relative=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(relative>=0)continue;const impulse=-relative*.94;a.vx-=nx*impulse;a.vy-=ny*impulse;b.vx+=nx*impulse;b.vy+=ny*impulse;a.stunUntil=b.stunUntil=now+240;a.lastHit=b.i;b.lastHit=a.i;a.lastHitAt=b.lastHitAt=now;for(const q of [a,b]){q.el.classList.add('impact');setTimeout(()=>q.el.classList.remove('impact'),150);}beep(250+Math.min(350,-relative),25,.009);}
     island.classList.toggle('edge-danger',balls[0].alive&&Math.hypot(balls[0].x-cx,balls[0].y-cy)>safeR*.75);
-    for(const b of balls)if(b.alive&&Math.hypot(b.x-cx,b.y-cy)>safeR+BR*.4)eliminate(b,now);draw();dash.disabled=finished||now<balls[0].readyAt;dash.innerHTML=dash.disabled?`CHARGE ${(Math.max(0,balls[0].readyAt-now)/1000).toFixed(1)}<small>岩の反動に注意</small>`:'体当たり！<small>2秒で再チャージ</small>';if(elapsed>=40000&&!finished)finish(Math.min(80,40+kos*15),'TIME UP!');if(!finished)raf=requestAnimationFrame(frame);
+    for(const b of balls)if(b.alive&&Math.hypot(b.x-cx,b.y-cy)>safeR+BR*.4)eliminate(b,now);draw();dash.disabled=finished||now<balls[0].readyAt;dash.innerHTML=dash.disabled?`CHARGE ${(Math.max(0,balls[0].readyAt-now)/1000).toFixed(1)}<small>岩の反動に注意</small>`:'体当たり！<small>2秒で再チャージ</small>';if(elapsed>=40000&&!finished)finish(window.MobGameBalance.spherePoints(kos,0,40,true),'TIME UP!');if(!finished)raf=requestAnimationFrame(frame);
   }
   raf=requestAnimationFrame(frame);
 }
@@ -27678,7 +27678,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===127){
     state.records.obstacleRaceMob[p.id]=ultra?randi(9400,11200):randi(10800,17400);
   }else if(legacyIndex===128){
-    state.records.sphereMob[p.id]=ultra?[60,100,100][randi(0,2)]:[0,20,40,60,60,100][randi(0,5)];
+    state.records.sphereMob[p.id]=ultra?[85,100,100][randi(0,2)]:[15,40,65,85,85,100][randi(0,5)];
   }else if(legacyIndex===129){
     state.records.frontFlipMob[p.id]=ultra?randi(86,100):randi(38,94);
   }else if(legacyIndex===130){

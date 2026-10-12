@@ -3,11 +3,11 @@ const L=require('../party-league.js');
 const teams=()=>Array.from({length:20},(_,i)=>({id:'L'+i,members:['a'+i,'b'+i]}));
 const fresh=()=>L.create(teams(),L.program(['reaction','launch'],()=>0));
 const points=(s,fn)=>Object.fromEntries(s.active.flatMap(id=>s.teams.find(t=>t.id===id).members.map(p=>[p,fn(Number(id.slice(1)),p)])));
-const play=(s,fn)=>L.submit(s,points(s,fn),L.next(s,()=>0));
+const play=(s,fn)=>{const d=L.next(s,()=>0),raw=points(s,fn);if(d.key==='tripleChoice'){d.assignments={};d.gameScores={};for(const id of s.active){const [a,b]=s.teams.find(t=>t.id===id).members;d.assignments[id]=[a,b,a];d.gameScores[id]=[raw[a]/2,raw[b],raw[a]/2];}}return L.submit(s,raw,d);};
 function qualified(){const s=fresh();for(let i=0;i<10;i++)play(s,t=>100-t*3);return s;}
 function finals(){const s=qualified();for(let i=0;i<3;i++)play(s,t=>100-t*3);return s;}
 test('schedule matches fixed games, minority third round and four bonus rounds',()=>{
-  const s=fresh();assert.deepEqual(s.schedule.qualifier,['randomChoice','pairedChoice','minorityMob','randomChoice','randomChoice','individualChoice','teamChoice','individualChoice','deathGameChallenge','amidakujiMob']);
+  const s=fresh();assert.deepEqual(s.schedule.qualifier,['randomChoice','pairedChoice','minorityMob','randomChoice','randomChoice','individualChoice','teamChoice','individualChoice','deathGameChallenge','tripleChoice']);
   assert.deepEqual(s.schedule.repechage,['randomChoice','randomChoice','bowling3DMob']);
   assert.deepEqual(s.schedule.final,['randomChoice','randomChoice','bikeJump','randomChoice','focusBombMob','deathGameChallenge']);
   for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,4,6,9].includes(i)?2:1);play(s,t=>100-t);}
