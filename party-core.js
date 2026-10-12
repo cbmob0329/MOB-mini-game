@@ -225,7 +225,7 @@
   function gameTraits(game={}){
     const title=game.title||'',key=game.key||'',category=genre({...game,title:title.replace(/3D/g,'')});
     return {
-      brain:category==='頭脳・記憶'||/ブラックジャック|カード|スカウト|集中大爆弾|少数派/.test(title),
+      brain:category==='頭脳・記憶'||/ブラックジャック|カード|スカウト|集中大爆弾|ロボドクター|少数派/.test(title),
       sport:category==='スポーツ'||/ボウリング|フリースロー|ハンマー|砲丸|パンチング|カーリング|ホッケー|ホームラン|ビリヤード/.test(title),
       power:/ハンマー|砲丸|パンチ|トラック運び|綱引き/.test(title)||['rocketPunch','truckHaulMob','punchMachine3DMob','giantHammer3DMob','shotPut3DMob'].includes(key),
       running:['mob50m','hurdleRun','longJumpMob','obstacleRaceMob'].includes(key)||/走|ダッシュ/.test(title)&&!/トロッコ|車|バイク|レーサー/.test(title),

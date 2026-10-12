@@ -10,7 +10,7 @@
     function resume(){const data=saved();if(!data)return;ticket++;league=data.league;players=data.players;api.configure(players,league.teams);if(league.pendingResult)results(league.pendingResult);else play(league.pendingRound||null);}
     function finishLeague(){try{window.localStorage.removeItem(SAVE_KEY);}catch{}stop();api.home();}
     const labels={qualifier:'予選',repechage:'敗者復活3ゲームマッチ',final:'決勝',cutoff:'通過決定・延長戦',championship:'優勝決定戦'};
-    const gameTitle=key=>key==='minorityMob'?'モブくんは少数派':key==='focusBombMob'?'モブくん集中大爆弾！':key==='pairedChoice'?'ルーレット2種・分担チャレンジ':key==='individualChoice'?'3種目から選ぶ個人チャレンジ':key==='teamChoice'?'4種目から選ぶタッグチャレンジ':api.title(key);
+    const gameTitle=key=>key==='minorityMob'?'モブロボドクターは気まぐれ':key==='focusBombMob'?'モブくん集中大爆弾！':key==='pairedChoice'?'ルーレット2種・分担チャレンジ':key==='individualChoice'?'3種目から選ぶ個人チャレンジ':key==='teamChoice'?'4種目から選ぶタッグチャレンジ':api.title(key);
     const on=(id,fn)=>{const button=screen.querySelector('#'+id);let used=false;button.onclick=()=>{if(used)return;used=true;button.disabled=true;if(fn()===false){used=false;button.disabled=false;}};};
     const picture=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     const team=id=>league.teams.find(t=>t.id===id);

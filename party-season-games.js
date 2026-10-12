@@ -6,18 +6,18 @@
   const keys=['bananaBoatMob','warpedWallMob','santaClausMob'];
   const rules={
     bananaBoatMob:['下部のスティックを左右に倒してバナナボートを操作。船の幅に合わせてキャッチ！','1個4点、全30個。25個取れば100点です。','後半ほど落下が速くなります。波と横風を読み、次のバナナへ先回りしよう。'],
-    warpedWallMob:['ゲージを中央の白線で止めてダッシュ力を決定。指が触れた瞬間に止まります。','自動で走り始めたら、オレンジラインでタップして壁を駆け上がろう！ 力やタイミングが足りないと滑り落ちます。','全4段階。後半ほどゲージとダッシュが速くなります。1回登頂50〜65点、2回75〜89点、3回90〜97点、4回98〜100点。登頂精度で得点が変わります。'],
+    warpedWallMob:['自動で走るモブくんがオレンジ線の中央に来たらタップ！ 中央に近いほど登頂しやすくなります。','5m → 10m → 15m → 20m → 25m → 30m。登る時は加速し、登頂後はそのまま次の壁へ進みます。','6つの壁を連続で攻略。登頂数とタイミング精度で最大100点。滑り落ちると終了です。'],
     santaClausMob:['散らばったプレゼントを選んでタップ。重さとソリまでの距離を考えて選ぼう！','拾ったら左右ボタンを交互に連打。重い箱ほど運搬が遅くなり、連打を速めすぎても速度には上限があります。','12秒勝負。届けると大25点・中12点・小7点、最大100点。箱は補充されず、運びかけでは得点になりません。']
   };
-  function wallResult(level,power,timing){const quality=power*.5+timing*.5,clear=power>=.86&&timing>=.72&&quality>=.70+level*.025;return {clear,quality,points:clear?Math.round(23+2*clamp((quality-.7)/.3)):0};}
+  function wallResult(level,power,timing,roll=.5){const chance=clamp((timing-(.28+.18*clamp(level/5)))/.26),clear=roll<chance;return {clear,chance,quality:timing,points:clear?23+2*timing:0};}
   const bananaPoints=count=>Math.min(100,Math.max(0,count)*4);
   const gaugeValue=(elapsed,level)=>(1-Math.cos(Math.max(0,elapsed)*(3.6+level*1.3)))/2;
-  const runPosition=(elapsed,level)=>.12+Math.max(0,elapsed)*(.245+level*.045);
-  const wallSurface=(height,level)=>({x:.57+.29*(1-Math.pow(1-clamp(height),2.4)),y:.85-(.39+level*.027)*clamp(height)});
+  const runPosition=(elapsed,level)=>.12+Math.max(0,elapsed)*(.245+level*.009);
+  const wallSurface=(height,level)=>({x:.57+.29*(1-Math.pow(1-clamp(height),2.4)),y:.85-(.26+level*.028)*clamp(height)});
   // The whole avatar stays on the exposed side of the same curve used to paint the wall.
   function climbPose(elapsed,level,clear,quality,from){
     if(elapsed<.16)return {x:from+(.552-from)*clamp(elapsed/.16),y:.85,height:0,angle:-.08};
-    const u=clamp((elapsed-.16)/.95),height=clear?Math.sin(u*Math.PI/2):Math.sin(u*Math.PI)*clamp(quality*.78,.08,.77),surface=wallSurface(height,level);
+    const u=clamp((elapsed-.16)/.95),height=clear?Math.pow(u,1.75):Math.sin(u*Math.PI)*clamp(quality*.78,.08,.77),surface=wallSurface(height,level);
     return {x:surface.x-.018,y:surface.y,height,angle:clear||u<.5?-.22:-.10};
   }
   function inputSeconds(event,now,origin){const stamp=Number(event?.timeStamp);return Math.max(0,((Number.isFinite(stamp)&&Math.abs(stamp-now)<1000?stamp:now)-origin)/1000);}
@@ -40,7 +40,7 @@
   async function run(api){
     const {key,screen,valid}=api,kind=keys.indexOf(key);if(kind<0)return;
     const themes=['ocean','wall','snow'],tags=['TROPICAL CATCH','VERTICAL CHALLENGE','MIDNIGHT DELIVERY'];
-    screen.innerHTML=`<section class="season-shell season-${themes[kind]}"><header><small>${tags[kind]} <span>${api.esc(api.player.name)}</span></small><h2>${api.esc(api.title)}</h2></header><div class="season-hud"><b id="seasonStatus"></b><strong id="seasonScore">0 <small>pt</small></strong></div><p id="seasonHint" role="status"></p><div class="season-world"><canvas aria-label="${api.esc(api.title)}のプレイ画面"></canvas></div><div class="season-actions">${kind===1?'<button id="seasonAction">白線でSTOP<span>触れた瞬間に確定</span></button>':kind===2?'<button data-hand="0" disabled>◀ 左<span>交互に連打</span></button><button data-hand="1" disabled>右 ▶<span>ソリへ運ぶ</span></button>':'<div class="season-pad-caption"><b>STEER</b><span>左右に倒して移動</span></div><div id="seasonStick"></div><div class="season-pad-caption"><b>30 BANANAS</b><span>25個で100点</span></div>'}</div></section>`;
+    screen.innerHTML=`<section class="season-shell season-${themes[kind]}"><header><small>${tags[kind]} <span>${api.esc(api.player.name)}</span></small><h2>${api.esc(api.title)}</h2></header><div class="season-hud"><b id="seasonStatus"></b><strong id="seasonScore">0 <small>pt</small></strong></div><p id="seasonHint" role="status"></p><div class="season-world"><canvas aria-label="${api.esc(api.title)}のプレイ画面"></canvas></div><div class="season-actions">${kind===1?'<button id="seasonAction">オレンジ線でタップ<span>中央に近いほど登頂しやすい</span></button>':kind===2?'<button data-hand="0" disabled>◀ 左<span>交互に連打</span></button><button data-hand="1" disabled>右 ▶<span>ソリへ運ぶ</span></button>':'<div class="season-pad-caption"><b>STEER</b><span>左右に倒して移動</span></div><div id="seasonStick"></div><div class="season-pad-caption"><b>30 BANANAS</b><span>25個で100点</span></div>'}</div></section>`;
     const canvas=screen.querySelector('canvas'),ctx=canvas.getContext('2d'),world=screen.querySelector('.season-world'),status=screen.querySelector('#seasonStatus'),scoreEl=screen.querySelector('#seasonScore'),hint=screen.querySelector('#seasonHint'),action=screen.querySelector('#seasonAction'),hands=[...screen.querySelectorAll('[data-hand]')];
     let w=320,h=320,active=false,ended=false,time=0,last=0,origin=0,score=0,endTitle='FINISH';
     const actor=new Image();let crop={x:0,y:0,w:1,h:1};
@@ -72,24 +72,33 @@
       if(caught+missed===30)finish(`${caught}個キャッチ / ${missed}個落下`,score===100?'PERFECT CATCH!':'CATCH FINISH!');
     }
     let precisionSum=0,clears=0;
-    let level=0,phase='gauge',phaseTime=0,power=0,runner=.12,jumpX=.12,result=null,lockedGauge=0,pose={x:.12,y:.85,height:0};
-    const gaugeAt=t=>gaugeValue(t,level);
+    let level=0,phase='run',phaseTime=0,runner=.12,jumpX=.12,result=null,pose={x:.12,y:.85,height:0};
+    const riseAt=n=>Array.from({length:n},(_,i)=>.26+i*.028).reduce((a,b)=>a+b,0);
+    let camera={x:0,y:0},worldPose={x:.12,y:.85};
     function beginClimb(at,x,outcome){phase='climb';phaseTime=at;jumpX=Math.min(.51,x);result=outcome;action.disabled=true;}
     function wallTap(event){
-      if(!active||ended)return;event?.preventDefault();const at=nowTime(event);
-      if(phase==='gauge'){lockedGauge=gaugeAt(at-phaseTime);power=1-Math.abs(lockedGauge-.5)*2;phase='run';phaseTime=at;runner=.12;action.innerHTML='オレンジ線で踏切<span>走るモブくんを見てタップ</span>';api.beep(560+power*300,35,.015);}
-      else if(phase==='run'){runner=runPosition(at-phaseTime,level);const timing=clamp(1-Math.abs(runner-.49)/.09);beginClimb(at,runner,wallResult(level,power,timing));}
-      time=Math.max(time,at);wallFrame(0);art.effects({w,h,particles,ended,endTitle,score});
+      if(!active||ended||phase!=='run')return;event?.preventDefault();const at=nowTime(event);
+      runner=runPosition(at-phaseTime,level);const timing=clamp(1-Math.abs(runner-.49)/.09);
+      beginClimb(at,runner,wallResult(level,1,timing,(api.random||Math.random)()));
+      api.beep(550+timing*450,35,.015);time=Math.max(time,at);wallFrame();art.effects({w,h,particles,ended,endTitle,score});
     }
     if(action){action.onpointerdown=wallTap;action.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))wallTap(e);};}
     function wallFrame(){
-      let t=Math.max(0,time-phaseTime);
-      if(phase==='gauge'){pose={x:.12,y:.85,height:0};hint.textContent='中央の白線でタップ！ 指が触れた瞬間にSTOP';if(t>8)finish('ゲージ時間切れ','TIME UP');}
-      else if(phase==='run'){runner=runPosition(t,level);pose={x:Math.min(.51,runner),y:.85,height:0};hint.textContent=`ダッシュ力 ${Math.round(power*100)}% · オレンジ線で踏切！`;if(runner>.535){beginClimb(time,.51,{clear:false,quality:0,points:0});t=0;}}
-      if(phase==='climb'){pose=climbPose(t,level,result.clear,result.quality,jumpX);hint.textContent=result.clear?'壁を駆け上がる！':power<.86?'白線から外れた… ダッシュ力不足！':'踏切線から外れた… 滑り落ちる！';if(t>=1.11){if(!result.clear){burst(.51,.85,'#f3b577','SLIP');finish(`${level}段クリア / 壁から滑落`,'TRY AGAIN');}else{precisionSum+=result.points;clears++;const previous=score;points(balance.wallTotal(clears,precisionSum));result.awarded=score-previous;phase='walk';phaseTime=time;burst(.83,wallSurface(1,level).y,'#ffe4a4','CLEAR!');api.beep(950,80,.02);}}}
-      else if(phase==='walk'){const surface=wallSurface(1,level);pose={x:.842+clamp(t/.55)*.108,y:surface.y,height:1};hint.textContent=`WALL ${level+1} CLEAR! +${result.awarded}点`;if(t>=.55){if(level===3)finish('4段すべて登頂！','ALL WALLS CLEAR!');else{level++;phase='gauge';phaseTime=time;runner=.12;action.disabled=false;action.innerHTML='白線でSTOP<span>触れた瞬間に確定</span>';pose={x:.12,y:.85,height:0};}}}
-      status.textContent=`WALL ${level+1} / 4`;
-      art.wall({w,h,time,level,phase,gauge:phase==='gauge'?gaugeAt(time-phaseTime):lockedGauge,power,runner,pose,result,surface:u=>wallSurface(u,level)});
+      let t=Math.max(0,time-phaseTime),pan=0;
+      if(phase==='run'){runner=runPosition(t,level);pose={x:Math.min(.51,runner),y:.85,height:0};hint.textContent='オレンジ線の中央でタップ！';if(runner>.535){beginClimb(time,.51,{clear:false,quality:0,points:0});t=0;}}
+      if(phase==='climb'){
+        pose=climbPose(t,level,result.clear,result.quality,jumpX);hint.textContent=result.clear?'加速して駆け上がる！':'タイミングが外れた… 滑り落ちる！';
+        if(t>=1.11){if(!result.clear){burst(.51,.85,'#f3b577','SLIP');finish(clears+'段クリア / '+(clears*5)+'mまで登頂','TRY AGAIN');}else{precisionSum+=result.points;clears++;const previous=score;points(balance.wallTotal(clears,precisionSum));result.awarded=score-previous;phase='walk';phaseTime=time;t=0;api.beep(950,80,.02);}}
+      }
+      if(phase==='walk'){
+        const u=clamp(t/1.15),surface=wallSurface(1,level);pan=u*u*(3-2*u);
+        pose={x:.842+u*.278,y:surface.y,height:1};hint.textContent=(level+1)*5+'m CLEAR! +'+result.awarded+'点 · 次の壁へ';
+        if(u===1){if(level===5){finish('30mまで6つの壁を連続登頂！','ALL WALLS CLEAR!');}else{level++;phase='run';phaseTime=time;runner=.12;pose={x:.12,y:.85,height:0};pan=0;action.disabled=false;}}
+      }
+      camera={x:level+pan,y:-riseAt(level)-pan*(.26+level*.028)};
+      worldPose={x:level+pose.x,y:pose.y-riseAt(level),angle:pose.angle||0};
+      status.textContent=(level+1)*5+'m / 30m · CLEAR '+clears+'/6';
+      art.wall({w,h,time,level,phase,pose:worldPose,camera,clears,result,surface:wallSurface,riseAt});
     }
     // Finite, irregular gifts. Distance, mass and bounded walking speed determine the cost.
     let mode='choose',px=.49,py=.24,selected=null,buffer=0,lastHand=-1,lastTap=-Infinity,delivered=0,unloadAt=0;

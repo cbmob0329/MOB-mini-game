@@ -2,6 +2,7 @@
 (function(root){
   'use strict';
   const draws=typeof module!=='undefined'&&module.exports?require('./party-random-games.js'):root.MobRandomGames;
+  const doctor=typeof module!=='undefined'&&module.exports?require('./party-doctor-game.js'):root.MobDoctorGame;
   const TAG=['mobSpeedRacer','summonMaster','linkedCartBlast'];
   const DIVISIONS=['PB2リーグ','Realizeリーグ','Portalリーグ','DENDENリーグ'];
   const pick=(a,r)=>a[Math.floor(r()*a.length)];
@@ -106,12 +107,7 @@
         const selected=d.representative?i===(d.round-1)%t.members.length:t.members.length<=2||[0,1].some(j=>(d.round-1+j)%t.members.length===i);
         if(d.representative&&selected)representatives[t.id]=id;points[id]=(d.representative||representativeKeys.has(key))&&!selected?0:score(key,players.find(p=>p.id===id),random);
       }}
-      if(d.key==='minorityMob'){
-        const teamVote=s.mode==='tag',voteUnits=teamVote?teams.map(t=>t.id):Object.keys(points),award=(id,n)=>{if(teamVote)teams.find(t=>t.id===id).members.forEach(p=>points[p]=n);else points[id]=n};let alive=voteUnits,stage=0,retries=0;
-        while(alive.length>2){let a=alive.filter(()=>random()<.5),b=alive.filter(id=>!a.includes(id));if(!a.length||!b.length||a.length===b.length){if(++retries<32)continue;a=sample(alive,Math.max(1,Math.floor((alive.length-1)/2)),random);b=alive.filter(id=>!a.includes(id));}retries=0;const keep=a.length<b.length?a:b,out=a.length<b.length?b:a;
-          stage++;out.forEach(id=>award(id,Math.min(80,stage*20)));alive=keep;
-        }alive.forEach(id=>award(id,100));
-      }
+      if(d.key==='minorityMob')Object.assign(points,doctor.simulate(teams,random));
       if(d.key==='deathGameChallenge'){
         let alive=sample(teams.flatMap(t=>t.members.length>2?[0,1].map(i=>t.members[(d.round-1+i)%t.members.length]):t.members),999,random);Object.keys(points).forEach(id=>points[id]=0);
         while(alive.length>1){const before=alive.length,target=[30,15,5,3,1].find(n=>n<before)||1;alive.splice(0,before-target).forEach(id=>points[id]=before===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80);}points[alive[0]]=100;

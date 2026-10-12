@@ -7,7 +7,7 @@ test('input uses pointer timestamp, independent of frame or release latency',()=
   for(const fps of [30,60,120]){const priorFrame=Math.floor(.45*fps)/fps;assert.equal(games.gaugeValue(down,2),games.gaugeValue(.45,2));assert.ok(priorFrame<=down);}
 });
 test('ascending and sliding contact points remain outside the wall surface at every stage',()=>{
-  for(let level=0;level<4;level++)for(const clear of [true,false])for(let ms=0;ms<=1110;ms+=5){
+  for(let level=0;level<6;level++)for(const clear of [true,false])for(let ms=0;ms<=1110;ms+=5){
     const p=games.climbPose(ms/1000,level,clear,.8,.49),edge=games.wallSurface(p.height,level);
     assert.ok(p.x+.018<=edge.x+1e-8);assert.ok(Math.abs(p.y-edge.y)<1e-8);
   }
@@ -28,15 +28,16 @@ test('gift layouts are scattered and balanced; finite distance limits delivery e
 test('30 bananas allow five misses for full marks and never exceed 100',()=>{
   assert.equal(games.bananaPoints(24),96);assert.equal(games.bananaPoints(25),100);assert.equal(games.bananaPoints(30),100);assert.equal(games.bananaPoints(0),0);
 });
-test('all four walls require power and timing, with attainable perfect and imperfect finishes',()=>{
-  for(let level=0;level<4;level++){
-    assert.deepEqual(games.wallResult(level,1,1),{clear:true,quality:1,points:25});
-    assert.equal(games.wallResult(level,1,0).clear,false);
-    assert.equal(games.wallResult(level,0,1).clear,false);
+test('six continuous walls reward centered taps; 30m has the old second-wall speed',()=>{
+  for(let level=0;level<6;level++){
+    assert.equal(games.wallResult(level,1,1,.999).clear,true);
+    assert.equal(games.wallResult(level,1,0,0).clear,false);
+    assert.ok(games.wallResult(level,1,.7).chance<=games.wallResult(0,1,.7).chance);
   }
-  const total=[1,.9,.9,.9].reduce((s,q,i)=>s+games.wallResult(i,q,q).points,0);
-  assert.ok(total>=95&&total<=99,total);
-  assert.equal(games.wallResult(0,.74,1).clear,false);assert.equal(games.wallResult(0,1,.6).clear,false);assert.equal(games.wallResult(3,.9,.9).clear,true);
+  assert.equal(games.runPosition(1,5),.12+.29);
+  assert.ok(games.wallResult(5,1,.72,.999).clear);
+  const at=t=>games.climbPose(t,5,true,1,.49).height;
+  assert.ok(at(.9)-at(.8)>at(.4)-at(.3),'climbing accelerates');
 });
 test('Hero Bell receives one or two rank steps in Santa only',()=>{
   const ranks=['F','E','D-','D','D+','C','C+','B-','B','B+','A-','A','A+','S-','S','SS'];

@@ -35,78 +35,14 @@
       screen.innerHTML=`<section class="league-event ${kind}"><header><small>${api.mode==='solo'?'SOLO PLAY · CPU対戦':api.mode==='crew'?'CREW LEAGUE':api.mode==='king'?'MOB KING LEAGUE':'TAG BATTLE LEAGUE'}</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
       api.top();screen.querySelector('.league-event').style.setProperty('--event-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
     }
-    function preview(){if(!root?.MobPresentation||root.MobGamePreviewActive)return;screen.querySelector('.league-event-body').insertAdjacentHTML('afterbegin',root.MobPresentation.preview(api.key,entrants[0],api.key==='minorityMob'?'モブくんは少数派':'モブくん集中大爆弾！',esc));root.MobPresentation.mount(screen);}
+    function preview(){if(!root?.MobPresentation||root.MobGamePreviewActive)return;screen.querySelector('.league-event-body').insertAdjacentHTML('afterbegin',root.MobPresentation.preview(api.key,entrants[0],api.key==='minorityMob'?'モブロボドクターは気まぐれ':'モブくん集中大爆弾！',esc));root.MobPresentation.mount(screen);}
     function buttons(options,onSelect=()=>{}){
       return new Promise(resolve=>{if(!valid()){resolve(-1);return;}const host=screen.querySelector('#eventActions');host.innerHTML=options.map((v,i)=>`<button type="button" data-answer="${i}">${v}</button>`).join('');let used=false;host.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(used||!valid())return;onSelect();used=true;host.querySelectorAll('button').forEach(x=>x.disabled=true);resolve(Number(b.dataset.answer));});});
     }
     async function next(label='確認して次へ →'){await buttons([label]);return valid();}
     function roster(list,out=false){return `<div class="event-roster ${out&&list.length>20?'event-roster-crowded':''}" style="--roster-rows:${Math.ceil(list.length/5)}">${list.map(p=>`<article class="${out&&!p.cpu?'human-eliminated':''}">${image(p)}<b>${esc(p.name)}</b><small>${esc(p.team)} · ${p.cpu?'CPU':'P'+p.no}${out?' · 脱落':''}</small></article>`).join('')}</div>`;}
     async function handoff(p,title,detail){draw(title,`<p class="event-call">プレイヤー ${esc(p.name)}！</p><div class="event-portrait">${image(p)}</div><p>${esc(p.team)} · P${p.no}</p><p>${detail}</p><div id="eventActions"></div>`);return next('準備OK');}
-    const nextQuestion=questionDeck(random);
-    if(api.key==='minorityMob'&&api.teamVote){
-      let alive=votingTeams(entrants),stage=0,round=0;
-      draw('モブくんは少数派', '<p>1チーム1票。2人で相談して少数派を選ぼう！ CPUチームも1票です。</p><p>多数派は脱落。段階ごとに20・40・60・80点、最後の1〜2チームは100点をメンバーそれぞれに加算。同数・全員同じなら得点段階を進めず再投票します。</p><div id="eventActions"></div>');
-      preview();if(!(await next('チーム投票を始める')))return;
-      while(alive.length>2&&valid()){
-        const f=nextQuestion(),votes=[];round++;
-        for(const t of alive){
-          if(!valid())return;let side=random()<.5?0:1;
-          if(t.members.some(p=>!p.cpu)){
-            draw('秘密のチーム投票 · ROUND '+round, '<p>'+esc(t.members[0].team)+' · 2人で相談して1票</p>'+roster(t.members)+'<div id="eventActions"></div>');
-            if(!(await next('準備OK · 選択肢を見る')))return;
-            draw('どちらが少数派？','<p>'+esc(t.members[0].team)+' · 残り'+alive.length+'チーム</p><p>相談してチームの1票を決めよう！</p><div id="eventActions" class="food-options"></div>');
-            side=await buttons(['<span>'+f[0]+'</span><b>'+f[1]+'</b>','<span>'+f[2]+'</span><b>'+f[3]+'</b>']);
-          }
-          if(!valid())return;votes.push({id:t.id,side});
-          if(t.members.some(p=>!p.cpu))draw('投票を受け付けました','<p>選択は秘密です。次のチームへ端末を渡してください。</p>');
-        }
-        const result=minority(votes);
-        draw('全チームの投票が揃いました','<p>端末をみんなに見せて結果を確認しよう！</p><div id="eventActions"></div>');if(!(await next('投票結果を見る')))return;
-        draw('投票結果！','<div class="vote-totals"><div><span>'+f[0]+'</span><b>'+f[1]+'</b><strong>'+result.counts[0]+'票</strong></div><div><span>'+f[2]+'</span><b>'+f[3]+'</b><strong>'+result.counts[1]+'票</strong></div></div><p>'+ (result.retry?'脱落なし！ 別のお題で再投票。':'少数派の'+result.survivors.length+'チームが勝ち残り！')+'</p><div id="eventActions"></div>');
-        beep(result.retry?480:180,200,.03);if(!(await next()))return;if(result.retry)continue;
-        const losers=alive.filter(t=>result.out.includes(t.id)),earned=Math.min(80,++stage*20);alive=alive.filter(t=>result.survivors.includes(t.id));
-        losers.forEach(t=>t.members.forEach(p=>score[p.id]=earned));
-        for(let i=0;i<losers.length;i+=2){draw('脱落チーム発表','<p>各メンバー '+earned+'ポイント獲得 · 残り'+alive.length+'チーム</p>'+roster(losers.slice(i,i+2).flatMap(t=>t.members),true)+'<div id="eventActions"></div>');if(!(await next()))return;}
-      }
-      if(!valid())return;alive.forEach(t=>t.members.forEach(p=>score[p.id]=100));
-      draw('少数派の勝者！','<p>'+alive.length+'チームが優勝！ 各メンバー100ポイント！</p>'+roster(alive.flatMap(t=>t.members))+'<div id="eventActions"></div>');if(await next('大会リザルトへ →'))api.done(score);return;
-    }
-    if(api.key==='minorityMob'){
-      draw('モブくんは少数派',`<div class="food-preview" aria-hidden="true">🍕 VS 🍣</div><p>2つの食べ物から、選ぶ人が少ないと思う方へ投票！</p><p>多数派は脱落。最後の1〜2人は100点。脱落者も勝ち残った段階に応じて20・40・60・80点（上限80点）を獲得！同数・全員同じなら再投票し、得点段階は進みません。</p><p>選ぶ時はスマホをほかの人に見られないように！</p><div id="eventActions"></div>`);
-      preview();if(!(await next('全員準備OK · 投票開始')))return;
-      let alive=[...entrants],round=0,lastFood=-1,eliminationStage=0;
-      while(alive.length>2&&valid()){
-        round++;const f=nextQuestion(),votes=[];
-        for(const p of alive){
-          if(!valid())return;
-          let side=random()<.5?0:1;
-          if(!p.cpu){
-            if(!(await handoff(p,'秘密の投票 · ROUND '+round,'準備OKを押すと選択肢が出ます。ほかの人に画面を見せずに選んでください。')))return;
-            draw('どちらが少数派？',`<p>${esc(p.name)} · 残り${alive.length}人</p><p>選択は秘密。少ないと思う方を選ぼう！</p><div id="eventActions" class="food-options"></div>`);
-            side=await buttons([`<span role="img" aria-label="${f[1]}">${f[0]}</span><b>${f[1]}</b>`,`<span role="img" aria-label="${f[3]}">${f[2]}</span><b>${f[3]}</b>`]);
-          }
-          if(!valid())return;votes.push({id:p.id,side});
-          // Replace the choice immediately so the next person cannot read it.
-          if(!p.cpu)draw('投票を受け付けました',`<p class="event-call">選択は秘密です。</p><p>次のプレイヤーへ端末を渡してください。</p>`);
-        }
-        if(!valid())return;const result=minority(votes);
-        draw('全ての票が揃いました！',`<p class="event-call">端末をみんなに見せて、結果を確認しよう！</p><div id="eventActions"></div>`,'event-suspense');
-        if(!(await next('みんなで結果を見る')))return;
-        if(!valid())return;
-        draw('投票結果！',`<div class="vote-totals"><div><span>${f[0]}</span><b>${f[1]}</b><strong>${result.counts[0]}票</strong></div><div><span>${f[2]}</span><b>${f[3]}</b><strong>${result.counts[1]}票</strong></div></div><p class="event-call">${result.retry?'脱落なし！ 別のお題でもう一度！':'多数派は脱落！ 少数派の'+result.survivors.length+'人が勝ち残り！'}</p><div id="eventActions"></div>`,'event-reveal');
-        beep(result.retry?480:180,200,.03);if(!(await next(result.retry?'次のお題へ →':'脱落者を発表 →')))return;
-        if(result.retry)continue;
-        const losers=alive.filter(p=>result.out.includes(p.id));alive=alive.filter(p=>result.survivors.includes(p.id));
-        const earned=Math.min(80,++eliminationStage*20);losers.forEach(p=>score[p.id]=earned);
-        for(let page=0;page<losers.length;page+=4){
-          draw('ELIMINATED · 脱落者発表',`<p>ROUND ${round} · 残り${alive.length}人 · 脱落者は${earned}ポイント獲得</p><div class="elimination-results">${losers.slice(page,page+4).map(p=>`<article class="${p.cpu?'':'human-eliminated'}">${image(p)}<span><b>${esc(p.name)}</b><small>${esc(p.team)} · ${p.cpu?'CPU':'P'+p.no}</small></span><strong>${earned}<small> pt</small></strong></article>`).join('')}</div><p class="event-note">${page+1}〜${Math.min(page+4,losers.length)} / ${losers.length}人</p><div id="eventActions"></div>`,'event-eliminated');
-          if(!(await next(page+4<losers.length?'次の脱落者を見る →':'確認して次へ →')))return;
-        }
-      }
-      if(!valid())return;alive.forEach(p=>score[p.id]=100);
-      draw('少数派の勝者！',`<p class="event-call">${alive.length===2?'2人が同率1位！':'最後の1人！'} 100ポイント獲得！</p>${roster(alive)}<div id="eventActions"></div>`,'event-reveal');
-      if(await next('大会リザルトへ →'))api.done(score);return;
-    }
+    if(api.key==='minorityMob')return (root?.MobDoctorGame||require('./party-doctor-game.js')).run(api);
     const heats=groups(entrants,random,api.mode),finalists=[];
     if(root?.MobGamePreviewActive){await attempt(entrants.find(p=>!p.cpu)||entrants[0],'1 SECOND STOPWATCH');return;}
     draw('モブくん集中大爆弾！',`<div class="bomb-logo">1.00000<br><b>SECOND</b></div><p>${heats[0].length}人×5グループ。爆弾型ストップウォッチを1秒ちょうどで止め、一番近い1人が勝ち上がり！</p><p>STARTで計測開始、STOPで停止。3秒で爆発・自動停止。予選敗退は0点。決戦は1位から100・80・60・50・40点。</p><p>0.00001秒単位で判定。同じ誤差の場合だけ抽選で順位確定。決戦の記録は5位から発表！${api.mode==='solo'?'CPU相手に1位を目指そう！':'点灯済みチームの選手が1位なら優勝！'}</p><div id="eventActions"></div>`,'event-bomb');

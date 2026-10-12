@@ -9,7 +9,7 @@
     const name=p=>p.baseName+(p.origin?`（${p.origin.league} ${p.origin.place}位）`:'');
     const teamName=t=>mode==='king'?name(player(t.members[0])):t.name;
     const picture=p=>`<img src="${p.img}" alt="${esc(p.baseName)}">`;
-    const gameTitle=key=>key==='minorityMob'?'モブくんは少数派':key==='focusBombMob'?'モブくん集中大爆弾！':key==='individualChoice'?'個人種目選択':key==='teamChoice'?'運の種目選択':api.title(key);
+    const gameTitle=key=>key==='minorityMob'?'モブロボドクターは気まぐれ':key==='focusBombMob'?'モブくん集中大爆弾！':key==='individualChoice'?'個人種目選択':key==='teamChoice'?'運の種目選択':api.title(key);
     function stop(){ticket++;league=null;}
     function on(id,fn){const b=screen.querySelector('#'+id);let used=false;b.onclick=()=>{if(used)return;used=true;if(fn()===false)used=false;};}
     function draw(heading,body,kind=''){api.clear();screen.innerHTML=`<section class="tag-league variant-league variant-${mode} ${kind}"><header><small>${title()} · ${level}</small><h1>${heading}</h1></header>${body}</section>`;api.top();const el=screen.querySelector('.variant-league');el.style.setProperty('--variant-top',Math.max(0,screen.getBoundingClientRect().top)+'px');}

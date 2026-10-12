@@ -487,3 +487,29 @@ html body #screen :is(input,textarea,select,[contenteditable]:not([contenteditab
 .league-representative .league-choice-games button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;overflow-wrap:anywhere;line-height:1.35;color:#fff;background:#6250d8}
 .league-representative .league-choice-games button img{display:block;width:72px;height:84px;max-width:100%;object-fit:contain;flex:none}
 .league-carryover{display:block;color:#26304b;background:#fff1b5;border-radius:8px;padding:6px;font-size:14px}
+/* Seven dice keep the existing 30-total full-score threshold. Four + three remain inside the tray. */
+#screen .dice-tray-v119{grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;width:88%;bottom:10%}
+#screen .mob-die-v119{grid-column:span 2;width:100%;max-width:80px;border-width:3px;border-radius:12px;box-shadow:inset -5px -6px 0 #b6bcc43d,0 5px 0 #11131a40}
+#screen .mob-die-v119:nth-child(4){grid-column:span 2;margin:0}#screen .mob-die-v119:nth-child(5){grid-column:2/span 2;margin:0}
+/* Flight instrumentation uses the common flex layout, leaving both controls in the viewport. */
+#screen .launch-shell .gauge-wrap{padding:10px!important;border:2px solid #5b7896;border-radius:18px;background:radial-gradient(ellipse at 50% 0,#264a70,transparent 75%),repeating-linear-gradient(0deg,transparent 0 23px,#accde00b 23px 24px),#0b2038;color:#e5f3ff;box-shadow:inset 0 0 35px #07162b;gap:8px}
+#screen .launch-shell .gauge-card{position:relative;border:1px solid #6c93b7;border-radius:12px;background:linear-gradient(130deg,#213c58,#11263d);box-shadow:0 3px 0 #051729;color:#e1f3ff;padding:10px}
+#screen .launch-shell .gauge-card:not(.disabled){border-color:#80ded9;box-shadow:0 0 0 1px #80ded94d,inset 0 0 15px #61e0dc12}
+#screen .launch-shell .gauge-card.disabled{opacity:.65}
+#screen .launch-shell .gauge-title{display:flex;justify-content:flex-start;gap:7px;font-size:10px;letter-spacing:.5px;color:#e1f3ff;min-height:22px}
+#screen .launch-shell .gauge-title span{margin-left:auto;color:#ffe4a1;font-size:10px;letter-spacing:0}
+#screen .launch-step{display:grid;place-items:center;background:#ffdda0;color:#17314d;border-radius:5px;width:24px;height:22px;font:900 12px monospace}
+#screen .launch-shell .linear-gauge{height:52px;border:2px solid #8aaac2;border-radius:8px;background:repeating-linear-gradient(90deg,transparent 0 9%,#d5ebf64d 9% 9.5%,transparent 9.5% 10%),linear-gradient(90deg,#eab86b,#388d9f 28%,#164565 49%,#164565 51%,#388d9f 72%,#eab86b);box-shadow:inset 0 6px 12px #06192e77}
+#screen .launch-shell .linear-gauge:after{content:'0 · CENTER · 0';color:#e1edf5;bottom:3px;left:0;right:0;text-align:center;font-size:8px;letter-spacing:1px}
+#screen .launch-shell .linear-marker{background:#fff3be;border-color:#f9c863;width:6px;box-shadow:0 0 12px #fff1ba;z-index:2}
+#screen .launch-shell .linear-blind{background:repeating-linear-gradient(135deg,#20364a 0 4px,#14293e 4px 8px);color:#fff1cb;font-size:9px;line-height:1.2;border-color:#d2ad6f;z-index:3}
+#screen .launch-shell :is(.blind-help,.hint){color:#d0e5f1}
+#screen .launch-shell #circleCard{justify-content:center}
+#screen .launch-shell .circle-gauge{border:3px solid #8dacc2;background:repeating-conic-gradient(from -2deg,#c1d7e4 0deg 1deg,transparent 1deg 10deg),radial-gradient(circle,#102a43 0 62%,#426b87 63% 69%,#0c213b 70%);box-shadow:inset 0 0 0 9px #122b3ccc,0 0 0 4px #071b2d,0 0 20px #6bdcdd22}
+#screen .launch-shell .circle-ring{border-color:#6e9bb777;background:transparent}
+#screen .launch-shell .circle-max-zone{color:#24364b;background:#ffe0a0;border-color:#ffe7af;box-shadow:0 0 14px #ffe0a077}
+#screen .launch-shell .circle-center{background:radial-gradient(circle at 35% 20%,#365570,#0a223a);color:#f0faff;border:2px solid #a1bac9;box-shadow:0 4px 8px #031829}
+#screen .launch-shell .circle-center span{color:#bcdae9;letter-spacing:2px;font-size:8px}
+#screen .launch-shell .circle-center b{color:#ffe3a4;text-shadow:0 0 10px #ffd16c44}
+#screen .launch-shell .circle-needle{background:#ffd584;box-shadow:0 0 7px #ffe7a688}
+@media(max-height:640px){#screen .launch-shell .gauge-wrap{padding:8px!important;gap:6px}#screen .launch-shell .gauge-card{padding:7px}#screen .launch-shell .circle-gauge{width:clamp(130px,25dvh,180px);height:clamp(130px,25dvh,180px)}}

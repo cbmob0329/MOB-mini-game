@@ -27,29 +27,6 @@ test('minority keeps the smaller side, and never eliminates on equal or unanimou
   for(const n of [1,2,15,39]){const r=E.minority(votes(n));assert.equal(r.retry,false);assert.equal(r.survivors.length,Math.min(n,40-n));assert.equal(r.out.length,40-r.survivors.length);assert.deepEqual(r.counts,[n,40-n]);}
 });
 
-test('minority awards every elimination stage, ignores retries and submits all points to the league',async()=>{
-  const sequence=Array(39).fill(.1),pages=[];
-  // Each round draws one food, followed by one vote per survivor.
-  for(const [count,minority] of [[40,20],[40,40],[40,19],[19,9],[9,4],[4,1]]){
-    sequence.push(...Array.from({length:count},(_,i)=>i<minority?.1:.9));
-  }
-  const button={dataset:{answer:'0'},set onclick(fn){queueMicrotask(fn);}},host={innerHTML:'',querySelectorAll:()=>[button]};
-  const screen={set innerHTML(value){pages.push(value);},getBoundingClientRect:()=>({top:0}),querySelector:sel=>sel==='#eventActions'?host:{style:{setProperty(){}},textContent:''}};
-  const window={};vm.runInNewContext(fs.readFileSync(require.resolve('../party-league-events.js'),'utf8'),{window,setTimeout:fn=>queueMicrotask(fn)});
-  let scores;
-  await window.MobLeagueEvents.run({key:'minorityMob',screen,entrants:entrants.map(p=>({...p,cpu:true})),esc:String,valid:()=>true,beep(){},clear(){},top(){},random(){assert.ok(sequence.length,'unexpected extra round');return sequence.shift();},done:value=>{scores=value;}});
-  assert.equal(sequence.length,0);assert.equal(Object.keys(scores).length,40);
-  assert.equal(scores.p0,100);
-  for(let i=1;i<40;i++)assert.equal(scores['p'+i],i<4?80:i<9?60:i<19?40:20);
-  assert.ok(pages.some(p=>p.includes('脱落者は20ポイント獲得')));
-  assert.ok(pages.some(p=>p.includes('脱落者は80ポイント獲得')));
-  assert.ok(pages.every(p=>!p.includes('脱落者は0点')));
-  const teams=Array.from({length:20},(_,i)=>({id:'L'+i,members:['p'+i*2,'p'+(i*2+1)]}));
-  const state=L.create(teams,L.program(['reaction']));state.round=2;
-  const {record}=L.submit(state,scores,L.next(state));
-  assert.equal(record.points.p39,20);assert.equal(record.teamPoints.L19,40);
-  assert.equal(record.teamPoints.L0,180);assert.equal(state.personal.p39,20);
-});
 test('bomb has five four-player heats with each entrant once and teammates separated',()=>{
   for(const r of [0,.25,.99]){const heats=E.groups(entrants.slice(0,20),()=>r);assert.equal(heats.length,5);assert.ok(heats.every(g=>g.length===4&&new Set(g.map(p=>p.teamId)).size===4));assert.equal(new Set(heats.flat().map(p=>p.id)).size,20);}
   assert.throws(()=>E.groups(entrants));
@@ -109,19 +86,4 @@ test('new ignition precedes results; championship takes priority with no ignitio
   const winner=uiHarness();winner.record.phase='final';winner.record.litBefore=['L0'];
   winner.ui.results({event:{type:'champion',ids:['L0']},record:winner.record});
   assert.equal(winner.state.celebratedChampion,'L0');assert.match(winner.html(),/このゲームだけの順位/);
-});
-
-test('minority waits for shared-result button before any countdown or result disclosure',async()=>{
-  let html='',handler,timers=0,randomCalls=0,valid=true;
-  const button={dataset:{answer:'0'},set onclick(fn){handler=fn;}},host={innerHTML:'',querySelectorAll:()=>[button]};
-  const screen={set innerHTML(value){html=value;},getBoundingClientRect:()=>({top:0}),querySelector:sel=>sel==='#eventActions'?host:{style:{setProperty(){}},textContent:''}};
-  const window={};vm.runInNewContext(fs.readFileSync(require.resolve('../party-league-events.js'),'utf8'),{window,setTimeout:fn=>{timers++;queueMicrotask(fn);}});
-  const run=window.MobLeagueEvents.run({key:'minorityMob',screen,entrants:entrants.map(p=>({...p,cpu:true})),esc:String,valid:()=>valid,beep(){},clear(){},top(){},random:()=>++randomCalls===40?.1:.9,done(){}});
-  handler();for(let i=0;i<10;i++)await Promise.resolve();
-  assert.match(html,/全ての票が揃いました/);assert.match(host.innerHTML,/みんなで結果を見る/);assert.equal(timers,0);assert.doesNotMatch(html,/voteCountdown|票<\/strong>/);
-  handler();for(let i=0;i<12;i++)await Promise.resolve();
-  assert.match(html,/投票結果/);assert.equal(timers,0);
-  handler();for(let i=0;i<8;i++)await Promise.resolve();
-  assert.match(html,/elimination-results/);assert.equal((html.match(/<article /g)||[]).length,4);
-  handler();valid=false;await run;
 });

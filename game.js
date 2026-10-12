@@ -339,7 +339,7 @@ const GAMES=[
   {no:51,key:"homeRunMob",title:"モブくんはパワーヒッター",sub:"角度とパワーを決めて最大3000m",legacy:57},
   {no:52,key:"mobMisfortune",title:"モブくんの災難",sub:"大量の落石を左右移動で避ける",legacy:58},
   {no:53,key:"aimMob",title:"狙ってモブくん！",sub:"弓矢で木の細い白線を狙う",legacy:59},
-  {no:54,key:"mobDice",title:"モブくんのサイコロ",sub:"5個のサイコロで大きな合計を狙う",legacy:61},
+  {no:54,key:"mobDice",title:"モブくんのサイコロ",sub:"7個のサイコロで大きな合計を狙う",legacy:61},
   {no:55,key:"mobCombo",title:"モブくん20連コンボ",sub:"10秒でモブ球を動かして20連コンボを狙う",legacy:62},
   {no:56,key:"electricMaze",title:"こっちだよモブくん！",sub:"外周の電気壁と7個のビリビリ球を避けてGOAL。球は触れると消える",legacy:63},
   {no:57,key:"cardShop",title:"モブくんカードショップ",sub:"6枚入りパックを開封して合計ポイントを競う",legacy:64},
@@ -448,17 +448,17 @@ GAMES.push(
 );
 GAMES.push({no:159,key:'treasureRuneParty',title:'モブくんお宝ルーン迷宮',sub:'封印の記号を記憶して6部屋の遺跡へ。呪いでお宝を失う前に帰還！',legacy:182},{no:160,key:'treasureDuoParty',title:'モブくんお宝ツイン強奪',sub:'2VS2タッグ専用。偵察と回収を交代し、相棒の合図でお宝を持ち帰れ！',legacy:183});
 GAMES.push(
-  {no:161,key:'minorityMob',title:'モブくんは少数派',sub:'CPUと秘密の投票。少数派に残って100点を目指すリーグ種目',legacy:184,leagueOnly:true},
+  {no:161,key:'minorityMob',title:'モブロボドクターは気まぐれ',sub:'アップ・ダウンのヒントで秘密の数字を予想。5枚から選び、近いほど高得点',legacy:184,leagueOnly:true},
   {no:162,key:'focusBombMob',title:'モブくん集中大爆弾！',sub:'爆弾型ストップウォッチを1.000秒で止めろ！ CPUと5組の予選・決戦',legacy:185,leagueOnly:true}
 );
 GAMES.push(
   {no:163,key:'bananaBoatMob',title:'モブくんのそんなバナナ',sub:'下部スティックでバナナボートを操作。波と風を読んで30個をキャッチ！ 1個4点、25個で100点',legacy:186},
-  {no:164,key:'warpedWallMob',title:'モブくんのそり立つ壁',sub:'白線でダッシュ力を決め、オレンジラインで踏み切る4段階の壁。1段最大25点',legacy:187},
+  {no:164,key:'warpedWallMob',title:'モブくんのそり立つ壁',sub:'オレンジ線でタップ！ 5mから30mまで6つの壁を連続で駆け上がる',legacy:187},
   {no:165,key:'santaClausMob',title:'モブくんはサンタクロース',sub:'12秒でソリへプレゼントを運ぼう！ 大25点・中12点・小7点、最大100点',legacy:188}
 );
 GAMES.push(
  {no:166,key:'juiceArcadeMob',title:'モブくんのピッタリジュース',sub:'1回だけ注ぐ。目標±1%で100点、誤差1%ごとに4点減点。8秒',legacy:189},
- {no:167,key:'rallyArcadeMob',title:'モブくんラリー',sub:'下部スティックで2球を返す。8秒生存で100点。落球時は最大99点',legacy:190},
+ {no:167,key:'rallyArcadeMob',title:'モブくんラリー',sub:'下部スティックで1球を返す。8秒生存で100点。落球時は最大99点',legacy:190},
  {no:168,key:'potteryArcadeMob',title:'モブくんろくろの名人',sub:'10秒。上下で手の高さ、PRESSで成形。8段の輪郭改善率で0〜100点',legacy:191}
 );
 GAMES.push(
@@ -2978,9 +2978,9 @@ function renderModeLobby(){
 function scoreRuleForGame(index){
   if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(GAMES[index]?.key))return GAMES[index].sub;
   if(GAMES[index]?.key==='bananaBoatMob')return '30個中1個4点 / 25個で100点';
-  if(GAMES[index]?.key==='warpedWallMob')return '4段階・1段最大25点 / 登頂精度で加点、最大100点';
+  if(GAMES[index]?.key==='warpedWallMob')return '5〜30mの6段階 / 登頂数とタイミング精度で最大100点';
   if(GAMES[index]?.key==='santaClausMob')return '12秒 / ソリに届けると大25・中12・小7点 / 最大100点';
-  if(GAMES[index]?.key==='minorityMob')return '脱落した段階に応じ20・40・60・80点 / 最後の1〜2人は100点';
+  if(GAMES[index]?.key==='minorityMob')return 'ピッタリ100点 / それ以外は100−秘密の数字との誤差';
   if(GAMES[index]?.key==='focusBombMob')return '1.000秒からの誤差が小さい順 / 予選敗退0点・決戦100/80/60/50/40点';
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[index]?.key))return '持ち帰ったお宝が得点 / 1人最大100点';
   if(GAMES[index]?.key==='colorBridgeParty')return 'ルートを最後まで渡るごとに16点＋残りライフ1つにつき10点 / 間違い・時間切れでライフ−1 / 1人最大100点';
@@ -3074,7 +3074,7 @@ function scoreRuleForGame(index){
     "2000m=100点 / 0m=0点",
     "3回目2000m=100点 / 0m=0点",
     "2.80秒以下=100点 / 6.00秒以上または衝突=0点",
-    "24棟破壊=100点 / 0棟=0点",
+    "22棟破壊=100点 / 0棟=0点",
     "闇の炎20個消去=100点 / 0個=0点",
     "30人撃破タイム / 10.00秒以内=100点 / 25.00秒=0点",
     "黒スライム500体撃破=100点 / 0体=0点",
@@ -3097,7 +3097,7 @@ function scoreRuleForGame(index){
     "12.00秒生存=100点 / 岩直撃までの時間",
     "白線との誤差3px以内=100点 / 約80px以上=0点",
     "10.00秒維持=100点 / 倒れるまでの時間",
-    "5個合計5=1点 / 合計30=100点",
+    "7個合計 / 合計30以上=100点",
     "20 COMBO=100点 / 0 COMBO=0点",
     "10.00秒以内=100点 / 30.00秒以上=0点",
     "獲得ポイント＝スコア / 6枚の合計・最大100点",
@@ -3255,7 +3255,7 @@ function showGameIntro(index){
   }else if(legacyIndex===37){
     rules=`<li>3・2・1後、5秒間だけ線路を描けます。</li><li>列車が乗っている左側の短い線路から、右側のGOAL旗まで線をつなぎます。</li><li>岩・水・木を避けて線を描いてください。</li><li>GOAL周辺には障害物が出ない安全エリアがあります。</li><li>5秒後にGO！ 障害物にぶつかると0点。ゴールタイムを競います。</li>`;
   }else if(legacyIndex===38){
-    rules=`<li>巨大モブくんが自動で進撃し、高層ビルを次々破壊します。</li><li>エネルギーは100から開始。</li><li>円形エネルギーのストップウォッチを<strong>1.000秒ピッタリ</strong>でタップ。</li><li>1.000秒との誤差×100だけエネルギー減少。例：0.500秒差なら-50。</li><li>エネルギーが0になるまでに破壊したビル数が記録。24棟=100点。</li>`;
+    rules=`<li>巨大モブくんが自動で進撃し、高層ビルを次々破壊します。</li><li>エネルギーは100から開始。</li><li>円形エネルギーのストップウォッチを<strong>1.000秒ピッタリ</strong>でタップ。</li><li>1.000秒との誤差×100だけエネルギー減少。例：0.500秒差なら-50。</li><li>エネルギーが0になるまでに破壊したビル数が記録。22棟=100点。</li>`;
   }else if(legacyIndex===39){
     rules=`<li>田舎町へ闇の炎が降ってきます。前バージョンより少し遅くし、円で囲む余裕を増やしています。小さなモブくん達は逃げ回っています。</li><li>闇の炎の周りを指で円形に囲むと、魔法のステッキが反応して炎を消します。</li><li>民も低確率で小さなエネルギー弾を撃ち、闇の炎をほんの少しだけ減速させます。</li><li>大きな闇の炎も出現。大きい炎は遅め。炎を消せなくてもモブくんに当たらなければ継続。</li><li>10秒勝負。20個消去=100点。後半ほど落下速度・数・同時出現数が上がります。</li>`;
   }else if(legacyIndex===40){
@@ -3301,7 +3301,7 @@ function showGameIntro(index){
   }else if(legacyIndex===60){
     rules=`<li>細い棒の上にモブくん。10秒間倒れないように維持。</li><li>右へ傾いたらLEFT、左へ傾いたらRIGHTをタップして補正。</li><li>風と傾き加速はかなり強め。後半ほど不安定になります。</li><li>約26°から補正不能、32°で転倒。</li>`;
   }else if(legacyIndex===61){
-    rules=`<li>5個の巨大サイコロを1回だけ振る完全な運勝負。</li><li>合計5（全部1）=1点、合計30（全部6）=100点。</li><li>途中の合計は5〜30を1〜100点へ比例換算。</li>`;
+    rules=`<li>7個の巨大サイコロを1回だけ振る完全な運勝負。</li><li>合計7（全部1）=9点、合計30以上=100点。</li><li>換算は従来どおり。合計から5を引き、99÷25を掛けて1を足します（四捨五入・上限100点）。</li>`;
   }else if(legacyIndex===62){
     rules=`<li>6×5のモブ球パズル。10秒間、押したモブ球を指で動かして隣と入れ替えます。</li><li>同じモブ球が横に3体以上並ぶと、揃った組から順番に消えます。</li><li>その盤面で消える組が全部消えてから、上のモブ球が落下・補充されます。落ちた結果たまたま揃えば落ちコン。</li><li>落ちコンは起こりやすめですが確定ではありません。初期盤面も毎回大きく変化します。</li><li>カウントダウン前から盤面を確認できます。20 COMBO=100点。</li>`;
   }else if(legacyIndex===63){
@@ -3951,22 +3951,22 @@ async function startLaunch(p,humanIndex,runId){
   screen.innerHTML=`<div class="launch-shell"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん人形空を飛ぶ</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div>
   <div class="gauge-wrap">
     <section id="linearCard" class="gauge-card">
-      <div class="gauge-title">1. 高速 横長ゲージ <span id="linearScore">タップでSTOP</span></div>
-      <div id="linearGauge" class="linear-gauge blind-gauge">
+      <div class="gauge-title"><b class="launch-step">01</b> HORIZONTAL POWER <span id="linearScore">タップでSTOP</span></div>
+      <div id="linearGauge" class="linear-gauge blind-gauge" role="button" tabindex="0" aria-label="横長ゲージを止める">
         <div id="linearMarker" class="linear-marker"></div>
-        <div class="linear-blind left">?</div>
-        <div class="linear-blind right">?</div>
+        <div class="linear-blind left">MAX<br>?</div>
+        <div class="linear-blind right">MAX<br>?</div>
       </div>
       <p class="blind-help">両端の最後約10%は見えません。感覚でSTOP。</p>
     </section>
 
     <section id="circleCard" class="gauge-card disabled">
-      <div class="gauge-title">2. 円形ゲージ <span id="circleScore">WAIT</span></div>
-      <div id="circleGauge" class="circle-gauge" role="button" aria-label="円形ゲージを止める">
+      <div class="gauge-title"><b class="launch-step">02</b> ROTATION POWER <span id="circleScore">WAIT</span></div>
+      <div id="circleGauge" class="circle-gauge" role="button" tabindex="0" aria-label="円形ゲージを止める">
         <div class="circle-max-zone"><b>MAX</b><span>100</span></div>
         <div class="circle-ring"></div>
         <div id="circleNeedle" class="circle-needle"></div>
-        <div class="circle-center"><span>POWER</span><b id="circleLive">--</b></div>
+        <div class="circle-center"><span>THRUST</span><b id="circleLive">--</b></div>
       </div>
     </section>
     <p class="hint">横は見えない両端、円は上のMAXを狙う。最大2000m。</p><div class="launch-float-mob-v152"><img src="${partyActorImage()}" draggable="false" alt=""></div>
@@ -4034,6 +4034,8 @@ async function startLaunch(p,humanIndex,runId){
   activeAnimation=requestAnimationFrame(linearAnim);
   lg.addEventListener("pointerdown",stopLinear,{passive:false});
   cg.addEventListener("pointerdown",stopCircle,{passive:false});
+  lg.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))stopLinear(e);};
+  cg.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))stopCircle(e);};
 }
 
 async function launchAnimation(p,humanIndex,power,linear,circle,runId){
@@ -19285,13 +19287,13 @@ async function startMobDice(p,humanIndex,runId){
       <div class="dice-table-v119"></div>
       <div class="dice-mob-v119" style="background-image:url('${partyActorImage()}')"><span>ROLL!</span></div>
       <div id="diceTray" class="dice-tray-v119">
-        ${Array.from({length:5},(_,i)=>`<div class="mob-die-v119" data-die="${i}"><div class="die-face-v119"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>`).join('')}
+        ${Array.from({length:7},(_,i)=>`<div class="mob-die-v119" data-die="${i}"><div class="die-face-v119"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>`).join('')}
       </div>
-      <div id="diceMessage" class="dice-message dice-message-v119">巨大サイコロ5個！</div>
+      <div id="diceMessage" class="dice-message dice-message-v119">巨大サイコロ7個！</div>
       <div id="diceJackpot" class="dice-jackpot">ALL 6!!</div>
     </div>
 
-    <button id="diceRoll" class="dice-roll" type="button">5 DICE ROLL!</button>
+    <button id="diceRoll" class="dice-roll" type="button">7 DICE ROLL!</button>
   </div>`;
 
   const dice=[...screen.querySelectorAll('.mob-die-v119')];
@@ -19329,8 +19331,8 @@ async function startMobDice(p,humanIndex,runId){
     message.textContent='ROLL!!';
 
     dice.forEach((die,i)=>{
-      die.style.setProperty('--dice-x',`${rand(-42,42).toFixed(0)}px`);
-      die.style.setProperty('--dice-y',`${rand(-96,-56).toFixed(0)}px`);
+      die.style.setProperty('--dice-x',`${rand(-10,10).toFixed(0)}px`);
+      die.style.setProperty('--dice-y',`${rand(-54,-32).toFixed(0)}px`);
       die.style.setProperty('--dice-r',`${randi(-620,620)}deg`);
       die.style.setProperty('--dice-delay',`${i*.05}s`);
       die.classList.remove('rolling','settled');
@@ -19368,7 +19370,7 @@ async function startMobDice(p,humanIndex,runId){
       message.textContent='奇跡！ ALL 6！！';
       beep(1180,220,.05);
     }else if(values.every(v=>v===1)){
-      message.textContent='ALL 1… 1 POINT';
+      message.textContent=`ALL 1… ${score} POINTS`;
       beep(150,180,.035);
     }else{
       message.textContent=total>=25?'LUCKY!!':total>=18?'GOOD!':'運は次回に…';
@@ -19383,7 +19385,7 @@ async function startMobDice(p,humanIndex,runId){
   dice.forEach(d=>setDie(d,1));
   rollBtn.addEventListener('pointerdown',e=>{e.preventDefault();rollDice()},{passive:false});
   if(!(await countdown('DICE',runId)))return;
-  message.textContent='5個まとめて振れ！';
+  message.textContent='7個まとめて振れ！';
 }
 
 
@@ -27503,7 +27505,7 @@ function simulateOneCpu(gameIndex,p){
     state.records.balanceMob[p.id]=Math.round((ultra?rand(7.9,10):rand(3.6,8.3))*100)/100;
   }else if(legacyIndex===61){
     const diceTotal=
-      randi(1,6)+randi(1,6)+randi(1,6)+randi(1,6)+randi(1,6);
+      Array.from({length:7},()=>randi(1,6)).reduce((a,b)=>a+b,0);
     state.records.mobDice[p.id]=clamp(
       Math.round(
         diceTotal<=5
@@ -28208,7 +28210,7 @@ function performancePoints(gameIndex,v){
     if(v>=6000)return 0;
     return clamp(Math.round((6000-v)/3200*100),0,100);
   }
-  if(legacyIndex===38)return clamp(Math.round(v/24*100),0,100);
+  if(legacyIndex===38)return clamp(Math.round(v/22*100),0,100);
   if(legacyIndex===39)return clamp(Math.round(v/20*100),0,100);
   if(legacyIndex===40){
     if(v<=10000)return 100;
@@ -39640,7 +39642,7 @@ const leagueHost={
     for(const p of players){const existing=pById(p.id);if(existing)Object.assign(existing,p);else PLAYERS.push({...p});}
     MODES.configured={name:options.title||'タッグバトルリーグ',short:teams.length+'組・'+players.length+'名',performance:true,team:true,points:[],participants:players.map(p=>p.id),teams:Object.fromEntries(teams.map(t=>[t.id,t.members])),teamNames:Object.fromEntries(teams.map(t=>[t.id,t.name]))};initTotals();
   },
-  fastStage(league,players){return window.MobPartyLeague.fastForward(league,players,(key,p,random)=>window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES.find(g=>g.key===key)||{key,title:key==='minorityMob'?'少数派':key},random),random),Math.random,window.MobPartyCore.representativeKeys);},
+  fastStage(league,players){return window.MobPartyLeague.fastForward(league,players,(key,p,random)=>window.MobPartyCore.cpuScore(window.MobPartyCore.characterRank(p,GAMES.find(g=>g.key===key)||{key,title:key==='minorityMob'?'モブロボドクターは気まぐれ':key},random),random),Math.random,window.MobPartyCore.representativeKeys);},
   updatePlayers(players){for(const p of players){const existing=pById(p.id);if(existing)Object.assign(existing,p);}},
   run(key,teams,descriptor,done){
     const index=GAMES.findIndex(g=>g.key===key);if(index<0)throw Error('Missing league game: '+key);
