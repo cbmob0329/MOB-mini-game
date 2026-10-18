@@ -400,7 +400,7 @@ const GAMES=[
   {no:112,key:"frontFlipMob",title:"モブくんの前宙",sub:"横スクロールで大きく飛び、長押し回転を止めて綺麗に着地",legacy:129},
   {no:113,key:"swimmingMob",title:"モブくんの水泳",sub:"10秒間、LEFT/RIGHTを交互に押してクロール加速。120mを目指す",legacy:130},
   {no:114,key:"cheerLeaderMob",title:"モブくんは応援団長",sub:"7秒でメガホンを描き、頑張れ～！！の文字サイズで最大100点",legacy:131},
-  {no:115,key:"zeroOrHundredMob",title:"モブくん0 or 100",sub:"線多めの3択あみだくじ。0が2つ、100が1つ",legacy:133},
+  {no:115,key:"zeroOrHundredMob",title:"モブくん0 or 100",sub:"100を狙うあみだくじ。50%の確率で2択イベント！",legacy:133},
   {no:116,key:"fireworkStandMob",title:"モブくん打ち上げ台を作る",sub:"7秒で花火の打ち上げ台を描き、MOB花火が飛んだ距離を競う",legacy:134},
   {no:117,key:"poiGameMob",title:"モブくんのポイゲーム",sub:"手前へ流れてくる赤・青・黄のゴミをスワイプで分別。先頭の黒いトラップはタップで消す",legacy:135},
   {no:118,key:"cleaningMob",title:"モブくんのお掃除",sub:"見下ろし型。長押し移動＋吸引で30個すべてを掃除するタイムアタック",legacy:136},
@@ -3074,7 +3074,7 @@ function scoreRuleForGame(index){
     "2000m=100点 / 0m=0点",
     "3回目2000m=100点 / 0m=0点",
     "2.80秒以下=100点 / 6.00秒以上または衝突=0点",
-    "22棟破壊=100点 / 0棟=0点",
+    "15棟=90点 / 17棟破壊=100点 / 0棟=0点",
     "闇の炎20個消去=100点 / 0個=0点",
     "30人撃破タイム / 10.00秒以内=100点 / 25.00秒=0点",
     "黒スライム500体撃破=100点 / 0体=0点",
@@ -3255,7 +3255,7 @@ function showGameIntro(index){
   }else if(legacyIndex===37){
     rules=`<li>3・2・1後、5秒間だけ線路を描けます。</li><li>列車が乗っている左側の短い線路から、右側のGOAL旗まで線をつなぎます。</li><li>岩・水・木を避けて線を描いてください。</li><li>GOAL周辺には障害物が出ない安全エリアがあります。</li><li>5秒後にGO！ 障害物にぶつかると0点。ゴールタイムを競います。</li>`;
   }else if(legacyIndex===38){
-    rules=`<li>巨大モブくんが自動で進撃し、高層ビルを次々破壊します。</li><li>エネルギーは100から開始。</li><li>円形エネルギーのストップウォッチを<strong>1.000秒ピッタリ</strong>でタップ。</li><li>1.000秒との誤差×100だけエネルギー減少。例：0.500秒差なら-50。</li><li>エネルギーが0になるまでに破壊したビル数が記録。22棟=100点。</li>`;
+    rules=`<li>巨大モブくんが自動で進撃し、高層ビルを次々破壊します。</li><li>エネルギーは100から開始。</li><li>円形エネルギーのストップウォッチを<strong>1.000秒ピッタリ</strong>でタップ。</li><li>1.000秒との誤差×100だけエネルギー減少。例：0.500秒差なら-50。</li><li>エネルギーが0になるまでに破壊したビル数が記録。15棟=90点、17棟=100点。</li>`;
   }else if(legacyIndex===39){
     rules=`<li>田舎町へ闇の炎が降ってきます。前バージョンより少し遅くし、円で囲む余裕を増やしています。小さなモブくん達は逃げ回っています。</li><li>闇の炎の周りを指で円形に囲むと、魔法のステッキが反応して炎を消します。</li><li>民も低確率で小さなエネルギー弾を撃ち、闇の炎をほんの少しだけ減速させます。</li><li>大きな闇の炎も出現。大きい炎は遅め。炎を消せなくてもモブくんに当たらなければ継続。</li><li>10秒勝負。20個消去=100点。後半ほど落下速度・数・同時出現数が上がります。</li>`;
   }else if(legacyIndex===40){
@@ -3425,7 +3425,7 @@ function showGameIntro(index){
   }else if(legacyIndex===131){
     rules=`<li>7秒間、キャンバスへ指でメガホンを描きます。時間終了でモブくんがそのメガホンを使います。</li><li>「頑張れ～！！」が飛び出し、描けた大きさ・形に応じて文字が巨大化。最大100点です。</li>`;
   }else if(legacyIndex===133){
-    rules=`<li>3本の入口から3秒以内に1つ選びます。横線は毎回多めにランダム生成されます。</li><li>GOALは0・0・100。時間切れは0点、到着した数字がそのまま得点です。</li>`;
+    rules=`<li>通常は3択。50%の確率で2択イベントが発生します。3秒以内に入口を1つ選びます。</li><li>GOALは通常0・0・100、2択の時は0・100。時間切れは0点、到着した数字がそのまま得点です。</li>`;
   }else if(legacyIndex===134){
     rules=`<li>7秒間で花火の打ち上げ台を自由に描きます。時間終了後、その台から花火を発射します。</li><li>描いた台をそのまま地上へ置き、1秒震えてから発射。「MOB」の文字花火と粒子が広がって順に消えます。最大1000mです。</li>`;
   }else if(legacyIndex===135){
@@ -10008,7 +10008,7 @@ async function startMobTrain(p,humanIndex,runId){
   const startSafeRadius=50;
   const obsData=[];
   const obstacleTypes=['rock','tree','water'];
-  const desired=randi(18,22);
+  const desired=randi(10,13);
 
   // Hidden guaranteed route corridor.
   // Obstacles are never placed directly on this route, so every map has at least one solution.
@@ -24334,7 +24334,7 @@ async function startMonsterBoxMob(p,humanIndex,runId){
 
     if(launched&&boxX+82<mobX-18&&y>=groundY-44){
       y=groundY-44;vy=0;jumping=false;launched=false;
-      const quality=Number(mob.dataset.quality||0);score=clamp(Math.round((level-14)/6*88+quality*12),0,100);scoreEl.textContent=score;pop(`${level}段 CLEAR`,W*.50,H*.28,'clear-v138');beep(840,100,.025);
+      const quality=Number(mob.dataset.quality||0);score=level===19?82:clamp(Math.round((level-14)/6*88+quality*12),0,100);scoreEl.textContent=score;pop(`${level}段 CLEAR`,W*.50,H*.28,'clear-v138');beep(840,100,.025);
       if(level>=20){clearAll();return}
       level++;levelEl.textContent=`${level}段`;resetCycle();
     }
@@ -27030,12 +27030,12 @@ async function startCheerLeaderMob(p,humanIndex,runId){
 /* V11.04: フラフープは仕様廃止のため完全削除 */
 
 async function startZeroOrHundredMob(p,humanIndex,runId){
-  gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='zeroOrHundredMob'),ys=Array.from({length:16},(_,i)=>8+i*5.3),rungs=ys.map((y,i)=>({y,a:(i+randi(0,1))%2})),goals=shuffle([0,0,100]);
-  screen.innerHTML=`<div class="amida100-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん0 or 100</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>CHOOSE</span><b id="amidaTime204">3.0</b></div><div><span>GOAL</span><b>0 / 0 / 100</b></div><div><span>RULE</span><b>3秒</b></div></div><div class="amida100-stage-v203" id="amidaStage203"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="18" y1="4" x2="18" y2="94"/><line x1="50" y1="4" x2="50" y2="94"/><line x1="82" y1="4" x2="82" y2="94"/>${rungs.map(r=>`<line x1="${r.a?50:18}" y1="${r.y}" x2="${r.a?82:50}" y2="${r.y}"/>`).join('')}</svg><div id="amidaDot203" class="amida-dot-v203"></div><div class="amida-starts-v203"><button data-amida="0" disabled>1</button><button data-amida="1" disabled>2</button><button data-amida="2" disabled>3</button></div><div class="amida-goals-v203">${goals.map(v=>`<b class="${v?'win-v203':''}">${v}</b>`).join('')}</div><div id="amidaCall203" class="amida-call-v203">3秒以内に1つ選べ！</div></div></div>`;
-  const stage=document.getElementById('amidaStage203'),dot=document.getElementById('amidaDot203'),call=document.getElementById('amidaCall203'),timeEl=document.getElementById('amidaTime204'),btns=[...screen.querySelectorAll('[data-amida]')];let choosing=false,chosen=false,chooseStart=0,chooseRaf=null;void stage.offsetHeight;if(!(await countdown('0 OR 100',runId,{transparent:true})))return;choosing=true;chooseStart=performance.now();btns.forEach(b=>b.disabled=false);
+  gameFit();const bonus=Math.random()<.5,xPct=bonus?[30,70]:[18,50,82];const gameIndex=GAMES.findIndex(g=>g.key==='zeroOrHundredMob'),ys=Array.from({length:16},(_,i)=>8+i*5.3),rungs=ys.map((y,i)=>({y,a:bonus?0:(i+randi(0,1))%2})),goals=shuffle(bonus?[0,100]:[0,0,100]);
+  screen.innerHTML=`<div class="amida100-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくん0 or 100</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>CHOOSE</span><b id="amidaTime204">3.0</b></div><div><span>GOAL</span><b>${bonus?'0 / 100':'0 / 0 / 100'}</b></div><div><span>RULE</span><b>3秒</b></div></div><div class="amida100-stage-v203" id="amidaStage203"><svg style="inset:0;width:100%;height:100%" viewBox="0 0 100 100" preserveAspectRatio="none">${xPct.map(x=>`<line x1="${x}" y1="4" x2="${x}" y2="94"/>`).join('')}${rungs.map(r=>`<line x1="${xPct[r.a]}" y1="${r.y}" x2="${xPct[r.a+1]}" y2="${r.y}"/>`).join('')}</svg><div id="amidaDot203" class="amida-dot-v203"></div><div class="amida-starts-v203" style="left:0;right:0;top:0;height:44px">${xPct.map((x,i)=>`<button data-amida="${i}" style="left:${x}%;position:absolute;transform:translateX(-50%);width:44px;height:44px" disabled>${i+1}</button>`).join('')}</div><div class="amida-goals-v203" style="left:0;right:0;bottom:0;height:40px">${goals.map((v,i)=>`<b style="left:${xPct[i]}%;position:absolute;transform:translateX(-50%)" class="${v?'win-v203':''}">${v}</b>`).join('')}</div><div id="amidaCall203" class="amida-call-v203">${bonus?'CHANCE! 2択に変化！':'3秒以内に1つ選べ！'}</div></div></div>`;
+  const stage=document.getElementById('amidaStage203'),dot=document.getElementById('amidaDot203'),call=document.getElementById('amidaCall203'),timeEl=document.getElementById('amidaTime204'),btns=[...screen.querySelectorAll('[data-amida]')];let choosing=false,chosen=false,chooseStart=0,chooseRaf=null;void stage.offsetHeight;if(!(await countdown(bonus?'CHANCE! 2択イベント':'0 OR 100',runId,{transparent:true})))return;choosing=true;chooseStart=performance.now();btns.forEach(b=>b.disabled=false);
   function timeout(){if(chosen||!choosing)return;choosing=false;chosen=true;btns.forEach(x=>x.disabled=true);state.records.zeroOrHundredMob[p.id]=0;timeEl.textContent='0.0';call.textContent='TIME UP... 0 POINT';call.classList.add('lose-v203');beep(170,220,.05);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`0<small>pt</small>`,`3秒以内に選べなかった`)},700)}
   function timer(now){if(!isGameRunValid(runId)||chosen)return;const rem=Math.max(0,3-(now-chooseStart)/1000);timeEl.textContent=rem.toFixed(1);if(rem<=0){timeout();return}chooseRaf=requestAnimationFrame(timer)}chooseRaf=requestAnimationFrame(timer);
-  btns.forEach(b=>b.addEventListener('pointerdown',async e=>{if(chosen||!choosing)return;e.preventDefault();chosen=true;choosing=false;if(chooseRaf)cancelAnimationFrame(chooseRaf);btns.forEach(x=>x.disabled=true);let lane=Number(b.dataset.amida);const xPct=[18,50,82];dot.style.left=`${xPct[lane]}%`;dot.style.top='4%';dot.classList.add('show-v203');call.textContent='GO!';for(const r of rungs){if(!isGameRunValid(runId))return;dot.style.top=`${r.y}%`;await wait(72);if(lane===r.a){lane=r.a+1;dot.style.left=`${xPct[lane]}%`;await wait(72)}else if(lane===r.a+1){lane=r.a;dot.style.left=`${xPct[lane]}%`;await wait(72)}}dot.style.top='94%';await wait(180);const score=goals[lane];state.records.zeroOrHundredMob[p.id]=score;call.textContent=score===100?'100 POINT!!':'0 POINT...';call.classList.add(score===100?'win-v203':'lose-v203');beep(score?1180:190,220,.05);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,score===100?'100へ到着！':'0へ到着')},850)},{once:true,passive:false}))
+  btns.forEach(b=>b.addEventListener('pointerdown',async e=>{if(chosen||!choosing)return;e.preventDefault();chosen=true;choosing=false;if(chooseRaf)cancelAnimationFrame(chooseRaf);btns.forEach(x=>x.disabled=true);let lane=Number(b.dataset.amida);dot.style.left=`${xPct[lane]}%`;dot.style.top='4%';dot.classList.add('show-v203');call.textContent='GO!';for(const r of rungs){if(!isGameRunValid(runId))return;dot.style.top=`${r.y}%`;await wait(72);if(lane===r.a){lane=r.a+1;dot.style.left=`${xPct[lane]}%`;await wait(72)}else if(lane===r.a+1){lane=r.a;dot.style.left=`${xPct[lane]}%`;await wait(72)}}dot.style.top='94%';await wait(180);const score=goals[lane];state.records.zeroOrHundredMob[p.id]=score;call.textContent=score===100?'100 POINT!!':'0 POINT...';call.classList.add(score===100?'win-v203':'lose-v203');beep(score?1180:190,220,.05);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${score}<small>pt</small>`,score===100?'100へ到着！':'0へ到着')},850)},{once:true,passive:false}))
 }
 
 async function startFireworkStandMob(p,humanIndex,runId){
@@ -27686,7 +27686,7 @@ function simulateOneCpu(gameIndex,p){
   }else if(legacyIndex===131){
     state.records.cheerLeaderMob[p.id]=ultra?randi(88,100):randi(38,94);
   }else if(legacyIndex===133){
-    state.records.zeroOrHundredMob[p.id]=Math.random()<.34?100:0;
+    state.records.zeroOrHundredMob[p.id]=Math.random()<(Math.random()<.5?.5:1/3)?100:0;
   }else if(legacyIndex===134){
     state.records.fireworkStandMob[p.id]=ultra?randi(760,965):randi(260,850);
   }else if(legacyIndex===135){
@@ -28210,7 +28210,7 @@ function performancePoints(gameIndex,v){
     if(v>=6000)return 0;
     return clamp(Math.round((6000-v)/3200*100),0,100);
   }
-  if(legacyIndex===38)return clamp(Math.round(v/22*100),0,100);
+  if(legacyIndex===38)return clamp(Math.round(v<=15?v*6:90+(v-15)*5),0,100);
   if(legacyIndex===39)return clamp(Math.round(v/20*100),0,100);
   if(legacyIndex===40){
     if(v<=10000)return 100;

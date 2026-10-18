@@ -32,7 +32,7 @@
     const image=p=>`<img src="${p.img}" alt="${esc(p.name)}">`;
     function draw(title,body,kind=''){
       if(!valid())return;api.clear();
-      screen.innerHTML=`<section class="league-event ${kind}"><header><small>${api.mode==='solo'?'SOLO PLAY · CPU対戦':api.mode==='crew'?'CREW LEAGUE':api.mode==='king'?'MOB KING LEAGUE':'TAG BATTLE LEAGUE'}</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
+      screen.innerHTML=`<section class="league-event ${kind}"><header><small>${api.mode==='arena'?'モブくんはゲーム王 · 延長戦':api.mode==='solo'?'SOLO PLAY · CPU対戦':api.mode==='crew'?'CREW LEAGUE':api.mode==='king'?'MOB KING LEAGUE':'TAG BATTLE LEAGUE'}</small><h2>${title}</h2></header><div class="league-event-body">${body}</div></section>`;
       api.top();screen.querySelector('.league-event').style.setProperty('--event-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
     }
     function preview(){if(!root?.MobPresentation||root.MobGamePreviewActive)return;screen.querySelector('.league-event-body').insertAdjacentHTML('afterbegin',root.MobPresentation.preview(api.key,entrants[0],api.key==='minorityMob'?'モブロボドクターは気まぐれ':'モブくん集中大爆弾！',esc));root.MobPresentation.mount(screen);}
@@ -43,10 +43,10 @@
     function roster(list,out=false){return `<div class="event-roster ${out&&list.length>20?'event-roster-crowded':''}" style="--roster-rows:${Math.ceil(list.length/5)}">${list.map(p=>`<article class="${out&&!p.cpu?'human-eliminated':''}">${image(p)}<b>${esc(p.name)}</b><small>${esc(p.team)} · ${p.cpu?'CPU':'P'+p.no}${out?' · 脱落':''}</small></article>`).join('')}</div>`;}
     async function handoff(p,title,detail){draw(title,`<p class="event-call">プレイヤー ${esc(p.name)}！</p><div class="event-portrait">${image(p)}</div><p>${esc(p.team)} · P${p.no}</p><p>${detail}</p><div id="eventActions"></div>`);return next('準備OK');}
     if(api.key==='minorityMob')return (root?.MobDoctorGame||require('./party-doctor-game.js')).run(api);
-    const heats=groups(entrants,random,api.mode),finalists=[];
+    const heats=api.mode==='arena'?[]:groups(entrants,random,api.mode),finalists=[];
     if(root?.MobGamePreviewActive){await attempt(entrants.find(p=>!p.cpu)||entrants[0],'1 SECOND STOPWATCH');return;}
-    draw('モブくん集中大爆弾！',`<div class="bomb-logo">1.00000<br><b>SECOND</b></div><p>${heats[0].length}人×5グループ。爆弾型ストップウォッチを1秒ちょうどで止め、一番近い1人が勝ち上がり！</p><p>STARTで計測開始、STOPで停止。3秒で爆発・自動停止。予選敗退は0点。決戦は1位から100・80・60・50・40点。</p><p>0.00001秒単位で判定。同じ誤差の場合だけ抽選で順位確定。決戦の記録は5位から発表！${api.mode==='solo'?'CPU相手に1位を目指そう！':'点灯済みチームの選手が1位なら優勝！'}</p><div id="eventActions"></div>`,'event-bomb');
-    preview();if(!(await next('5グループの勝負へ →')))return;
+    if(api.mode!=='arena'){draw('モブくん集中大爆弾！',`<div class="bomb-logo">1.00000<br><b>SECOND</b></div><p>${heats[0].length}人×5グループ。爆弾型ストップウォッチを1秒ちょうどで止め、一番近い1人が勝ち上がり！</p><p>STARTで計測開始、STOPで停止。3秒で爆発・自動停止。予選敗退は0点。決戦は1位から100・80・60・50・40点。</p><p>0.00001秒単位で判定。同じ誤差の場合だけ抽選で順位確定。決戦の記録は5位から発表！${api.mode==='solo'?'CPU相手に1位を目指そう！':'点灯済みチームの選手が1位なら優勝！'}</p><div id="eventActions"></div>`,'event-bomb');
+    preview();if(!(await next('5グループの勝負へ →')))return;}
     async function attempt(p,label,hidden=false){
       if(p.cpu){const core=root?.MobPartyCore,error=core?(100-core.cpuScore(core.characterRank(p,{key:'focusBombMob',title:'モブくん集中大爆弾！'},random),random)+random())/101*550:random()*550;return bombRecord(1000+(random()<.5?-1:1)*error);}
       if(!(await handoff(p,label,'STARTを押してから1秒ちょうどでSTOP！ 1.00000秒との差が小さいほど有利です。')))return null;
@@ -68,6 +68,11 @@
       const records=[];
       for(const p of list){if(!valid())return [];const record=await attempt(p,label,hidden);if(record===null)return [];records.push({p,...record});}
       return rankBombRecords(records,random);
+    }
+    if(api.mode==='arena'){
+      draw('集中大爆弾 · 優勝決定戦',`<p class="event-call">1.00000秒に近いのは誰だ！</p><p>延長戦の出場者で一斉に記録比較。1〜5位は100・80・60・50・40点、6位以下は0点。チームは代表の合計で勝負。延長戦の得点は累計に加算しません。</p><div id="eventActions"></div>`,'event-bomb');if(!(await next('準備OK · 集中爆弾へ')))return;
+      const ranked=await contest(entrants,'集中大爆弾 · 延長戦');if(!valid()||ranked.length!==entrants.length)return;
+      ranked.forEach((r,i)=>score[r.p.id]=[100,80,60,50,40][i]||0);api.done(score);return;
     }
     for(let i=0;i<heats.length;i++){
       if(!valid())return;draw('GROUP '+(i+1)+' / 5',`<p>この${heats[i].length}人から1人だけが決戦へ！</p>${roster(heats[i])}<div id="eventActions"></div>`,'event-bomb');if(!(await next('グループ開始 →')))return;

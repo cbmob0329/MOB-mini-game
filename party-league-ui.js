@@ -45,17 +45,17 @@
       for(const [i,t] of teams.entries())while(t.members.length<2){const c=pairs[i][t.members.length],p={id:'leagueCpu'+n,no:n+1,name:c.name,img:c.img,cpu:true,characterRank:c.rank};players.push(p);t.members.push(p.id);n++;}
       api.configure(players,teams);league=rules.create(teams,rules.program(api.pool()));save();
       if(fast()){play();return;}
-      announce('20組のタッグ、開幕！','予選の上位8組が決勝直行。4・5・7・10戦目はポイント2倍！ 2戦目は2種目を分担、6・8戦目は個人で種目選択、9戦目はデスゲームの1位だけ2倍！ 10戦目は8候補から3種目を抽選し、各種目の担当を選びます。 残る12組にも敗者復活のチャンスがあります。',teams.map(t=>t.id),play,'opening');
+      announce('20組のタッグ、開幕！','20チーム・40名の大勝負です！<br>予選の上位8チームが決勝へ直行です！<br>残る12チームにも敗者復活のチャンスです！',teams.map(t=>t.id),play,'opening');
     }
     function cards(ids){return `<div class="league-team-grid">${ids.map(id=>`<div class="league-team-card ${league.lit.includes(id)?'league-lit':''}">${league.lit.includes(id)?'<span class="league-lit-label">● 点灯 · 1位で優勝</span>':''}${portraits(id)}<b>${team(id).name}</b><small>${team(id).members.map(p=>`${member(p).cpu?'CPU':'P'+member(p).no} ${esc(member(p).name)}`).join(' / ')}</small></div>`).join('')}</div>`;}
     function announce(title,text,ids,done,kind='broadcast'){
       let page=0;const size=kind==='versus'||(window.visualViewport?.height||window.innerHeight||600)<520?2:4,pages=Math.max(1,Math.ceil(ids.length/size));
-      const show=()=>{draw(title,`<div class="league-show-body"><div class="league-narrator"><span>LIVE COMMENTARY</span><p>${text}</p></div>${kind==='versus'?'<strong class="league-vs">VS</strong>':''}${cards(ids.slice(page*size,(page+1)*size))}</div><button id="leagueNext" class="primary">${pages>1?`${page+1} / ${pages} · `:''}${page+1<pages?'次のチーム →':'タップして進む →'}</button>`);const panel=screen.querySelector('.tag-league');panel.classList.add('league-show','league-'+kind);panel.style.setProperty('--league-top',Math.max(0,screen.getBoundingClientRect().top+(window.scrollY||0))+'px');api.beep(kind==='ignition'?1250:950,160,.025);on('leagueNext',()=>{if(++page<pages)show();else done();});};show();
+      const show=()=>{draw(title,`<div class="league-show-body">${window.MobCommentary?window.MobCommentary.markup(kind,text):`<div class="league-narrator"><p>${text}</p></div>`}${kind==='versus'?'<strong class="league-vs">VS</strong>':''}${cards(ids.slice(page*size,(page+1)*size))}</div><button id="leagueNext" class="primary">${pages>1?`${page+1} / ${pages} · `:''}${page+1<pages?'次のチーム →':'タップして進む →'}</button>`);const panel=screen.querySelector('.tag-league');panel.classList.add('league-show','league-'+kind,'mob-broadcast');if(window.MobCommentary&&['opening','qualified','ignition','champions','award'].includes(kind))panel.insertAdjacentHTML('afterbegin',window.MobCommentary.fireworks());panel.style.setProperty('--league-top',Math.max(0,screen.getBoundingClientRect().top+(window.scrollY||0))+'px');api.beep(kind==='ignition'?1250:950,160,.025);on('leagueNext',()=>{if(++page<pages)show();else done();});};show();
     }
     function reveal(ids,title,text,done){let index=0;const step=()=>{if(index>=ids.length){done();return;}const id=ids[index++];announce(`${title}<small>進出発表 ${index} / ${ids.length}</small>`,`${text}<br><strong>QUALIFIED! ${team(id).name}</strong>${league.finalCarryover&&Object.hasOwn(league.finalCarryover,id)?`<br><b class="league-carryover">決勝スタート：${league.finalCarryover[id]}pt（予選順位ボーナス）</b>`:league.phase==='final'?'<br><b class="league-carryover">決勝スタート：0pt（敗者復活）</b>':''}`,[id],step,'qualified');};step();}
     function fast(){return api.fastStage&&rules.canFastForward(league,players);}
     function play(prepared=null){
-      if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':labels[league.phase])+'！','このステージはプレイヤー不在のため高速処理します。<br>各ゲームの操作・途中結果をスキップし、まとめて結果を発表！',[],()=>{const result=api.fastStage(league,players);results(result,result.event.type!=='champion');},'stage-entry');return;}let descriptor=prepared||league.pendingRound||rules.next(league);if(league.phase==='qualifier'&&league.round===9&&descriptor?.key==='amidakujiMob')descriptor=rules.next(league);if(!descriptor)return;league.pendingRound=descriptor;league.pendingResult=null;save();
+      if(!league)return;if(fast()){announce((league.phase==='final'?'決勝リーグ':labels[league.phase])+'！','はいです！ プレイヤー不在のため高速集計です！<br>まとめて結果を発表するです！',[],()=>{const result=api.fastStage(league,players);results(result,result.event.type!=='champion');},'stage-entry');return;}let descriptor=prepared||league.pendingRound||rules.next(league);if(league.phase==='qualifier'&&league.round===9&&descriptor?.key==='amidakujiMob')descriptor=rules.next(league);if(!descriptor)return;league.pendingRound=descriptor;league.pendingResult=null;save();
       if(descriptor.roulette&&!descriptor.rouletteShown){roulette(descriptor,()=>play({...descriptor,rouletteShown:true}));return;}
       if(descriptor.key==='tripleChoice'){tripleRound(descriptor);return;}
       if(descriptor.choices){choiceRound(descriptor);return;}
@@ -169,20 +169,20 @@
     }
     function results({event,record},openingShown=false){
       league.pendingRound=null;league.pendingResult={event,record};save();
-      if(event.type==='champion'&&league.celebratedChampion!==event.ids[0]){celebrate(event.ids[0],()=>{league.celebratedChampion=event.ids[0];save();results({event,record},true);});return;}
+      if(event.type==='champion'&&league.celebratedChampion!==event.ids[0]){celebrate(event.ids[0],()=>{league.celebratedChampion=event.ids[0];save();announce('CHAMPIONS！',esc(team(event.ids[0]).name)+'！<br>最後まで戦った全タッグにも、大きな拍手です！',event.ids,()=>results({event,record},true),'champions');});return;}
       if(!openingShown&&event.type!=='champion'){
         const resume=()=>results({event,record},true);
-        const ignition=()=>{if(event.type==='round'&&event.ids.length)announce('MATCH POINT · 点灯！','600点突破！ 優勝へのランプが点灯！<br>次のゲームから1位で優勝！',event.ids,resume,'ignition');else resume();};
-        if(event.type==='qualified'){reveal(event.ids,'予選突破・8チーム発表！','総合順位の前に、決勝への切符を手にしたタッグを発表します！',resume);return;}
-        if(event.type==='finalists'){reveal(event.wildcards,'敗者復活・2チーム決定！','最後の切符をつかんだのは、この2組！',resume);return;}
+        const ignition=()=>{if(event.type==='round'&&event.ids.length)announce('MATCH POINT · 点灯！','600点突破です！ 優勝へのランプが点灯です！<br>次のゲームから1位で優勝です！',event.ids,resume,'ignition');else resume();};
+        if(event.type==='qualified'){reveal(event.ids,'予選突破・8チーム発表！','決勝への切符を手にしたタッグの発表です！',resume);return;}
+        if(event.type==='finalists'){reveal(event.wildcards,'敗者復活・2チーム決定！','最後の切符をつかんだ2組は、こっちらです！',resume);return;}
         if(event.type==='cutoff'){
           const overtime=()=>announce('ボーダー同点！ 延長戦！',`残る${event.slots}枠は、反射神経勝負で決定！<br>同点が続けば再戦。延長戦の得点だけで決着をつけます！`,event.ids,resume,'suspense');
           if(record.phase!=='cutoff'&&league.cut.kept.length)reveal(league.cut.kept,'進出確定チーム発表！','まずは通過を決めたタッグを発表！ 最後の枠はまだ決まっていません。',overtime);else overtime();return;
         }
         if(['final','championship'].includes(record.phase)&&(record.litBefore.length||record.phase==='championship')){
-          announce('さあ、これで決まるのか！？','王座をつかむタッグは現れたのか。<br>運命の結果はこちらー！！',[],()=>{
+          announce('さあ、これで決まるのか！？','王座をつかむタッグは現れたですか！？<br>最後まで目が離せないです！',[],()=>{
             if(event.type==='champion')announce('CHAMPION!!','優勝決定！ '+team(event.ids[0]).name+'！<br>これで全試合終了です。王者に大きな拍手を！',event.ids,resume,'champions');
-            else announce('勝負はまだ続きます！！',event.type==='championship'?'点灯チームが同点首位！<br>このタッグだけで優勝決定戦へ！':'今回は優勝決定ならず！<br>次の勝負で王座をつかむのは誰だ！？',event.type==='championship'?event.ids:[],ignition,'continuing');
+            else announce('勝負はまだ続きます！！',event.type==='championship'?'点灯チームが同点首位！<br>このタッグだけで優勝決定戦へ！':'今回は優勝決定ならずです・・！<br>次の勝負で王座をつかむのは誰ですか！？',event.type==='championship'?event.ids:[],ignition,'continuing');
           },'suspense');return;
         }
         if(event.type==='round'&&event.ids.length){ignition();return;}
@@ -197,12 +197,12 @@
       const individual=total=>ids.flatMap(id=>team(id).members).sort((a,b)=>(total[b]||0)-(total[a]||0)).map((p,i)=>`<article class="league-rank"><b>${ids.flatMap(id=>team(id).members).filter(id=>(total[id]||0)>(total[p]||0)).length+1}</b><div>${picture(member(p))}<strong>${esc(member(p).name)}</strong><small>${member(p).cpu?'CPU':'P'+member(p).no}</small></div><strong>${total[p]||0}pt</strong></article>`).join('');
       const cutoffRows=teamRows(record.totals),borderText=cut?`通過ボーダー ${cut}位 · ${team(cutoffRows[cut-1]).name} ${record.totals[cutoffRows[cut-1]]||0}pt`:record.phase==='final'?`点灯チーム ${ids.filter(id=>(record.totals[id]||0)>=600).length} / ${ids.length} · 600ptで点灯`:record.phase==='cutoff'?'延長戦の得点だけで通過枠を決定':'点灯済みタッグの優勝決定戦';
       const pages=[['今回のチーム順位',rows(record.teamPoints,true)],['ステージチーム総合',rows(record.totals,false)]];let page=record.summary?1:0;
-      const show=()=>{const [title,body]=pages[page];draw(title,`<div class="ranking-scope ${page===0?'round':'overall'}"><small>${page===0?'THIS GAME / ROUND RESULT':'STAGE TOTAL / OVERALL'}</small><strong>${page===0?'このゲームだけの順位':labels[record.phase]+'の総合順位'}</strong><span>${page===0?'今回獲得したポイントのみ':'このステージで獲得した累計ポイント'}</span></div><p>${record.summary?labels[record.phase]+' · CPU自動集計 / 全'+record.simulatedRounds+'戦':labels[record.phase]+' · GAME '+record.round+' / '+gameTitle(record.key)}${record.multiplier===2?' / 2倍ポイント':record.winnerBonus?' / 個人1位のみ2倍':''}</p>${page===1?`<p class="league-live">${record.phase==='final'?'600点で点灯。その次のゲーム以降の1位で優勝！':cut?`上位${cut}チームが通過！ ボーダー同点は延長戦。`:''}</p><aside class="league-cutline">${borderText}</aside>`:''}<div class="league-ranks">${body}</div><button id="leagueNext" class="primary league-continue">${record.summary?'確認して大会を進める →':(page+1)+' / 2 · タップして次へ →'}</button>`);on('leagueNext',()=>{if(++page<pages.length){if(page===1&&window.MobPresentation)window.MobPresentation.reveal({screen,title:'総合順位はこちら！',subtitle:labels[record.phase],done:show});else if(page===1)announce('現在の総合順位はこちら！','現在のチーム総合順位を発表！<br>今回の得点で順位はどう動いたのか。相棒と積み重ねた合計点に注目です！',[],show,'standings');else show();}else after(event);});};if(window.MobPresentation)window.MobPresentation.reveal({screen,title:record.summary?'総合順位はこちら！':`GAME ${record.round}の結果はこちら！`,subtitle:record.summary?'プレイヤー不在のため全試合を自動集計しました':labels[record.phase],done:show});else show();
+      const show=()=>{const [title,body]=pages[page];draw(title,`<div class="ranking-scope ${page===0?'round':'overall'}"><small>${page===0?'THIS GAME / ROUND RESULT':'STAGE TOTAL / OVERALL'}</small><strong>${page===0?'このゲームだけの順位':labels[record.phase]+'の総合順位'}</strong><span>${page===0?'今回獲得したポイントのみ':'このステージで獲得した累計ポイント'}</span></div><p>${record.summary?labels[record.phase]+' · CPU自動集計 / 全'+record.simulatedRounds+'戦':labels[record.phase]+' · GAME '+record.round+' / '+gameTitle(record.key)}${record.multiplier===2?' / 2倍ポイント':record.winnerBonus?' / 個人1位のみ2倍':''}</p>${page===1?`<p class="league-live">${record.phase==='final'?'600点で点灯。その次のゲーム以降の1位で優勝！':cut?`上位${cut}チームが通過！ ボーダー同点は延長戦。`:''}</p><aside class="league-cutline">${borderText}</aside>`:''}<div class="league-ranks">${body}</div><button id="leagueNext" class="primary league-continue">${record.summary?'確認して大会を進める →':(page+1)+' / 2 · タップして次へ →'}</button>`);on('leagueNext',()=>{if(++page<pages.length){if(page===1)announce('総合順位 発表！',labels[record.phase]+'で積み重ねた合計ポイントです！<br>順位の動きにも注目です！',[],show,'standings');else show();}else after(event);});};announce(record.summary?'総合順位 発表！':`GAME ${record.round} 結果発表！`,record.summary?'プレイヤー不在の全試合を集計したです！':esc(gameTitle(record.key))+'の勝負、お疲れさまです！',[],show,record.summary?'standings':'round');
     }
     function after(event){
       if(fast()){play();return;}
-      if(event.type==='qualified')announce('敗者復活戦！ 残る切符は2枚' ,'ここからは敗者復活3ゲームマッチ！ 予選ポイントはゼロに戻ります。残る12組、逆転のチャンスをつかめ！',league.active,play);
-      else if(event.type==='finalists')announce('決勝リーグ！','10チームの最終決戦！ 予選直行組は順位ボーナス50/25/18/15/12/10/8/5点で開始。敗者復活組は0点。600点で点灯し、その後のゲームで1位を取ったタッグが優勝！ 点灯チームが同点1位なら、そのタッグだけで優勝決定戦です。',event.ids,play);
+      if(event.type==='qualified')announce('敗者復活戦！ 残る切符は2枚' ,'ここからは敗者復活3ゲームマッチです！<br>予選ポイントはゼロからです！<br>残る12組、逆転へレッツゴー！です！',league.active,play);
+      else if(event.type==='finalists')announce('決勝リーグ！','10チームの最終決戦です！<br>予選直行組は順位ボーナス、復活組は0点からです！<br>600点で点灯、その次の1位で優勝です！<br>点灯タッグが同点首位なら優勝決定戦です！',event.ids,play);
       else if(event.type==='cutoff')play();
       else if(event.type==='championship')announce('同点1位！ 優勝決定戦！','点灯済みの同点首位だけが残った！ ランダムゲームで単独1位が決まるまで決戦を続けます！',event.ids,play);
       else if(event.type==='champion')champion(event.ids[0]);

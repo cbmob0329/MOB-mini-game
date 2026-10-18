@@ -31,11 +31,13 @@
     if(s.champion)return null;
     const tag=s.mode==='tag'&&s.schedule.profile==='tag';
     const slot=s.phase+':'+s.division+':'+s.round+':'+s.history.length;
-    const scheduled=tag&&s.phase==='qualifier'&&s.round===9?'tripleChoice':s.schedule[s.phase]?.[s.round];
+    let scheduled=tag&&s.phase==='qualifier'&&s.round===9?'tripleChoice':s.schedule[s.phase]?.[s.round];
+    if(tag&&s.phase==='qualifier'&&scheduled==='teamChoice')scheduled='teamRoulette';
     const legacyRandom=!s.schedule.drawVersion&&((s.phase==='qualifier'&&[0,3,4].includes(s.round))||(s.phase==='repechage'&&s.round<2)||(tag&&s.phase==='final'&&[0,1,3].includes(s.round)));
     const randomRound=legacyRandom||['randomChoice','rouletteChoice','popularGame','pairedChoice'].includes(scheduled)||s.phase==='championship'||(!scheduled&&s.phase!=='cutoff');
     let draw=null,key=s.phase==='cutoff'?'reaction':scheduled;
     if(randomRound){s.draws=s.draws||{};draw=s.draws[slot]||(s.draws[slot]=draws.draw(scheduled==='pairedChoice'?2:1,random));key=scheduled==='pairedChoice'?'pairedChoice':draw.selected[0];if(key==='pairedChoice')s.schedule.pairGames=[...draw.selected];}
+    if(scheduled==='teamRoulette'){s.draws=s.draws||{};draw=s.draws[slot]||(s.draws[slot]={choices:[...TAG_TEAM_CHOICES],selected:[pick(TAG_TEAM_CHOICES,random)]});key=draw.selected[0];}
     if(scheduled==='tripleChoice'){s.draws=s.draws||{};draw=s.draws[slot]||(s.draws[slot]={choices:[...TAG_TENTH_CHOICES],selected:sample(TAG_TENTH_CHOICES,3,random)});key='tripleChoice';}
     const choices=key==='tripleChoice'?[...draw.selected]:key==='pairedChoice'?[...s.schedule.pairGames]:key==='teamChoice'?(tag?[...TAG_TEAM_CHOICES]:['mobDice','slot']):key==='individualChoice'?(tag&&s.round===7?[...TAG_EIGHTH_CHOICES]:sample([...s.schedule.pool,'reaction','longJumpMob','brake'].filter(k=>!TAG.includes(k)&&!['deathGameChallenge','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),3,random)):null;
     if(choices&&key==='individualChoice'&&s.size===4){const extra=sample(s.schedule.pool.filter(k=>!TAG.includes(k)&&!choices.includes(k)&&!['deathGameChallenge','minorityMob','focusBombMob','individualChoice','teamChoice','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty'].includes(k)),1,random);choices.push(...extra);}

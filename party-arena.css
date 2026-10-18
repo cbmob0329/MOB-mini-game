@@ -32,3 +32,5 @@
 .cloth-stage-v202 .cloth-call-v202{top:5px;translate:-50% 0;font-size:12px;padding:4px 10px}.cloth-stage-v202 .cloth-doll-v202{width:42px;height:48px}.cloth-stage-v202 .cloth-doll-v202 img{width:42px;height:42px}.stack-feedback .stack-callout{padding:0 8px!important;max-height:28px;display:inline-block}
 
 .tag-league.league-roulette-upgrade>header h1{color:#fff0bd!important;text-shadow:none}
+
+.arena-results .ranking-scope{animation:none;background:#21354a;color:#fff;border:1px solid #6f849b;flex:none;padding:8px 12px;margin:0;border-radius:12px}.arena-results .ranking-scope small{color:#d9e5f2}.arena-results .ranking-scope strong{color:#fff}

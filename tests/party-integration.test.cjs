@@ -111,7 +111,7 @@ test('requested score boosts preserve zero and cap full marks',()=>{
   const e=engine(),score=(key,v)=>e.performancePoints(e.GAMES.findIndex(g=>g.key===key),v);
   assert.equal(score('overlapMaster',64),80);assert.equal(score('overlapMaster',0),0);
   assert.equal(score('heroMaybe',60),69);assert.equal(score('heroMaybe',100),100);
-  assert.equal(score('giantMob',12),50);assert.equal(score('giantMob',24),100);
+  assert.equal(score('giantMob',12),72);assert.equal(score('giantMob',15),90);assert.equal(score('giantMob',16),95);assert.equal(score('giantMob',17),100);assert.equal(score('giantMob',24),100);
   assert.equal(score('breakdance',20),20);assert.equal(score('breakdance',40),40);
 });
 test('catcher awards four points per figure and change detection rewards faster answers',()=>{

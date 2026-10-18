@@ -11,8 +11,8 @@
   };
   function wallResult(level,power,timing,roll=.5){const chance=clamp((timing-(.28+.18*clamp(level/5)))/.26),clear=roll<chance;return {clear,chance,quality:timing,points:clear?23+2*timing:0};}
   const bananaPoints=count=>Math.min(100,Math.max(0,count)*4);
-  const gaugeValue=(elapsed,level)=>(1-Math.cos(Math.max(0,elapsed)*(3.6+level*1.3)))/2;
-  const runPosition=(elapsed,level)=>.12+Math.max(0,elapsed)*(.30+level*.055);
+  const gaugeValue=(elapsed,level)=>(1-Math.cos(Math.max(0,elapsed)*(3.96+level*1.43)))/2;
+  const runPosition=(elapsed,level)=>.12+Math.max(0,elapsed)*(.33+level*.0605);
   const wallSurface=(height,level)=>({x:.57+.29*(1-Math.pow(1-clamp(height),2.4)),y:.85-(.26+level*.028)*clamp(height)});
   // The whole avatar stays on the exposed side of the same curve used to paint the wall.
   function climbPose(elapsed,level,clear,quality,from){

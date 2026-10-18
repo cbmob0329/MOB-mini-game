@@ -15,7 +15,7 @@ async function successWindow(width,fps,level=20,previous=false){
     for(let frame=0;frame<fps*5&&callback;frame++){
       if(frame===jumpFrame)nodes.mbJump138.input({preventDefault(){}});
       const next=callback;callback=null;next((frame+1)*1000/fps);
-      if(records.human===100||(level===19&&nodes.mbLevel138.textContent==='20段')){successful.push(jumpFrame);break;}
+      if(records.human===100||(level===19&&nodes.mbLevel138.textContent==='20段')){if(level===19)assert.equal(nodes.mbScore138.textContent,82);successful.push(jumpFrame);break;}
     }
   }
   return successful;
