@@ -142,11 +142,9 @@
         while(alive.length>1){const before=alive.length,target=[30,15,5,3,1].find(n=>n<before)||1;alive.splice(0,before-target).forEach(id=>points[id]=before===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80);}points[alive[0]]=100;
       }
       if(d.key==='focusBombMob'){
-        const heats=Array.from({length:5},()=>[]),order=sample(teams,teams.length,random);
-        order.forEach((t,i)=>sample(t.members,t.members.length,random).forEach((id,j)=>heats[(i+j*2)%5].push(id)));
-        const winners=heats.map(ids=>sample(ids,ids.length,random).sort((a,b)=>points[b]-points[a])[0]);
-        const ranked=sample(winners,5,random).sort((a,b)=>points[b]-points[a]);
-        Object.keys(points).forEach(id=>points[id]=0);ranked.forEach((id,i)=>points[id]=[100,80,60,50,40][i]);
+        const events=typeof module!=='undefined'&&module.exports?require('./party-league-events.js'):root.MobLeagueEvents;
+        const cast=teams.flatMap(t=>t.members.map(id=>players.find(p=>p.id===id)));
+        Object.assign(points,events.simulateBomb(cast,p=>score('focusBombMob',p,random),random));
       }
       if(TAG.includes(d.key)||d.key==='treasureDuoParty'){
         const order=sample(teams,teams.length,random);for(let i=0;i<order.length;i+=2)for(let leg=0;leg<s.size;leg+=2){const pair=order.slice(i,i+2),averages=pair.map(t=>t.members.slice(leg,leg+2).reduce((n,id)=>n+points[id],0)/2);pair.forEach((t,j)=>{const shared=d.key==='summonMaster'?(j===(averages[0]>=averages[1]?0:1)?100:0):Math.round(averages[j]);t.members.slice(leg,leg+2).forEach(id=>points[id]=shared);});}

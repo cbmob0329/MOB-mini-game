@@ -449,7 +449,7 @@ GAMES.push(
 GAMES.push({no:159,key:'treasureRuneParty',title:'モブくんお宝ルーン迷宮',sub:'封印の記号を記憶して6部屋の遺跡へ。呪いでお宝を失う前に帰還！',legacy:182},{no:160,key:'treasureDuoParty',title:'モブくんお宝ツイン強奪',sub:'2VS2タッグ専用。偵察と回収を交代し、相棒の合図でお宝を持ち帰れ！',legacy:183});
 GAMES.push(
   {no:161,key:'minorityMob',title:'モブロボドクターは気まぐれ',sub:'アップ・ダウンのヒントで秘密の数字を予想。9枚から選び、近いほど高得点',legacy:184,leagueOnly:true},
-  {no:162,key:'focusBombMob',title:'モブくん集中大爆弾！',sub:'爆弾型ストップウォッチを1.000秒で止めろ！ CPUと5組の予選・決戦',legacy:185,leagueOnly:true}
+  {no:162,key:'focusBombMob',title:'モブくん集中大爆弾！',sub:'爆弾型ストップウォッチを1.000秒で止めろ！ 記録を隠して全員計測、TOP10で決勝',legacy:185,leagueOnly:true}
 );
 GAMES.push(
   {no:163,key:'bananaBoatMob',title:'モブくんのそんなバナナ',sub:'下部スティックでバナナボートを操作。波と風を読んで30個をキャッチ！ 1個4点、25個で100点',legacy:186},
@@ -2987,7 +2987,7 @@ function scoreRuleForGame(index){
   if(GAMES[index]?.key==='warpedWallMob')return '5〜30mの6段階 / 登頂数とタイミング精度で最大100点';
   if(GAMES[index]?.key==='santaClausMob')return '12秒 / ソリに届けると大25・中12・小7点 / 最大100点';
   if(GAMES[index]?.key==='minorityMob')return 'ピッタリ100点 / それ以外は100−秘密の数字との誤差';
-  if(GAMES[index]?.key==='focusBombMob')return '1.000秒からの誤差が小さい順 / 予選敗退0点・決戦100/80/60/50/40点';
+  if(GAMES[index]?.key==='focusBombMob')return '1.000秒からの誤差が小さい順 / 予選TOP10が決勝へ / 決勝100/80/60/50/40/30/20/15/10/5点';
   if(['treasureRuneParty','treasureDuoParty'].includes(GAMES[index]?.key))return '持ち帰ったお宝が得点 / 1人最大100点';
   if(GAMES[index]?.key==='colorBridgeParty')return 'ルートを最後まで渡るごとに16点＋残りライフ1つにつき10点 / 間違い・時間切れでライフ−1 / 1人最大100点';
   if(GAMES[index]?.key==='treasureEscapeParty')return '慎重な箱10〜18点・豪華な箱25〜37点 / 偵察1回でその部屋の罠確率半減 / 脱出で確定・罠で半減 / 最大100点';
@@ -3478,7 +3478,7 @@ function showGameIntro(index){
     ${state.freePlay
       ? `<section class="panel flat free-play-note"><h3>1 PLAYER FREE PLAY</h3><p class="lead">このゲームだけ遊びます。</p></section>`
       : mode().performance
-        ? `<section class="panel flat score-intro"><h3>SCORE</h3><div class="score-big-rule">${scoreRuleForGame(index)}</div></section>`
+        ? `<section class="panel flat score-intro"><h3>SCORE</h3><div class="score-big-rule">${leagueRoundDone&&(state.leagueScoreMultiplier||1)>1?`今回：${100*state.leagueScoreMultiplier}点満点（基礎スコア×${state.leagueScoreMultiplier}）`:scoreRuleForGame(index)}</div></section>`
         : `<section class="panel flat"><h3>POINT</h3><div class="point-strip">${mode().points.map((p,i)=>`<span class="point-pill">${i+1}位 ${p}pt</span>`).join("")}</div></section>`}
     <button id="introStart" class="primary">${state.freePlay?"READY? へ":state.mobCup?.active?"TEAM A / P1へスマホを渡す":"プレイヤー1 READY? へ"}</button>
   `;
@@ -26690,6 +26690,12 @@ function recordScreen(gameIndex,p,humanIndex,main,sub=""){
     document.getElementById("soloHome").addEventListener("click",renderHome);
     return;
   }
+  if(leagueRoundDone&&(state.leagueScoreMultiplier||1)>1){
+    const factor=state.leagueScoreMultiplier||1,earned=score100*factor;
+    const more=humanIndex+1<humans().length;
+    screen.innerHTML=`<div class="ready-wrap"><div class="ready-card">${imgTag(p,"ready-avatar")}<div class="record-label">${state.leagueSubGame?'GAME '+state.leagueSubGame+' · ':''}${esc(GAMES[gameIndex].title)}</div><h2>今回の獲得スコア</h2><div class="big-record">${earned}<small>/${100*factor} pt</small></div><p>基礎スコア ${score100} × ${factor} ＝ ${earned} pt</p><p class="lead">大会リザルトにはこの換算後スコアを使用します。</p><button id="nextHuman" class="primary">${more?'次のプレイヤー':'大会の集計へ'}</button></div></div>`;
+    const next=document.getElementById('nextHuman');next.disabled=true;setTimeout(()=>{if(next.isConnected)next.disabled=false;},600);next.addEventListener('click',()=>{next.disabled=true;humanReady(gameIndex,humanIndex+1);},{once:true});return;
+  }
   const more=humanIndex+1<humans().length;
   const tournamentMode=state.tournament?.active;
   const nextLabel=tournamentMode
@@ -39122,7 +39128,7 @@ const leagueHost={
   run(key,teams,descriptor,done){
     const index=GAMES.findIndex(g=>g.key===key);if(index<0)throw Error('Missing league game: '+key);
     const m=MODES.configured;m.teams=Object.fromEntries(teams.map(t=>[t.id,t.members]));m.teamNames=Object.fromEntries(teams.map(t=>[t.id,t.name]));m.participants=teams.flatMap(t=>t.members);
-    state.partyRepresentatives=null;state.leaguePhase=descriptor.phase;state.leagueDivision=descriptor.division;state.roundIndex=descriptor.round-1;state.playlist=[index];state.gameIndex=index;state.records[key]={};leagueRoundDone=done;
+    state.leagueScoreMultiplier=descriptor.scoreMultiplier||(descriptor.key==='tripleChoice'&&descriptor.subGame?(descriptor.subGame==='C'?3:2):descriptor.multiplier)||1;state.leagueSubGame=descriptor.subGame||null;state.partyRepresentatives=null;state.leaguePhase=descriptor.phase;state.leagueDivision=descriptor.division;state.roundIndex=descriptor.round-1;state.playlist=[index];state.gameIndex=index;state.records[key]={};leagueRoundDone=done;
     if(!humans().length){const ownDone=done;setTimeout(()=>{if(leagueRoundDone!==ownDone)return;if(key==='deathGameChallenge'){const alive=[...cpus()];for(let i=alive.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[alive[i],alive[j]]=[alive[j],alive[i]];}while(alive.length>1){const before=alive.length,target=[30,15,5,3,1].find(n=>n<before)||1;alive.splice(0,before-target).forEach(p=>state.records[key][p.id]=before===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80);}if(alive[0])state.records[key][alive[0].id]=100;}else cpus().forEach(p=>simulateOneCpu(index,p));if(window.MobPartyLeague.TAG.includes(key)){if(key==='summonMaster'){const winner=Math.random()<.5?0:1;teams.forEach((t,i)=>t.members.forEach(id=>state.records[key][id]=i===winner?100:0));}else teams.forEach(t=>t.members.forEach(id=>state.records[key][id]=state.records[key][t.members[0]]));}finishGame(index);},0);}
     else showGameIntro(index);
   }

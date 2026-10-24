@@ -86,6 +86,6 @@ test('CPU-only finals resolve a champion without per-game UI, preserving bomb aw
     while(s.phase!=='final')L.fastForward(s,players,score,random,core.representativeKeys);
     const result=L.fastForward(s,players,score,random,core.representativeKeys);
     assert.equal(result.event.type,'champion');assert.ok(s.champion);assert.equal(result.record.phase,'final');assert.equal(L.canFastForward(s,players),false);
-    const bomb=s.history.find(r=>r.key==='focusBombMob');if(bomb)assert.deepEqual(Object.values(bomb.rawPoints).filter(v=>v>0).sort((a,b)=>b-a),[100,80,60,50,40]);
+    const bomb=s.history.find(r=>r.key==='focusBombMob');if(bomb)assert.deepEqual(Object.values(bomb.rawPoints).filter(v=>v>0).sort((a,b)=>b-a),[100,80,60,50,40,30,20,15,10,5]);
   }
 });

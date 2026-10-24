@@ -109,7 +109,7 @@
         if(!valid())return;while(progress.completed.includes(stage))stage++;
         if(stage===3){const points=rules.triplePoints(rows,descriptor.choices,assignments,gameScores);results(rules.submit(league,points,{...descriptor,assignments,gameScores}));return;}
         const i=stage,key=descriptor.choices[i],selected=rows.map(t=>({...t,members:[assignments[t.id][i]]}));
-        const run=()=>{if(!valid())return;api.run(key,selected,{...descriptor,subGame:String.fromCharCode(65+i)},scores=>{
+        const run=()=>{if(!valid())return;api.run(key,selected,{...descriptor,subGame:String.fromCharCode(65+i),scoreMultiplier:i===2?3:2},scores=>{
           if(!valid()||progress.completed.includes(i))return;
           for(const t of rows){const value=scores[assignments[t.id][i]];if(!Number.isFinite(value)||value<0||value>100)throw Error('Invalid triple game result');}
           for(const t of rows){gameScores[t.id]=gameScores[t.id]||[null,null,null];gameScores[t.id][i]=scores[assignments[t.id][i]];}
