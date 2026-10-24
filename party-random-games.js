@@ -1,5 +1,6 @@
 /* User-approved displayed game numbers. Never legacy indices. */
 (function(root){'use strict';
+const RETIRED=["mobTrain","wizardMob","bossDuel","mobMisfortune","mobMusou","hurdleRun","pkKicker","bowlingMob","billiardsBattleRoyale","linkedCartBlast","soloCartBlast","tokotokoCatcher","rocketPunch","flagRaise","flyingCarpet","senryobakoMob","sphereMob","cheerLeaderMob","fireworkStandMob","findMob","dontBreakBlocksMob","electricMaze2","truckHaulMob","mathChallengeMob","colorTrapMob","elevatorMob","cashierMob","coinPusherMob","colorBridgeParty","archeryArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob","battleRoyaleMob","ringToss3DMob","homeRun3DMob","puttGolf3DMob","freeThrow3DMob","curling3DMob","punchMachine3DMob","coinPusher3DMob","blackjack3DMob","skiJump3DMob","craneGame3DMob","giantHammer3DMob","shotPut3DMob","rescueHeli3DMob","submarine3DMob","foodCatch3DMob","buildingClimb3DMob","mazeBall3DMob"];
 const ALLOWED=[
   {
     "no": 1,
@@ -9,7 +10,7 @@ const ALLOWED=[
   {
     "no": 3,
     "key": "puzzle",
-    "title": "モブくん12"
+    "title": "モブくん7"
   },
   {
     "no": 4,
@@ -117,11 +118,6 @@ const ALLOWED=[
     "title": "モブくんバイクで飛ぶ"
   },
   {
-    "no": 32,
-    "key": "mobTrain",
-    "title": "モブくん列車出発進行！"
-  },
-  {
     "no": 33,
     "key": "giantMob",
     "title": "巨大モブくん大進撃"
@@ -190,11 +186,6 @@ const ALLOWED=[
     "no": 86,
     "key": "longJumpMob",
     "title": "モブくんの走り幅跳び"
-  },
-  {
-    "no": 89,
-    "key": "bowlingMob",
-    "title": "モブくんボウリング"
   },
   {
     "no": 90,
@@ -299,5 +290,5 @@ const ALLOWED=[
 ];
 function sample(items,n,random=Math.random){const a=[...new Set(items)];for(let i=a.length-1;i>0;i--){const j=Math.min(i,Math.floor(random()*(i+1)));[a[i],a[j]]=[a[j],a[i]];}return a.slice(0,n)}
 function draw(count=1,random=Math.random,pool=ALLOWED.map(g=>g.key)){const eligible=ALLOWED.map(g=>g.key).filter(k=>pool.includes(k));if(eligible.length<5)throw Error('Five approved candidates required');const choices=sample(eligible,5,random);return {choices,selected:sample(choices,count,random)}}
-const api={ALLOWED,sample,draw};if(typeof module!=='undefined')module.exports=api;if(root)root.MobRandomGames=api;
+const api={RETIRED,ALLOWED,sample,draw};if(typeof module!=='undefined')module.exports=api;if(root)root.MobRandomGames=api;
 })(typeof window==='undefined'?null:window);

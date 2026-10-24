@@ -46,8 +46,8 @@ test('CPU tag heats return four finite scores and team-shared results',()=>{
     if(key==='summonMaster')assert.equal(Object.values(result).reduce((a,b)=>a+b,0),200);
   }
 });
-test('175 games have records; new games score directly on a 100-point scale',()=>{
-  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,175);
+test('176 games have records; new games score directly on a 100-point scale',()=>{
+  const e=engine(),state=e.freshState();assert.equal(e.GAMES.length,176);
   for(const g of e.GAMES)assert.ok(state.records[g.key],g.key);
   for(const key of ['galaxyArcadeMob','archeryArcadeMob','shieldArcadeMob','dockingArcadeMob','cargoArcadeMob','pancakeArcadeMob','firehoseArcadeMob','discArcadeMob','juiceArcadeMob','rallyArcadeMob','potteryArcadeMob','bananaBoatMob','warpedWallMob','santaClausMob','colorBridgeParty','treasureEscapeParty','treasureRuneParty','treasureDuoParty']){const i=e.GAMES.findIndex(g=>g.key===key);assert.ok(i>=0);assert.equal(e.performancePoints(i,80),80);}
 });
@@ -79,7 +79,7 @@ test('rank-based CPU record generation yields finite records and scores for ever
 test('removed boxing is absent from records, catalog and selection pools; later games keep their legacy IDs',()=>{
   const e=engine();assert.ok(!e.GAMES.some(g=>g.key==='boxing3DMob'));
   assert.ok(!('boxing3DMob' in e.freshState().records));assert.ok(!e.GAMES.some(g=>g.key==='hockey3DMob'));assert.ok(!('hockey3DMob' in e.freshState().records));
-  assert.equal(e.activeGameIndices().length,146);
+  assert.equal(e.activeGameIndices().length,98);
   const active=e.activeGameIndices().map(i=>e.GAMES[i].key);
   for(const key of ['killLeaderMob','mobSpeedRacer','mineCartMob','mobCount','feint','giantHammer3DMob'])assert.ok(!active.includes(key),key);
   assert.equal(e.GAMES.find(g=>g.key==='punchMachine3DMob').legacy,167);
@@ -111,7 +111,7 @@ test('requested score boosts preserve zero and cap full marks',()=>{
   const e=engine(),score=(key,v)=>e.performancePoints(e.GAMES.findIndex(g=>g.key===key),v);
   assert.equal(score('overlapMaster',64),80);assert.equal(score('overlapMaster',0),0);
   assert.equal(score('heroMaybe',60),69);assert.equal(score('heroMaybe',100),100);
-  assert.equal(score('giantMob',12),72);assert.equal(score('giantMob',15),90);assert.equal(score('giantMob',16),95);assert.equal(score('giantMob',17),100);assert.equal(score('giantMob',24),100);
+  assert.equal(score('giantMob',12),100);assert.equal(score('giantMob',15),100);assert.equal(score('giantMob',16),100);assert.equal(score('giantMob',17),100);assert.equal(score('giantMob',24),100);
   assert.equal(score('breakdance',20),20);assert.equal(score('breakdance',40),40);
 });
 test('catcher awards four points per figure and change detection rewards faster answers',()=>{
@@ -132,7 +132,7 @@ function gameScore(name,pattern,variables){
 }
 test('a spare cannot award full marks',()=>{
   const bowling=(knocked,shot)=>gameScore('Bowling3DMob',/const score=([^;]+);/,{knocked,shot});
-  assert.equal(bowling(10,1),100);assert.equal(bowling(10,2),85);assert.equal(bowling(9,2),81);
+  assert.equal(bowling(10,1),100);assert.equal(bowling(10,2),90);assert.equal(bowling(9,2),81);
 
 });
 test('climbing full marks require fast completion without wrong-side inputs',()=>{
@@ -193,4 +193,6 @@ test('league event practice games are in the active solo catalog but not random 
 });
 
 test('lock preserves ten raw points and converts only tournament points',()=>{const e=engine(),i=e.GAMES.findIndex(g=>g.key==='lockArcadeMob');assert.equal(e.performancePoints(i,0),0);assert.equal(e.performancePoints(i,8),80);assert.equal(e.performancePoints(i,10),100);const p=e.PLAYERS.find(p=>p.cpu);e.simulateOneCpu(i,p);assert.ok(e.getState().records.lockArcadeMob[p.id]<=10);});
-test('small balance tuning uses the same bomb points in tournament scoring',()=>{const e=engine(),bomb=e.GAMES.findIndex(g=>g.key==='bomb'),cut=e.GAMES.findIndex(g=>g.key==='cut');assert.equal(e.performancePoints(bomb,8000),77);assert.equal(e.performancePoints(bomb,9000),88);assert.equal(e.performancePoints(bomb,9999),100);assert.equal(e.performancePoints(bomb,0),0);assert.equal(e.performancePoints(cut,60),60);assert.match(e.scoreRuleForGame(bomb),/77点/);assert.match(e.scoreRuleForGame(cut),/×8/);});
+test('small balance tuning uses the same bomb points in tournament scoring',()=>{const e=engine(),bomb=e.GAMES.findIndex(g=>g.key==='bomb'),cut=e.GAMES.findIndex(g=>g.key==='cut');assert.equal(e.performancePoints(bomb,8000),77);assert.equal(e.performancePoints(bomb,9000),88);assert.equal(e.performancePoints(bomb,9999),100);assert.equal(e.performancePoints(bomb,0),0);assert.equal(e.performancePoints(cut,60),60);assert.match(e.scoreRuleForGame(bomb),/77点/);assert.match(e.scoreRuleForGame(cut),/8点減点/);});
+
+test('October retirements leave only 3D bowling and revised score boundaries',()=>{const e=engine(),state=e.freshState();e.setState(state);const active=e.activeGameIndices().map(i=>e.GAMES[i]);for(const key of require('../retired-20261024.json'))assert.ok(!active.some(g=>g.key===key),key);assert.deepEqual(Array.from(active.filter(g=>/3D/.test(g.key)),g=>g.key),['bowling3DMob']);const points=(k,v)=>e.performancePoints(e.GAMES.findIndex(g=>g.key===k),v);assert.equal(points('puzzle',2300),100);assert.equal(points('puzzle',3000),75);assert.equal(points('giantMob',12),100);assert.equal(points('giantMob',6),50);assert.equal(points('pk',1),20);assert.equal(points('pk',5),100);assert.equal(points('mobIssen',80),80);assert.equal(points('catcherExtremeMob',100),100);assert.ok(state.records.catcherExtremeMob);});

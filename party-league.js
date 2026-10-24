@@ -3,22 +3,22 @@
   'use strict';
   const draws=typeof module!=='undefined'&&module.exports?require('./party-random-games.js'):root.MobRandomGames;
   const doctor=typeof module!=='undefined'&&module.exports?require('./party-doctor-game.js'):root.MobDoctorGame;
-  const TAG=['mobSpeedRacer','summonMaster','linkedCartBlast'];
+  const TAG=['mobSpeedRacer','summonMaster'];
   const DIVISIONS=['PB2リーグ','Realizeリーグ','Portalリーグ','DENDENリーグ'];
   const pick=(a,r)=>a[Math.floor(r()*a.length)];
   const CARRYOVER=[50,25,18,15,12,10,8,5];
   const PAIR_ROULETTE=draws.ALLOWED.map(g=>g.key);
-  const CATCHERS=['catcher','plushCatcher','tokotokoCatcher','craneGame3DMob'];
+  const CATCHERS=['catcher','plushCatcher','catcherExtremeMob'];
   const TAG_ROULETTE=[...PAIR_ROULETTE];
   const TAG_TEAM_CHOICES=['cardShop','mobPinball','mobDice','zeroOrHundredMob'];
-  const TAG_TENTH_CHOICES=['ohajikiMob','brake','mobIssen','mob50m','fruitCatchMob','findMob','lockArcadeMob','dockingArcadeMob'];
+  const TAG_TENTH_CHOICES=['ohajikiMob','brake','mobIssen','mob50m','fruitCatchMob','lockArcadeMob','dockingArcadeMob'];
   const TAG_EIGHTH_CHOICES=['warpedWallMob','santaClausMob','monsterBoxMob'];
   function program(pool,random=Math.random,mode='tag'){
     if(!pool.length)throw Error('League needs a game pool');
     return {profile:mode==='tag'?'tag':mode,drawVersion:2,
       qualifier:mode==='tag'?['randomChoice','pairedChoice','minorityMob','randomChoice','randomChoice','individualChoice','teamChoice','individualChoice','deathGameChallenge','tripleChoice']:['reaction','randomChoice','minorityMob','randomChoice','randomChoice','individualChoice','teamChoice','dontHitMob','deathGameChallenge','amidakujiMob'],
       repechage:['randomChoice','randomChoice','bowling3DMob'],
-      final:mode==='tag'?['randomChoice','randomChoice','bikeJump','randomChoice','focusBombMob','deathGameChallenge']:['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge'],pool:pool.filter(k=>k!=='popularGame')};
+      final:mode==='tag'?['randomChoice','randomChoice','bikeJump','randomChoice','focusBombMob','deathGameChallenge']:['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge'],pool:pool.filter(k=>k!=='popularGame'&&!draws.RETIRED.includes(k))};
   }
   function create(teams,schedule,options={}){
     const mode=options.mode||'tag',size=mode==='crew'?4:mode==='king'?1:2,count=mode==='king'?80:20;
@@ -29,6 +29,8 @@
   function ordered(s,ids=s.active,scores=s.scores){return ids.map(id=>({id,points:scores[id]||0})).sort((a,b)=>b.points-a.points);}
   function next(s,random=Math.random){
     if(s.champion)return null;
+    s.schedule.pool=s.schedule.pool.filter(k=>!draws.RETIRED.includes(k));
+    for(const [slot,draw] of Object.entries(s.draws||{}))if(draw.choices.some(k=>draws.RETIRED.includes(k)))delete s.draws[slot];
     const tag=s.mode==='tag'&&s.schedule.profile==='tag';
     const slot=s.phase+':'+s.division+':'+s.round+':'+s.history.length;
     let scheduled=tag&&s.phase==='qualifier'&&s.round===9?'tripleChoice':s.schedule[s.phase]?.[s.round];

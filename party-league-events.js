@@ -16,6 +16,7 @@
   }
   const errorAt=elapsed=>Math.abs(Math.round(elapsed*100)-100000)/100;
   const bombRecord=elapsed=>({elapsed:Math.round(elapsed*100)/100,error:errorAt(elapsed)});
+  function cpuBombRecord(score,random=Math.random){const error=Math.max(15,Math.round((100-score+random())/101*550));return bombRecord(1000+(random()<.5?-1:1)*error);}
   function rankBombRecords(records,random=Math.random){
     // Draw unique lots before sorting so even identical clock readings have a single winner.
     const ranked=shuffle(records,random).map((r,lot)=>({...r,lot})).sort((a,b)=>a.error-b.error||a.lot-b.lot);
@@ -48,7 +49,7 @@
     if(api.mode!=='arena'){draw('モブくん集中大爆弾！',`<div class="bomb-logo">1.00000<br><b>SECOND</b></div><p>${heats[0].length}人×5グループ。爆弾型ストップウォッチを1秒ちょうどで止め、一番近い1人が勝ち上がり！</p><p>STARTで計測開始、STOPで停止。3秒で爆発・自動停止。予選敗退は0点。決戦は1位から100・80・60・50・40点。</p><p>0.00001秒単位で判定。同じ誤差の場合だけ抽選で順位確定。決戦の記録は5位から発表！${api.mode==='solo'?'CPU相手に1位を目指そう！':'点灯済みチームの選手が1位なら優勝！'}</p><div id="eventActions"></div>`,'event-bomb');
     preview();if(!(await next('5グループの勝負へ →')))return;}
     async function attempt(p,label,hidden=false){
-      if(p.cpu){const core=root?.MobPartyCore,error=core?(100-core.cpuScore(core.characterRank(p,{key:'focusBombMob',title:'モブくん集中大爆弾！'},random),random)+random())/101*550:random()*550;return bombRecord(1000+(random()<.5?-1:1)*error);}
+      if(p.cpu){const core=root?.MobPartyCore;return cpuBombRecord(core?core.cpuScore(core.characterRank(p,{key:'focusBombMob',title:'モブくん集中大爆弾！'},random),random):random()*100,random);}
       if(!(await handoff(p,label,'STARTを押してから1秒ちょうどでSTOP！ 1.00000秒との差が小さいほど有利です。')))return null;
       draw(label,`<p class="event-call">${esc(p.name)} · 1.00000秒を狙え！</p><div class="bomb-stopwatch"><i class="bomb-fuse"></i><span>TARGET 1.00000 s</span><output id="bombTime">0.00000</output><small>SECONDS</small></div><p id="bombMeasure">STARTで計測開始</p><div id="eventActions"></div>`,'event-bomb');
       let start=0,stop=0;
@@ -93,5 +94,5 @@
     }
     api.done(score);
   }
-  const api={minority,questionDeck,votingTeams,FOODS,groups,errorAt,bombRecord,rankBombRecords,run};if(typeof module!=='undefined'&&module.exports)module.exports=api;if(root)root.MobLeagueEvents=api;
+  const api={cpuBombRecord,minority,questionDeck,votingTeams,FOODS,groups,errorAt,bombRecord,rankBombRecords,run};if(typeof module!=='undefined'&&module.exports)module.exports=api;if(root)root.MobLeagueEvents=api;
 })(typeof window!=='undefined'?window:null);
