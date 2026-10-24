@@ -1,6 +1,7 @@
 /* Small cached vector toys: embossed lettering, extrusion and glossy highlights. */
-(()=>{'use strict';const labels={mobCrane:'MOBクレーン',mobDora:'MOBどら焼き',mobPad:'コントローラー',mobChoco:'チョコレート',mobHeart:'ハート',mobCrown:'王冠',mobBalloons:'MOBバルーン',mobKnit:'MOB猫耳ニット'};const cache=new Map();
+(()=>{'use strict';const labels={mobCrane:'MOBクレーン',mobDora:'MOBどら焼き',mobPad:'コントローラー',mobChoco:'チョコレート',mobHeart:'ハート',mobCrown:'王冠',mobBalloons:'MOBバルーン',mobKnit:'MOB猫耳ニット'};Object.assign(labels,window.MobCartoonArt?.stamps||{});const cache=new Map();
 function paint(c,id){
+ if(window.MobCartoonArt?.stamp(c,id,100,100,180))return;
  const path=(pts)=>{c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath()},oval=(x,y,rx,ry)=>{c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2)},box=(x,y,w,h,r=12)=>{c.beginPath();c.roundRect(x,y,w,h,r)},g=(top,bottom)=>{const a=c.createLinearGradient(15,10,160,180);a.addColorStop(0,top);a.addColorStop(1,bottom);return a};
  function toy(p,top,bottom,depth='#243346'){c.save();c.translate(0,6);p();c.fillStyle=depth;c.strokeStyle='#17263a';c.lineWidth=6;c.lineJoin='round';c.stroke();c.fill();c.restore();p();c.fillStyle=g(top,bottom);c.strokeStyle='#283343';c.lineWidth=4;c.stroke();c.fill()}
  function line(x,y,x2,y2,color,width=4){c.beginPath();c.moveTo(x,y);c.lineTo(x2,y2);c.strokeStyle=color;c.lineWidth=width;c.lineCap='round';c.stroke()}

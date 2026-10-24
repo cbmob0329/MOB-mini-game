@@ -66,7 +66,7 @@ test('CPU-only stages skip presentation but retain every game, bonus, qualifier 
     const s=fresh(mode),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true}))),score=()=>Math.floor(random()*101);
     const result=L.fastForward(s,players,score,random,core.representativeKeys);
     assert.equal(result.record.summary,true);assert.equal(result.record.active.length,20);assert.equal(result.record.round,10);assert.ok(result.record.simulatedRounds>=10);
-    const minority=s.history.find(r=>r.key==='minorityMob');assert.ok(Object.values(minority.rawPoints).every(v=>[20,40,60,80,100].includes(v)));assert.ok(Object.values(minority.rawPoints).includes(20));
+    const minority=s.history.find(r=>r.key==='minorityMob');assert.ok(Object.values(minority.rawPoints).every(v=>Number.isInteger(v)&&v>=2&&v<=100));for(const t of s.teams)if(minority.active.includes(t.id))assert.equal(new Set(t.members.map(id=>minority.rawPoints[id])).size,1);
     const death=s.history.find(r=>r.key==='deathGameChallenge');assert.equal(Object.values(death.points).filter(v=>v===200).length,1);
     const doubled=s.history.find(r=>r.round===4);for(const id in doubled.rawPoints)assert.equal(doubled.points[id],doubled.rawPoints[id]*2);
     assert.equal(result.event.type,mode==='king'?'divisionQualified':'qualified');

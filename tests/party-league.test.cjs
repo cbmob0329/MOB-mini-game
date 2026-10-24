@@ -3,13 +3,13 @@ const L=require('../party-league.js');
 const teams=()=>Array.from({length:20},(_,i)=>({id:'L'+i,members:['a'+i,'b'+i]}));
 const fresh=()=>L.create(teams(),L.program(['reaction','launch'],()=>0));
 const points=(s,fn)=>Object.fromEntries(s.active.flatMap(id=>s.teams.find(t=>t.id===id).members.map(p=>[p,fn(Number(id.slice(1)),p)])));
-const play=(s,fn)=>{const d=L.next(s,()=>0),raw=points(s,fn);if(d.key==='tripleChoice'){d.assignments={};d.gameScores={};for(const id of s.active){const [a,b]=s.teams.find(t=>t.id===id).members;d.assignments[id]=[a,b,a];d.gameScores[id]=[raw[a]/2,raw[b],raw[a]/2];}}return L.submit(s,raw,d);};
+const play=(s,fn)=>{const d=L.next(s,()=>0),raw=points(s,fn);if(d.key==='tripleChoice'){d.assignments={};d.gameScores={};for(const id of s.active){const [a,b]=s.teams.find(t=>t.id===id).members;d.assignments[id]=[a,b,a];d.gameScores[id]=[raw[a]/2,raw[b],raw[a]/3];}}return L.submit(s,raw,d);};
 function qualified(){const s=fresh();for(let i=0;i<10;i++)play(s,t=>100-t*3);return s;}
 function finals(){const s=qualified();for(let i=0;i<3;i++)play(s,t=>100-t*3);return s;}
 test('schedule matches fixed games, minority third round and four bonus rounds',()=>{
   const s=fresh();assert.deepEqual(s.schedule.qualifier,['randomChoice','pairedChoice','minorityMob','randomChoice','randomChoice','individualChoice','teamChoice','individualChoice','deathGameChallenge','tripleChoice']);
   assert.deepEqual(s.schedule.repechage,['randomChoice','randomChoice','bowling3DMob']);
-  assert.deepEqual(s.schedule.final,['randomChoice','randomChoice','bikeJump','randomChoice','focusBombMob','deathGameChallenge']);
+  assert.deepEqual(s.schedule.final,['randomChoice','randomChoice','randomChoice','randomChoice','focusBombMob','deathGameChallenge']);
   for(let i=0;i<10;i++){assert.equal(L.next(s).multiplier,[3,4,6,9].includes(i)?2:1);play(s,t=>100-t);}
 });
 test('40 independent entrants, direct eight and reset twelve-team repechage',()=>{
@@ -36,7 +36,7 @@ test('repechage top two join the direct eight with qualifier rank carryover, inc
 });
 test('600 on a winning round only lights a team; it must win a later round',()=>{
   const s=finals();for(let i=0;i<3;i++){const r=play(s,t=>t===0?100:10);assert.equal(r.event.type,'round');assert.equal(s.champion,null);}
-  assert.deepEqual(s.lit,['L0']);assert.equal(s.scores.L0,650);
+  assert.deepEqual(s.lit,['L0']);assert.equal(s.scores.L0,700);
   const r=play(s,t=>t===0?100:10);assert.equal(r.event.type,'champion');assert.equal(s.champion,'L0');assert.equal(L.next(s),null);
 });
 test('only already lit tied leaders enter a random championship; ties repeat',()=>{
@@ -49,9 +49,9 @@ test('final continues after game ten; invalid results cannot mutate points',()=>
   const saved=JSON.stringify(s);assert.throws(()=>L.submit(s,{},L.next(s)));assert.equal(JSON.stringify(s),saved);
 });
 
-test('all previously random league slots use five candidates; fixed/manual formats remain',()=>{const s=fresh();for(const [phase,round] of [['qualifier',0],['qualifier',1],['qualifier',3],['qualifier',4],['repechage',0],['repechage',1],['final',0],['final',1],['final',3],['championship',0]]){s.phase=phase;s.round=round;const d=L.next(s);assert.equal(new Set(d.roulette).size,5);assert.deepEqual(L.next(JSON.parse(JSON.stringify(s))),d);if(d.key==='pairedChoice'){assert.equal(new Set(d.choices).size,2);assert.ok(d.choices.every(k=>d.roulette.includes(k)))}else assert.ok(d.roulette.includes(d.key))}s.phase='qualifier';s.round=6;assert.deepEqual(L.next(s).roulette,['cardShop','mobPinball','mobDice','zeroOrHundredMob']);s.round=7;assert.deepEqual(L.next(s).choices,['warpedWallMob','santaClausMob','monsterBoxMob']);for(const mode of ['crew','king']){const p=L.program(['reaction'],Math.random,mode);assert.equal(p.qualifier[3],'randomChoice');assert.equal(p.qualifier[7],'dontHitMob');}});
+test('all previously random league slots use five candidates; fixed/manual formats remain',()=>{const s=fresh();for(const [phase,round] of [['qualifier',0],['qualifier',1],['qualifier',3],['qualifier',4],['repechage',0],['repechage',1],['final',0],['final',1],['final',3],['championship',0]]){s.phase=phase;s.round=round;const d=L.next(s);assert.equal(new Set(d.roulette).size,5);assert.deepEqual(L.next(JSON.parse(JSON.stringify(s))),d);if(d.key==='pairedChoice'){assert.equal(new Set(d.choices).size,2);assert.ok(d.choices.every(k=>d.roulette.includes(k)))}else assert.ok(d.roulette.includes(d.key))}s.phase='qualifier';s.round=6;assert.deepEqual(L.next(s).roulette,['cardShop','mobPinball','mobDice','zeroOrHundredMob']);s.round=7;assert.equal(L.next(s).choices.length,2);assert.equal(L.next(s).roulette.length,5);for(const mode of ['crew','king']){const p=L.program(['reaction'],Math.random,mode);assert.equal(p.qualifier[3],'randomChoice');assert.equal(p.qualifier[7],'dontHitMob');}});
 test('CPU summary keeps eighth-round teammates in different fixed games',()=>{
- const s=fresh(),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true})));let seed=11;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};L.fastForward(s,players,()=>Math.floor(random()*100),random);const r=s.history.find(r=>r.phase==='qualifier'&&r.round===8);for(const t of s.teams){assert.notEqual(r.selections[t.members[0]],r.selections[t.members[1]]);assert.ok(t.members.every(id=>['warpedWallMob','santaClausMob','monsterBoxMob'].includes(r.selections[id])));}
+ const s=fresh(),players=s.teams.flatMap(t=>t.members.map(id=>({id,cpu:true})));let seed=11;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};L.fastForward(s,players,()=>Math.floor(random()*100),random);const r=s.history.find(r=>r.phase==='qualifier'&&r.round===8);for(const t of s.teams){assert.notEqual(r.selections[t.members[0]],r.selections[t.members[1]]);assert.ok(t.members.every(id=>['warpedWallMob','santaClausMob','monsterBoxMob','ropeSwingMob','mobIssen'].includes(r.selections[id])));}
 });
 
 test('tag qualifier seven uses a cached roulette from its four bonus games',()=>{const s=fresh();s.round=6;const a=L.next(s,()=>.2),b=L.next(s,()=>.9);assert.ok(['cardShop','mobPinball','mobDice','zeroOrHundredMob'].includes(a.key));assert.equal(b.key,a.key);assert.equal(a.multiplier,2);assert.equal(a.choices,null);assert.ok(a.roulette);});

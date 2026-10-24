@@ -29,7 +29,7 @@ test('minority keeps the smaller side, and never eliminates on equal or unanimou
 
 test('bomb has five four-player heats with each entrant once and teammates separated',()=>{
   for(const r of [0,.25,.99]){const heats=E.groups(entrants.slice(0,20),()=>r);assert.equal(heats.length,5);assert.ok(heats.every(g=>g.length===4&&new Set(g.map(p=>p.teamId)).size===4));assert.equal(new Set(heats.flat().map(p=>p.id)).size,20);}
-  assert.throws(()=>E.groups(entrants));
+  assert.equal(E.groups(entrants).flat().length,40);assert.throws(()=>E.groups(entrants.slice(0,36)));
   assert.equal(E.errorAt(1000),0);assert.equal(E.errorAt(999),1);assert.equal(E.errorAt(1001),1);
   assert.equal(E.errorAt(750),250);assert.equal(E.errorAt(1250),250);assert.equal(E.errorAt(3000),2000);
 });
@@ -55,14 +55,14 @@ function uiHarness(){
 test('all eight qualification reveals precede either ranking page',()=>{
   const h=uiHarness();h.ui.results({event:{type:'qualified',ids:h.state.active.slice(0,8)},record:h.record});
   for(let i=1;i<=8;i++){assert.match(h.html(),new RegExp('進出発表 '+i+' / 8'));assert.doesNotMatch(h.html(),/class="league-rank/);h.next();}
-  assert.match(h.html(),/今回のチーム順位/);h.next();assert.match(h.html(),/現在の総合順位はこちら/);h.next();assert.match(h.html(),/ステージチーム総合/);
+  assert.match(h.html(),/結果発表/);h.next();assert.match(h.html(),/今回のチーム順位/);h.next();assert.match(h.html(),/総合順位 発表/);h.next();assert.match(h.html(),/ステージチーム総合/);
 });
 test('repechage winners are revealed before standings',()=>{
   const h=uiHarness();h.record.phase='repechage';h.record.round=3;h.ui.results({event:{type:'finalists',wildcards:['L8','L9'],ids:h.state.active.slice(0,10)},record:h.record});
-  for(let i=1;i<=2;i++){assert.match(h.html(),new RegExp('進出発表 '+i+' / 2'));assert.doesNotMatch(h.html(),/class="league-rank/);h.next();}assert.match(h.html(),/今回のチーム順位/);
+  for(let i=1;i<=2;i++){assert.match(h.html(),new RegExp('進出発表 '+i+' / 2'));assert.doesNotMatch(h.html(),/class="league-rank/);h.next();}assert.match(h.html(),/結果発表/);h.next();assert.match(h.html(),/今回のチーム順位/);
 });
 test('lit finals reveal suspense then champion or continuation before scores',()=>{
-  for(const type of ['round','championship']){const h=uiHarness();h.record.phase='final';h.record.litBefore=['L0','L1'];h.ui.results({event:{type,ids:type==='round'?[]:['L0']},record:h.record});assert.match(h.html(),/さあ、これで決まるのか/);assert.doesNotMatch(h.html(),/class="league-rank/);h.next();assert.match(h.html(),type==='champion'?/CHAMPION!!/:/勝負はまだ続きます/);h.next();assert.match(h.html(),/今回のチーム順位/);}
+  for(const type of ['round','championship']){const h=uiHarness();h.record.phase='final';h.record.litBefore=['L0','L1'];h.ui.results({event:{type,ids:type==='round'?[]:['L0']},record:h.record});assert.match(h.html(),/さあ、これで決まるのか/);assert.doesNotMatch(h.html(),/class="league-rank/);h.next();assert.match(h.html(),type==='champion'?/CHAMPION!!/:/勝負はまだ続きます/);h.next();assert.match(h.html(),/結果発表/);h.next();assert.match(h.html(),/今回のチーム順位/);}
 });
 test('league launches the shared event for all active entrants and rejects a stopped callback',()=>{
   for(const [phase,round,key,count] of [['qualifier',2,'minorityMob',40],['final',4,'focusBombMob',20]]){
@@ -74,16 +74,16 @@ test('league launches the shared event for all active entrants and rejects a sto
 });
 test('secured teams and overtime are announced before cutoff standings',()=>{
   const h=uiHarness();h.state.cut={kept:['L0','L1'],slots:6};h.ui.results({event:{type:'cutoff',ids:['L2','L3'],slots:6},record:h.record});
-  assert.match(h.html(),/進出確定チーム発表/);h.next();h.next();assert.match(h.html(),/ボーダー同点！ 延長戦！/);h.next();assert.match(h.html(),/現在の総合順位|今回のチーム順位/);
+  assert.match(h.html(),/進出確定チーム発表/);h.next();h.next();assert.match(h.html(),/ボーダー同点！ 延長戦！/);h.next();assert.match(h.html(),/結果発表|総合順位 発表|今回のチーム順位/);
 });
 
 test('new ignition precedes results; championship takes priority with no ignition',()=>{
   const h=uiHarness();h.record.phase='final';h.record.litBefore=[];
   h.ui.results({event:{type:'round',ids:['L2']},record:h.record});
   assert.match(h.html(),/MATCH POINT · 点灯/);assert.doesNotMatch(h.html(),/class="league-rank /);
-  h.next();assert.match(h.html(),/このゲームだけの順位/);assert.match(h.html(),/今回獲得したポイントのみ/);
+  h.next();h.next();assert.match(h.html(),/このゲームだけの順位/);assert.match(h.html(),/今回獲得したポイントのみ/);
   h.next();h.next();assert.match(h.html(),/決勝の総合順位/);
   const winner=uiHarness();winner.record.phase='final';winner.record.litBefore=['L0'];
   winner.ui.results({event:{type:'champion',ids:['L0']},record:winner.record});
-  assert.equal(winner.state.celebratedChampion,'L0');assert.match(winner.html(),/このゲームだけの順位/);
+  assert.equal(winner.state.celebratedChampion,'L0');winner.next();winner.next();assert.match(winner.html(),/このゲームだけの順位/);
 });

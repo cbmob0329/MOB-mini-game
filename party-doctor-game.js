@@ -7,8 +7,8 @@ const points=(chosen,secret)=>100-Math.abs(chosen-secret);
 const hint=secret=>secret>=50?'アップ':'ダウン';
 function deal(count,random=Math.random){
   const secret=1+Math.floor(random()*99),pool=shuffle(Array.from({length:99},(_,i)=>i+1).filter(n=>n!==secret),random);
-  // Up to 24 teams receive completely disjoint decoys; larger rosters wrap the shuffled deck.
-  const cards=Array.from({length:count},(_,t)=>shuffle([secret,...Array.from({length:4},(_,j)=>pool[(t*4+j)%98])],random));
+  // Each nine-card hand is unique internally; larger rosters reuse decoys across teams.
+  const cards=Array.from({length:count},(_,t)=>shuffle([secret,...Array.from({length:8},(_,j)=>pool[(t*8+j)%98])],random));
   return {secret,hint:hint(secret),cards};
 }
 function cpuChoice(cards,direction,random=Math.random){const candidates=cards.filter(n=>direction==='アップ'?n>=50:n<50);return candidates[Math.floor(random()*candidates.length)];}
@@ -24,7 +24,7 @@ async function run(api){
     api.top();screen.querySelector('.doctor-game').style.setProperty('--doctor-top',Math.max(0,screen.getBoundingClientRect().top)+'px');
   }
   async function next(label){if(!valid())return false;const host=screen.querySelector('#doctorActions');host.innerHTML=`<button type="button">${label}</button>`;await new Promise(resolve=>{host.querySelector('button').onclick=e=>{if(!valid())return;e.currentTarget.disabled=true;resolve();};});return valid();}
-  draw(`<p class="doctor-instruction">機械が選んだ秘密の数字を当てよう。<br><b>${round.hint}は${range}のヒント。</b></p><div class="doctor-sample" aria-hidden="true"><span>17</span><span>?</span><span>86</span></div><p class="doctor-rule">5枚の中に必ず正解が1枚。<br>ピッタリ100点 ／ それ以外は100−誤差。<br>例：正解64・選択30 → 66点</p><div id="doctorActions"></div>`);
+  draw(`<p class="doctor-instruction">機械が選んだ秘密の数字を当てよう。<br><b>${round.hint}は${range}のヒント。</b></p><div class="doctor-sample" aria-hidden="true"><span>17</span><span>?</span><span>86</span></div><p class="doctor-rule">9枚の中に必ず正解が1枚。<br>ピッタリ100点 ／ それ以外は100−誤差。<br>例：正解64・選択30 → 66点</p><div id="doctorActions"></div>`);
   if(!(await next('数字を選びに行く')))return;
   for(let i=0;i<teams.length;i++){
     if(!valid())return;const team=teams[i],human=team.members.some(p=>!p.cpu);let chosen;
