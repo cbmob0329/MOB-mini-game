@@ -103,14 +103,31 @@
       [3210,"モブラストダンジョン","C-B+","main/piece/RETRO10.png"]
     ]]
   ];
+  const pixelAdditions=[
+    [4001,'モブプチノン','A+-S+','005','MAIN CHARACTERS'],
+    [4002,'モブ怪人グリーン','S','002'],[4003,'モブ怪人イエロー','S','004'],
+    [4004,'モブケケプテラ','A+','019'],[4005,'モブケケペン','A+','020'],
+    [4006,'モブモケピンク','S','009'],[4007,'モブモケミント','S','012'],
+    [4008,'モブアメチー','S+','033'],[4009,'モブアメブー','S+','034'],
+    [4010,'モブアメゴールド','S+','044'],[4011,'モブアメコットン','SS','045'],
+    [4012,'モブジョーンズ','A+-S','118','MOB MONSTERS'],
+    [4013,'モブネプチューン','S+','008','MOB MONSTERS'],
+    [4014,'モブガーディアン','A+-S-','05','MOB MONSTERS'],
+    [4015,'モブドラゴン','S+','09','MOB MONSTERS'],
+    [4016,'モブリリス','SS','14','MOB MONSTERS'],
+    [4017,'グラディモブ','S+','39','MOB MONSTERS']
+  ];
+  for(const [id,name,rank,file,group='MOB PIECE BATTLE コラボ'] of pixelAdditions){
+    groups.find(([name])=>name===group)[1].push([id,name,rank,`main/pixel-20261025/${file}.png`]);
+  }
   const roster=groups.flatMap(([group,rows])=>rows.map(([id,name,rank,img])=>({id,name,rank:pieceRanks?.profiles[id]?.rank||rank,group,img:img||`main/${String(id).padStart(3,'0')}.png`})));
   // The tavern Ilukaeru belongs to STORY; SHOT's namesake is a different character.
-  const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36],[18,19],[18,20],[38,39],[40,41],[42,44],[45,43],[81,82]];
+  const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36],[18,19],[18,20],[38,39],[40,41],[42,44],[45,43],[81,82],[4001,108],[4002,4003],[4004,4005],[4006,4007],[4008,4009],[4010,4011],[4012,4013],[4014,4015],[4016,4017]];
   const pick=(items,random)=>items[Math.floor(random()*items.length)];
   function preferredPartners(anchor,pool){return pool.filter(c=>preferredCpuTags.some(pair=>pair.includes(anchor.id)&&pair.includes(c.id)));}
   function takeCpuPartner(anchor,pool,random){
     if(!pool.length)throw Error('Not enough unique characters');
-    const preferred=preferredPartners(anchor,pool),same=pool.filter(c=>c.group===anchor.group);
+    const preferred=preferredPartners(anchor,pool),same=pool.filter(c=>anchor.id===4001?rankValue(c.rank)>=5.5:c.group===anchor.group);
     const nearest=Math.min(...pool.map(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank))));
     const candidates=preferred.length?preferred:same.length?same:pool.filter(c=>Math.abs(rankValue(c.rank)-rankValue(anchor.rank))===nearest);
     const c=pick(candidates,random);pool.splice(pool.indexOf(c),1);return c;
@@ -126,10 +143,10 @@
     const first=pick(group?pool.filter(c=>c.group===group):pool,random);pool.splice(pool.indexOf(first),1);
     return [first,takeCpuPartner(first,pool,random)];
   }
-  const rankOrder=['F','E','D-','D','D+','C','C+','B-','B','B+','A-','A','A+','S-','S','SS'];
-  function rankParts(rank){const match=String(rank).match(/^(SS|S-?|[ABCD][+-]?|E|F)(?:-(SS|S-?|[ABCD][+-]?|E|F))?$/);return match?[match[1],match[2]||match[1]]:['C','C'];}
+  const rankOrder=['F','E','D-','D','D+','C','C+','B-','B','B+','A-','A','A+','S-','S','S+','SS'];
+  function rankParts(rank){const match=String(rank).match(/^(SS|S[+-]?|[ABCD][+-]?|E|F)(?:-(SS|S[+-]?|[ABCD][+-]?|E|F))?$/);return match?[match[1],match[2]||match[1]]:['C','C'];}
   const rankBounds=rank=>rankParts(rank).map(r=>rankOrder.indexOf(r));
-  function rankValue(rank){const values={F:0,E:1,'D-':1.75,D:2,'D+':2.5,C:3,'C+':3.5,'B-':3.75,B:4,'B+':4.5,'A-':4.75,A:5,'A+':5.5,'S-':5.75,S:6,SS:7},[lo,hi]=rankParts(rank);return (values[lo]+values[hi])/2;}
+  function rankValue(rank){const values={F:0,E:1,'D-':1.75,D:2,'D+':2.5,C:3,'C+':3.5,'B-':3.75,B:4,'B+':4.5,'A-':4.75,A:5,'A+':5.5,'S-':5.75,S:6,'S+':6.5,SS:7},[lo,hi]=rankParts(rank);return (values[lo]+values[hi])/2;}
   function resolveRank(rank,random=Math.random){const [lo,hi=lo]=rankBounds(rank);return rankOrder[lo+Math.floor(random()*(hi-lo+1))]||'C';}
   function characterRank(player,game={},random=Math.random){
     const c=roster.find(c=>c.img===player.img)||player;
@@ -155,7 +172,7 @@
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function cpuScore(rank='C',random=Math.random){
     rank=resolveRank(rank,random);
-    const average={SS:91,S:81,'S-':78,'A+':76,A:71,'A-':68,'B+':66,B:61,'B-':58,'C+':55,C:50,'D+':44,D:39,'D-':36,E:29,F:19}[rank]??50;
+    const average={SS:91,'S+':86,S:81,'S-':78,'A+':76,A:71,'A-':68,'B+':66,B:61,'B-':58,'C+':55,C:50,'D+':44,D:39,'D-':36,E:29,F:19}[rank]??50;
     const luck=random();
     if(luck<.05)return Math.round(45+random()*15); // Occasional upset, including an SS slump.
     if(luck>.94)return Math.round(70+random()*30); // Even F can have a great round.

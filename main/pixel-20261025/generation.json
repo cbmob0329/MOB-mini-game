@@ -1,0 +1,77 @@
+{
+  "tool": "Built-in image_gen",
+  "date": "2026-10-25",
+  "styleReference": "main/001.png",
+  "prompt": "Use case: style-transfer. Game character sprite. Image 1 is the edit target; image 2 is pixel-art style reference only. Convert ONLY the character in image 1 into polished crisp pixel art matching image 2. Preserve its exact character identity, colors, outfit, accessories, expression and pose. Remove any pedestal/base, label and scenery entirely. Full body including all feet, wings and weapons visible, centered, modest transparent padding. Real transparent background. No ground shadow, no text, no extra characters. Use deliberate square pixel clusters, dark stepped outlines and limited color shading, not smooth vector illustration.",
+  "transparent_background": true,
+  "assets": [
+    {
+      "file": "002.png",
+      "source": "C:/Users/user/Downloads/ドット絵/002.png"
+    },
+    {
+      "file": "004.png",
+      "source": "C:/Users/user/Downloads/ドット絵/004.png"
+    },
+    {
+      "file": "005.png",
+      "source": "C:/Users/user/Downloads/ドット絵/005.png"
+    },
+    {
+      "file": "008.png",
+      "source": "C:/Users/user/Downloads/ドット絵/008.png"
+    },
+    {
+      "file": "009.png",
+      "source": "C:/Users/user/Downloads/ドット絵/009.png"
+    },
+    {
+      "file": "012.png",
+      "source": "C:/Users/user/Downloads/ドット絵/012.png"
+    },
+    {
+      "file": "019.png",
+      "source": "C:/Users/user/Downloads/ドット絵/019.png"
+    },
+    {
+      "file": "020.png",
+      "source": "C:/Users/user/Downloads/ドット絵/020.png"
+    },
+    {
+      "file": "033.png",
+      "source": "C:/Users/user/Downloads/ドット絵/033.png"
+    },
+    {
+      "file": "034.png",
+      "source": "C:/Users/user/Downloads/ドット絵/034.png"
+    },
+    {
+      "file": "044.png",
+      "source": "C:/Users/user/Downloads/ドット絵/044.png"
+    },
+    {
+      "file": "045.png",
+      "source": "C:/Users/user/Downloads/ドット絵/045.png"
+    },
+    {
+      "file": "05.png",
+      "source": "C:/Users/user/Downloads/ドット絵/05.png"
+    },
+    {
+      "file": "09.png",
+      "source": "C:/Users/user/Downloads/ドット絵/09.png"
+    },
+    {
+      "file": "118.png",
+      "source": "C:/Users/user/Downloads/ドット絵/118.png"
+    },
+    {
+      "file": "14.png",
+      "source": "C:/Users/user/Downloads/ドット絵/14.png"
+    },
+    {
+      "file": "39.png",
+      "source": "C:/Users/user/Downloads/ドット絵/39.png"
+    }
+  ]
+}

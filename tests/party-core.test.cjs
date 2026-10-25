@@ -4,10 +4,10 @@ const fs=require('node:fs');
 const path=require('node:path');
 const core=require('../party-core.js');
 function seeded(seed=7){return ()=>{seed=(seed*1664525+1014704223)>>>0;return seed/4294967296;};}
-test('183 unique characters with exact-case existing assets and private ranks',()=>{
-  assert.equal(core.roster.length,183);
-  assert.equal(new Set(core.roster.map(c=>c.id)).size,183);
-  for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S-?|[ABCD][+-]?|E|F)(-(SS|S-?|[ABCD][+-]?|E|F))?$/);}
+test('200 unique characters with exact-case existing assets and private ranks',()=>{
+  assert.equal(core.roster.length,200);
+  assert.equal(new Set(core.roster.map(c=>c.id)).size,200);
+  for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S[+-]?|[ABCD][+-]?|E|F)(-(SS|S[+-]?|[ABCD][+-]?|E|F))?$/);}
 });
 test('8 teams of 4 are unique and exclude all human selections, including collaboration selections',()=>{
   for(let seed=1;seed<=100;seed++){
@@ -21,7 +21,7 @@ test('8 teams of 4 are unique and exclude all human selections, including collab
 });
 test('CPU averages follow rank, with both F upsets and SS slumps',()=>{
   let previous=Infinity;
-  for(const rank of ['SS','S','S-','A+','A','A-','B+','B','B-','C+','C','D+','D','D-','E','F']){
+  for(const rank of ['SS','S+','S','S-','A+','A','A-','B+','B','B-','C+','C','D+','D','D-','E','F']){
     const random=seeded(51),scores=Array.from({length:10000},()=>core.cpuScore(rank,random));
     assert.ok(scores.every(n=>Number.isInteger(n)&&n>=0&&n<=100));
     const average=scores.reduce((a,b)=>a+b,0)/scores.length;
@@ -95,18 +95,18 @@ test('league partner uses closest rank when the whole collaboration is already s
   const story=core.roster.filter(c=>c.group==='MOB STORY'),teams=story.map(c=>[c]);
   const pairs=core.leagueCpuPairs(teams,()=>0),remaining=core.roster.filter(c=>c.group!=='MOB STORY');
   for(const [human,cpu] of pairs){const distance=Math.abs(core.rankValue(human.rank)-core.rankValue(cpu.rank));assert.equal(distance,Math.min(...remaining.map(c=>Math.abs(core.rankValue(human.rank)-core.rankValue(c.rank)))));remaining.splice(remaining.indexOf(cpu),1);}
-  for(let seed=1;seed<=50;seed++){const random=seeded(seed),pairs=core.leagueCpuPairs(Array.from({length:20},()=>[]),random);assert.ok(pairs.every(t=>t[0].group===t[1].group));assert.equal(new Set(pairs.flat().map(c=>c.id)).size,40);}
+  for(let seed=1;seed<=50;seed++){const random=seeded(seed),pairs=core.leagueCpuPairs(Array.from({length:20},()=>[]),random);assert.ok(pairs.every(t=>t[0].group===t[1].group||t.some(c=>c.id===4001)));assert.equal(new Set(pairs.flat().map(c=>c.id)).size,40);}
 });
 
 test('CPU tags honor requested pairs in both cup and league without duplicate Marumob',()=>{
   const fixed=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[32,33],[35,36]];
   const has=(teams,a,b)=>teams.some(t=>t.some(c=>c.id===a)&&t.some(c=>c.id===b));
   const variants=new Set();
-  for(let seed=1;seed<=50;seed++)for(const teams of [core.allocateTeams(core.roster,2,20,seeded(seed)),core.leagueCpuPairs(Array.from({length:20},()=>[]),seeded(seed))]){
+  for(let seed=1;seed<=50;seed++)for(const teams of [core.allocateTeams(core.roster,2,30,seeded(seed)),core.leagueCpuPairs(Array.from({length:30},()=>[]),seeded(seed))]){
     for(const [a,b] of fixed)assert.ok(has(teams,a,b),`${a} & ${b}`);
     assert.ok(has(teams,21,22)||has(teams,22,23));
     variants.add(has(teams,21,22)?21:23);
-    assert.equal(new Set(teams.flat().map(c=>c.id)).size,40);
+    assert.equal(new Set(teams.flat().map(c=>c.id)).size,60);
   }
   assert.equal(variants.size,2);
 });
@@ -158,7 +158,7 @@ test('46–74 additions honor modified rank bounds and racer running strengths',
   assert.equal(rank(2),'C+');assert.equal(rank(210),'D+');
   for(const value of ['D-','D+','C+','B-','S-']){assert.equal(core.resolveRank(value),value);assert.ok(Number.isFinite(core.rankValue(value)));}
   assert.equal(core.rankValue('D--C+'),2.625);assert.equal(core.rankValue('B--A+'),4.625);
-  for(const [group,count] of [['MAIN CHARACTERS',20],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
+  for(const [group,count] of [['MAIN CHARACTERS',21],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
 });
 
 test('tournament levels choose unique participants before pairing and preserve human picks',()=>{
@@ -186,10 +186,10 @@ test('tournament levels choose unique participants before pairing and preserve h
 test('MOB SHOT CPU tags are preferred in cup and league, with either available Kodra partner',()=>{
   const pairs=[[38,39],[40,41],[42,44],[45,43]],has=(teams,a,b)=>teams.some(t=>t.some(c=>c.id===a)&&t.some(c=>c.id===b));
   const variants=new Set();
-  for(let seed=1;seed<=40;seed++)for(const teams of [core.allocateTeams(core.roster,2,20,seeded(seed)),core.leagueCpuPairs(Array.from({length:20},()=>[]),seeded(seed))]){
+  for(let seed=1;seed<=40;seed++)for(const teams of [core.allocateTeams(core.roster,2,30,seeded(seed)),core.leagueCpuPairs(Array.from({length:30},()=>[]),seeded(seed))]){
     pairs.forEach(([a,b])=>assert.ok(has(teams,a,b),`${a} & ${b}`));
     assert.ok(has(teams,18,19)||has(teams,18,20));variants.add(has(teams,18,19)?19:20);
-    assert.equal(new Set(teams.flat().map(c=>c.id)).size,40);
+    assert.equal(new Set(teams.flat().map(c=>c.id)).size,60);
   }
   assert.equal(variants.size,2);
   for(const partner of [19,20]){const available=core.roster.filter(c=>[18,partner].includes(c.id));assert.deepEqual(core.allocateTeams(available,2,1,()=>0)[0].map(c=>c.id),[18,partner]);}
@@ -197,4 +197,21 @@ test('MOB SHOT CPU tags are preferred in cup and league, with either available K
   const teams=core.leagueCpuPairs([[detective],[toy],[]],()=>0);
   assert.equal(new Set(teams.flat().map(c=>c.id)).size,6);
   assert.equal(teams[0][1].group,'MOB SHOT');assert.equal(teams[1][1].group,'MOB SHOT');
+});
+
+test('new pixel partners and S+ ranges are honored',()=>{
+ const byId=id=>core.roster.find(c=>c.id===id);
+ for(const pair of [[4001,108],[4002,4003],[4004,4005],[4006,4007],[4008,4009],[4010,4011],[4012,4013],[4014,4015],[4016,4017]]){
+  const teams=core.leagueCpuPairs([[byId(pair[0])]],()=>.5);
+  assert.deepEqual(teams[0].map(c=>c.id),pair);
+ }
+ assert.equal(core.resolveRank('A+-S+',()=>.999),'S+');assert.equal(core.resolveRank('A+-S+',()=>0),'A+');
+ assert.ok(core.rankValue('S+')>core.rankValue('S'));assert.ok(core.rankValue('S+')<core.rankValue('SS'));
+ const teams=core.leagueCpuPairs([[byId(4001)],[byId(108),byId(1)]],()=>.1);
+ assert.ok(core.rankValue(teams[0][1].rank)>=5.5);
+ for(let seed=1;seed<=20;seed++){
+  const players=core.leagueCpuPairs(Array.from({length:20},()=>[]),seeded(seed),'INFERNO').flat();
+  assert.equal(new Set(players.map(c=>c.id)).size,40);
+  assert.ok(players.filter(c=>core.rankValue(c.rank)>=5.5).length>=28);
+ }
 });
