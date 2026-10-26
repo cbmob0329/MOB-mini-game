@@ -475,12 +475,12 @@ GAMES.push(
 GAMES.push({no:178,key:'catcherExtremeMob',title:'モブくんキャッチャーの極み',sub:'35体・1回勝負。大きさ→幅→強さの3ゲージを中央の白線で止めよう。35体で100点',legacy:201});
 // V11.18 — 廃止ゲーム / 大会のみ除外
 const RETIRED_GAME_KEYS=new Set(GAMES.filter(g=>[18,19,21,23,25,28,39,42,48,50,51,53,55,59,60,63,65,67,68,70,72,78,81,82,92,147,150,159,160].includes(g.no)).map(g=>g.key));
-for(const key of ["catcherExtremeMob","mobTrain","wizardMob","bossDuel","mobMisfortune","mobMusou","hurdleRun","pkKicker","bowlingMob","billiardsBattleRoyale","linkedCartBlast","soloCartBlast","tokotokoCatcher","rocketPunch","flagRaise","flyingCarpet","senryobakoMob","sphereMob","cheerLeaderMob","fireworkStandMob","findMob","dontBreakBlocksMob","electricMaze2","truckHaulMob","mathChallengeMob","colorTrapMob","elevatorMob","cashierMob","coinPusherMob","colorBridgeParty","archeryArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"])RETIRED_GAME_KEYS.add(key);
+for(const key of ["heroMaybe","planetEnergy","catcherExtremeMob","mobTrain","wizardMob","bossDuel","mobMisfortune","mobMusou","hurdleRun","pkKicker","bowlingMob","billiardsBattleRoyale","linkedCartBlast","soloCartBlast","tokotokoCatcher","rocketPunch","flagRaise","flyingCarpet","senryobakoMob","sphereMob","cheerLeaderMob","fireworkStandMob","findMob","dontBreakBlocksMob","electricMaze2","truckHaulMob","mathChallengeMob","colorTrapMob","elevatorMob","cashierMob","coinPusherMob","colorBridgeParty","archeryArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"])RETIRED_GAME_KEYS.add(key);
 for(const g of GAMES)if((/3d/i.test(g.key)&&g.key!=='bowling3DMob')||/FPS/.test(g.title))RETIRED_GAME_KEYS.add(g.key);
 const TOURNAMENT_EXCLUDED_KEYS=new Set(['battleRoyaleMob','killLeaderMob','alienBattleMob','minorityMob','focusBombMob']);
 const UNIVERSAL_GAME_KEYS=new Set(['catcherExtremeMob','tableclothPull','bombPassMob','obstacleRaceMob','sphereMob','frontFlipMob','swimmingMob','cheerLeaderMob','zeroOrHundredMob','fireworkStandMob','poiGameMob','cleaningMob','findMob','ohajikiMob','dontBreakBlocksMob','ohajikiShootMob','electricMaze2','truckHaulMob','fishingMob','othelloOneMoveMob','gomokuOneMoveMob','mathChallengeMob','colorTrapMob','reverseJankenMob','mergeMob','parkingEscapeMob','elevatorMob','cashierMob','coinPusherMob','survivorMob','ringToss3DMob','bowling3DMob','homeRun3DMob','puttGolf3DMob','freeThrow3DMob','curling3DMob','punchMachine3DMob','coinPusher3DMob','blackjack3DMob','skiJump3DMob','craneGame3DMob','giantHammer3DMob','shotPut3DMob','rescueHeli3DMob','submarine3DMob','foodCatch3DMob','buildingClimb3DMob','mazeBall3DMob','deathGameChallenge']);
 for(const g of GAMES)if(RETIRED_GAME_KEYS.has(g.key))g.removed=true;
-const OCTOBER_SUBS={"pk":"5本勝負。最初はゆっくり、徐々に速く。1本20点","cut":"指定の割合を残す1回勝負","mobIssen":"1回の一閃で最大100点","plushCatcher":"100・80・65点から狙いを選ぶ1回勝負","iaidoMaster":"合図に反応する1回勝負","giantMob":"赤線の1秒を刻む。12棟で100点","ropeSwingMob":"最後のロープからのジャンプ1回で着地距離を競う","swimmingMob":"左右で加速。30mごとの赤ラインを沈むボタンで回避","bowling3DMob":"1フレーム。ストライク100点・スペア90点","cardShop":"6枚開封。秘密のボーナスイベントあり","curlingMob":"3投勝負。石同士がぶつかり、最終位置で採点","mobPinball":"コイン1個10点＋最後のスロット。最大100点"};
+const OCTOBER_SUBS={"pk":"5本勝負。最初はゆっくり、徐々に速く。1本20点","cut":"指定の割合を残す1回勝負","mobIssen":"1回の一閃で最大100点","plushCatcher":"100・80・65点から狙いを選ぶ1回勝負","iaidoMaster":"合図に反応する1回勝負","giantMob":"赤線の1秒を刻む。18棟で100点","ropeSwingMob":"最後のロープからのジャンプ1回で着地距離を競う","swimmingMob":"左右で加速。30mごとの赤ラインを沈むボタンで回避","bowling3DMob":"1フレーム。ストライク100点・スペア90点","cardShop":"6枚開封。秘密のボーナスイベントあり","curlingMob":"3投勝負。石同士がぶつかり、最終位置で採点","mobPinball":"コイン1個10点＋最後のスロット。最大100点"};
 for(const g of GAMES)if(OCTOBER_SUBS[g.key])g.sub=OCTOBER_SUBS[g.key];
 function isRetiredGameIndex(i){return !!GAMES[i]&&RETIRED_GAME_KEYS.has(GAMES[i].key)}
 function activeGameIndices(){return GAMES.map((_,i)=>i).filter(i=>!isRetiredGameIndex(i))}
@@ -2134,7 +2134,7 @@ function renderMobCupDiceBonus(baseScores){
   });gameTop();
 }
 function startMobCupSplit16(){
-  const cup=state.mobCup;cup.split={slot:0,base:Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,0])),top:new Set(cup.top4),topGames:['ropeSwingMob','mobPinball','curlingMob','brawlerMob'],bottomGames:['mob50m','painter','planetEnergy','bikeJump']};mobCupStartSplit16Slot();
+  const cup=state.mobCup;cup.split={slot:0,base:Object.fromEntries(MOB_CUP_KEYS.map(k=>[k,0])),top:new Set(cup.top4),topGames:['ropeSwingMob','mobPinball','curlingMob','brawlerMob'],bottomGames:['mob50m','painter','breakdance','bikeJump']};mobCupStartSplit16Slot();
 }
 function mobCupStartSplit16Slot(){
   const cup=state.mobCup,s=cup.split;
@@ -2979,7 +2979,7 @@ function renderModeLobby(){
   });
 }
 
-const OCTOBER_RULES={"reaction":["MOBの文字が出た瞬間タップ。フライングに注意！","0.150秒以下で100点、0.300秒で50点。"],"puzzle":["1〜7を小さい順にタップ。7を消した瞬間のタイムで採点。","2.3秒以下で100点、3秒で75点。6秒以上で0点。"],"breakdance":["4択には必ず正解の1990が2つあります。どちらかを選ぶと次の問題へ。","16周で100点。5連続正解で1周ボーナス。"],"heroMaybe":["4択には必ずプラスの選択肢が2つあります。どちらかを選んで勇者を育てよう。","13秒の合計パワーを採点。"],"catcher":["38体のフィギュアを3回のクレーン操作で狙います。","1体4点、25体以上で100点。"],"catcherExtremeMob":["35体・1回勝負。大きさ→アーム幅→強さを順にSTOP。","各ゲージの中央の白線で止めると最大。3つとも中央なら35体すべてを狙えます。","つかむ操作は自動。35体で100点、結果はタップで進みます。"],"pk":["5本のシュートを左右に動いて止めます。","最初はゆっくり、1本ごとに速くなります。1本20点、5本で100点。"],"cut":["指定の割合を残すように切る1回勝負。","ぴったりで100点。誤差1%につき8点減点。"],"giantMob":["1秒ぴったりでタップ。時計の上部の赤線が1秒の位置です。","誤差が大きいとエネルギーが減少。12棟破壊で100点。"],"mobIssen":["落ちてくる丸太の中央を狙って一閃。1回勝負。","中心ぴったりで100点。中心から離れるほど減点。"],"plushCatcher":["100点・80点・65点のぬいぐるみから狙いを選びます。","中央の白線でキャッチする1回勝負。高得点ほど成功範囲が狭くなります。","成功で選んだぬいぐるみの点数、失敗で0点。"],"cardShop":["通常6枚。イベント発生時は種類を秘密にして開封！","10%で1枚追加、20%で全部MOB、30%でMOBとURのみ。残り40%は通常。","合計ポイントがスコアです。上限100点。"],"curlingMob":["方向とパワーを決める3投勝負。","石同士は衝突して押し合います。最後に止まった3個の位置の平均点で採点。"],"iaidoMaster":["合図が出た瞬間にタップする1人との居合勝負。","0.190秒以下で100点、0.300秒で80点。以降は遅れるほど減点。フライングは0点。"],"mobPinball":["落ちるボールが10ポイントのコインに触れると獲得。","最後のスロットの点数にコインを加算。上限100点。"],"ropeSwingMob":["最後のロープからの着地だけの1回勝負。","タップで手を離し、遠くへ着地しよう。190mで75点、210mで100点。"],"swimmingMob":["左右を交互に押して加速。30mごとに赤ラインが現れます。","沈むボタンを長押しすると潜水しながら前進し、赤ラインを回避できます。","離すと浮上。10秒の距離を競い、120mで100点。"],"zeroOrHundredMob":["通常は0・100の2択。3秒以内に入口を選ぼう。","50%の確率でボーナスタイム！ 0が1つ、100が2つの3択になります。","到着した数字がそのまま得点。時間切れは0点。"],"bowling3DMob":["1フレーム・最大2球。ストライクは100点、スペアは90点。","10本未満は倒したピン1本につき9点。"]};
+const OCTOBER_RULES={"reaction":["MOBの文字が出た瞬間タップ。フライングに注意！","0.150秒以下で100点、0.300秒で50点。"],"puzzle":["1〜7を小さい順にタップ。7を消した瞬間のタイムで採点。","2.3秒以下で100点、3秒で75点。6秒以上で0点。"],"breakdance":["4択には必ず正解の1990が2つあります。どちらかを選ぶと次の問題へ。","16周で100点。5連続正解で1周ボーナス。"],"heroMaybe":["4択には必ずプラスの選択肢が2つあります。どちらかを選んで勇者を育てよう。","13秒の合計パワーを採点。"],"catcher":["38体のフィギュアを3回のクレーン操作で狙います。","1体4点、25体以上で100点。"],"catcherExtremeMob":["35体・1回勝負。大きさ→アーム幅→強さを順にSTOP。","各ゲージの中央の白線で止めると最大。3つとも中央なら35体すべてを狙えます。","つかむ操作は自動。35体で100点、結果はタップで進みます。"],"pk":["5本のシュートを左右に動いて止めます。","最初はゆっくり、1本ごとに速くなります。1本20点、5本で100点。"],"cut":["指定の割合を残すように切る1回勝負。","ぴったりで100点。誤差1%につき8点減点。"],"giantMob":["1秒ぴったりでタップ。時計の上部の赤線が1秒の位置です。","誤差が大きいとエネルギーが減少。18棟破壊で100点。"],"mobIssen":["落ちてくる丸太の中央を狙って一閃。1回勝負。","中心ぴったりで100点。中心から離れるほど減点。"],"plushCatcher":["100点・80点・65点のぬいぐるみから狙いを選びます。","中央の白線でキャッチする1回勝負。高得点ほど成功範囲が狭くなります。","成功で選んだぬいぐるみの点数、失敗で0点。"],"cardShop":["通常6枚。イベント発生時は種類を秘密にして開封！","10%で1枚追加、20%で全部MOB、30%でMOBとURのみ。残り40%は通常。","合計ポイントがスコアです。上限100点。"],"curlingMob":["方向とパワーを決める3投勝負。","石同士は衝突して押し合います。最後に止まった3個の位置の平均点で採点。"],"iaidoMaster":["合図が出た瞬間にタップする1人との居合勝負。","0.190秒以下で100点、0.300秒で80点。以降は遅れるほど減点。フライングは0点。"],"mobPinball":["落ちるボールが10ポイントのコインに触れると獲得。","最後のスロットの点数にコインを加算。上限100点。"],"ropeSwingMob":["最後のロープからの着地だけの1回勝負。","タップで手を離し、遠くへ着地しよう。190mで75点、230mで100点。"],"swimmingMob":["左右を交互に押して加速。30mごとに赤ラインが現れます。","沈むボタンを長押しすると潜水しながら前進し、赤ラインを回避できます。","離すと浮上。10秒の距離を競い、120mで100点。"],"zeroOrHundredMob":["通常は0・100の2択。3秒以内に入口を選ぼう。","50%の確率でボーナスタイム！ 0が1つ、100が2つの3択になります。","到着した数字がそのまま得点。時間切れは0点。"],"bowling3DMob":["1フレーム・最大2球。ストライクは100点、スペアは90点。","10本未満は倒したピン1本につき9点。"]};
 function scoreRuleForGame(index){
   if(OCTOBER_RULES[GAMES[index]?.key])return OCTOBER_RULES[GAMES[index].key].join(' ');
   if(["juiceArcadeMob","rallyArcadeMob","potteryArcadeMob","galaxyArcadeMob","archeryArcadeMob","lockArcadeMob","shieldArcadeMob","dockingArcadeMob","cargoArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob"].includes(GAMES[index]?.key))return GAMES[index].sub;
@@ -3004,7 +3004,7 @@ function scoreRuleForGame(index){
   if(legacyIndex===133)return "3秒以内に選択 / あみだくじの到着点は0点 または100点 / 時間切れ=0点";
   if(legacyIndex===134)return "MOB花火の打ち上げ距離 / 1000mで100点";
   if(legacyIndex===135)return "15秒で正しく分別した紙ゴミ数 / 20個で100点";
-  if(legacyIndex===136)return "全30個を吸い切るタイム / 2.50秒以下=100点 / 7.50秒以上=0点";
+  if(legacyIndex===136)return "全30個を吸い切るタイム / 2.35秒以下=100点 / 7.50秒以上=0点";
   if(legacyIndex===137)return "10秒以内にモブくんを丸で囲う / 1.5秒以内100点、10秒で0点 / 時間切れ後に答え表示";
   if(legacyIndex===138)return "10秒で相手おはじきを落とす / 1個10点 / 10個=100点 / 自分が落ちたら終了";
   if(legacyIndex===139)return "崩れたブロック1個=3点 / 30個すべて崩れるまで生存できたら100点";
@@ -3095,7 +3095,7 @@ function scoreRuleForGame(index){
     "飛行距離100km=100点 / 0km=0点",
     "他校番長を倒すまでのタイム / 短いほど高得点",
     "3回GET=100点 / 2回・1回はGET数+使用時間で加点",
-    "OFF5体を全部ON / 1.40秒以下=100点 / 6.50秒以上=0点",
+    "OFF5体を全部ON / 1.30秒以下=100点 / 6.50秒以上=0点",
     "10秒で10体KO=100点 / 0体=0点",
     "到達したゴール数字がそのまま0〜100点",
     "縦向き刀身の長さ・接続・滑らかさ・形を1〜100点",
@@ -3438,7 +3438,7 @@ function showGameIntro(index){
   }else if(legacyIndex===135){
     rules=`<li>15秒間、右から手前へゆっくり流れてくる赤・青・黄色のくしゃくしゃ紙を、画面を上左・上・上右へスワイプして分別します。スワイプでは必ず列の先頭のゴミが動きます。</li><li>先頭が黒いゴミなら、その黒いゴミをタップして消します。黒は点数にもMISSにも入りません。正解するとゴミ箱の上へ「ポイ！」。20個正解で100点です。</li>`;
   }else if(legacyIndex===136){
-    rules=`<li>見下ろし型。長押ししたまま移動すると掃除機で周囲のゴミを吸います。</li><li>30個すべてを吸い終えるまでのタイムを競います。2.50秒以下が100点ラインです。</li>`;
+    rules=`<li>見下ろし型。長押ししたまま移動すると掃除機で周囲のゴミを吸います。</li><li>30個すべてを吸い終えるまでのタイムを競います。2.35秒以下が100点ラインです。</li>`;
   }else if(legacyIndex===137){
     rules=`<li>看板・車・箱・植木・コーンなど大量のオブジェが散乱する街中から、10秒以内に共通の赤いモブくんを探します。選択キャラで難易度は変わりません。</li><li>見つけたらタップではなく指で丸く囲います。時間切れになると操作終了し、本物の位置を「答えはここ！」で表示します。</li>`;
   }else if(legacyIndex===138){
@@ -26572,11 +26572,11 @@ async function startPoiGameMob(p,humanIndex,runId){
 
 async function startCleaningMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='cleaningMob');
-  screen.innerHTML=`<div class="clean-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのお掃除</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="cleanTime203">0.00</b></div><div><span>CLEAN</span><b id="cleanScore203">0 / 30</b></div><div><span>100 PT</span><b>2.50秒</b></div></div><div id="cleanStage203" class="clean-stage-v203"><div class="clean-floor-v203"></div><div id="cleanTrashLayer203"></div><div id="cleanMob203" class="clean-mob-v203"><img src="${partyActorImage()}" draggable="false" alt=""><i class="clean-vacuum-v203"></i><span class="clean-suction-v203"></span></div><div class="clean-tip-v203">30個は毎回ステージ全体へ分散。長押し移動で全部吸え！</div></div></div>`;
+  screen.innerHTML=`<div class="clean-shell-v203 gameplay-fit"><div class="game-head"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんのお掃除</h2></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="v203-hud"><div><span>TIME</span><b id="cleanTime203">0.00</b></div><div><span>CLEAN</span><b id="cleanScore203">0 / 30</b></div><div><span>100 PT</span><b>2.35秒</b></div></div><div id="cleanStage203" class="clean-stage-v203"><div class="clean-floor-v203"></div><div id="cleanTrashLayer203"></div><div id="cleanMob203" class="clean-mob-v203"><img src="${partyActorImage()}" draggable="false" alt=""><i class="clean-vacuum-v203"></i><span class="clean-suction-v203"></span></div><div class="clean-tip-v203">30個は毎回ステージ全体へ分散。長押し移動で全部吸え！</div></div></div>`;
   const stage=document.getElementById('cleanStage203'),layer=document.getElementById('cleanTrashLayer203'),mob=document.getElementById('cleanMob203'),timeEl=document.getElementById('cleanTime203'),scoreEl=document.getElementById('cleanScore203');void stage.offsetHeight;const W=stage.clientWidth,H=stage.clientHeight;let mx=W*.5,my=H*.55,tx=mx,ty=my,holding=false,score=0,finished=false,start=0,last=performance.now(),raf=null;const cols=6,rows=5,cellW=(W-30)/cols,usableH=H-105,cellH=usableH/rows;const trash=Array.from({length:30},(_,i)=>{const c=i%cols,r=Math.floor(i/cols),o={x:15+(c+.5)*cellW+rand(-cellW*.22,cellW*.22),y:62+(r+.5)*cellH+rand(-cellH*.22,cellH*.22),dead:false,el:document.createElement('i')};o.el.className=`clean-trash-v203 t${i%5}`;o.el.style.left=`${o.x}px`;o.el.style.top=`${o.y}px`;layer.appendChild(o.el);return o});
   function setTarget(e){const r=stage.getBoundingClientRect();tx=clamp(e.clientX-r.left,28,W-28);ty=clamp(e.clientY-r.top,65,H-32)}stage.addEventListener('pointerdown',e=>{if(finished)return;e.preventDefault();holding=true;setTarget(e);mob.classList.add('vacuuming-v203');try{stage.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});stage.addEventListener('pointermove',e=>{if(!holding||finished)return;e.preventDefault();setTarget(e)},{passive:false});const release=()=>{holding=false;mob.classList.remove('vacuuming-v203')};stage.addEventListener('pointerup',release);stage.addEventListener('pointercancel',release);
   function render(){mob.style.transform=`translate3d(${mx-42}px,${my-40}px,0)`}render();void stage.offsetHeight;if(!(await countdown('CLEAN ALL',runId,{transparent:true})))return;start=last=performance.now();
-  function finish(now,complete=true){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);release();const ms=complete?Math.max(1,Math.round(now-start)):20000;state.records.cleaningMob[p.id]=ms;timeEl.textContent=(ms/1000).toFixed(2);beep(complete&&ms<=2500?1180:complete&&ms<=4500?880:260,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${(ms/1000).toFixed(2)}<small>秒</small>`,complete?`30 / 30 CLEAN / 2.50秒=100点`:`TIME UP / ${score} / 30 CLEAN`)},700)}
+  function finish(now,complete=true){if(finished)return;finished=true;if(raf)cancelAnimationFrame(raf);release();const ms=complete?Math.max(1,Math.round(now-start)):20000;state.records.cleaningMob[p.id]=ms;timeEl.textContent=(ms/1000).toFixed(2);beep(complete&&ms<=2500?1180:complete&&ms<=4500?880:260,180,.04);setTimeout(()=>{if(isGameRunValid(runId))recordScreen(gameIndex,p,humanIndex,`${(ms/1000).toFixed(2)}<small>秒</small>`,complete?`30 / 30 CLEAN / 2.35秒=100点`:`TIME UP / ${score} / 30 CLEAN`)},700)}
   function frame(now){if(!isGameRunValid(runId)||finished)return;const dt=Math.min(.03,(now-last)/1000);last=now;if(holding){const dx=tx-mx,dy=ty-my,d=Math.hypot(dx,dy)||1,step=Math.min(d,382*dt);mx+=dx/d*step;my+=dy/d*step;trash.forEach(t=>{if(t.dead)return;const dd=Math.hypot(t.x-(mx+27),t.y-my);if(dd<94){t.x+=(mx+20-t.x)*Math.min(1,dt*9.5);t.y+=(my-t.y)*Math.min(1,dt*9.5);t.el.style.left=`${t.x}px`;t.el.style.top=`${t.y}px`;if(dd<29){t.dead=true;score++;scoreEl.textContent=`${score} / 30`;t.el.classList.add('sucked-v203');beep(620+score*5,18,.005)}}})}render();timeEl.textContent=((now-start)/1000).toFixed(2);if(score>=30){finish(now,true);return}if(now-start>=20000){finish(now,false);return}raf=requestAnimationFrame(frame)}raf=requestAnimationFrame(frame)
 }
 
@@ -27689,7 +27689,7 @@ function performancePoints(gameIndex,v){
     if(v>=6000)return 0;
     return clamp(Math.round((6000-v)/3200*100),0,100);
   }
-  if(legacyIndex===38)return clamp(Math.round(v/12*100),0,100);
+  if(legacyIndex===38)return clamp(Math.round(v/18*100),0,100);
   if(legacyIndex===39)return clamp(Math.round(v/20*100),0,100);
   if(legacyIndex===40){
     if(v<=10000)return 100;
@@ -27720,9 +27720,9 @@ function performancePoints(gameIndex,v){
   }
   if(legacyIndex===52)return clamp(Math.round(v),0,100);
   if(legacyIndex===53){
-    if(v<=1400)return 100;
+    if(v<=1300)return 100;
     if(v>=6500)return 0;
-    return clamp(Math.round((6500-v)/5100*100),0,100);
+    return clamp(Math.round((6500-v)/5200*100),0,100);
   }
   if(legacyIndex===54)return clamp(Math.round(v/10*100),0,100);
   if(legacyIndex===55)return clamp(Math.round(v),0,100);
@@ -27796,7 +27796,7 @@ function performancePoints(gameIndex,v){
     return clamp(Math.round(v),0,100);
   }
   if(legacyIndex===108){
-    return clamp(Math.round(v<=190?v/190*75:75+(v-190)/20*25),0,100);
+    return clamp(Math.round(v<=190?v/190*75:75+(v-190)/40*25),0,100);
   }
   if(legacyIndex===118)return clamp(Math.round(v/3000*100),0,100);
   if(legacyIndex===119)return clamp(Math.round(v),0,100);
@@ -27812,7 +27812,7 @@ function performancePoints(gameIndex,v){
   if(legacyIndex===133)return clamp(Math.round(v),0,100);
   if(legacyIndex===134)return clamp(Math.round(v/1000*100),0,100);
   if(legacyIndex===135)return clamp(Math.round(v/20*100),0,100);
-  if(legacyIndex===136){if(v<=2500)return 100;if(v>=7500)return 0;return clamp(Math.round((7500-v)/5000*100),0,100);}
+  if(legacyIndex===136){if(v<=2350)return 100;if(v>=7500)return 0;return clamp(Math.round((7500-v)/5150*100),0,100);}
   if(legacyIndex===137){if(v<=1500)return 100;if(v>=10000)return 0;return clamp(Math.round((10000-v)/8500*100),0,100);}
   if(legacyIndex===138)return clamp(Math.round(v*10),0,100);
   if(legacyIndex===139)return v>=30?100:clamp(Math.round(v*3),0,100);
@@ -38626,14 +38626,14 @@ function mobCupSpecialSimCpuPhase(){const c=state.mobCupSpecial;c.phaseGames.for
 // =========================================================
 async function startMergeMob(p,humanIndex,runId){
   gameFit();const gameIndex=GAMES.findIndex(g=>g.key==='mergeMob');
-  screen.innerHTML=`<div class="mg226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんマージ</h2><p class="lead">同じ大きさを重ねて進化！</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="mg226-hud"><b id="mgScore226">0 PT</b><span id="mgTime226">10.0</span><em id="mgMax226">MAX Lv1</em></div><div id="mgField226" class="mg226-field"></div><div class="mg227-bottom"><b>Lv6 = 100 PT</b><span>同じモブをドラッグして重ねる</span><div id="mgCall226" class="mg227-call">Lv6まで育てろ！</div></div></div>`;
+  screen.innerHTML=`<div class="mg226-shell gameplay-fit v203-safe-game"><div class="game-head compact-v219"><div><span class="kicker">${esc(p.name)}</span><h2>モブくんマージ</h2><p class="lead">同じ大きさを重ねて進化！</p></div><div class="game-badge">${playBadge(humanIndex)}</div></div><div class="mg226-hud"><b id="mgScore226">0 PT</b><span id="mgTime226">10.0</span><em id="mgMax226">MAX Lv1</em></div><div id="mgField226" class="mg226-field"></div><div class="mg227-bottom"><b>Lv6 = 100 PT</b><span>同じモブをドラッグして重ねる</span><div id="mgCall226" class="mg227-call">補充でラッキーLv3が出ることも！</div></div></div>`;
   const field=document.getElementById('mgField226'),scoreEl=document.getElementById('mgScore226'),timeEl=document.getElementById('mgTime226'),maxEl=document.getElementById('mgMax226'),call=document.getElementById('mgCall226');void field.offsetHeight;const W=field.clientWidth,H=field.clientHeight;
   const balls=[];let score=0,maxLv=1,merges=0,active=false,finished=false,start=0,raf=null,drag=null,idSeq=0;
   function add(lv,x=rand(34,W-34),y=rand(36,H-36)){const el=document.createElement('div');el.className=`mg226-ball lv${lv}`;el.innerHTML=`<img src="${partyActorImage()}" alt="">`;field.appendChild(el);const b={id:++idSeq,lv,x,y,el,alive:true};balls.push(b);renderBall(b);return b}
   function renderBall(b){const r=18+b.lv*3;b.el.style.width=b.el.style.height=`${r*2}px`;b.el.style.transform=`translate3d(${b.x-r}px,${b.y-r}px,0)`;b.el.setAttribute('aria-label',b.lv===6?'MOB':`level ${b.lv}`)}
   function findTarget(b){let best=null,bd=1e9;for(const q of balls){if(q===b||!q.alive||q.lv!==b.lv||b.lv>=6)continue;const d=Math.hypot(q.x-b.x,q.y-b.y);if(d<bd){bd=d;best=q}}return bd<42+b.lv*5?best:null}
   function scoreNow(){if(maxLv>=6)return 100;const lvBase=[0,0,12,28,48,72][maxLv]||0;return clamp(Math.round(lvBase+Math.min(20,merges*2)),0,99)}
-  function merge(a,b){if(!a.alive||!b.alive||a.lv>=6)return;const lv=Math.min(6,a.lv+1),x=(a.x+b.x)/2,y=(a.y+b.y)/2;a.alive=b.alive=false;a.el.remove();b.el.remove();merges++;maxLv=Math.max(maxLv,lv);score=scoreNow();scoreEl.textContent=`${score} PT`;maxEl.textContent=`MAX ${lv===6?'MOB Lv6':'Lv'+lv}`;call.textContent=lv===6?'MOB Lv6 COMPLETE!! 100 PT':`Lv${lv} MERGE!`;call.classList.remove('burst');void call.offsetWidth;call.classList.add('burst');beep(600+lv*100,80,.02);const nb=add(lv,x,y);nb.el.classList.add('born');setTimeout(()=>nb.el.classList.remove('born'),260);if(lv<6&&balls.filter(q=>q.alive).length<14)add(Math.random()<.72?1:2)}
+  function merge(a,b){if(!a.alive||!b.alive||a.lv>=6)return;const lv=Math.min(6,a.lv+1),x=(a.x+b.x)/2,y=(a.y+b.y)/2;a.alive=b.alive=false;a.el.remove();b.el.remove();merges++;maxLv=Math.max(maxLv,lv);score=scoreNow();scoreEl.textContent=`${score} PT`;maxEl.textContent=`MAX ${lv===6?'MOB Lv6':'Lv'+lv}`;call.textContent=lv===6?'MOB Lv6 COMPLETE!! 100 PT':`Lv${lv} MERGE!`;call.classList.remove('burst');void call.offsetWidth;call.classList.add('burst');beep(600+lv*100,80,.02);const nb=add(lv,x,y);nb.el.classList.add('born');setTimeout(()=>nb.el.classList.remove('born'),260);if(lv<6&&balls.filter(q=>q.alive).length<14)add(window.MobGameBalance.mergeSpawnLevel())}
   for(let i=0;i<12;i++)add(i<8?1:2);
   field.addEventListener('pointerdown',e=>{if(!active||finished)return;const rect=field.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;const b=[...balls].reverse().find(q=>q.alive&&Math.hypot(q.x-x,q.y-y)<32+q.lv*3);if(!b)return;e.preventDefault();drag={b,dx:x-b.x,dy:y-b.y};b.el.classList.add('drag');field.setPointerCapture?.(e.pointerId)},{passive:false});
   field.addEventListener('pointermove',e=>{if(!drag)return;e.preventDefault();const rect=field.getBoundingClientRect();drag.b.x=clamp(e.clientX-rect.left-drag.dx,28,W-28);drag.b.y=clamp(e.clientY-rect.top-drag.dy,28,H-28);renderBall(drag.b)},{passive:false});

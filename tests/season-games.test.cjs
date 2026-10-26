@@ -37,9 +37,9 @@ test('six continuous walls reward centered taps and accelerate strongly through 
   const speeds=Array.from({length:6},(_,i)=>games.runPosition(1,i)-.12);
   assert.ok(speeds[0]>.245*1.2);
   for(let i=1;i<6;i++)assert.ok(speeds[i]>speeds[i-1]+.05);
-  assert.ok(Math.abs(speeds[5]-(.30+5*.055)*1.21)<1e-9);
-  // The final guaranteed-success window is still roughly 72ms wide.
-  assert.ok((.09*(1-.72)*2)/speeds[5]>.072);
+  assert.ok(Math.abs(speeds[5]-(.30+5*.055)*1.21*1.25)<1e-9);
+  // The final guaranteed-success window is still roughly 58ms wide.
+  assert.ok((.09*(1-.72)*2)/speeds[5]>.057);
   assert.ok(games.wallResult(5,1,.72,.999).clear);
   const at=t=>games.climbPose(t,5,true,1,.49).height;
   assert.ok(at(.9)-at(.8)>at(.4)-at(.3),'climbing accelerates');

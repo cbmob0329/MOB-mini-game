@@ -5,3 +5,5 @@ test('retired choices are absent in every current league candidate set',()=>{for
 
 test('card event intervals are mutually exclusive 10/20/30 percent',()=>{for(const [r,want]of [[0,'extra'],[.099,'extra'],[.1,'mob'],[.299,'mob'],[.3,'premium'],[.599,'premium'],[.6,null],[.999,null]])assert.equal(balance.cardEvent(()=>r),want);});
 test('even perfect CPU bomb scores retain human-scale timing error',()=>{const E=require('../party-league-events.js');for(const score of [0,50,90,100])for(const r of [0,.1,.5,.999]){const record=E.cpuBombRecord(score,()=>r);assert.ok(record.error>=15);assert.ok(Number.isInteger(record.elapsed));}});
+
+test('merge refill has an eight percent lucky level three without exceeding it',()=>{for(const [r,want]of [[0,1],[.619,1],[.62,2],[.919,2],[.92,3],[.999,3]])assert.equal(balance.mergeSpawnLevel(()=>r),want);});

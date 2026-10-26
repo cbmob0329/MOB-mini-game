@@ -1,6 +1,6 @@
 /* User-approved displayed game numbers. Never legacy indices. */
 (function(root){'use strict';
-const RETIRED=["catcherExtremeMob","mobTrain","wizardMob","bossDuel","mobMisfortune","mobMusou","hurdleRun","pkKicker","bowlingMob","billiardsBattleRoyale","linkedCartBlast","soloCartBlast","tokotokoCatcher","rocketPunch","flagRaise","flyingCarpet","senryobakoMob","sphereMob","cheerLeaderMob","fireworkStandMob","findMob","dontBreakBlocksMob","electricMaze2","truckHaulMob","mathChallengeMob","colorTrapMob","elevatorMob","cashierMob","coinPusherMob","colorBridgeParty","archeryArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob","battleRoyaleMob","ringToss3DMob","homeRun3DMob","puttGolf3DMob","freeThrow3DMob","curling3DMob","punchMachine3DMob","coinPusher3DMob","blackjack3DMob","skiJump3DMob","craneGame3DMob","giantHammer3DMob","shotPut3DMob","rescueHeli3DMob","submarine3DMob","foodCatch3DMob","buildingClimb3DMob","mazeBall3DMob"];
+const RETIRED=["heroMaybe","planetEnergy","catcherExtremeMob","mobTrain","wizardMob","bossDuel","mobMisfortune","mobMusou","hurdleRun","pkKicker","bowlingMob","billiardsBattleRoyale","linkedCartBlast","soloCartBlast","tokotokoCatcher","rocketPunch","flagRaise","flyingCarpet","senryobakoMob","sphereMob","cheerLeaderMob","fireworkStandMob","findMob","dontBreakBlocksMob","electricMaze2","truckHaulMob","mathChallengeMob","colorTrapMob","elevatorMob","cashierMob","coinPusherMob","colorBridgeParty","archeryArcadeMob","pancakeArcadeMob","firehoseArcadeMob","discArcadeMob","battleRoyaleMob","ringToss3DMob","homeRun3DMob","puttGolf3DMob","freeThrow3DMob","curling3DMob","punchMachine3DMob","coinPusher3DMob","blackjack3DMob","skiJump3DMob","craneGame3DMob","giantHammer3DMob","shotPut3DMob","rescueHeli3DMob","submarine3DMob","foodCatch3DMob","buildingClimb3DMob","mazeBall3DMob"];
 const ALLOWED=[
   {
     "no": 1,
@@ -96,16 +96,6 @@ const ALLOWED=[
     "no": 26,
     "key": "jumpingMob",
     "title": "ジャンピングモブくん"
-  },
-  {
-    "no": 27,
-    "key": "heroMaybe",
-    "title": "モブくんは勇者かも"
-  },
-  {
-    "no": 29,
-    "key": "planetEnergy",
-    "title": "モブくんは破壊神"
   },
   {
     "no": 30,
