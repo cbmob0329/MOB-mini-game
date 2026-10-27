@@ -2,6 +2,7 @@
 (function(root){
   'use strict';
   const pieceRanks=root.MobPieceRanks||(typeof module!=='undefined'&&module.exports?require('./party-piece-ranks.js'):null);
+  const settings=root.MobCharacterSettings||(typeof module!=='undefined'&&module.exports?require('./party-character-settings.js'):{profiles:{},disabled:[]});
   const groups=[
     ['MAIN CHARACTERS',[[1,'モブパティレッド','A+-S+'],[2,'モブパティブルー','A+-S+'],[3,'モブパティゴールド','A'],[4,'モブパティシルバー','B'],[5,'モブパティトレーナー','C'],[6,'モブパティDJ','C'],[7,'モブパティロボ','B'],[46,'モブボタン','D--C+','main/46.png'],[47,'モブスティック','D--C+','main/47.png'],[48,'モブキー','D--C+','main/48.png'],[49,'モブカード','D+-B-','main/49.png'],[50,'モブハート','D+-B-','main/50.png'],[51,'モブチップ','D+-B-','main/51.png'],[52,'モブベッド','D+-B-','main/52.png'],[53,'モブ62モデル','D+-B-','main/53.png'],[54,'モブ63モデル','D+-B-','main/54.png'],[55,'モブ長浜カエル','D+-B-','main/55.png'],[56,'モブモンスターDJ','C+-B+','main/56.png'],[79,'モブサイレンサー','C-B+','main/79.png'],[80,'モブバレット','C+-A-','main/80.png']]],
     ['MOB STORY',[[9,'モブ勇者','SS'],[11,'モブデンデン','S'],[12,'モブピンク','A+-S+'],[13,'モブマニー','S'],[24,'モブイルカエル(酒場)','A'],[25,'モブコーチ','C-A'],[26,'モブゴンゾー','C-A'],[27,'モブマテリア','B-A']]],
@@ -162,6 +163,8 @@
   mainAdditions.push([4113,'モブルビチィー','A+-S','main/mascots/mob-rubichy.png']);
   groups.find(([name])=>name==='MAIN CHARACTERS')[1].push(...mainAdditions);
   const roster=groups.flatMap(([group,rows])=>rows.map(([id,name,rank,img])=>({id,name,rank:pieceRanks?.profiles[id]?.rank||rank,group,img:img||`main/${String(id).padStart(3,'0')}.png`})));
+  const allCharacters=roster.map(c=>({...c}));
+  for(let i=roster.length-1;i>=0;i--){const c=roster[i];if(settings.disabled.includes(c.id))roster.splice(i,1);else if(settings.profiles[c.id]?.rank)c.rank=settings.profiles[c.id].rank;}
   // The tavern Ilukaeru belongs to STORY; SHOT's namesake is a different character.
   const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36],[18,19],[18,20],[38,39],[40,41],[42,44],[45,43],[81,82],[4001,108],[4004,4005],[4006,4007],[4008,4009],[4010,4011],[4107,4108],[4109,4110],[4111,4112]];
   const pick=(items,random)=>items[Math.floor(random()*items.length)];
@@ -190,6 +193,15 @@
   function rankValue(rank){const values={F:0,E:1,'D-':1.75,D:2,'D+':2.5,C:3,'C+':3.5,'B-':3.75,B:4,'B+':4.5,'A-':4.75,A:5,'A+':5.5,'S-':5.75,S:6,'S+':6.5,SS:7},[lo,hi]=rankParts(rank);return (values[lo]+values[hi])/2;}
   function resolveRank(rank,random=Math.random){const [lo,hi=lo]=rankBounds(rank);return rankOrder[lo+Math.floor(random()*(hi-lo+1))]||'C';}
   function characterRank(player,game={},random=Math.random){
+    const c=roster.find(c=>c.img===player.img)||player,profile=settings.profiles[c.id];
+    if(profile){const traits={...gameTraits(game),luck:genre(game)==='運・駆け引き'};
+      const ranks=Object.entries(profile.traits||{}).filter(([key,rank])=>rank&&traits[key]).map(([,rank])=>rank);
+      const rank=ranks.sort((a,b)=>rankValue(b)-rankValue(a))[0]||profile.rank;
+      if(rank)return resolveRank(rank,random);
+    }
+    return originalCharacterRank(player,game,random);
+  }
+  function originalCharacterRank(player,game={},random=Math.random){
     const c=roster.find(c=>c.img===player.img)||player;
     if(pieceRanks?.profiles[c.id])return pieceRanks.resolve(c.id,gameTraits(game),random);
     const {brain,sport,running,flying}=gameTraits(game);
@@ -313,7 +325,7 @@
   function bestPlayWinners(stats){
     return stats.filter(s=>s.highlight).sort((a,b)=>b.highlight.rarity-a.highlight.rarity||b.highlight.margin-a.highlight.margin||b.perfect-a.perfect||b.baseTotal/Math.max(1,b.played)-a.baseTotal/Math.max(1,a.played)||String(a.p.id).localeCompare(String(b.p.id))).slice(0,2);
   }
-  const core={groups,roster,characterRank,rankValue,resolveRank,cpuScore,cpuRaw,allocateTeams,leagueCpuPairs,tournamentLevels,tournamentPool,representativeKeys,genre,bridgeScore,gameTraits,awardStats,bestPlayWinners};
+  const core={groups,roster,allCharacters,rankOrder,rankParts,characterRank,rankValue,resolveRank,cpuScore,cpuRaw,allocateTeams,leagueCpuPairs,tournamentLevels,tournamentPool,representativeKeys,genre,bridgeScore,gameTraits,awardStats,bestPlayWinners};
   if(typeof module!=='undefined'&&module.exports)module.exports=core;
   root.MobPartyCore=core;
 })(typeof window!=='undefined'?window:globalThis);

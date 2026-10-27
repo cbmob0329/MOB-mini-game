@@ -44,31 +44,31 @@
       {
         "mode": "tournament",
         "outcome": "win",
-        "steps": 196,
+        "steps": 31,
         "runs": 37,
-        "champion": "festival-4109",
+        "champion": "festival-4112",
         "whiteWins": false
       },
       {
         "mode": "white",
         "outcome": "win",
-        "steps": 4,
+        "steps": 0,
         "runs": 1,
-        "champion": "festival-65",
+        "champion": "festival-208",
         "whiteWins": false
       },
       {
         "mode": "world",
         "outcome": "win",
-        "steps": 87,
+        "steps": 49,
         "runs": 22,
-        "champion": "festival-66",
+        "champion": "festival-3018",
         "whiteWins": false
       },
       {
         "mode": "white",
         "outcome": "lose",
-        "steps": 4,
+        "steps": 0,
         "runs": 1,
         "champion": null,
         "whiteWins": true
@@ -121,31 +121,31 @@
       {
         "mode": "tournament",
         "outcome": "win",
-        "steps": 196,
+        "steps": 31,
         "runs": 37,
-        "champion": "festival-21",
+        "champion": "festival-4011",
         "whiteWins": false
       },
       {
         "mode": "white",
         "outcome": "win",
-        "steps": 4,
+        "steps": 0,
         "runs": 1,
-        "champion": "festival-61",
+        "champion": "festival-3105",
         "whiteWins": false
       },
       {
         "mode": "world",
         "outcome": "win",
-        "steps": 87,
+        "steps": 49,
         "runs": 22,
-        "champion": "festival-78",
+        "champion": "festival-34",
         "whiteWins": false
       },
       {
         "mode": "white",
         "outcome": "lose",
-        "steps": 4,
+        "steps": 0,
         "runs": 1,
         "champion": null,
         "whiteWins": true

@@ -3172,6 +3172,7 @@ function scoreRuleForGame(index){
 
 function showGameIntro(index){
   if(GAMES[index]?.removed){renderHome();return;}
+  if(participants().length&&!humans().length){state.gameIndex=index;state.partyRepresentatives=null;state.competitionStarted=true;state.records[GAMES[index].key]||={};simulateCpuThenResult(index);return;}
   if(presentClassicDraw(index,()=>showGameIntro(index)))return;
   if(!state.freePlay)state.competitionStarted=true;
   state.partyRepresentatives=null;
@@ -26717,31 +26718,10 @@ function recordScreen(gameIndex,p,humanIndex,main,sub=""){
 
 // CPU ----------------------------------------------------
 async function simulateCpuThenResult(gameIndex){
-  if(state.partyCup){const round=state.roundIndex;cpus().forEach(p=>simulateOneCpu(gameIndex,p));if(round===state.roundIndex)finishGame(gameIndex);return;}
   clearGameFit();
-  gameTop();
-  const list=cpus();
-  if(state.mobCup?.active){
-    screen.innerHTML=`<div class="mobcup-cpu-process-v201"><span>MOB CUP</span><h2>OTHER TEAMS PLAYING...</h2><div class="mobcup-cpu-dots-v201"><i></i><i></i><i></i></div><p>個人結果は表示しません。チームポイントを集計しています。</p></div>`;
-    for(const p of list){simulateOneCpu(gameIndex,p)}
-    await wait(360);
-    finishGame(gameIndex);
-    return;
-  }
-  screen.innerHTML=`<div class="cpu-sim"><div class="cpu-sim-box"><span class="kicker">CPU QUICK PROCESS</span><h2>CPU RESULT</h2><p class="lead">CPUは人間らしいばらつきに再調整。SUPER CPUはかなり低確率です。</p><div id="cpuRows">${list.map(p=>`<div class="cpu-row" data-cpu="${p.id}">${imgTag(p)}<div><b>${esc(p.name)}</b><span>CPU</span></div><div class="cpu-dot">•••</div></div>`).join("")}</div></div></div>`;
-
-  for(const p of list){
-    await wait(145);
-    const ultra=simulateOneCpu(gameIndex,p);
-    const row=screen.querySelector(`[data-cpu="${p.id}"] .cpu-dot`);
-    if(row){
-      row.textContent=ultra?"SUPER!":"DONE";
-      row.classList.add(ultra?"super":"done");
-      beep(ultra?820:470,ultra?65:30,.014);
-    }
-  }
-  await wait(480);
-  finishGame(gameIndex);
+  const round=state.roundIndex;
+  cpus().forEach(p=>simulateOneCpu(gameIndex,p));
+  if(round===state.roundIndex)finishGame(gameIndex);
 }
 
 function cpuUltraDraw(gameIndex){

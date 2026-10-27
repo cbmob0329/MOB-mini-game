@@ -37,8 +37,10 @@ window.MobFestival={create(api){
  }
  function teams(ids){return ids.map(id=>({id,members:[id],name:p(id).name}))}
  function configure(){api.configure(s.players,teams(s.players.map(p=>p.id)),{mode:'festival',title:TITLES[mode]});window.MobHumanPortraits=s.players.filter(p=>!p.cpu).map(p=>p.img)}
+ const cpuOnly=ids=>ids.every(id=>p(id).cpu);
  function begin(){
   s=R.create(mode,R.entrants(C.roster,selected,{tournament:32,white:40,world:80}[mode],mode==='tournament'));s.level=level;configure();save();
+  if(cpuOnly(s.players.map(p=>p.id))){progress();return}
   announce('OPENING · '+TITLES[mode],mode==='white'?'はいです！ 僕からの挑戦状です！ 40名のみんな、最後までついてくるです！':mode==='world'?'はいです！ 世界の頂点へ、80名の挑戦者はこっちらです！！':'はいです！ 32名、負けたら終わりの真剣勝負です！',s.players.map(p=>p.id),progress,'festival-opening');
  }
  function pool(){
@@ -71,33 +73,37 @@ window.MobFestival={create(api){
   const d=s.matchData;
   function playNext(){
    if(d.cursor>=d.draw.selected.length){revealMatch();return}
-   const key=d.draw.selected[d.cursor];run(key,ids,true,points=>{ids.forEach(id=>d.totals[id]+=points[id]);d.played.push(key);d.cursor++;save();view('GAME '+d.cursor+' · 記録を封印',rows(ids,{},true)+'<p>ポイントは勝者発表で公開します。</p>'+button(d.cursor<d.draw.selected.length?'次のゲームへ':'勝者発表へ'));on(playNext)});
+   const key=d.draw.selected[d.cursor];run(key,ids,true,points=>{ids.forEach(id=>d.totals[id]+=points[id]);d.played.push(key);d.cursor++;save();if(cpuOnly(ids)){playNext();return}view('GAME '+d.cursor+' · 記録を封印',rows(ids,{},true)+'<p>ポイントは勝者発表で公開します。</p>'+button(d.cursor<d.draw.selected.length?'次のゲームへ':'勝者発表へ'));on(playNext)});
   }
   function revealMatch(){
-   view('勝者は・・！！',rows(ids,{},true)+'<div class="festival-suspense">運命のスコア、解禁。</div>'+button('ポイントを発表！'),'festival-reveal');on(()=>{
+   if(cpuOnly(ids)){publish();return}
+   view('勝者は・・！！',rows(ids,{},true)+'<div class="festival-suspense">運命のスコア、解禁。</div>'+button('ポイントを発表！'),'festival-reveal');on(publish);function publish(){
     const result=R.bracketResult(s,d.totals);if(!result.tie)s.matchData=null;save();
     view(result.tie?'同点！ 延長戦へ':(result.champion?'決勝決着！':'WINNER！'),rows([...ids].sort((a,b)=>d.totals[b]-d.totals[a]),d.totals)+speech(result.tie?'まだ決まらないです！ 別のゲームで延長戦です！':esc(p(result.winner).name)+'の勝利です！！')+button(result.champion?'優勝セレモニーへ':result.tie?'延長ゲームを抽選':'次の対戦へ'),'festival-win');
-    on(()=>{if(result.tie){const exclude=d.played.length<pool().length?d.played:d.draw.selected;d.draw=selectDraw(5,1,exclude);d.cursor=0;save();roulette(d.draw,playNext)}else{s.matchData=null;save();progress()}});
-   });
+    on(()=>{if(result.tie){const exclude=d.played.length<pool().length?d.played:d.draw.selected;d.draw=selectDraw(5,1,exclude);d.cursor=0;save();if(cpuOnly(ids))playNext();else roulette(d.draw,playNext)}else{s.matchData=null;save();progress()}});
+   }
   }
   const stage=s.bracket.length===2?'FINAL':s.bracket.length===4?'SEMI FINAL':'BEST '+s.bracket.length;
+  if(cpuOnly(ids)){playNext();return}
   announce(stage+' · MATCH '+(s.match+1),count===3?'10候補から3ゲーム！ 合計得点で決着です！':'5候補から1ゲーム！ 1対1の真剣勝負です！',ids,()=>roulette(d.draw,playNext),'festival-versus');
  }
  function white(){
   if(!s.challenge){s.challenge={draw:selectDraw(5,1),limit:R.whiteLimit(s.level)};save()}
   const d=s.challenge;
-  roulette(d.draw,()=>{view('CLEAR LINE · '+d.limit+' pt',speech('今回のクリアラインは '+d.limit+'点！ この得点以上でクリアだよ！',true)+'<div class="festival-limit">'+d.limit+'<small> / 100 pt</small></div><h2>'+esc(title(d.draw.selected[0]))+'</h2>'+button('挑戦する！'),'festival-clearline');on(()=>run(d.draw.selected[0],s.active,false,points=>{
-   const result=R.whiteResult(s,points,d.limit),last=s.history.at(-1);s.challenge=null;save();
+  const play=()=>run(d.draw.selected[0],s.active,false,points=>{
+   const result=R.whiteResult(s,points,d.limit);s.challenge=null;save();
    if(result.whiteWins){whiteVictory();return}if(result.champion){champion(result.champion);return}
-   view('CLEAR！ '+result.survivors.length+'名が生存',speech('ナイッスです！ クリアしたみんなは次へ進むです！')+'<h2>クリア</h2>'+rows(result.survivors,points)+'<h2>脱落 · お疲れさまでした</h2>'+rows(result.out,points)+button('次の挑戦へ'),'festival-clear');on(progress);
-  }))});
+   view('CLEAR！ '+result.survivors.length+'名が生存','<p>'+esc(title(d.draw.selected[0]))+' · クリアライン '+d.limit+'点</p><h2>クリア</h2>'+rows(result.survivors,points)+'<h2>脱落 · お疲れさまでした</h2>'+rows(result.out,points)+button('次の挑戦へ'),'festival-clear');on(progress);
+  });
+  if(cpuOnly(s.active)){play();return}
+  roulette(d.draw,()=>{view('CLEAR LINE · '+d.limit+' pt',speech('今回のクリアラインは '+d.limit+'点！ この得点以上でクリアだよ！',true)+'<div class="festival-limit">'+d.limit+'<small> / 100 pt</small></div><h2>'+esc(title(d.draw.selected[0]))+'</h2>'+button('挑戦する！'),'festival-clearline');on(play)});
  }
  function whiteVictory(){
   view('GAME OVER',speech('僕の勝っちです！！')+'<div class="festival-white-win"><img src="assets/commentary/mob-white.png" alt="モブホワイト"><strong>モブホワイト WIN！</strong></div><p>全員脱落。最後まで挑んでくれてありがとうです！</p>'+button('ホームへ'),'festival-gameover');on(()=>{localStorage.removeItem(SAVE);api.home()});api.beep(330,300,.035);
  }
  function standings(heading,ids,scores,done){const sorted=R.ranked(ids,scores).map(r=>r.id);view(heading,rows(sorted,scores)+button());on(done)}
  function world(){
-  if(s.phase==='cutoff'){const d=selectDraw(5,1);announce('決勝進出・同点延長戦',s.cut.slots+'枠を争うです！ 別ゲームの得点で決めるです！',s.active,()=>roulette(d,()=>run(d.selected[0],s.active,false,points=>{R.cutoffResult(s,points);save();if(s.phase==='final')finalists();else world()})));return}
+  if(s.phase==='cutoff'){const d=selectDraw(5,1),ids=[...s.active],play=()=>run(d.selected[0],ids,false,points=>{R.cutoffResult(s,points);save();standings('決勝進出・同点延長戦の結果',ids,points,()=>{if(s.phase==='final')finalists();else world()})});if(cpuOnly(ids))play();else announce('決勝進出・同点延長戦',s.cut.slots+'枠を争うです！ 別ゲームの得点で決めるです！',ids,()=>roulette(d,play));return}
   if(s.phase==='final'||s.phase==='showdown'){worldFinal();return}
   const ids=R.worldActive(s),pair=R.MATCHUPS[s.leg],label=pair.map(i=>String.fromCharCode(65+i)).join(' VS ');
   if(!s.worldDraw){s.worldDraw=selectDraw(10,3);s.legScores={};save()}
@@ -109,6 +115,7 @@ window.MobFestival={create(api){
     standings(label+' の総合はこっちらです！',ids,s.legScores,()=>standings('A～D・80名の総合はこっちらです！',s.players.map(p=>p.id),s.phase==='final'?s.qualifyingScores:s.scores,()=>{s.worldDraw=null;save();if(s.phase==='final')finalists();else world()}));
    });
   })}
+  if(cpuOnly(ids)){nextGame();return}
   announce('続いてのグループはこっちらです！ · '+label,'10候補から3ゲーム！ 40名で勝負です！',ids,()=>roulette(d,nextGame),'festival-opening');
  }
  function finalists(){announce('決勝に進む上位20名はこっちらです！！','決勝は0点スタート！ 80点で点灯、点灯後の1位で優勝です！ 5人点灯ごとに集中爆弾です！',s.finalists,worldFinal,'festival-qualified')}
@@ -118,8 +125,9 @@ window.MobFestival={create(api){
    const result=R.worldResult(s,points,{bomb});save();
    if(s.champion){champion(s.champion);return}
    const show=()=>standings('GAME '+s.history.length+' の結果はこちら！',ids,points,()=>standings('決勝の総合順位はこちら！',s.finalists,s.scores,worldFinal));
-   if(result.newLit?.length)announce('MATCH POINT · 点灯！','次の単独1位で優勝です！！',result.newLit,show,'festival-ignition');else show();
+   if(result.newLit?.length&&!cpuOnly(ids))announce('MATCH POINT · 点灯！','次の単独1位で優勝です！！',result.newLit,show,'festival-ignition');else show();
   });
+  if(cpuOnly(ids)){play();return}
   if(bomb)announce('点灯5人ごと・集中爆弾！','1秒ぴったりで止めるです！ 点灯済み選手が1位なら優勝です！',ids,play,'festival-ignition');
   else announce(s.phase==='showdown'?'優勝決定・延長戦！':'FINAL · MATCH POINT','点灯済みの選手は1位で優勝です！',ids,()=>roulette(draw,play));
  }
