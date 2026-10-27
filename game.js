@@ -701,7 +701,7 @@ function clearGameFit(){
   screen.classList.remove("illustrated-intro");window.MobPresentation?.cancel();
   screen.classList.remove("gameplay-fit");
 }
-function imgTag(p,cls="avatar"){return `<img draggable="false" class="${cls}" src="${p.img}" alt="${esc(p.name)}" onerror="this.style.visibility='hidden'">`}
+function imgTag(p,cls="avatar"){if(!p.cpu){window.MobHumanPortraits??=[];if(!window.MobHumanPortraits.includes(p.img))window.MobHumanPortraits.push(p.img)}return `<img draggable="false" class="${cls}" data-human="${!p.cpu}" src="${p.img}" alt="${esc(p.name)}" onerror="this.style.visibility='hidden'">`}
 
 homeBtn.addEventListener("click",()=>{
   if(!state.freePlay&&(state.competitionStarted||state.mobCup?.active||state.mobCupSpecial?.active||state.tournament?.active)){
@@ -740,7 +740,7 @@ resetBtn.addEventListener("click",()=>{
 function renderHome(){
   gameKingArena?.stop();
   kingChallenge?.stop();kingRoundDone=null;
-  tagLeague?.stop();variantLeagues?.stop();leagueRoundDone=null;
+  tagLeague?.stop();variantLeagues?.stop();festival?.stop();leagueRoundDone=null;window.MobHumanPortraits=[];
   clearGameFit();
   cancelActiveAnimation();
   invalidateGameRun();
@@ -26690,6 +26690,7 @@ function recordScreen(gameIndex,p,humanIndex,main,sub=""){
     document.getElementById("soloHome").addEventListener("click",renderHome);
     return;
   }
+  if(leagueRoundDone&&state.leagueHideScores){screen.innerHTML='<div class="ready-wrap"><div class="ready-card human-banner">'+imgTag(p,'ready-avatar')+'<h2>記録を封印しました</h2><div class="big-record">？？？</div><p>勝者発表で両者のポイントを公開します。</p><button id="nextHuman" class="primary">次へ</button></div></div>';document.getElementById('nextHuman').addEventListener('click',()=>humanReady(gameIndex,humanIndex+1),{once:true});return;}
   if(leagueRoundDone&&(state.leagueScoreMultiplier||1)>1){
     const factor=state.leagueScoreMultiplier||1,earned=score100*factor;
     const more=humanIndex+1<humans().length;
@@ -39120,6 +39121,7 @@ const leagueHost={
   pool(){const blocked=new Set(['billiardsBattleRoyale','soloCartBlast','battleRoyaleMob','killLeaderMob','alienBattleMob']);return GAMES.filter(g=>!g.leagueOnly&&!blocked.has(g.key)&&!RETIRED_GAME_KEYS.has(g.key)).map(g=>g.key);},
   configure(players,teams,options={}){
     state=freshState();state.modeKey='configured';state.partyCup=true;state.tagLeague=true;state.leagueMode=options.mode||'tag';state.competitionStarted=true;
+    window.MobHumanPortraits=players.filter(p=>!p.cpu).map(p=>p.img);
     for(const p of players){const existing=pById(p.id);if(existing)Object.assign(existing,p);else PLAYERS.push({...p});}
     MODES.configured={name:options.title||'タッグバトルリーグ',short:teams.length+'組・'+players.length+'名',performance:true,team:true,points:[],participants:players.map(p=>p.id),teams:Object.fromEntries(teams.map(t=>[t.id,t.members])),teamNames:Object.fromEntries(teams.map(t=>[t.id,t.name]))};initTotals();
   },
@@ -39128,7 +39130,7 @@ const leagueHost={
   run(key,teams,descriptor,done){
     const index=GAMES.findIndex(g=>g.key===key);if(index<0)throw Error('Missing league game: '+key);
     const m=MODES.configured;m.teams=Object.fromEntries(teams.map(t=>[t.id,t.members]));m.teamNames=Object.fromEntries(teams.map(t=>[t.id,t.name]));m.participants=teams.flatMap(t=>t.members);
-    state.leagueScoreMultiplier=descriptor.scoreMultiplier||(descriptor.key==='tripleChoice'&&descriptor.subGame?(descriptor.subGame==='C'?3:2):descriptor.multiplier)||1;state.leagueSubGame=descriptor.subGame||null;state.partyRepresentatives=null;state.leaguePhase=descriptor.phase;state.leagueDivision=descriptor.division;state.roundIndex=descriptor.round-1;state.playlist=[index];state.gameIndex=index;state.records[key]={};leagueRoundDone=done;
+    state.leagueHideScores=!!descriptor.hideScores;state.leagueScoreMultiplier=descriptor.scoreMultiplier||(descriptor.key==='tripleChoice'&&descriptor.subGame?(descriptor.subGame==='C'?3:2):descriptor.multiplier)||1;state.leagueSubGame=descriptor.subGame||null;state.partyRepresentatives=null;state.leaguePhase=descriptor.phase;state.leagueDivision=descriptor.division;state.roundIndex=descriptor.round-1;state.playlist=[index];state.gameIndex=index;state.records[key]={};leagueRoundDone=done;
     if(!humans().length){const ownDone=done;setTimeout(()=>{if(leagueRoundDone!==ownDone)return;if(key==='deathGameChallenge'){const alive=[...cpus()];for(let i=alive.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[alive[i],alive[j]]=[alive[j],alive[i]];}while(alive.length>1){const before=alive.length,target=[30,15,5,3,1].find(n=>n<before)||1;alive.splice(0,before-target).forEach(p=>state.records[key][p.id]=before===2?70:target>=30?10:target>=15?30:target>=5?50:target>=3?65:80);}if(alive[0])state.records[key][alive[0].id]=100;}else cpus().forEach(p=>simulateOneCpu(index,p));if(window.MobPartyLeague.TAG.includes(key)){if(key==='summonMaster'){const winner=Math.random()<.5?0:1;teams.forEach((t,i)=>t.members.forEach(id=>state.records[key][id]=i===winner?100:0));}else teams.forEach(t=>t.members.forEach(id=>state.records[key][id]=state.records[key][t.members[0]]));}finishGame(index);},0);}
     else showGameIntro(index);
   }
@@ -39136,6 +39138,7 @@ const leagueHost={
 const gameKingArena=window.MobGameKingArena?.create(leagueHost);
 const tagLeague=window.MobPartyLeagueUI?.create(leagueHost);
 const variantLeagues=window.MobLeagueVariants?.create(leagueHost);
+const festival=window.MobFestival?.create(leagueHost);
 const kingChallenge=window.MobGameKing?.create({
   screen,esc,beep,home:renderHome,top:gameTop,
   clear(){clearGameFit();cancelActiveAnimation();invalidateGameRun();},
@@ -39152,6 +39155,9 @@ const partyUI=window.MobPartyUI.create({
   guide:renderGameGuide,
   advanced:renderBattleTypeSelect,
   league:()=>tagLeague.setup(),
+  tournament:()=>festival.setup('tournament'),
+  whiteChallenge:()=>festival.setup('white'),
+  worldSeries:()=>festival.setup('world'),
   crew:()=>variantLeagues.setup('crew'),
   kingLeague:()=>variantLeagues.setup('king'),
   king:()=>kingChallenge.setup(),

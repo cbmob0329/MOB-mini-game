@@ -7,6 +7,7 @@
   function readable(fg,bg){return ratio(fg,bg)>=4.5?null:ratio([23,31,43],bg)>=ratio([255,255,255],bg)?'#171f2b':'#ffffff';}
   function repair(screen){
     if(!screen)return;
+    const humans=new Set(root.MobHumanPortraits||[]);for(const img of screen.querySelectorAll('img')){if(img.dataset.human==='true'||humans.has(img.getAttribute('src'))){const row=img.closest('.festival-row,.league-rank,.league-team-card,.variant-row,.ready-card,.result-row,.ranking-row,.result-card,.rank-row,.player-row,.result-item,.score-row,.party-result-row,tr');if(row)row.classList.add('human-banner');}}
     for(const el of screen.querySelectorAll('button,span,b,strong,small,label,p,h1,h2,h3,em,output,div')){
       if(!Array.from(el.childNodes).some(n=>n.nodeType===3&&n.textContent.trim()))continue;
       const s=getComputedStyle(el),fg=rgb(s.color);if(!fg)continue;

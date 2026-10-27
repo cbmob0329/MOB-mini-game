@@ -4,9 +4,9 @@ const fs=require('node:fs');
 const path=require('node:path');
 const core=require('../party-core.js');
 function seeded(seed=7){return ()=>{seed=(seed*1664525+1014704223)>>>0;return seed/4294967296;};}
-test('200 unique characters with exact-case existing assets and private ranks',()=>{
-  assert.equal(core.roster.length,200);
-  assert.equal(new Set(core.roster.map(c=>c.id)).size,200);
+test('206 unique characters with exact-case existing assets and private ranks',()=>{
+  assert.equal(core.roster.length,206);
+  assert.equal(new Set(core.roster.map(c=>c.id)).size,206);
   for(const c of core.roster){const file=path.resolve(__dirname,'..',c.img);assert.ok(fs.readdirSync(path.dirname(file)).includes(path.basename(file)),c.img);assert.match(c.rank,/^(SS|S[+-]?|[ABCD][+-]?|E|F)(-(SS|S[+-]?|[ABCD][+-]?|E|F))?$/);}
 });
 test('8 teams of 4 are unique and exclude all human selections, including collaboration selections',()=>{
@@ -155,10 +155,10 @@ test('46–74 additions honor modified rank bounds and racer running strengths',
   const ranges=[[46,48,'D-','C+'],[49,55,'D+','B-'],[56,56,'C+','B+'],[57,58,'B+','A-'],[59,59,'C+','A+'],[60,60,'A','S-'],[61,63,'D+','B-'],[64,64,'C+','A+'],[65,74,'D','C+']];
   for(const [first,last,lo,hi] of ranges)for(let id=first;id<=last;id++){assert.equal(rank(id),lo,`id ${id} lower`);assert.equal(rank(id,{},.999),hi,`id ${id} upper`);assert.equal(core.roster.find(c=>c.id===id).img,`main/${id}.png`);}
   for(let id=65;id<=74;id++){assert.equal(rank(id,{key:'mob50m',title:'50m走'}),'B-');assert.equal(rank(id,{key:'hurdleRun'},.999),'A+');assert.equal(rank(id,{title:'トロッコ大爆走'},.999),'C+');}
-  assert.equal(rank(2),'C+');assert.equal(rank(210),'D+');
+  assert.equal(rank(2),'A+');assert.equal(rank(210),'D+');
   for(const value of ['D-','D+','C+','B-','S-']){assert.equal(core.resolveRank(value),value);assert.ok(Number.isFinite(core.rankValue(value)));}
   assert.equal(core.rankValue('D--C+'),2.625);assert.equal(core.rankValue('B--A+'),4.625);
-  for(const [group,count] of [['MAIN CHARACTERS',21],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
+  for(const [group,count] of [['MAIN CHARACTERS',34],['ヒーローベル',4],['MOB ARTIST初代',4],['モブレーサーズ',10]])assert.equal(core.roster.filter(c=>c.group===group).length,count);
 });
 
 test('tournament levels choose unique participants before pairing and preserve human picks',()=>{
@@ -201,7 +201,7 @@ test('MOB SHOT CPU tags are preferred in cup and league, with either available K
 
 test('new pixel partners and S+ ranges are honored',()=>{
  const byId=id=>core.roster.find(c=>c.id===id);
- for(const pair of [[4001,108],[4002,4003],[4004,4005],[4006,4007],[4008,4009],[4010,4011],[4012,4013],[4014,4015],[4016,4017]]){
+ for(const pair of [[4001,108],[4004,4005],[4006,4007],[4008,4009],[4010,4011]]){
   const teams=core.leagueCpuPairs([[byId(pair[0])]],()=>.5);
   assert.deepEqual(teams[0].map(c=>c.id),pair);
  }
@@ -213,5 +213,34 @@ test('new pixel partners and S+ ranges are honored',()=>{
   const players=core.leagueCpuPairs(Array.from({length:20},()=>[]),seeded(seed),'INFERNO').flat();
   assert.equal(new Set(players.map(c=>c.id)).size,40);
   assert.ok(players.filter(c=>core.rankValue(c.rank)>=5.5).length>=28);
+ }
+});
+
+test('six main mascots use deployed transparent PNGs and requested ranks without spoiler characters',()=>{
+  const rows=[[4101,'A+-S'],[4102,'A+-S-'],[4103,'S+'],[4104,'A--S+'],[4105,'S+'],[4106,'S+']];
+  for(const [id,rank] of rows){
+    const c=core.roster.find(c=>c.id===id);assert.ok(c);assert.equal(c.group,'MAIN CHARACTERS');assert.equal(c.rank,rank);
+    const png=fs.readFileSync(require('node:path').resolve(__dirname,'..',c.img));
+    assert.equal(png.subarray(1,4).toString(),'PNG');assert.equal(png[25],6,'RGBA image '+c.name);
+  }
+  for(const id of [1,2,12])assert.equal(core.roster.find(c=>c.id===id).rank,'A+-S+');
+  for(const id of [4002,4003,4012,4013,4015,4016,4017])assert.ok(!core.roster.some(c=>c.id===id));
+  const sonic=core.roster.find(c=>c.id===4101);
+  assert.equal(core.characterRank(sonic,{title:'モブくん3Dゴルフ'},()=>0),'S');
+  assert.equal(core.characterRank(sonic,{key:'mob50m',title:'50m走'},()=>0),'S');
+});
+
+test('twin mascots have deployed alpha PNGs, paired CPU tags and Lucky specialty',()=>{
+ const rows=[[4107,'S+'],[4108,'S'],[4109,'S+'],[4110,'S'],[4111,'S+'],[4112,'S']];
+ for(const [id,rank] of rows){
+  const c=core.roster.find(c=>c.id===id);assert.ok(c);assert.equal(c.rank,rank);assert.equal(c.group,'MAIN CHARACTERS');
+  const png=fs.readFileSync(path.resolve(__dirname,'..',c.img));assert.equal(png.subarray(1,4).toString(),'PNG');assert.equal(png[25],6);
+ }
+ const lucky=core.roster.find(c=>c.id===4107);
+ assert.equal(core.characterRank(lucky,{title:'サイコロ'},()=>0),'SS');
+ assert.equal(core.characterRank(lucky,{title:'モブくん50m走'},()=>0),'S+');
+ for(const pair of [[4107,4108],[4109,4110],[4111,4112]]){
+  const team=core.leagueCpuPairs([[core.roster.find(c=>c.id===pair[0])]],()=>.5)[0];
+  assert.deepEqual(team.map(c=>c.id),pair);
  }
 });

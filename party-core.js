@@ -3,8 +3,8 @@
   'use strict';
   const pieceRanks=root.MobPieceRanks||(typeof module!=='undefined'&&module.exports?require('./party-piece-ranks.js'):null);
   const groups=[
-    ['MAIN CHARACTERS',[[1,'モブパティレッド','B'],[2,'モブパティブルー','C+'],[3,'モブパティゴールド','A'],[4,'モブパティシルバー','B'],[5,'モブパティトレーナー','C'],[6,'モブパティDJ','C'],[7,'モブパティロボ','B'],[46,'モブボタン','D--C+','main/46.png'],[47,'モブスティック','D--C+','main/47.png'],[48,'モブキー','D--C+','main/48.png'],[49,'モブカード','D+-B-','main/49.png'],[50,'モブハート','D+-B-','main/50.png'],[51,'モブチップ','D+-B-','main/51.png'],[52,'モブベッド','D+-B-','main/52.png'],[53,'モブ62モデル','D+-B-','main/53.png'],[54,'モブ63モデル','D+-B-','main/54.png'],[55,'モブ長浜カエル','D+-B-','main/55.png'],[56,'モブモンスターDJ','C+-B+','main/56.png'],[79,'モブサイレンサー','C-B+','main/79.png'],[80,'モブバレット','C+-A-','main/80.png']]],
-    ['MOB STORY',[[9,'モブ勇者','SS'],[11,'モブデンデン','S'],[12,'モブピンク','A'],[13,'モブマニー','S'],[24,'モブイルカエル(酒場)','A'],[25,'モブコーチ','C-A'],[26,'モブゴンゾー','C-A'],[27,'モブマテリア','B-A']]],
+    ['MAIN CHARACTERS',[[1,'モブパティレッド','A+-S+'],[2,'モブパティブルー','A+-S+'],[3,'モブパティゴールド','A'],[4,'モブパティシルバー','B'],[5,'モブパティトレーナー','C'],[6,'モブパティDJ','C'],[7,'モブパティロボ','B'],[46,'モブボタン','D--C+','main/46.png'],[47,'モブスティック','D--C+','main/47.png'],[48,'モブキー','D--C+','main/48.png'],[49,'モブカード','D+-B-','main/49.png'],[50,'モブハート','D+-B-','main/50.png'],[51,'モブチップ','D+-B-','main/51.png'],[52,'モブベッド','D+-B-','main/52.png'],[53,'モブ62モデル','D+-B-','main/53.png'],[54,'モブ63モデル','D+-B-','main/54.png'],[55,'モブ長浜カエル','D+-B-','main/55.png'],[56,'モブモンスターDJ','C+-B+','main/56.png'],[79,'モブサイレンサー','C-B+','main/79.png'],[80,'モブバレット','C+-A-','main/80.png']]],
+    ['MOB STORY',[[9,'モブ勇者','SS'],[11,'モブデンデン','S'],[12,'モブピンク','A+-S+'],[13,'モブマニー','S'],[24,'モブイルカエル(酒場)','A'],[25,'モブコーチ','C-A'],[26,'モブゴンゾー','C-A'],[27,'モブマテリア','B-A']]],
     ['MOB MONSTERS',[[14,'モブスライム','B'],[15,'モブミイラ','B'],[16,'モブサバンナ','A'],[17,'モブロック','C-B+'],[81,'モブホーク','A+','main/81.png'],[82,'ミラモブ','A+-S','main/82.png']]],
     ['MOB SHOT',[[18,'モブコドラ','B+'],[19,'モブイルカエル','B+'],[20,'モブウルフ','C'],[38,'モブフワパーカー','C-B+','main/38.png'],[39,'モブシブパーカー','C-B+','main/39.png'],[40,'モブ探偵','B','main/40.png'],[41,'モブトイプー','B-A-','main/41.png'],[42,'モブカエル忍者','B-A-','main/42.png'],[43,'モブテツMS','A+','main/43.png'],[44,'モブウィザード','A','main/44.png'],[45,'あのヒーローMS','SS','main/45.png']]],
     ['MOB BR',[[21,'モブテツBR','SS'],[22,'マルモブBR','S'],[23,'モブポヨBR','A'],[32,'モブマックスBR','S'],[33,'モブジョーダンBR','A'],[34,'モブレオンBR','A'],[35,'モブティラBR','B-A+'],[36,'モブラプBR','B-A'],[37,'モブサウルスBR','B-A']]],
@@ -105,24 +105,65 @@
   ];
   const pixelAdditions=[
     [4001,'モブプチノン','A+-S+','005','MAIN CHARACTERS'],
-    [4002,'モブ怪人グリーン','S','002'],[4003,'モブ怪人イエロー','S','004'],
+    
     [4004,'モブケケプテラ','A+','019'],[4005,'モブケケペン','A+','020'],
     [4006,'モブモケピンク','S','009'],[4007,'モブモケミント','S','012'],
     [4008,'モブアメチー','S+','033'],[4009,'モブアメブー','S+','034'],
     [4010,'モブアメゴールド','S+','044'],[4011,'モブアメコットン','SS','045'],
-    [4012,'モブジョーンズ','A+-S','118','MOB MONSTERS'],
-    [4013,'モブネプチューン','S+','008','MOB MONSTERS'],
+    
+    
     [4014,'モブガーディアン','A+-S-','05','MOB MONSTERS'],
-    [4015,'モブドラゴン','S+','09','MOB MONSTERS'],
-    [4016,'モブリリス','SS','14','MOB MONSTERS'],
-    [4017,'グラディモブ','S+','39','MOB MONSTERS']
+    
+    
+    
   ];
   for(const [id,name,rank,file,group='MOB PIECE BATTLE コラボ'] of pixelAdditions){
     groups.find(([name])=>name===group)[1].push([id,name,rank,`main/pixel-20261025/${file}.png`]);
   }
+  const mainAdditions = [
+  [
+    4101,
+    "モブソニック",
+    "A+-S",
+    "main/mascots/mob-sonic.png"
+  ],
+  [
+    4102,
+    "モブコーン",
+    "A+-S-",
+    "main/mascots/mob-corn.png"
+  ],
+  [
+    4103,
+    "モブキャラキャット",
+    "S+",
+    "main/mascots/mob-character-cat.png"
+  ],
+  [
+    4104,
+    "モブドリル",
+    "A--S+",
+    "main/mascots/mob-drill.png"
+  ],
+  [
+    4105,
+    "モブトラベル",
+    "S+",
+    "main/mascots/mob-travel.png"
+  ],
+  [
+    4106,
+    "モブタイムトラベル",
+    "S+",
+    "main/mascots/mob-time-travel.png"
+  ]
+];
+  mainAdditions.push(...[[4107,"モブラッキー","S+","main/mascots/mob-lucky.png"],[4108,"アンラッキー","S","main/mascots/mob-unlucky.png"],[4109,"モブディーラー","S+","main/mascots/mob-dealer.png"],[4110,"サスペンダー","S","main/mascots/mob-suspender.png"],[4111,"モブセンチネル","S+","main/mascots/mob-sentinel.png"],[4112,"センチメンタル","S","main/mascots/mob-sentimental.png"]]);
+  mainAdditions.push([4113,'モブルビチィー','A+-S','main/mascots/mob-rubichy.png']);
+  groups.find(([name])=>name==='MAIN CHARACTERS')[1].push(...mainAdditions);
   const roster=groups.flatMap(([group,rows])=>rows.map(([id,name,rank,img])=>({id,name,rank:pieceRanks?.profiles[id]?.rank||rank,group,img:img||`main/${String(id).padStart(3,'0')}.png`})));
   // The tavern Ilukaeru belongs to STORY; SHOT's namesake is a different character.
-  const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36],[18,19],[18,20],[38,39],[40,41],[42,44],[45,43],[81,82],[4001,108],[4002,4003],[4004,4005],[4006,4007],[4008,4009],[4010,4011],[4012,4013],[4014,4015],[4016,4017]];
+  const preferredCpuTags=[[9,12],[11,13],[24,25],[26,27],[14,17],[15,16],[21,22],[22,23],[32,33],[35,36],[18,19],[18,20],[38,39],[40,41],[42,44],[45,43],[81,82],[4001,108],[4004,4005],[4006,4007],[4008,4009],[4010,4011],[4107,4108],[4109,4110],[4111,4112]];
   const pick=(items,random)=>items[Math.floor(random()*items.length)];
   function preferredPartners(anchor,pool){return pool.filter(c=>preferredCpuTags.some(pair=>pair.includes(anchor.id)&&pair.includes(c.id)));}
   function takeCpuPartner(anchor,pool,random){
@@ -154,6 +195,8 @@
     const {brain,sport,running,flying}=gameTraits(game);
     let rank=c.rank||player.characterRank||'C';
     if(c.id===24&&brain)rank='S';
+    if(c.id===4107&&genre(game)==='運・駆け引き')rank='SS';
+    if(c.id===4101&&(sport||running))rank='S';
     if(c.id===26&&sport)rank='A-S';
     if(c.id===27&&brain)rank='A-S';
     if(c.id===20&&running)rank='A+';

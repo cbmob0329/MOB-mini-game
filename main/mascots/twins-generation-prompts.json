@@ -1,0 +1,63 @@
+{
+  "tool": "image_gen.imagegen",
+  "transparent_background": true,
+  "assets": [
+    {
+      "name": "mob-lucky",
+      "label": "モブラッキー",
+      "rank": "S+",
+      "id": 4107,
+      "prompt": "Edit this supplied MOB Lucky character. Change ONLY the face of the card: remove ALL hearts, suit symbols, pips and corner indices. The card must show exactly ONE large stylish graffiti numeral '7', angular bold street-art lettering with green/gold dimensional shading, no other numbers, words or icons. Clean cream card surface with thin gold border. Keep character, pose, mouthless face, BOTH eyes OPEN, round gold spectacles, green cat-shaped hood and outfit unchanged. Same crisp cartoon pixel art, full body visible, transparent background.",
+      "ref": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-d63714b5-780a-4615-a7d4-d90741ff5a89.png",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-5c6dbc9d-db05-4d04-8644-a220f720d9f6.png"
+    },
+    {
+      "name": "mob-unlucky",
+      "label": "アンラッキー",
+      "id": 4108,
+      "rank": "S",
+      "parent": "mob-lucky",
+      "prompt": "Edit supplied MOB Unlucky character. Two precise changes: 1) replace the shorts with a clearly visible cute purple pleated SKIRT with cream/gold hem beneath the short coat; preserve tiny chibi legs and shoes. 2) Remove ALL spades, suit icons, pips and corner indices from the card. Card shows exactly ONE large cool graffiti numeral '7', bold angular street-art lettering with violet/silver dimensional shading. No other numbers, symbols or words on card, clean cream surface and thin gold border. Keep cute worried black mouthless face, BOTH eyes OPEN, round gold glasses, purple CAT-SHAPED HOOD, body proportions and holding pose unchanged. Crisp cartoon pixel art, full body visible with transparent margin, genuine transparency.",
+      "ref": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-14354d38-b810-4da8-84ba-0179b4c8dd58.png",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-05e942db-e4c9-4d09-bbdd-60310c8917ac.png"
+    },
+    {
+      "name": "mob-dealer",
+      "label": "モブディーラー",
+      "rank": "S+",
+      "id": 4109,
+      "prompt": "Edit supplied female leopard MOB Dealer. Mandatory: add large clearly CIRCULAR GOLD-RIMMED GLASSES over both eyes and a fitted black CAT-SHAPED HOOD with two triangular ears, gold lining, covering crown and back of head while showing beautiful golden spotted leopard face, muzzle, eyelashes and emerald eyes. Preserve petite chibi female leopard identity, tuxedo suit, tail and refined pose. REMOVE ALL PLAYING CARDS. Instead hold ONE large GOLD COIN toward viewer in same paw, coin face engraved in clear block letters exactly 'MOB' (M O B). No card anywhere. Tiny compact body and oversized head. Match crisp cartoon PIXEL ART. Entire hood, tail, feet, coin visible, generous transparent margin, genuine transparent background.",
+      "ref": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-2c5a8f34-026e-4fec-b817-08d31db66ef7.png",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-ec4a19d7-e146-4d1a-9ff8-76408e087d05.png"
+    },
+    {
+      "name": "mob-suspender",
+      "label": "サスペンダー",
+      "id": 4110,
+      "rank": "S",
+      "parent": "mob-dealer",
+      "prompt": "Edit supplied MOB Suspender female leopard chibi. Keep ROUND GOLD GLASSES, black gold-trim CAT-SHAPED HOOD covering head, white shirt, burgundy suspenders and bow tie, silver coin clearly marked 'MOB', and crisp cartoon PIXEL ART. Change fur to WHITE LEOPARD: ivory-white face/body/tail with charcoal gray rosettes, cool silver-white hair tuft instead of yellow, no golden/yellow fur. BOTH amber eyes fully OPEN and visible; no wink, no closed eye. Wear BLACK FULL-LENGTH LONG TROUSERS with clearly visible side SLITS at the lower outer hems, distinct TWO pant legs (not skirt, no shorts). Pose balancing on one planted leg with the other leg lifted and knee bent, raised foot clearly off the ground and visible, playful elegant chibi stance. Keep tiny torso, large head, full tail and entire lifted foot/coin inside frame with margin. Genuine transparent background, no extra words.",
+      "ref": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-ec4a19d7-e146-4d1a-9ff8-76408e087d05.png",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-2177b6d6-64d4-4a4b-a281-ec9ac3056914.png"
+    },
+    {
+      "name": "mob-sentinel",
+      "label": "モブセンチネル",
+      "rank": "S+",
+      "id": 4111,
+      "prompt": "Edit supplied MOB Sentinel robot. Add clearly visible ROUND GOLD SPECTACLE FRAMES connected by bridge over the cyan eyes; circular glasses are essential. Preserve the CAT-SHAPED HELMET covering the head with two obvious pointed ears, white navy gold armor, powerful tiny chibi proportions, lifted fist, cyan shield chest light and stern cyan eye expression. Keep robot identity, no skin. Crisp cartoon pixel art, entire character comfortably in frame with margin, genuine transparent background, no text.",
+      "ref": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-4029d44c-dd60-4acf-8b14-948cf442530a.png",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-bf5eca92-a1a6-48bd-8308-5f18ec8f606d.png"
+    },
+    {
+      "name": "mob-sentimental",
+      "label": "センチメンタル",
+      "id": 4112,
+      "rank": "S",
+      "parent": "mob-sentinel",
+      "prompt": "Create the TWIN sibling of the supplied character, single character only. Preserve unmistakable family resemblance, same crisp cartoon PIXEL ART and super-chibi large head/tiny body proportions. MANDATORY: ROUND GOLD GLASSES over both eyes and a CAT-SHAPED HOOD/HELMET covering the head with two triangular ears. Full body and all props visible, transparent margin, genuine transparent background, no labels or watermark. SENTIMENTAL, robot twin of MOB Sentinel. Preserve identical family robot construction, round gold spectacles and cat-shaped armored helmet, but recolor armor warm ivory and muted lavender, gold trim, soft pink lights. Big gentle downturned luminous pink eyes inside dark face visor, slightly bashful head tilt and both chunky hands held together at chest. Pink heart-shaped chest light instead of shield. Tiny stout protective robot with stubby boots, lovable emotional counterpart to the stern strong Sentinel. Mechanical body, no skin, no weapon, no text.",
+      "ref": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-bf5eca92-a1a6-48bd-8308-5f18ec8f606d.png",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-d1a81227-1965-4179-a070-521e80a66662.png"
+    }
+  ]
+}

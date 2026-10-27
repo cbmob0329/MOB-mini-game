@@ -1,0 +1,156 @@
+[
+  {
+    "width": 360,
+    "height": 640,
+    "geometry": [
+      {
+        "format": "wallpaper",
+        "n": 1,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "wallpaper",
+        "n": 2,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "wallpaper",
+        "n": 4,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "card",
+        "n": 1,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "card",
+        "n": 2,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "card",
+        "n": 4,
+        "overlaps": 0,
+        "foreground": true
+      }
+    ],
+    "modes": [
+      {
+        "mode": "tournament",
+        "outcome": "win",
+        "steps": 196,
+        "runs": 37,
+        "champion": "festival-4109",
+        "whiteWins": false
+      },
+      {
+        "mode": "white",
+        "outcome": "win",
+        "steps": 4,
+        "runs": 1,
+        "champion": "festival-65",
+        "whiteWins": false
+      },
+      {
+        "mode": "world",
+        "outcome": "win",
+        "steps": 87,
+        "runs": 22,
+        "champion": "festival-66",
+        "whiteWins": false
+      },
+      {
+        "mode": "white",
+        "outcome": "lose",
+        "steps": 4,
+        "runs": 1,
+        "champion": null,
+        "whiteWins": true
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "height": 600,
+    "geometry": [
+      {
+        "format": "wallpaper",
+        "n": 1,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "wallpaper",
+        "n": 2,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "wallpaper",
+        "n": 4,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "card",
+        "n": 1,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "card",
+        "n": 2,
+        "overlaps": 0,
+        "foreground": true
+      },
+      {
+        "format": "card",
+        "n": 4,
+        "overlaps": 0,
+        "foreground": true
+      }
+    ],
+    "modes": [
+      {
+        "mode": "tournament",
+        "outcome": "win",
+        "steps": 196,
+        "runs": 37,
+        "champion": "festival-21",
+        "whiteWins": false
+      },
+      {
+        "mode": "white",
+        "outcome": "win",
+        "steps": 4,
+        "runs": 1,
+        "champion": "festival-61",
+        "whiteWins": false
+      },
+      {
+        "mode": "world",
+        "outcome": "win",
+        "steps": 87,
+        "runs": 22,
+        "champion": "festival-78",
+        "whiteWins": false
+      },
+      {
+        "mode": "white",
+        "outcome": "lose",
+        "steps": 4,
+        "runs": 1,
+        "champion": null,
+        "whiteWins": true
+      }
+    ],
+    "errors": []
+  }
+]

@@ -9,7 +9,7 @@
   }
   function groups(entrants,random=Math.random,mode='tag'){
     const teams=[...new Set(entrants.map(p=>p.teamId))];
-    const size=mode==='crew'?4:mode==='king'?1:2,count=mode==='king'?20:mode==='tag'&&teams.length===20?20:10;
+    const size=mode==='crew'?4:mode==='king'?1:2,count=mode==='king'?20:mode==='tag'&&[10,15,20,30,40].includes(teams.length)?teams.length:10;
     if(teams.length!==count||entrants.length!==count*size||teams.some(t=>entrants.filter(p=>p.teamId===t).length!==size))throw Error('Invalid focus bomb roster');
     const ordered=shuffle(teams,random),heats=Array.from({length:5},()=>[]);
     ordered.forEach((t,i)=>{shuffle(entrants.filter(p=>p.teamId===t),random).forEach((p,j)=>heats[(i+j*2)%5].push(p));});return heats;

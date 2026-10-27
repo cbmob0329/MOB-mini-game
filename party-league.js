@@ -6,7 +6,8 @@
   const TAG=['mobSpeedRacer','summonMaster'];
   const DIVISIONS=['PB2リーグ','Realizeリーグ','Portalリーグ','DENDENリーグ'];
   const pick=(a,r)=>a[Math.floor(r()*a.length)];
-  const CARRYOVER=[100,75,50,30,25,20,15,10,...Array(10).fill(5)];
+  const CARRYOVER=[100,75,50,30,25,20,15,10];
+  const TAG_SIZES={20:{direct:8,revival:2,carry:CARRYOVER},30:{direct:10,revival:5,carry:[100,80,65,50,40,30,25,20,15,10]},40:{direct:12,revival:8,carry:[100,85,70,60,50,40,30,25,20,15,10,5]}};
   const RANK_POINTS=[12,8,6,5,4,3,2,1];
   const scoreBonus=v=>Math.floor(v/100)*10+((v%100)>=90?7:(v%100)>=80?5:(v%100)>=70?4:(v%100)>=60?3:(v%100)>=50?2:(v%100)>=40?1:0);
   const PAIR_ROULETTE=draws.ALLOWED.map(g=>g.key);
@@ -23,11 +24,11 @@
       final:mode==='tag'?['randomChoice','randomChoice','randomChoice','randomChoice','focusBombMob','deathGameChallenge']:['monsterBoxMob','launch','bikeJump','waterSkip','focusBombMob','deathGameChallenge'],pool:pool.filter(k=>k!=='popularGame'&&!draws.RETIRED.includes(k))};
   }
   function create(teams,schedule,options={}){
-    const mode=options.mode||'tag',size=mode==='crew'?4:mode==='king'?1:2,count=mode==='king'?80:mode==='tag'&&teams.length===30?30:20;
+    const mode=options.mode||'tag',size=mode==='crew'?4:mode==='king'?1:2,count=mode==='king'?80:mode==='tag'&&TAG_SIZES[teams.length]?teams.length:20;
     if(teams.length!==count||new Set(teams.flatMap(t=>t.members)).size!==count*size||teams.some(t=>t.members.length!==size))throw Error(`${count} distinct teams of ${size} required`);
-    if(options.scoring==='rank'&&(mode!=='tag'||count!==20))throw Error('Rank mode requires twenty tag teams');
+    if(options.scoring==='rank'&&mode!=='tag')throw Error('Rank mode requires tag teams');
     if(mode==='king'&&DIVISIONS.some((_,i)=>teams.filter(t=>t.division===i).length!==20))throw Error('Four leagues of twenty required');
-    return {teams,schedule,mode,size,directSlots:mode==='tag'&&count===30?18:8,scoring:options.scoring==='rank'?'rank':'raw',bombMilestones:0,bombQueue:0,threshold:options.scoring==='rank'?80:size*300,division:0,origins:{},qualifiers:[],phase:options.scoring==='rank'?'final':'qualifier',round:0,active:teams.filter(t=>mode!=='king'||t.division===0).map(t=>t.id),scores:{},personal:{},lit:[],direct:[],history:[],champion:null,cut:null};
+    return {teams,schedule,mode,size,directSlots:mode==='tag'?TAG_SIZES[count].direct:8,revivalSlots:mode==='tag'?TAG_SIZES[count].revival:2,carryover:mode==='tag'?TAG_SIZES[count].carry:CARRYOVER,scoring:options.scoring==='rank'?'rank':'raw',bombMilestones:0,bombQueue:0,threshold:options.scoring==='rank'?80:size*300,division:0,origins:{},qualifiers:[],phase:options.scoring==='rank'?'final':'qualifier',round:0,active:teams.filter(t=>mode!=='king'||t.division===0).map(t=>t.id),scores:{},personal:{},lit:[],direct:[],history:[],champion:null,cut:null};
   }
   function ordered(s,ids=s.active,scores=s.scores){return ids.map(id=>({id,points:scores[id]||0})).sort((a,b)=>b.points-a.points);}
   function next(s,random=Math.random){
@@ -61,7 +62,7 @@
       reset(s,'final',s.qualifiers);s.lit=[];return {type:'kingFinalists',ids:[...s.qualifiers],qualified:orderedIds,division};
     }
     if(stage==='qualifier'){
-      if(s.mode==='tag'){s.qualifierTotals={...s.scores};s.qualifierPlaces=Object.fromEntries(ids.map(id=>[id,1+Object.values(s.qualifierTotals).filter(v=>v>(s.qualifierTotals[id]||0)).length]));s.finalCarryover=Object.fromEntries(ids.map(id=>[id,CARRYOVER[s.qualifierPlaces[id]-1]||0]));}
+      if(s.mode==='tag'){s.qualifierTotals={...s.scores};s.qualifierPlaces=Object.fromEntries(ids.map(id=>[id,1+Object.values(s.qualifierTotals).filter(v=>v>(s.qualifierTotals[id]||0)).length]));s.finalCarryover=Object.fromEntries(ids.map(id=>[id,(s.carryover||CARRYOVER)[s.qualifierPlaces[id]-1]||0]));}
       s.direct=[...ids];reset(s,'repechage',s.teams.map(t=>t.id).filter(id=>!ids.includes(id)));
       return {type:'qualified',ids:[...ids]};
     }
@@ -106,7 +107,7 @@
     const record={...descriptor,rawPoints:{...points},points:individual,teamPoints:round,earned,rankDetails,totals:{...(['cutoff','championship'].includes(s.phase)?round:s.scores)},personal:{...(['cutoff','championship'].includes(s.phase)?individual:s.personal)},litBefore:beforeLit};s.history.push(record);if(descriptor.forcedBomb)s.bombQueue=Math.max(0,s.bombQueue-1);else s.round++;
     let event={type:'round',ids:[]};
     if(s.phase==='qualifier'&&s.round===10)event=cut(s,s.active,s.scores,s.mode==='king'?5:(s.directSlots||8),[],'qualifier');
-    else if(s.phase==='repechage'&&s.round===3)event=cut(s,s.active,s.scores,2,[],'repechage');
+    else if(s.phase==='repechage'&&s.round===3)event=cut(s,s.active,s.scores,s.revivalSlots||2,[],'repechage');
     else if(s.phase==='cutoff')event=cut(s,s.active,round,s.cut.slots,s.cut.kept,s.cut.stage);
     else if(s.phase==='final'||s.phase==='championship'){
       // Focus bomb crowns the individual winner's team, even if another pair totals more.
@@ -153,7 +154,7 @@
     }while(finalStage?!s.champion:(s.phase==='cutoff'||s.phase===phase&&s.division===division));
     return {event:result.event,record:{...lastStage,active,summary:true,simulatedRounds:rounds}};
   }
-  const api={RANK_POINTS,scoreBonus,TAG_TENTH_CHOICES,triplePoints,awardRounds,CARRYOVER,PAIR_ROULETTE,CATCHERS,TAG,DIVISIONS,program,create,next,ordered,submit,sample,canFastForward,fastForward};
+  const api={TAG_SIZES,RANK_POINTS,scoreBonus,TAG_TENTH_CHOICES,triplePoints,awardRounds,CARRYOVER,PAIR_ROULETTE,CATCHERS,TAG,DIVISIONS,program,create,next,ordered,submit,sample,canFastForward,fastForward};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   if(root)root.MobPartyLeague=api;
 })(typeof window!=='undefined'?window:null);

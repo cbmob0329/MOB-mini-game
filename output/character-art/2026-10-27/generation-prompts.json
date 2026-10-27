@@ -1,0 +1,36 @@
+{
+  "tool": "image_gen.imagegen",
+  "transparent_background": true,
+  "assets": [
+    {
+      "name": "mob-sonic",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-f39ab672-bcc3-461a-9643-96e01cd0f284.png",
+      "prompt": "Create one new sibling character by transforming the supplied MOB mascot references. References 1 and 2 define the SAME SERIES: chibi cartoon pixel art, black cat-ear hoodie with colored inner-ear piping, deep black face inside hood, oversized expressive eyes in round GOLD spectacle rims, a gold stripe on hood, small chunky gloves, baggy shorts and large sneakers. Preserve this recognizable design language and chunky crisp pixel-cluster shading, approximately two-heads-tall proportions. These are NOT realistic humans. Full body, entire silhouette and prop visible, centered with generous transparent margin. One character only, clean isolated genuine transparent PNG background. No lettering, no labels, no watermark, no frame, no scenery. Polished finished game character illustration, matching the references' pixel-art density and outline thickness. MOB SONIC: sports-loving energetic roller skater. Vivid electric teal and lime accent piping on black cat-eared hoodie, gold-rimmed lively turquoise eyes. In a dynamic low skating pose with one roller skate forward and one kicking back, clearly visible small skate wheels. Short pixelated translucent cyan afterimage trails behind arms and skates, conveying great speed, but not duplicate bodies and not obscuring silhouette. Must remain a MOB hooded mascot, not Sonic the Hedgehog."
+    },
+    {
+      "name": "mob-corn-v2",
+      "source": "main/mascots/mob-corn.png",
+      "prompt": "Edit target: supplied MOB CORN pixel-art character. Remove the mouth entirely, replacing the mouth area with uninterrupted dark face shading. NO mouth, smile, lips, tongue or nose. Preserve the exact huge golden eyes and gold spectacles, corn hood, green husk cape, corn held in hands, tiny body, pose, colors and crisp cartoon pixel art. Complete character on genuinely transparent background. No other changes."
+    },
+    {
+      "name": "mob-character-cat-v2",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-1bac5cac-7cc3-49c2-a38e-5c73c591c730.png",
+      "prompt": "Redesign this character into an ACTUAL cartoon CAT, not a person wearing a cat-ear hoodie. Preserve this series' rich crisp PIXEL ART, thick outline, chibi proportions, lavender concentric-ring patterned eyes and comically long curling pink tongue. Draw a tiny black-furred toon cat with clearly exposed triangular feline ears, a small cat nose, white muzzle/cheeks, visible whiskers, soft paws, small hind legs and a long curling cat tail. No hoodie, no shorts, no human shoes. Optional tiny purple neckerchief only. The cat is HANGING FROM A TREE BRANCH by both very long rubber-hose forelegs: both paws gripping a sturdy horizontal brown branch overhead, long curved arms stretched above its large cute feline head, small body and hind paws dangling below. A few green leaves on branch; include the complete branch and complete dangling cat with generous margins. Playful and mischievous, not scary. Keep ring-pattern eyes obvious. Genuinely transparent background around branch and character, no scenery, no words, no border."
+    },
+    {
+      "name": "mob-drill",
+      "source": "C:\\Users\\CB-Me\\.codex\\generated_images\\01a0e8a8-eff2-7671-8672-aafb492b902a\\exec-4ebba905-520e-4535-acf0-a62b5e7da2d7.png",
+      "prompt": "Create one new sibling character by transforming the supplied MOB mascot references. References 1 and 2 define the SAME SERIES: chibi cartoon pixel art, black cat-ear hoodie with colored inner-ear piping, deep black face inside hood, oversized expressive eyes in round GOLD spectacle rims, a gold stripe on hood, small chunky gloves, baggy shorts and large sneakers. Preserve this recognizable design language and chunky crisp pixel-cluster shading, approximately two-heads-tall proportions. These are NOT realistic humans. Full body, entire silhouette and prop visible, centered with generous transparent margin. One character only, clean isolated genuine transparent PNG background. No lettering, no labels, no watermark, no frame, no scenery. Polished finished game character illustration, matching the references' pixel-art density and outline thickness. MOB DRILL: same black cat-ear-hooded chibi mascot with orange and violet accents, gold round glasses visible, performing a very fast UPSIDE-DOWN HEADSPIN. Top of hood contacts the spin point at bottom; tiny body and bent legs with oversized sneakers above the large head. Arms spread for balance. Strong compact pixel-art circular motion arcs around torso and feet and small dust ticks at contact point. Show one intact readable body, no drill weapon, no extra limbs. Dynamic cheerful breakdancer."
+    },
+    {
+      "name": "mob-travel",
+      "source": "main/mascots/mob-travel.png",
+      "prompt": "Edit target: supplied MOB TRAVEL mascot. Redesign into a MUCH TINIER super-chibi traveler: 1.3 heads tall, head is 75% of height, tiny mitten hands, tiny feet directly below a very short coat, almost no visible legs. Replace hoodie with a proper broad-brim travel HAT and a tiny beige/tan travel COAT with pink lining. Retain pink ribbon by the ear/hat and large folded paper island map. Change eye design noticeably: small narrow sleepy half-lidded pink eyes with an unimpressed sideways glance, not huge round shiny baby eyes; understated thin gold rims permitted. Black featureless mouthless face and recognizable MOB mascot spirit. Map smaller enough that coat is visible, but still large relative to tiny torso. Hat, entire body and feet visible with generous margins. Polished crisp cartoon PIXEL ART same family as reference. Transparent background. No lettering, no hoodie, no long legs."
+    },
+    {
+      "name": "mob-time-travel",
+      "source": "main/mascots/mob-time-travel.png",
+      "prompt": "Edit target: supplied MOB TIME TRAVEL mascot. Redesign into MUCH TINIER super-chibi near-future traveler: 1.3 heads tall, huge head 75% of total height, tiny mitten hands, stubby feet immediately below a short COAT, almost no legs. Replace cat-ear hoodie with a proper futuristic broad-brim HAT with cyan band, and tiny dark violet futuristic COAT with cyan seam lights. Preserve cyan holographic continent map projected between hands but let coat remain visible. Change eyes noticeably to narrow confident almond-shaped cyan eyes, slightly half-lidded with sharp bright pupils and curious knowing expression, not huge round baby eyes. Thin gold eye rims optional, keep black mouthless face and MOB family identity. Full hat and entire tiny body visible with generous margin. Crisp polished cartoon PIXEL ART, transparent background, no lettering, no hoodie, no tall body."
+    }
+  ]
+}

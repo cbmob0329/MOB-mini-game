@@ -1,0 +1,21 @@
+{
+  "tool": "image_gen.imagegen",
+  "transparent_background": true,
+  "jobs": [
+    {
+      "name": "mob-corn",
+      "file": "mob-corn-v2.png",
+      "prompt": "Edit target: supplied MOB CORN pixel-art character. Remove the mouth entirely, replacing the mouth area with uninterrupted dark face shading. NO mouth, smile, lips, tongue or nose. Preserve the exact huge golden eyes and gold spectacles, corn hood, green husk cape, corn held in hands, tiny body, pose, colors and crisp cartoon pixel art. Complete character on genuinely transparent background. No other changes."
+    },
+    {
+      "name": "mob-travel",
+      "file": "mob-travel.png",
+      "prompt": "Edit target: supplied MOB TRAVEL mascot. Redesign into a MUCH TINIER super-chibi traveler: 1.3 heads tall, head is 75% of height, tiny mitten hands, tiny feet directly below a very short coat, almost no visible legs. Replace hoodie with a proper broad-brim travel HAT and a tiny beige/tan travel COAT with pink lining. Retain pink ribbon by the ear/hat and large folded paper island map. Change eye design noticeably: small narrow sleepy half-lidded pink eyes with an unimpressed sideways glance, not huge round shiny baby eyes; understated thin gold rims permitted. Black featureless mouthless face and recognizable MOB mascot spirit. Map smaller enough that coat is visible, but still large relative to tiny torso. Hat, entire body and feet visible with generous margins. Polished crisp cartoon PIXEL ART same family as reference. Transparent background. No lettering, no hoodie, no long legs."
+    },
+    {
+      "name": "mob-time-travel",
+      "file": "mob-time-travel.png",
+      "prompt": "Edit target: supplied MOB TIME TRAVEL mascot. Redesign into MUCH TINIER super-chibi near-future traveler: 1.3 heads tall, huge head 75% of total height, tiny mitten hands, stubby feet immediately below a short COAT, almost no legs. Replace cat-ear hoodie with a proper futuristic broad-brim HAT with cyan band, and tiny dark violet futuristic COAT with cyan seam lights. Preserve cyan holographic continent map projected between hands but let coat remain visible. Change eyes noticeably to narrow confident almond-shaped cyan eyes, slightly half-lidded with sharp bright pupils and curious knowing expression, not huge round baby eyes. Thin gold eye rims optional, keep black mouthless face and MOB family identity. Full hat and entire tiny body visible with generous margin. Crisp polished cartoon PIXEL ART, transparent background, no lettering, no hoodie, no tall body."
+    }
+  ]
+}
