@@ -5,8 +5,22 @@
   function luminance(c){return c.map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0);}
   function ratio(a,b){const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
   function readable(fg,bg){return ratio(fg,bg)>=4.5?null:ratio([23,31,43],bg)>=ratio([255,255,255],bg)?'#171f2b':'#ffffff';}
+  function fitMenus(screen){
+    if(!screen)return;
+    for(const panel of screen.querySelectorAll('.festival,.arena-setup,.arena-draw,.arena:has(#arenaBegin),.variant-setup,.tag-league:has(select),.tag-league:has(#leagueStart)')){
+      if(!panel.classList.contains('competition-fit')){
+        const children=[...panel.children],head=children.find(el=>el.tagName==='HEADER'),actions=children.filter(el=>el.tagName==='BUTTON'||el.classList.contains('league-setup-actions'));
+        if(!actions.length)continue;
+        const body=document.createElement('div'),footer=document.createElement('div');body.className='competition-body';footer.className='competition-actions';
+        children.filter(el=>el!==head&&!actions.includes(el)).forEach(el=>body.append(el));actions.forEach(el=>footer.append(el));panel.append(body,footer);panel.classList.add('competition-fit');
+      }
+      const top=Math.max(0,panel.getBoundingClientRect().top),height=Math.max(180,(root.visualViewport?.height||root.innerHeight)-top-10);
+      panel.style.setProperty('--competition-height',height+'px');
+    }
+  }
   function repair(screen){
     if(!screen)return;
+    fitMenus(screen);
     const humans=new Set(root.MobHumanPortraits||[]);for(const img of screen.querySelectorAll('img')){if(img.dataset.human==='true'||humans.has(img.getAttribute('src'))){const row=img.closest('.festival-row,.league-rank,.league-team-card,.variant-row,.ready-card,.result-row,.ranking-row,.result-card,.rank-row,.player-row,.result-item,.score-row,.party-result-row,tr');if(row)row.classList.add('human-banner');}}
     for(const el of screen.querySelectorAll('button,span,b,strong,small,label,p,h1,h2,h3,em,output,div')){
       if(!Array.from(el.childNodes).some(n=>n.nodeType===3&&n.textContent.trim()))continue;
@@ -22,11 +36,12 @@
     return {scale,viewHeight,y:Math.max(0,Math.min(Math.max(0,worldHeight-viewHeight),focusY-viewHeight*anchor))};
   }
   function fitWorldFrame({worldWidth,viewportWidth,viewportHeight,minY=0,maxY,focusX}){const scale=Math.max(.01,Math.min(1,(viewportHeight-12)/(maxY-minY)));const viewWidth=viewportWidth/scale;return {scale,offsetY:(viewportHeight-(maxY-minY)*scale)/2-minY*scale,cameraX:Math.max(0,Math.min(Math.max(0,worldWidth-viewWidth),focusX-120/scale))};}
-  root.MobPartyLayout={repair,readable,ratio,worldCamera,fitWorldFrame};
+  root.MobPartyLayout={fitMenus,repair,readable,ratio,worldCamera,fitWorldFrame};
   if(typeof module!=='undefined')module.exports=root.MobPartyLayout;
   if(typeof document==='undefined')return;
   const screen=document.getElementById('screen');let pending=false;
   const schedule=()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;repair(screen);});};
+  root.addEventListener('resize',schedule);root.visualViewport?.addEventListener('resize',schedule);
   // Observe structural changes, not per-frame position/score updates.
   new MutationObserver(changes=>{if(changes.some(c=>Array.from(c.addedNodes).some(n=>n.nodeType===1)))schedule();}).observe(screen,{childList:true,subtree:true});
 })(typeof window==='undefined'?globalThis:window);

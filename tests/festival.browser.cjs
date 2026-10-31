@@ -50,7 +50,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{chr
    },{mode,outcome});
    await page.selectOption('#festivalCount','0');await page.locator('#festivalNext').click();await page.screenshot({path:path.join(out,mode+'-opening-'+width+'.png'),fullPage:true});
    assert.equal(await page.locator('.festival-roulette,.festival-versus,.festival-clearline').count(),0);
-   const scroll=page.locator('.festival-scroll').first();if(mode==='world'){assert.ok(await scroll.evaluate(e=>e.scrollHeight>e.clientHeight));await scroll.evaluate(e=>e.scrollTop=e.scrollHeight);assert.ok(await scroll.evaluate(e=>e.scrollTop>0));}
+   const scroll=page.locator('.competition-body').first();if(mode==='world'){assert.ok(await scroll.evaluate(e=>e.scrollHeight>e.clientHeight));await scroll.evaluate(e=>e.scrollTop=e.scrollHeight);assert.ok(await scroll.evaluate(e=>e.scrollTop>0));}
    let steps=0;while(!await page.locator('.festival-finale,.festival-gameover').count()){
     if(++steps>600)throw Error(mode+' did not terminate: '+await page.locator('h1').textContent());
     assert.equal(await page.locator('.festival-roulette,.festival-versus,.festival-clearline,.festival-reveal').count(),0,'CPU games must only show results');

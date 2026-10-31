@@ -44,9 +44,9 @@
       {
         "mode": "tournament",
         "outcome": "win",
-        "steps": 31,
+        "steps": 0,
         "runs": 37,
-        "champion": "festival-4112",
+        "champion": "festival-108",
         "whiteWins": false
       },
       {
@@ -54,15 +54,15 @@
         "outcome": "win",
         "steps": 0,
         "runs": 1,
-        "champion": "festival-208",
+        "champion": "festival-4006",
         "whiteWins": false
       },
       {
         "mode": "world",
         "outcome": "win",
-        "steps": 49,
+        "steps": 13,
         "runs": 22,
-        "champion": "festival-3018",
+        "champion": "festival-31",
         "whiteWins": false
       },
       {
@@ -121,9 +121,9 @@
       {
         "mode": "tournament",
         "outcome": "win",
-        "steps": 31,
+        "steps": 1,
         "runs": 37,
-        "champion": "festival-4011",
+        "champion": "festival-4105",
         "whiteWins": false
       },
       {
@@ -131,15 +131,15 @@
         "outcome": "win",
         "steps": 0,
         "runs": 1,
-        "champion": "festival-3105",
+        "champion": "festival-3102",
         "whiteWins": false
       },
       {
         "mode": "world",
         "outcome": "win",
-        "steps": 49,
+        "steps": 13,
         "runs": 22,
-        "champion": "festival-34",
+        "champion": "festival-4105",
         "whiteWins": false
       },
       {
