@@ -32,6 +32,19 @@
         </div>
         <footer class="party-footer"><span><b>${api.activeIndices().length}</b> MINI GAMES</span><span>1台で交代プレイ</span><button id="partyGuide">遊び方を見る ↗</button></footer>
       </section>`);
+      const menu=screen.querySelector('.party-menu');
+      const quick=document.createElement('section');
+      quick.className='mode-group';
+      quick.innerHTML='<h2>すぐ遊ぶ</h2><div class="mode-cards"></div>';
+      const tournaments=document.createElement('section');
+      tournaments.className='mode-group';
+      tournaments.innerHTML='<h2>大会で遊ぶ</h2><div class="mode-cards"></div>';
+      [...menu.querySelectorAll('.party-menu-button')].forEach(button=>{
+        const group=['partySolo','partyMulti'].includes(button.id)?quick:tournaments;
+        group.querySelector('.mode-cards').append(button);
+        button.querySelector('.party-menu-icon').setAttribute('aria-hidden','true');
+      });
+      menu.prepend(quick,tournaments);
       on('partySolo',()=>{count=1;selectCharacter();});
       on('partyTournament',api.tournament);on('partyWhiteChallenge',api.whiteChallenge);on('partyWorldSeries',api.worldSeries);on('partyArena',api.arena);on('partyLeague',api.league);on('partyCrew',api.crew);on('partyKingLeague',api.kingLeague);on('partyKing',api.king);on('partyMulti',chooseCount);on('partySettings',showSettings);on('partyGuide',api.guide);
     }

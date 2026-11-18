@@ -20,18 +20,69 @@ window.MobFestival={create(api){
   return '<div class="festival-scroll league-ranks" tabindex="0" aria-label="出場者・順位一覧">'+ids.map((id,i)=>{const a=p(id),rank=Object.hasOwn(values,id)?1+ids.filter(other=>(values[other]||0)>(values[id]||0)).length:i+1;return '<article class="festival-row league-rank '+(!a.cpu?'human-banner':'')+'" data-player="'+id+'"><b class="festival-place">'+rank+'</b><div><img src="'+a.img+'" alt=""><strong>'+esc(a.name)+'</strong><small>'+(!a.cpu?'PLAYER '+a.no:'CPU')+(mode==='world'?' · GROUP '+String.fromCharCode(65+a.group):'')+(a.seed?' · SEED':'')+(s.lit.includes(id)?' · ● 点灯':'')+(notes[id]!==undefined?' · '+esc(typeof notes[id]==='number'?'加算 '+notes[id]+'pt':notes[id]):'')+'</small></div><strong>'+(hidden?'？？？':Object.hasOwn(values,id)?values[id]+' pt':'')+'</strong></article>'}).join('')+'</div>';
  }
  function scope(overall=false,text=''){return '<div class="ranking-scope '+(overall?'overall':'round')+'"><small>'+(overall?'OVERALL · 総合順位':'THIS GAME · 今回の結果')+'</small><strong>'+esc(text||(overall?'大会の累計ポイント':'このゲームだけの順位'))+'</strong></div>'}
- function groupIntro(index=0){
-  if(index===4){progress();return}const letter=String.fromCharCode(65+index),ids=s.players.filter(p=>p.group===index).map(p=>p.id);
-  view('GROUP '+letter,speech(letter+'グループのみなさんはこっちらです！')+'<div class="festival-group-emblem" aria-hidden="true">'+letter+'</div>'+rows(ids)+button(index===3?'開幕戦へ！':'次のグループへ →'),'festival-roster festival-group-'+index);on(()=>groupIntro(index+1));
+ function groupIntro(index=s.players.find(player=>!player.cpu)?.group || 0){
+  const letter=String.fromCharCode(65+index);
+  const ids=s.players.filter(player=>player.group===index).map(player=>player.id);
+  const tabs=['A','B','C','D'].map((name,i)=>
+    '<button data-group="'+i+'" aria-pressed="'+(i===index)+'">'+name+'組</button>').join('');
+  view('予選の組み分け', '<nav class="festival-tabs">'+tabs+'</nav>'+
+    speech(letter+'グループのみなさんはこっちらです！')+rows(ids)+button('第1カード A VS B へ'),'festival-roster');
+  screen.querySelectorAll('[data-group]').forEach(el=>el.onclick=()=>groupIntro(Number(el.dataset.group)));
+  on(progress);
  }
  function bracket(done,highlight=null){
-  const rounds=[s.players.map(p=>p.id)];for(let r=0;r<5;r++){const previous=rounds[r],next=[];for(let i=0;i<previous.length;i+=2){const rec=s.history.find(h=>h.type==='match'&&h.round===r&&h.winner&&h.ids.includes(previous[i]));next.push(rec?.winner||null)}rounds.push(next)}
-  const labels=['ROUND 32','BEST 16','BEST 8','SEMI FINAL','FINAL','CHAMPION'];
-  const html=rounds.map((ids,r)=>'<section class="festival-bracket-round" style="--bracket-step:'+48*2**r+'px"><h2>'+labels[r]+'</h2><div class="festival-bracket-slots">'+ids.map((id,i)=>{const c=id?p(id):null,won=id&&rounds[r+1]?.includes(id),lost=id&&s.history.some(h=>h.round===r&&h.winner&&h.ids.includes(id)&&h.winner!==id);return '<article class="bracket-slot '+(c&&!c.cpu?'human-banner ':'')+(id===highlight?'bracket-advance ':'')+(won?'bracket-won ':'')+(lost?'bracket-lost':'')+'" '+(id?'data-bracket-player="'+id+'"':'')+'>'+ (c?'<img src="'+c.img+'" alt=""><span>'+esc(c.name)+'<small>'+(!c.cpu?'PLAYER '+c.no:won?'勝ち上がり':lost?'敗退':'CPU')+'</small></span>':'<span>対戦待ち</span>')+'</article>'}).join('')+'</div></section>').join('');
-  view(highlight?'勝ち上がり決定！':'32名 · TOURNAMENT',scope(false,highlight?p(highlight).name+' が次のステージへ！':'4ブロックから、頂点へ。横に送ると決勝まで確認できます。')+'<nav class="bracket-nav" aria-label="ブロックへ移動">'+['A','B','C','D'].map((label,i)=>'<button data-block="'+i+'">'+label+'ブロック</button>').join('')+'</nav><div class="festival-bracket" tabindex="0" aria-label="32名トーナメント表">'+html+'</div>'+button(s.champion?'優勝セレモニーへ':'次の勝負へ →'),'festival-bracket-view');on(done);
-  screen.querySelectorAll('[data-block]').forEach(b=>b.onclick=()=>{const id=s.players[Number(b.dataset.block)*8].id;screen.querySelector('[data-bracket-player="'+id+'"]')?.scrollIntoView({block:'nearest',inline:'start',behavior:'instant'})});
-  if(!highlight){const human=s.players.find(p=>!p.cpu);if(human)screen.querySelector('[data-bracket-player="'+human.id+'"]')?.scrollIntoView({block:'nearest',inline:'start',behavior:'instant'})}
-  if(highlight){api.beep(1047,160,.025);const slots=screen.querySelectorAll('.bracket-advance');slots[slots.length-1]?.scrollIntoView({block:'nearest',inline:'center',behavior:'instant'})}
+  const entrants=s.players.map(player=>player.id);
+  const levels=[entrants], names=['1回戦','2回戦','準々決勝','準決勝','決勝'];
+  const records=[];
+  for(let round=0;round<5;round++){
+    const slots=levels[round], matches=[];
+    for(let i=0;i<slots.length;i+=2){
+      matches.push(s.history.find(h=>h.round===round&&h.winner&&h.ids.includes(slots[i])));
+    }
+    records.push(matches);
+    levels.push(matches.map(record=>record?.winner));
+  }
+  const focus=highlight||s.players.find(player=>!player.cpu)?.id;
+  let round=highlight?Math.min(4,levels.findLastIndex(slots=>slots.includes(highlight))):Math.min(4,s.round);
+  let block=Math.max(0,Math.floor(entrants.indexOf(focus)/8));
+  function render(){
+    const slots=levels[round], size=round<3?8/(2**round):slots.length;
+    const start=round<3?block*size:0;
+    const choices=names.map((name,i)=>'<option value="'+i+'" '+(i===round?'selected':'')+'>'+name+'</option>').join('');
+    const tabs=['A','B','C','D'].map((name,i)=>'<button data-block="'+i+'" aria-pressed="'+(i===block)+'">'+name+'組</button>').join('');
+    const matches=[];
+    for(let i=start;i<start+size;i+=2){
+      const match=i/2,record=records[round][match];
+      const sides=slots.slice(i,i+2).map((id,side)=>{
+        if(!id)return '<div class="draw-entry pending">'+names[round-1]+' 第'+(i+side+1)+'試合の勝者</div>';
+        const player=p(id),winner=record?.winner===id;
+        return '<div data-bracket-player="'+id+'" class="draw-entry '+(!player.cpu?'human-banner ':'')+(highlight===id?'bracket-advance':'')+'"><img src="'+player.img+'" alt=""><span>'+esc(player.name)+(!player.cpu?' <small>P'+player.no+'</small>':'')+'</span><b>'+(winner?'勝 ': '')+(record?record.scores[id]+'点':'')+'</b></div>';
+      }).join('');
+      const next=round===4?'勝者が優勝':names[round+1]+' 第'+(Math.floor(match/2)+1)+'試合へ';
+      matches.push('<article class="draw-match"><header>第'+(match+1)+'試合 <small>'+next+'</small></header>'+sides+'</article>');
+    }
+    view('32名トーナメント表','<div class="draw-controls"><label>ラウンド<select id="drawRound">'+choices+'</select></label>'+
+      (round<3?'<nav class="festival-tabs">'+tabs+'</nav>':'')+'</div>'+
+      (highlight?'<p class="draw-promotion">'+esc(p(highlight).name)+(s.champion?' が優勝！':' が勝ち上がり！')+'</p>':'')+
+      matches.join('')+button(s.champion?'優勝画面へ':'対戦へ進む'),'draw-board');
+    screen.querySelector('#drawRound').onchange=e=>{round=Number(e.target.value);render()};
+    screen.querySelectorAll('[data-block]').forEach(el=>el.onclick=()=>{block=Number(el.dataset.block);render()});
+    on(done);
+  }
+  render();
+ }
+ function worldPage(heading,pages,selected,label,next){
+  function render(i){
+    const page=pages[i],ranked=R.ranked(page.ids,page.scores);
+    const controls=pages.map((item,n)=>'<button data-scores="'+n+'" aria-pressed="'+(n===i)+'">'+item.label+'</button>').join('');
+    const personal=ranked.filter(row=>!p(row.id).cpu).map(row=>'P'+p(row.id).no+' '+row.rank+'位・'+row.points+'pt').join(' ／ ');
+    view(heading,'<nav class="festival-tabs">'+controls+'</nav>'+scope(page.overall,page.caption)+
+      (personal?'<p class="personal-standing">'+personal+'</p>':'')+
+      rows(ranked.map(row=>row.id),page.scores,false,page.notes)+button(label),'festival-results');
+    screen.querySelectorAll('[data-scores]').forEach(el=>el.onclick=()=>render(Number(el.dataset.scores)));
+    on(next);
+  }
+  render(selected);
  }
  function speech(text,pink=false){return '<aside class="festival-host"><img src="'+(pink?'main/012.png':'assets/commentary/mob-white.png')+'" alt="'+(pink?'モブピンク':'モブホワイト')+'"><p><small>'+(pink?'モブピンク · CLEAR LINE':'モブホワイト · LIVE')+'</small><strong>'+text+'</strong></p></aside>'}
  function announce(heading,text,ids,next,cls=''){
@@ -130,14 +181,18 @@ window.MobFestival={create(api){
   function nextGame(){const key=d.selected[s.game];run(key,ids,false,points=>{
    const result=R.worldResult(s,points),rec=result.record;if(rec.game===3)s.worldDraw=null;for(const id of ids)s.legScores[id]=(s.legScores[id]||0)+rec.earned[id];save();
    const advance=()=>{s.worldDraw=null;save();if(s.phase==='final')finalists();else world()};
-   if(cpuOnly(ids)){if(rec.game<3){nextGame();return}standings(label+' · CPU 3戦の総合結果',ids,s.legScores,advance);return}
-   view('GAME '+rec.game+' の結果はこちら！',scope(false,label+' · '+title(key))+rows(R.ranked(ids,points).map(r=>r.id),points,false,rec.earned)+'<p>順位点＋得点ボーナスを総合に加算しました。</p>'+button(),'festival-results');
-   on(()=>{if(rec.game<3){standings(label+' · 現在の総合順位',ids,s.legScores,nextGame);return}
-    standings(label+' の総合はこっちらです！',ids,s.legScores,()=>standings('A～D・80名の総合はこっちらです！',s.players.map(p=>p.id),s.phase==='final'?s.qualifyingScores:s.scores,()=>{s.worldDraw=null;save();if(s.phase==='final')finalists();else world()}));
-   });
+   const gamePage={label:'このゲーム',caption:title(key)+' · 素点と大会への加算',ids,scores:points,notes:rec.earned};
+   const cardPage={label:'対戦内順位',caption:label+' の累計獲得ポイント',ids,scores:s.legScores,overall:true};
+   const allPage={label:'全80名',caption:'予選総合 · 上位20名が決勝へ',ids:s.players.map(player=>player.id),scores:rec.totals,overall:true};
+   if(cpuOnly(ids)&&rec.game<3){nextGame();return}
+   const more=rec.game<3;
+   const nextPair=R.MATCHUPS[rec.leg+1]?.map(n=>String.fromCharCode(65+n)).join(' VS ');
+   const nextLabel=more?'GAME '+(rec.game+1)+' · '+title(d.selected[rec.game])+' へ':nextPair?nextPair+' へ':s.phase==='cutoff'?'進出決定戦へ':'決勝進出者を見る';
+   worldPage('予選 '+(rec.leg+1)+'/6 · '+label+' · '+(cpuOnly(ids)?'CPU 3戦終了':'GAME '+rec.game+'/3'),
+     [gamePage,cardPage,allPage],cpuOnly(ids)?1:0,nextLabel,more?nextGame:advance);
   })}
   if(cpuOnly(ids)){nextGame();return}
-  announce(label+' 開っ始です！！','はいです！ '+label+'、激突です！！ 10候補から3ゲームで勝負です！',ids,()=>roulette(d,nextGame),'festival-match-start festival-roster');
+  announce('予選 '+(s.leg+1)+'/6 · '+label+' 開っ始です！！','はいです！ '+label+'、激突です！！ 10候補から3ゲームで勝負です！',ids,()=>roulette(d,nextGame),'festival-match-start festival-roster');
  }
  function finalists(){announce('決勝に進む上位20名はこっちらです！！','決勝は0点スタート！ 80点で点灯、点灯後の1位で優勝です！ 5人点灯ごとに集中爆弾です！',s.finalists,worldFinal,'festival-qualified')}
  function worldFinal(){
@@ -145,7 +200,11 @@ window.MobFestival={create(api){
   const play=()=>run(key,ids,false,points=>{
    const result=R.worldResult(s,points,{bomb});save();
    if(s.champion){champion(s.champion);return}
-   const show=()=>standings('GAME '+s.history.length+' の結果はこちら！',ids,points,()=>standings('決勝の総合順位はこちら！',s.finalists,s.scores,worldFinal));
+   const finalRound=s.history.filter(record=>['final','showdown'].includes(record.phase)).length;
+   const show=()=>worldPage('決勝 第'+finalRound+'戦',[
+     {label:'このゲーム',caption:title(key),ids,scores:points,notes:result.record.earned},
+     {label:'決勝総合',caption:'80ptで点灯 · 点灯後の1位で優勝',ids:s.finalists,scores:s.scores,overall:true}
+   ],0,'次の決勝戦へ',worldFinal);
    if(result.newLit?.length&&!cpuOnly(ids))announce('MATCH POINT · 点灯！','次の単独1位で優勝です！！',result.newLit,show,'festival-ignition');else show();
   });
   if(cpuOnly(ids)){play();return}

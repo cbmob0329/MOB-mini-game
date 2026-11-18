@@ -3,7 +3,30 @@
  const clamp=v=>Math.max(0,Math.min(1,v));
  const quality=value=>clamp(1-Math.max(0,Math.abs(value-.5)-.045)/.455);
  const catchCount=values=>Math.min(35,Math.round(35*Math.pow(values.reduce((a,v)=>a*quality(v),1),.55)));
- async function run(api){const {screen,key,player,valid,esc,beep}=api,extreme=key==='catcherExtremeMob';let phase='ready',step=0,value=0,start=0,raf=0,chosen=null,values=[],finished=false;
+
+ async function runPlush(api){
+ const {screen,player,valid,esc,beep}=api,prizes=[100,80,65],positions=[36,60,84];
+ let phase='ready',chosen=0,start=0,raf=0,value=0;
+ screen.innerHTML=`<section class="oct-crane ufo-plush-machine gameplay-fit"><header><small>${esc(player.name)}</small><h2>モブくんはぬいぐるみが好き</h2></header><div class="oct-crane-hud"><b>1回勝負</b><strong id="plushStatus">景品を選ぼう</strong></div><div class="ufo-plush-cabinet"><div class="ufo-plush-marquee">MOB UFO CATCHER</div><div class="ufo-plush-rail"></div><div class="ufo-plush-chute"><b>GET</b></div><div class="ufo-plush-shelf"></div>${prizes.map((n,i)=>`<div class="ufo-plush-prize" style="left:${positions[i]}%"><img id="plushToy${i}" src="icon/${String(i+1).padStart(2,'0')}.png" alt="${n}点のぬいぐるみ"><b>${n}点</b></div>`).join('')}<div class="ufo-plush-aim" hidden></div><div class="ufo-plush-carriage" id="plushCarriage"><div class="ufo-plush-cable"></div><div class="ufo-plush-head"><i class="ufo-plush-finger left"></i><i class="ufo-plush-finger right"></i></div></div><div class="ufo-plush-score" hidden></div></div><p id="plushGuide">景品を選び、アームを真上で止めよう！</p><div class="oct-targets">${prizes.map((n,i)=>`<button data-prize="${i}" disabled>${n}点<small>${['むずかしい','ふつう','やさしい'][i]}</small></button>`).join('')}</div><button class="primary" id="plushStop" disabled>準備中</button></section>`;
+ const cabinet=screen.querySelector('.ufo-plush-cabinet'),carriage=screen.querySelector('#plushCarriage'),stop=screen.querySelector('#plushStop'),guide=screen.querySelector('#plushGuide'),status=screen.querySelector('#plushStatus'),aim=screen.querySelector('.ufo-plush-aim');
+ const at=now=>(1-Math.cos((now-start)/1000*Math.PI*1.6))/2;
+ function position(v){carriage.style.left=(positions[chosen]+(v-.5)*20)+'%'}
+ function frame(now){if(!valid()||phase!=='aim')return;value=at(now);position(value);raf=requestAnimationFrame(frame)}
+ const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ async function grab(score){
+ phase='grab';cancelAnimationFrame(raf);stop.disabled=true;aim.hidden=true;carriage.classList.add('moving');guide.textContent='アーム下降！';carriage.style.top='55%';await wait(550);if(!valid())return;
+ carriage.classList.add('closed');beep(420,70,.02);await wait(240);if(!valid())return;
+ const toy=screen.querySelector('#plushToy'+chosen);
+ if(score){toy.classList.add('ufo-plush-held');carriage.append(toy);guide.textContent='つかんだ！ 取り出し口へ';}else guide.textContent='惜しい！ 景品の中心からずれた…';
+ carriage.style.top='24%';await wait(550);if(!valid())return;
+ if(score){carriage.style.left='12%';await wait(650);if(!valid())return;carriage.classList.remove('closed');toy.style.left='12%';toy.style.top='calc(24% + 23px)';toy.className='ufo-plush-dropping';cabinet.append(toy);void toy.offsetHeight;toy.style.top='79%';await wait(480);if(!valid())return;}
+ phase='done';const result=screen.querySelector('.ufo-plush-score');result.hidden=false;result.textContent=score?score+'点 GET!':'0点';status.textContent=score?'キャッチ成功！':'キャッチ失敗';guide.textContent=score?'取り出し口に景品が届いた！':'次はアームを景品の真上で止めよう！';stop.disabled=false;stop.textContent='結果を見る';stop.onclick=()=>{if(!valid())return;stop.disabled=true;api.done(score,prizes[chosen]+'点のぬいぐるみ / 1回勝負')};beep(score?1050:180,180,.03);
+ }
+ stop.onclick=()=>{if(phase!=='aim'||!valid())return;value=at(performance.now());position(value);const ok=Math.abs(value-.5)<=[.045,.10,.16][chosen];grab(ok?prizes[chosen]:0)};
+ if(!(await api.countdown())||!valid())return;phase='choose';stop.textContent='景品を選んでください';
+ screen.querySelectorAll('[data-prize]').forEach(b=>{b.disabled=false;b.onclick=()=>{if(phase!=='choose'||!valid())return;chosen=Number(b.dataset.prize);screen.querySelectorAll('[data-prize]').forEach(x=>{x.disabled=true;x.classList.toggle('selected',x===b)});aim.style.left=positions[chosen]+'%';aim.hidden=false;status.textContent=prizes[chosen]+'点に挑戦';guide.textContent='動くアームを景品の真上でSTOP！';stop.textContent='ここでアームを下ろす';stop.disabled=false;phase='aim';start=performance.now();frame(start)}});
+ }
+ async function run(api){if(api.key==='plushCatcher')return runPlush(api);const {screen,key,player,valid,esc,beep}=api,extreme=key==='catcherExtremeMob';let phase='ready',step=0,value=0,start=0,raf=0,chosen=null,values=[],finished=false;
  screen.innerHTML=`<section class="oct-crane gameplay-fit"><header><small>${esc(player.name)}</small><h2>${extreme?'モブくんキャッチャーの極み':'モブくんはぬいぐるみが好き'}</h2></header><div class="oct-crane-hud"><b>1回勝負</b><strong id="octStatus">${extreme?'35体 / 3つのゲージ':'狙うぬいぐるみを選ぼう'}</strong></div><div class="oct-cabinet"><div class="oct-rail"></div><div class="oct-claw" id="octClaw"><i></i><b>∩</b></div><div class="oct-toys">${Array.from({length:extreme?35:3},(_,i)=>`<img data-toy="${i}" src="icon/${String(i%10+1).padStart(2,'0')}.png" alt="ぬいぐるみ" style="--toy:${i}">`).join('')}</div><div class="oct-result" id="octResult" hidden></div></div><p id="octGuide">${extreme?'白線の中央でSTOP！ 大きさ → 幅 → 強さ':'高い得点ほど成功する範囲が狭くなります'}</p>${extreme?'':`<div class="oct-targets">${[100,80,65].map((n,i)=>`<button data-prize="${n}" data-difficulty="${i}">${n}点<small>${['むずかしい','ふつう','やさしい'][i]}</small></button>`).join('')}</div>`}<div class="oct-gauge" id="octGauge"><span></span><i id="octNeedle"></i><b>中央が最大</b></div><button class="primary" id="octStop" disabled>準備中</button></section>`;
  const stop=screen.querySelector('#octStop'),needle=screen.querySelector('#octNeedle'),guide=screen.querySelector('#octGuide'),status=screen.querySelector('#octStatus'),claw=screen.querySelector('#octClaw'),result=screen.querySelector('#octResult');
  if(!extreme)screen.querySelector('.oct-toys').classList.add('plush');

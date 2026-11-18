@@ -10,3 +10,34 @@
 [data-classic="catcher"] .ufo-marquee{background-color:#454965;color:#fff0bd;text-shadow:0 2px 2px #142338}[data-classic="catcher"] .ufo-glass{background-color:#746c90;box-shadow:inset 0 0 0 2px #b9cbc3,inset 0 0 35px #28355244}[data-classic="catcher"] .ufo-back-logo{color:#fff0c01c;text-shadow:none}[data-classic="catcher"] .ufo-control-panel{background:linear-gradient(#e9dbc1,#bbad9d);border-color:#667487;box-shadow:inset 0 3px 0 #fff2c8}[data-classic="catcher"] .ufo-chute{box-shadow:inset 0 0 0 2px #e9d5a4,inset 0 5px 10px #192b3b55}
 [data-classic="tidy"] .tidy-room{background-color:#c6c6aa;border-color:#698183;box-shadow:inset 0 0 0 2px #e7dfbc}[data-classic="tidy"] .tidy-room-label{color:#263f48;background:#e5dfc5;border-radius:6px;box-shadow:inset 0 -2px #a6a68b}[data-classic="tidy"] .tidy-shelf{background:linear-gradient(90deg,#987355,#d0a47c,#987355);box-shadow:inset 0 3px 0 #e4c398,0 5px 5px #4e493e44}[data-classic="tidy"] .tidy-table{background:linear-gradient(#d4ad79,#a17d58);box-shadow:inset 0 2px #f0d2a1,0 5px 4px #78604544}[data-classic="tidy"] .tidy-rug{background:repeating-linear-gradient(90deg,#a4b6a0 0 6px,#bdc6a9 6px 10px);border-color:#637f70}
 [data-classic="ski"] .ski-stage{background-color:#a6cbd2;box-shadow:inset 0 0 0 2px #c2dcd8;border-color:#668d9b}[data-classic="ski"] .ski-slope-main,[data-classic="ski"] .ski-flight-ground{filter:drop-shadow(0 4px 2px #527d8955)}[data-classic="ski"] .ski-takeoff-lip{box-shadow:0 0 0 2px #fff2bb}
+
+/* Static illustrations sit on the stage surface, below every interactive piece. */
+#screen .fruit-bg-v197 { --stage-art: url("assets/stage-scenes/orchard.webp"); }
+#screen .cloth-room-v202 { --stage-art: url("assets/stage-scenes/dining.webp"); }
+#screen .clean-floor-v203 { --stage-art: url("assets/stage-scenes/parquet.webp"); }
+#screen .poi-stage-v204 { --stage-art: url("assets/stage-scenes/depot.webp"); }
+#screen .oct-cabinet { --stage-art: url("assets/stage-scenes/cabinet.webp"); }
+#screen .amida100-stage-v203 { --stage-art: url("assets/stage-scenes/paper.webp"); }
+#screen :is(.rps224-stage, .bombpass-stage-v202) { --stage-art: url("assets/stage-scenes/arena.webp"); }
+#screen :is(.fruit-bg-v197,.cloth-room-v202,.clean-floor-v203,.poi-stage-v204,.oct-cabinet,.amida100-stage-v203,.rps224-stage,.bombpass-stage-v202) {
+  background-image: var(--stage-art);
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+#screen .rps224-stage::before { opacity: .12; }
+#screen .obsrace-stage-v202 { background: #b1cfcd url("assets/stage-scenes/track.webp") center / 100% 100% no-repeat; }
+#screen .obsrace-world-v202 { background: transparent; }
+
+#screen .treasure-stage-v126 { background-image:url("assets/stage-scenes/ruins.webp"); }
+#screen .treasure-stage-v126 { background-size:100% 100%;background-position:center;background-repeat:no-repeat; }
+
+/* Active games only: bungeeMob, curlingMob, swimmingMob, waterSkip.
+   Scenery stays below existing targets; no changes to world geometry or input. */
+#screen .bungee-stage-v127 { background-image:url("assets/stage-scenes/canyon.svg"); background-size:100% 100%; }
+#screen .curling48-ice { background-image:url("assets/stage-scenes/ice-rink.svg"); background-size:100% 100%; }
+#screen .swim-world-v203 { background-image:url("assets/stage-scenes/pool.svg"); background-size:640px 100%; background-repeat:repeat-x; }
+#screen .skip-world-v170 { background-image:url("assets/stage-scenes/lakeside.svg"); background-size:640px 100%; background-repeat:repeat-x; }
+#screen :is(.skip-sky-v170,.skip-hills-v170) { background:transparent; border:0; }
+#screen .skip-water-v170 { background:linear-gradient(#78bec9,#559aaa); border-top-color:#e9f1d7; }
+#screen .bungee-ground-v127 { background:linear-gradient(#98ae78 0 9px,#bdac83 9px 100%); }

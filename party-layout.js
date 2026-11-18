@@ -8,6 +8,7 @@
   function fitMenus(screen){
     if(!screen)return;
     for(const panel of screen.querySelectorAll('.festival,.arena-setup,.arena-draw,.arena:has(#arenaBegin),.variant-setup,.tag-league:has(select),.tag-league:has(#leagueStart)')){
+      panel.classList.toggle('setup-panel',!!panel.querySelector('select,#leagueStart,#variantStart,#arenaBegin'));
       if(!panel.classList.contains('competition-fit')){
         const children=[...panel.children],head=children.find(el=>el.tagName==='HEADER'),actions=children.filter(el=>el.tagName==='BUTTON'||el.classList.contains('league-setup-actions'));
         if(!actions.length)continue;
